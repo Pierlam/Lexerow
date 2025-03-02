@@ -34,10 +34,10 @@ public class ExecInstrManyForEachRowIfThenTests
 
         //--B.Cell= 10
         InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(1, 10);
-        List<InstrBase> listInstrThen = [instrSetVal];
+        //List<InstrBase> listInstrThen = [instrSetVal];
 
         // instr1: If A.Cell<10 Then B.Cell= 10
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, listInstrThen);
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, instrSetVal);
         Assert.IsTrue(execResult.Result);
 
         //-- A.Cell>50 
@@ -45,10 +45,10 @@ public class ExecInstrManyForEachRowIfThenTests
 
         //--B.Cell= 50
         instrSetVal = core.Builder.CreateInstrSetCellVal(1, 50);
-        listInstrThen = [instrSetVal];
+        //listInstrThen = [instrSetVal];
 
         /// instr2: If A.Cell>50 Then B.Cell= 50
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, listInstrThen);
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, instrSetVal);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

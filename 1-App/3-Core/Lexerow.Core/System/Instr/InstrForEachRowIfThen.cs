@@ -13,7 +13,7 @@ public class InstrForEachRowIfThen : InstrBase
 {
     public InstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, InstrBase instrIf, List<InstrBase> listInstrThen)
     { 
-        InstrType = InstrType.InstrForEachCellInColsIfThen;
+        InstrType = InstrType.ForEachRowIfThen;
         ExcelFileObjectName = excelFileObjectName;
         SheetNum = sheetNum;
         FirstDataRowNum= firstDataRowNum;
@@ -33,7 +33,7 @@ public class InstrForEachRowIfThen : InstrBase
     public int SheetNum { get; set; }
 
     /// <summary>
-    /// wehre start the data row, after the header.
+    /// Where start the data row, after the header.
     /// By default the header take the first row of the sheet.
     /// base0
     /// </summary>
@@ -41,7 +41,7 @@ public class InstrForEachRowIfThen : InstrBase
 
     /// <summary>
     /// If condition instruction.
-    /// Only InstrCompCellVal is allowed for now.
+    /// Only comparison instruction is allowed.
     /// </summary>
     public InstrBase InstrIf { get; set; }
 

@@ -13,7 +13,7 @@ void EventOccured(InstrBaseExecEvent execEvent)
         Console.WriteLine(oe.When.ToString()+ " OpenExcel: " + oe.State+ ", Res: " + oe.Result + ", ElapsedTime: " + oe.ElapsedTime.ToString());
     }
 
-    InstrForEachRowCellIfThenExecEvent fr = execEvent as InstrForEachRowCellIfThenExecEvent;
+    InstrForEachRowIfThenExecEvent fr = execEvent as InstrForEachRowIfThenExecEvent;
     if (fr != null) 
     {
         Console.WriteLine(fr.When.ToString() + " ForEachIf: " + fr.State + ", Res: " + fr.Result + ", Row count: " + fr.DataRowCount + ", IfCondFiredCount: " + fr.IfConditionFiredCount + ", ElapsedTime: " + fr.ElapsedTime.ToString());

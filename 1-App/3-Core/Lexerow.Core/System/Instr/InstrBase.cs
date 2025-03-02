@@ -18,7 +18,7 @@ public enum InstrType
     CompCellVal,
     CompCellValIsNull,
 
-    InstrForEachCellInColsIfThen,
+    ForEachRowIfThen,
 }
 
 /// <summary>

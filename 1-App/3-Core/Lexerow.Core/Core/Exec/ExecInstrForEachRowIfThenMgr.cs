@@ -1,18 +1,13 @@
 ﻿using Lexerow.Core.System.Excel;
 using Lexerow.Core.System;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NPOI.OpenXmlFormats.Wordprocessing;
-using NPOI.SS.UserModel;
 using Lexerow.Core.System.Exec.Event;
-using NPOI.OpenXmlFormats.Dml.Chart;
 using Lexerow.Core.Utils;
 namespace Lexerow.Core;
-public class ExecInstrForEachRowCellIfThenMgr
+
+/// <summary>
+/// Execute instruciotn: ForEachRow IfThen
+/// </summary>
+public class ExecInstrForEachRowIfThenMgr
 {
     static int _dataRowCount = 0;
 
@@ -45,7 +40,7 @@ public class ExecInstrForEachRowCellIfThenMgr
             CoreError error= new CoreError(ErrorCode.UnableFindSheetByNum, instr.SheetNum.ToString());
             execResult.AddError(error);
 
-            FireEvent(InstrForEachRowCellIfThenExecEvent.CreateFinishedError(execStart, error));
+            FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
             return execResult;
         }
         int currRowNum = instr.FirstDataRowNum;
@@ -60,7 +55,7 @@ public class ExecInstrForEachRowCellIfThenMgr
             _dataRowCount++;
         }
 
-        FireEvent(InstrForEachRowCellIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
+        FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
 
         // TODO: gerer erreur!!
         return execResult;
@@ -74,7 +69,7 @@ public class ExecInstrForEachRowCellIfThenMgr
         execResult= ExecIfCondition(excelProcessor, excelFile, excelSheet, instr.InstrIf, rowNum, out bool condResult); 
         if(!execResult.Result)
         {
-            FireEvent(InstrForEachRowCellIfThenExecEvent.CreateFinishedError(execStart, execResult.ListError.FirstOrDefault()));
+            FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, execResult.ListError.FirstOrDefault()));
             // error occurs during the If condition instr execution
             return execResult;
         }
@@ -84,7 +79,7 @@ public class ExecInstrForEachRowCellIfThenMgr
             return execResult;
 
         _ifConditionFiredCount++;
-        FireEvent(InstrForEachRowCellIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
+        FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
 
         // execute Then instructions
         foreach (InstrBase instrThen in instr.ListInstrThen)

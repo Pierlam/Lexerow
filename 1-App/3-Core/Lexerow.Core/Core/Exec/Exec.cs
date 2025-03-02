@@ -32,6 +32,12 @@ public class Exec
 
     DateTime _execStartCurrInstr;
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="loggerFactory"></param>
+    /// <param name="coreData"></param>
+    /// <param name="excelProcessor"></param>
     public Exec(ILoggerFactory loggerFactory, CoreData coreData, IExcelProcessor excelProcessor)
     {
         _loggerFactory = loggerFactory;
@@ -54,7 +60,7 @@ public class Exec
     {
         ExecResult execResult = new ExecResult();
 
-        // TODO: vérifie toutes les instr une par une, pas fait déja??
+        // TODO: check all instruction, one by one 
         return execResult;
     }
 
@@ -87,10 +93,10 @@ public class Exec
                 continue;
             }
 
-            if(instr.InstrType == InstrType.InstrForEachCellInColsIfThen)
+            if(instr.InstrType == InstrType.ForEachRowIfThen)
             {
                 _execStartCurrInstr = DateTime.Now;
-                execResult = ExecInstrForEachCellInColsIfThen(instr as InstrForEachRowIfThen, _listExecVar, _execStartCurrInstr);
+                execResult = ExecInstrForEachRowIfThen(instr as InstrForEachRowIfThen, _listExecVar, _execStartCurrInstr);
                 if (!execResult.Result)
                     return execResult;
  
@@ -131,23 +137,23 @@ public class Exec
 
     /// <summary>
     /// Execute instr: 
-    /// 	ForEachCellInColsIfThen(file, sheetNum, A,Value>10, Value=10)
+    /// 	ForEachRowIfThen(file, sheetNum, A,Value>10, Value=10)
     /// ForEach Cell c In Cols(A)
     ///    If c.Value >10 Then c.Value=10
     /// </summary>
     /// <param name="instr"></param>
     /// <param name="listExecVar"></param>
     /// <returns></returns>
-    ExecResult ExecInstrForEachCellInColsIfThen(InstrForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
+    ExecResult ExecInstrForEachRowIfThen(InstrForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
     {
         ExecResult execResult = new ExecResult();
-        FireEvent(InstrForEachRowCellIfThenExecEvent.CreateStart());
+        FireEvent(InstrForEachRowIfThenExecEvent.CreateStart());
 
         // get the file object by name
         ExecVar execVar = listExecVar.FirstOrDefault(ev => ev.Name.Equals(instr.ExcelFileObjectName, StringComparison.InvariantCultureIgnoreCase));
         if(execVar==null)
         {
-            FireEvent(InstrForEachRowCellIfThenExecEvent.CreateFinished(execStart,InstrBaseExecEventResult.Error));
+            FireEvent(InstrForEachRowIfThenExecEvent.CreateFinished(execStart,InstrBaseExecEventResult.Error));
             execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
             return execResult;
         }
@@ -159,7 +165,7 @@ public class Exec
         }
 
         // execute the instr on each cols, on each datarow
-        execResult = ExecInstrForEachRowCellIfThenMgr.Exec(FireEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
+        execResult = ExecInstrForEachRowIfThenMgr.Exec(FireEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
 
         return execResult;
     }

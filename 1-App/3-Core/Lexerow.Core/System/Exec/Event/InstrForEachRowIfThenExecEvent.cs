@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System.Exec.Event;
-public class InstrForEachRowCellIfThenExecEvent : InstrBaseExecEvent
+public class InstrForEachRowIfThenExecEvent : InstrBaseExecEvent
 {
-    public InstrForEachRowCellIfThenExecEvent()
+    public InstrForEachRowIfThenExecEvent()
     {
         Type = InstrBaseExecEventType.ForEachRowCellIfThen;
     }
@@ -18,27 +18,27 @@ public class InstrForEachRowCellIfThenExecEvent : InstrBaseExecEvent
     
     public int IfConditionFiredCount { get; set; } = 0; 
 
-    public static InstrForEachRowCellIfThenExecEvent CreateStart()
+    public static InstrForEachRowIfThenExecEvent CreateStart()
     {
-        var execEvent = new InstrForEachRowCellIfThenExecEvent();
+        var execEvent = new InstrForEachRowIfThenExecEvent();
         execEvent.State = InstrBaseExecEventState.Start;
         execEvent.Result = InstrBaseExecEventResult.Ok;
         //execEvent.FileName = fileName;
         return execEvent;
     }
 
-    public static InstrForEachRowCellIfThenExecEvent CreateFinished(DateTime dtStart, InstrBaseExecEventResult result)
+    public static InstrForEachRowIfThenExecEvent CreateFinished(DateTime dtStart, InstrBaseExecEventResult result)
     {
-        var execEvent = new InstrForEachRowCellIfThenExecEvent();
+        var execEvent = new InstrForEachRowIfThenExecEvent();
         execEvent.State = InstrBaseExecEventState.Finished;
         execEvent.Result = result;
         execEvent.ElapsedTime = DateTime.Now - dtStart;
         return execEvent;
     }
 
-    public static InstrForEachRowCellIfThenExecEvent CreateFinishedOk(DateTime dtStart, int dataRowCount, int ifConditionFiredCount)
+    public static InstrForEachRowIfThenExecEvent CreateFinishedOk(DateTime dtStart, int dataRowCount, int ifConditionFiredCount)
     {
-        var execEvent = new InstrForEachRowCellIfThenExecEvent(); 
+        var execEvent = new InstrForEachRowIfThenExecEvent(); 
         execEvent.State = InstrBaseExecEventState.Finished;
         execEvent.Result = InstrBaseExecEventResult.Ok;
         execEvent.DataRowCount= dataRowCount;
@@ -47,9 +47,9 @@ public class InstrForEachRowCellIfThenExecEvent : InstrBaseExecEvent
         return execEvent;
     }
     
-    public static InstrForEachRowCellIfThenExecEvent CreateFinishedInProgress(DateTime dtStart, int dataRowCount, int ifConditionFiredCount)
+    public static InstrForEachRowIfThenExecEvent CreateFinishedInProgress(DateTime dtStart, int dataRowCount, int ifConditionFiredCount)
     {
-        var execEvent = new InstrForEachRowCellIfThenExecEvent();
+        var execEvent = new InstrForEachRowIfThenExecEvent();
         execEvent.State = InstrBaseExecEventState.InProgress;
         execEvent.Result = InstrBaseExecEventResult.Ok;
         execEvent.DataRowCount = dataRowCount;
@@ -58,9 +58,9 @@ public class InstrForEachRowCellIfThenExecEvent : InstrBaseExecEvent
         return execEvent;
     }
 
-    public static InstrForEachRowCellIfThenExecEvent CreateFinishedError(DateTime dtStart, CoreError error)
+    public static InstrForEachRowIfThenExecEvent CreateFinishedError(DateTime dtStart, CoreError error)
     {
-        var execEvent = new InstrForEachRowCellIfThenExecEvent();
+        var execEvent = new InstrForEachRowIfThenExecEvent();
         execEvent.State = InstrBaseExecEventState.Finished;
         execEvent.Result = InstrBaseExecEventResult.Error;
         execEvent.Error = error;

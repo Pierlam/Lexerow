@@ -201,7 +201,6 @@ public class CoreBuilder
         return new InstrSetCellValueBlank(colNum);
     }
 
-
     /// <summary>
     /// Create an instruction OpenExcel.
     /// exp: file=OpenExcel(fileName)
@@ -212,6 +211,13 @@ public class CoreBuilder
     public ExecResult CreateInstrOpenExcel(string excelFileObjectName, string fileName)
     {
         ExecResult execResult = new ExecResult();
+
+        // possible to create the instr?
+        if(_coreData.Stage != CoreStage.Build)
+        {
+            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            return execResult;
+        }
 
         if (string.IsNullOrWhiteSpace(excelFileObjectName))
         {
@@ -267,6 +273,13 @@ public class CoreBuilder
     public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrBase instrIf, List<InstrBase> listInstrThen)
     {
         ExecResult execResult = new ExecResult();
+
+        // possible to create the instr?
+        if (_coreData.Stage != CoreStage.Build)
+        {
+            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            return execResult;
+        }
 
         if (string.IsNullOrWhiteSpace(excelFileObjectName))
         {

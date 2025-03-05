@@ -145,4 +145,6 @@ public enum ErrorCode
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
 
+
+    UnableCreateInstrNotInStageBuild,
 }

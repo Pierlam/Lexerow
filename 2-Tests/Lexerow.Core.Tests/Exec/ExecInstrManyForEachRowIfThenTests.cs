@@ -17,6 +17,8 @@ namespace Lexerow.Core.Tests.Exec;
 public class ExecInstrManyForEachRowIfThenTests
 {
     /// <summary>
+    /// possible but not efficient!
+    /// scan the datarow for each of instr!!
     /// instr1: If A.Cell<10 Then B.Cell= 10
     /// instr2: If A.Cell>50 Then B.Cell= 50
     /// </summary>

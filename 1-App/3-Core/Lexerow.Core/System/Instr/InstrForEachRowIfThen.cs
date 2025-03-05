@@ -90,18 +90,6 @@ public class InstrForEachRowIfThen : InstrBase
     /// </summary>
     public List<InstrForEachRowIfThenItem> ListInstrIfThen { get; private set; } = new List<InstrForEachRowIfThenItem>();
 
-    /// <summary>
-    /// If condition instruction.
-    /// Only comparison instruction is allowed.
-    /// </summary>
-    //public InstrBase InstrIf { get; set; }
-
-    /// <summary>
-    /// Then list of instructions.
-    /// only InstrSetCellVal is allowed.
-    /// </summary>
-    //public List<InstrBase> ListInstrThen { get; set; } = new List<InstrBase>();
-
     public bool AddInstrIfThen(InstrBase instrIf, InstrBase instrThen)
     {
         List<InstrBase> listInstrThen = new List<InstrBase>
@@ -110,7 +98,6 @@ public class InstrForEachRowIfThen : InstrBase
         };
 
         return AddInstrIfThen(instrIf, listInstrThen);
-
     }
 
     public bool AddInstrIfThen(InstrBase instrIf, List<InstrBase> listInstrThen)

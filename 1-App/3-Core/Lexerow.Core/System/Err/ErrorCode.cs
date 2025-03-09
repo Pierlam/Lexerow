@@ -140,7 +140,7 @@ public enum ErrorCode
     ExcelRowIsEmpty,
 
     AtLeastOneInstrThenExpected,
-
+    AtLeastOneInstrIfColThenExpected,
 
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,

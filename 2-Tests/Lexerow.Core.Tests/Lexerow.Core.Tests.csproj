@@ -45,6 +45,9 @@
     <None Update="10-Files\Greater50Set12.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="10-Files\Test2ForEachRowIfThen.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="10-Files\TestForEachRow2IfThen.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

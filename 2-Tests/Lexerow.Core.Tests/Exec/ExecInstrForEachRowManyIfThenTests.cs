@@ -9,25 +9,22 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Tests.Exec;
 
 /// <summary>
-/// Execute instruction ForEachRow if-Then
-/// 
-/// One ForEachRow, many If-Then instr.
+/// test exec instr ForEach Row with many/several If-Then instructions.
 /// </summary>
 [TestClass]
-public class ExecInstrManyForEachRowIfThenTests
+public class ExecInstrForEachRowManyIfThenTests
 {
     /// <summary>
-    /// possible but not efficient!
-    /// scan the datarow for each of instr!!
-    /// instr1: If A.Cell<10 Then B.Cell= 10
-    /// instr2: If A.Cell>50 Then B.Cell= 50
+    /// ForEach Row
+    ///     If A.Cell<10 Then B.Cell= 10    ->instr1
+    ///     If A.Cell>50 Then B.Cell= 50    ->instr2
     /// </summary>
     [TestMethod]
     public void TestForEachRow2IfThen()
     {
         LexerowCore core = new LexerowCore();
 
-        string fileName = @"10-Files\Test2ForEachRowIfThen.xlsx";
+        string fileName = @"10-Files\TestForEachRow2IfThen.xlsx";
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
@@ -37,27 +34,26 @@ public class ExecInstrManyForEachRowIfThenTests
         //--B.Cell= 10
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 10);
 
-        // If A.Cell < 10 Then B.Cell= 10
+        // instr1: If A.Cell<10 Then B.Cell= 10
         InstrIfColThen instrIfColThen;
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        // instr1: ForEach Row If A.Cell<10 Then B.Cell= 10
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        //-- A.Cell>50 
-        instrCompIf = core.Builder.CreateInstrCompCellVal(0, InstrCompCellValOperator.GreaterThan, 50);
+        //-- A.Cell>50
+        InstrCompCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, InstrCompCellValOperator.GreaterThan, 50);
 
         //--B.Cell= 50
-        instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 50);
+        InstrSetCellVal instrSetValThen2 = core.Builder.CreateInstrSetCellVal(1, 50);
 
-        // If A.Cell > 50 Then B.Cell= 50
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        // instr1: If A.Cell>50 Then B.Cell= 50
+        InstrIfColThen instrIfColThen2;
+        execResult = core.Builder.CreateInstrIfColThen(instrCompIf2, instrSetValThen2, out instrIfColThen2);
         Assert.IsTrue(execResult.Result);
 
-        /// instr2: ForEach Row If A.Cell>50 Then B.Cell= 50
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        // ForEach Row  -> add 2 If Col Then
+        List<InstrIfColThen> listInstrIfColThen = [instrIfColThen, instrIfColThen2];
+
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, listInstrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -69,7 +65,7 @@ public class ExecInstrManyForEachRowIfThenTests
         // check the content of modified excel file
         var stream = ExcelChecker.OpenExcel(fileName);
         var wb = ExcelChecker.GetWorkbook(stream);
-        
+
         // B1, =23, notmodified
         bool res = ExcelChecker.CheckCellValueColRow(wb, 0, 1, 0, 23);
         Assert.IsTrue(res);

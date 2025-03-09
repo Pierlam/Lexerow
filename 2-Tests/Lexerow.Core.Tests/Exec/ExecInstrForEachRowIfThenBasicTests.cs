@@ -25,14 +25,20 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
-        //--Create: col D, c.Value > 50 
-        InstrCompCellVal exprCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
+        //--Create: col D, D.Cell > 50 
+        InstrCompCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
 
-        //--Create: colD, c.Value:=12
-        InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(3, 12);
-        List<InstrBase> listInstrThen = [instrSetVal];
+        //--Create: colD, D.Cell= 12
+        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+        List<InstrBase> listInstrThen = [instrSetValThen];
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, listInstrThen);
+        // If D.Cell>50 Then D.Cell= 12
+        InstrIfColThen instrIfColThen;
+        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        Assert.IsTrue(execResult.Result);
+
+        // ForEeach Row IfColThen
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //core.Exec.FireEvent = EventOccured;
@@ -72,13 +78,18 @@ public class ExecInstrForEachRowIfThenBasicTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create Comp instr: B.Cell=Null
-        InstrCompCellValIsNull exprCompIf = core.Builder.CreateInstrCompCellValIsNull(1, InstrCompCellValOperator.Equal);
+        InstrCompCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1, InstrCompCellValOperator.Equal);
 
         //--Create: B.Cell="NA"
-        InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(1, "NA");
-        List<InstrBase> listInstrThen = [instrSetVal];
+        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, "NA");
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, listInstrThen);
+        // If B.Cell= null Then B.Cell= "NA"
+        InstrIfColThen instrIfColThen;
+        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        Assert.IsTrue(execResult.Result);
+
+        // ForEeach Row IfColThen
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //core.Exec.FireEvent = EventOccured;
@@ -123,13 +134,18 @@ public class ExecInstrForEachRowIfThenBasicTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create Comp instr: B.Cell=Null
-        InstrCompCellValIsNull exprCompIf = core.Builder.CreateInstrCompCellValIsNull(1, InstrCompCellValOperator.Equal);
+        InstrCompCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1, InstrCompCellValOperator.Equal);
 
-        //--Create: C.Cell="09/02/2025 00:00:00"
-        InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(2, new DateTime(2025,02,09));
-        List<InstrBase> listInstrThen = [instrSetVal];
+        //--Create: C.Cell= "09/02/2025 00:00:00"
+        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(2, new DateTime(2025,02,09));
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, listInstrThen);
+        // If B.Cell= null Then C.Cell= "09/02/2025 00:00:00"
+        InstrIfColThen instrIfColThen;
+        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        Assert.IsTrue(execResult.Result);
+
+        // ForEeach Row IfColThen
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

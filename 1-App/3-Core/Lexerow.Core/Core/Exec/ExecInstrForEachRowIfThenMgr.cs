@@ -49,7 +49,7 @@ public class ExecInstrForEachRowIfThenMgr
         // apply IfThen instructions on each datarow
         while (currRowNum <= lastRowNum)
         {
-            foreach(var instrIfThen in instr.ListInstrIfThen)
+            foreach(var instrIfThen in instr.ListInstrIfColThen)
             {
                 execResult = ExecOnDataRow(execStart, excelProcessor, excelFile, sheet, instrIfThen.InstrIf, instrIfThen.ListInstrThen, currRowNum);
                 if(!execResult.Result)

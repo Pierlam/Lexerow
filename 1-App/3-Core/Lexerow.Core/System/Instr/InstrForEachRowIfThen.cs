@@ -8,9 +8,9 @@ namespace Lexerow.Core.System;
 
 
 /// <summary>
-/// One If-Then instruction.
+/// One If Col Then instruction.
 /// </summary>
-public class InstrForEachRowIfThenItem
+public class InstrIfColThen : InstrBase
 {
     /// <summary>
     /// If condition instruction.
@@ -32,39 +32,20 @@ public class InstrForEachRowIfThenItem
 public class InstrForEachRowIfThen : InstrBase
 {
     /// <summary>
-    /// Constructor 1.
+    /// Constructor.
     /// </summary>
     /// <param name="excelFileObjectName"></param>
     /// <param name="sheetNum"></param>
     /// <param name="firstDataRowNum"></param>
     /// <param name="instrIf"></param>
     /// <param name="listInstrThen"></param>
-    public InstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, InstrBase instrIf, List<InstrBase> listInstrThen)
+    public InstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, List<InstrIfColThen> listInstrIfColThen)
     { 
         InstrType = InstrType.ForEachRowIfThen;
         ExcelFileObjectName = excelFileObjectName;
         SheetNum = sheetNum;
         FirstDataRowNum= firstDataRowNum;
-
-        AddInstrIfThen(instrIf, listInstrThen);
-    }
-
-    /// <summary>
-    /// Constructor 2.
-    /// </summary>
-    /// <param name="excelFileObjectName"></param>
-    /// <param name="sheetNum"></param>
-    /// <param name="firstDataRowNum"></param>
-    /// <param name="instrIf"></param>
-    /// <param name="instrThen"></param>
-    public InstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, InstrBase instrIf, InstrBase instrThen)
-    {
-        InstrType = InstrType.ForEachRowIfThen;
-        ExcelFileObjectName = excelFileObjectName;
-        SheetNum = sheetNum;
-        FirstDataRowNum = firstDataRowNum;
-
-        AddInstrIfThen(instrIf, instrThen);
+        ListInstrIfColThen.AddRange(listInstrIfColThen);
     }
 
     /// <summary>
@@ -87,28 +68,8 @@ public class InstrForEachRowIfThen : InstrBase
 
     /// <summary>
     /// List of instr If-Then for the same: excel file, excel sheet, and FirstDataRowNum.
+    /// InstrIfColThen
     /// </summary>
-    public List<InstrForEachRowIfThenItem> ListInstrIfThen { get; private set; } = new List<InstrForEachRowIfThenItem>();
+    public List<InstrIfColThen> ListInstrIfColThen { get; private set; } = new List<InstrIfColThen>();
 
-    public bool AddInstrIfThen(InstrBase instrIf, InstrBase instrThen)
-    {
-        List<InstrBase> listInstrThen = new List<InstrBase>
-        {
-            instrThen
-        };
-
-        return AddInstrIfThen(instrIf, listInstrThen);
-    }
-
-    public bool AddInstrIfThen(InstrBase instrIf, List<InstrBase> listInstrThen)
-    {
-        // create the first IfThen instr
-        InstrForEachRowIfThenItem item = new InstrForEachRowIfThenItem();
-
-        item.InstrIf = instrIf;
-        item.ListInstrThen.AddRange(listInstrThen);
-
-        ListInstrIfThen.Add(item);
-        return true;
-    }
 }

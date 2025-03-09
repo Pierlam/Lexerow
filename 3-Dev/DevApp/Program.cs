@@ -40,13 +40,16 @@ void Test1()
     }
 
     //--Create: col D, c.Value > 50 
-    InstrCompCellVal exprCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
+    InstrCompCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
 
     //--Create: colD, c.Value:=12
-    InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(3, 12);
-    List<InstrBase> listInstrThen = [instrSetVal];
+    InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
 
-    execRes = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, exprCompIf, listInstrThen);
+    // If A.Cell < 10 Then B.Cell= 10
+    InstrIfColThen instrIfColThen;
+    execRes = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+
+    execRes = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
     if(!execRes.Result)
     {
         Console.WriteLine("ERR, Unable to create the instrForIfThen!");

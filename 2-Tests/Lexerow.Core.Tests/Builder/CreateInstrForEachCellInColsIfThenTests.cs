@@ -23,16 +23,19 @@ public  class CreateInstrForEachCellInColsIfThenTests
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
-        //--Create: col D, c.Value > 50 
-        InstrCompCellVal instrIfCond = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
+        //--Create: D.Cell > 50 
+        InstrCompCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
 
-        //--Create: colD, c.Value:=12
-        InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(3, 12);
-        List<InstrBase> listInstrThen = new List<InstrBase>();
-        listInstrThen.Add(instrSetVal);
+        //--Create: D.Cell= 12
+        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+
+        // If D.Cell > 50 Then D.Cell= 12
+        InstrIfColThen instrIfColThen;
+        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfCond, listInstrThen);
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsTrue(execResult.Result);
@@ -43,16 +46,19 @@ public  class CreateInstrForEachCellInColsIfThenTests
     {
         LexerowCore core = new LexerowCore();
 
-        //--Create: col D, c.Value > 50 
-        InstrCompCellVal instrIfCond = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
+        //--Create: D.Cell > 50 
+        InstrCompCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
 
-        //--Create: colD, c.Value:=12
-        InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(3, 12);
-        List<InstrBase> listInstrThen = new List<InstrBase>();
-        listInstrThen.Add(instrSetVal);
+        //--Create: D.Cell= 12
+        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+
+        // If D.Cell > 50 Then D.Cell= 12
+        InstrIfColThen instrIfColThen;
+        ExecResult execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        ExecResult execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfCond, listInstrThen);
+        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);
@@ -65,16 +71,19 @@ public  class CreateInstrForEachCellInColsIfThenTests
     {
         LexerowCore core = new LexerowCore();
 
-        //--Create: col D, c.Value > 50 
-        InstrCompCellVal instrIfCond = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
+        //--Create: D.Cell > 50 
+        InstrCompCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
 
-        //--Create: colD, c.Value:=12
-        InstrSetCellVal instrSetVal = core.Builder.CreateInstrSetCellVal(3, 12);
-        List<InstrBase> listInstrThen = new List<InstrBase>();
-        listInstrThen.Add(instrSetVal);
+        //--Create: D.Cell= 12
+        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+
+        // If D.Cell > 50 Then D.Cell= 12
+        InstrIfColThen instrIfColThen;
+        ExecResult execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        ExecResult execResult = core.Builder.CreateInstrForEachRowIfThen(null, 0, 1, instrIfCond, listInstrThen);
+        execResult = core.Builder.CreateInstrForEachRowIfThen(null, 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);

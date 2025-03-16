@@ -40,7 +40,7 @@ void Test1()
     }
 
     //--Create: col D, c.Value > 50 
-    InstrCompCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 50);
+    InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 50);
 
     //--Create: colD, c.Value:=12
     InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
@@ -104,7 +104,7 @@ void Test2()
     // by default, the header is on row 1 
 
     // In col(D) if cell.Value > 15 Then Cell.Value=14
-    InstrCompCellVal exprComp = core.Builder.CreateInstrCompCellVal(3, InstrCompCellValOperator.GreaterThan, 15);
+    InstrCompColCellVal exprComp = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 15);
     //var res2 = core.Exec.SetCellsIf(res.ExcelFile, 0, "D", exprComp, 14);
 
     //if (res.Error == null)

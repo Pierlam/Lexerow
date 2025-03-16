@@ -9,6 +9,7 @@ namespace Lexerow.Core.System;
 public enum CoreStage
 {
     Build,
+    InstrError,
     ReadyToExec,
     Exec
 }

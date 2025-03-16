@@ -68,7 +68,10 @@ public class Exec
             return execResult;
         }
 
-        // TODO: check all instruction, one by one 
+        // check all instruction, one by one 
+        execResult= ExecCompileInstrMgr.CheckAllInstr(_coreData.ListInstr);
+        if(!execResult.Result)
+            _coreData.Stage = CoreStage.InstrError;
 
         _coreData.Stage = CoreStage.ReadyToExec;
         return execResult;

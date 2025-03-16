@@ -142,6 +142,7 @@ public enum ErrorCode
     AtLeastOneInstrThenExpected,
     AtLeastOneInstrIfColThenExpected,
 
+    InstrNotAllowed,
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
 

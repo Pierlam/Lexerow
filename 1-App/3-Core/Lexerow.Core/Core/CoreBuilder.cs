@@ -29,12 +29,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, int value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, int value)
     {
         // convert the value to an object Value
         ValueInt valueInt = new ValueInt(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueInt);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueInt);
 
         return exprComp;
     }
@@ -46,12 +46,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, double value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, double value)
     {
         // convert the value to an object Value
         ValueDouble valueDouble = new ValueDouble(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueDouble);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueDouble);
 
         return exprComp;
     }
@@ -63,12 +63,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, string value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, string value)
     {
         // convert the value to an object Value
         ValueString valueString = new ValueString(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueString);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueString);
 
         return exprComp;
     }
@@ -79,12 +79,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, DateOnly value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, DateOnly value)
     {
         // convert the value to an object Value
         ValueDateOnly valueDateOnly = new ValueDateOnly(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueDateOnly);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueDateOnly);
 
         return exprComp;
     }
@@ -95,12 +95,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, DateTime value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, DateTime value)
     {
         // convert the value to an object Value
         ValueDateTime valueDateTime = new ValueDateTime(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueDateTime);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueDateTime);
 
         return exprComp;
     }
@@ -111,12 +111,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, TimeOnly value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, TimeOnly value)
     {
         // convert the value to an object Value
         ValueTimeOnly valueTimeOnly = new ValueTimeOnly(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueTimeOnly);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueTimeOnly);
 
         return exprComp;
     }
@@ -127,9 +127,9 @@ public class CoreBuilder
     /// <param name="colNum"></param>
     /// <param name="oper"></param>
     /// <returns></returns>
-    public InstrCompCellValIsNull CreateInstrCompCellValIsNull(int colNum, InstrCompCellValOperator oper)
+    public InstrCompColCellValIsNull CreateInstrCompCellValIsNull(int colNum, InstrCompValOperator oper)
     {
-        return new InstrCompCellValIsNull(colNum, oper);
+        return new InstrCompColCellValIsNull(colNum, oper);
     }
 
     /// <summary>
@@ -262,14 +262,65 @@ public class CoreBuilder
     }
 
     /// <summary>
-    /// Create instr: If -instrIf- Then -instrThen-
+    /// Create instr: If -instrCompIf and... - Then -instrThen-
+    /// used in a ForEach Row instruction.
+    /// </summary>
+    /// <param name="listInstrCompIf"></param>
+    /// <param name="instrThen"></param>
+    /// <param name="instrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrIfColAndThen(List<InstrRetBoolBase> listInstrCompIf, InstrBase instrThen, out InstrIfColThen instrIfColThen)
+    {
+        List<InstrBase> listInstrThen = new List<InstrBase>() { instrThen };
+
+        return CreateInstrIfColAndThen(listInstrCompIf, listInstrThen, out instrIfColThen);
+    }
+
+    /// <summary>
+    /// Create instr: If -instrCompIf and... - Then -listOf instrThen-
+    /// used in a ForEach Row instruction.
+    /// </summary>
+    /// <param name="listInstrCompIf"></param>
+    /// <param name="listInstrThen"></param>
+    /// <param name="instrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrIfColAndThen(List<InstrRetBoolBase> listInstrCompIf, List<InstrBase> listInstrThen, out InstrIfColThen instrIfColThen)
+    {
+        InstrCompListColCellAnd instrCompListColCellAnd = new InstrCompListColCellAnd(listInstrCompIf);
+
+        ExecResult execResult = new ExecResult();
+        instrIfColThen = null;
+
+        //--check instr Then, should be allowed
+        foreach (var instrThen in listInstrThen)
+        {
+            // chkec the instr Then
+            if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
+            {
+                execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
+            }
+        }
+
+        // not allowed instr if or Then?
+        if (!execResult.Result)
+            return execResult;
+
+        // ok, create the IfCol Then instr
+        instrIfColThen = new InstrIfColThen();
+        instrIfColThen.InstrIf = instrCompListColCellAnd;
+        instrIfColThen.ListInstrThen.AddRange(listInstrThen);
+        return execResult;
+    }
+
+    /// <summary>
+    /// Create instr: If -instrCompIf- Then -instrThen-
     /// used in a ForEach Row instruction.
     /// </summary>
     /// <param name="instrCompIf"></param>
     /// <param name="instrThen"></param>
     /// <param name="instrIfColThen"></param>
     /// <returns></returns>
-    public ExecResult CreateInstrIfColThen(InstrBase instrCompIf, InstrBase instrThen, out InstrIfColThen instrIfColThen)
+    public ExecResult CreateInstrIfColThen(InstrRetBoolBase instrCompIf, InstrBase instrThen, out InstrIfColThen instrIfColThen)
     {
         List<InstrBase> listInstrThen = new List<InstrBase>
         {
@@ -286,18 +337,12 @@ public class CoreBuilder
     /// <param name="instrSetValThen"></param>
     /// <param name="instrIfColThen"></param>
     /// <returns></returns>
-    public ExecResult CreateInstrIfColThen(InstrBase instrCompIf, List<InstrBase> listInstrThen, out InstrIfColThen instrIfColThen)
+    public ExecResult CreateInstrIfColThen(InstrRetBoolBase instrCompIf, List<InstrBase> listInstrThen, out InstrIfColThen instrIfColThen)
     {
         ExecResult execResult = new ExecResult();
         instrIfColThen = null;
 
-        // check the instr If, should be allowed
-        if (instrCompIf.InstrType != InstrType.CompCellVal && instrCompIf.InstrType != InstrType.CompCellValIsNull)
-        {
-            execResult.AddError(new CoreError(ErrorCode.IfConditionInstrNotAllowed, instrCompIf.ToString()));
-            return execResult;
-        }
-
+        //--check instr Then, should be allowed
         foreach (var instrThen in listInstrThen)
         {
             // chkec the instr Then

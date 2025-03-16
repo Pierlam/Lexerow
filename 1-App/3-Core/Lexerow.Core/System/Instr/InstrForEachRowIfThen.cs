@@ -16,7 +16,7 @@ public class InstrIfColThen : InstrBase
     /// If condition instruction.
     /// Only comparison instruction is allowed.
     /// </summary>
-    public InstrBase InstrIf { get; set; }
+    public InstrRetBoolBase InstrIf { get; set; }
 
     /// <summary>
     /// Then list of instructions.

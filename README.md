@@ -5,7 +5,7 @@ Example, pseudo-code:
 
 ```
 ForEach Row
-  File="Greater50Set12.xlsx"  Sheet=0 FirstLine=0
+  Excel="Greater50Set12.xlsx"  Sheet=0 FirstRow=0
   If D.Cell>50 Then D.Cell=12
 End
 ```

@@ -43,6 +43,7 @@ public class Exec
         _loggerFactory = loggerFactory;
         _coreData = coreData;
         _excelProcessor = excelProcessor;
+
     }
 
     /// <summary>
@@ -60,7 +61,19 @@ public class Exec
     {
         ExecResult execResult = new ExecResult();
 
-        // TODO: check all instruction, one by one 
+        // possible to create the instr?
+        if (_coreData.Stage != CoreStage.Build)
+        {
+            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            return execResult;
+        }
+
+        // check all instruction, one by one 
+        execResult= ExecCompileInstrMgr.CheckAllInstr(_coreData.ListInstr);
+        if(!execResult.Result)
+            _coreData.Stage = CoreStage.InstrError;
+
+        _coreData.Stage = CoreStage.ReadyToExec;
         return execResult;
     }
 
@@ -71,10 +84,22 @@ public class Exec
     /// <returns></returns>
     public ExecResult Execute()
     {
-        _execStart= DateTime.Now;   
+        _execStart= DateTime.Now;
 
         ExecResult execResult;
 
+        // not yet compiled?
+        if (_coreData.Stage == CoreStage.Build)
+        {
+            execResult = Compile();
+            if (!execResult.Result)
+                // error occured during the compilation process, bye
+                return execResult;
+        }
+
+        _coreData.Stage = CoreStage.Exec;
+
+        // execute saved instructions, one by one
         foreach (var instr in _coreData.ListInstr) 
         {
             if (instr.InstrType == InstrType.OpenExcel)
@@ -82,7 +107,10 @@ public class Exec
                 _execStartCurrInstr= DateTime.Now;
                 execResult= ExecInstrOpenExcelFile(instr as InstrOpenExcel, _listExecVar, _execStartCurrInstr);
                 if(!execResult.Result)
+                {
+                    _coreData.Stage = CoreStage.Build;
                     return execResult;
+                }
 
                 continue;
             }
@@ -98,7 +126,10 @@ public class Exec
                 _execStartCurrInstr = DateTime.Now;
                 execResult = ExecInstrForEachRowIfThen(instr as InstrForEachRowIfThen, _listExecVar, _execStartCurrInstr);
                 if (!execResult.Result)
+                {
+                    _coreData.Stage = CoreStage.Build;
                     return execResult;
+                }
  
                 continue;
             }
@@ -106,6 +137,8 @@ public class Exec
 
         // close all opened excel file, if its not done
         CloseAllOpenedExcelFile(_listExecVar);
+
+        _coreData.Stage = CoreStage.Build;
 
         return new ExecResult(); 
     }

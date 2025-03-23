@@ -33,8 +33,6 @@ public interface IExcelProcessor
 
     bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, DateTime value);
 
-    bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, DateOnly value);
-
     bool DeleteCell(IExcelSheet excelSheet, int rowNum, int colNum);
 
     // set the new value to the cell

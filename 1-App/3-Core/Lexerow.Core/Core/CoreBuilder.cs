@@ -29,12 +29,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, int value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, int value)
     {
         // convert the value to an object Value
         ValueInt valueInt = new ValueInt(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueInt);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueInt);
 
         return exprComp;
     }
@@ -46,12 +46,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, double value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, double value)
     {
         // convert the value to an object Value
         ValueDouble valueDouble = new ValueDouble(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueDouble);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueDouble);
 
         return exprComp;
     }
@@ -63,12 +63,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, string value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, string value)
     {
         // convert the value to an object Value
         ValueString valueString = new ValueString(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueString);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueString);
 
         return exprComp;
     }
@@ -79,12 +79,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, DateOnly value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, DateOnly value)
     {
         // convert the value to an object Value
         ValueDateOnly valueDateOnly = new ValueDateOnly(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueDateOnly);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueDateOnly);
 
         return exprComp;
     }
@@ -95,12 +95,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, DateTime value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, DateTime value)
     {
         // convert the value to an object Value
         ValueDateTime valueDateTime = new ValueDateTime(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueDateTime);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueDateTime);
 
         return exprComp;
     }
@@ -111,12 +111,12 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompCellVal CreateInstrCompCellVal(int colNum, InstrCompCellValOperator oper, TimeOnly value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, TimeOnly value)
     {
         // convert the value to an object Value
         ValueTimeOnly valueTimeOnly = new ValueTimeOnly(value);
 
-        InstrCompCellVal exprComp = new InstrCompCellVal(colNum, oper, valueTimeOnly);
+        InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueTimeOnly);
 
         return exprComp;
     }
@@ -127,9 +127,9 @@ public class CoreBuilder
     /// <param name="colNum"></param>
     /// <param name="oper"></param>
     /// <returns></returns>
-    public InstrCompCellValIsNull CreateInstrCompCellValIsNull(int colNum, InstrCompCellValOperator oper)
+    public InstrCompColCellValIsNull CreateInstrCompCellValIsNull(int colNum, InstrCompValOperator oper)
     {
-        return new InstrCompCellValIsNull(colNum, oper);
+        return new InstrCompColCellValIsNull(colNum, oper);
     }
 
     /// <summary>
@@ -201,7 +201,6 @@ public class CoreBuilder
         return new InstrSetCellValueBlank(colNum);
     }
 
-
     /// <summary>
     /// Create an instruction OpenExcel.
     /// exp: file=OpenExcel(fileName)
@@ -212,6 +211,13 @@ public class CoreBuilder
     public ExecResult CreateInstrOpenExcel(string excelFileObjectName, string fileName)
     {
         ExecResult execResult = new ExecResult();
+
+        // possible to create the instr?
+        if(_coreData.Stage != CoreStage.Build)
+        {
+            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            return execResult;
+        }
 
         if (string.IsNullOrWhiteSpace(excelFileObjectName))
         {
@@ -255,18 +261,147 @@ public class CoreBuilder
         return execResult;
     }
 
-    public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrBase instrIf, InstrBase instrThen)
+    /// <summary>
+    /// Create instr: If -instrCompIf and... - Then -instrThen-
+    /// used in a ForEach Row instruction.
+    /// </summary>
+    /// <param name="listInstrCompIf"></param>
+    /// <param name="instrThen"></param>
+    /// <param name="instrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrIfColAndThen(List<InstrRetBoolBase> listInstrCompIf, InstrBase instrThen, out InstrIfColThen instrIfColThen)
     {
-        List<InstrBase> listInstr= new List<InstrBase>
+        List<InstrBase> listInstrThen = new List<InstrBase>() { instrThen };
+
+        return CreateInstrIfColAndThen(listInstrCompIf, listInstrThen, out instrIfColThen);
+    }
+
+    /// <summary>
+    /// Create instr: If -instrCompIf and... - Then -listOf instrThen-
+    /// used in a ForEach Row instruction.
+    /// </summary>
+    /// <param name="listInstrCompIf"></param>
+    /// <param name="listInstrThen"></param>
+    /// <param name="instrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrIfColAndThen(List<InstrRetBoolBase> listInstrCompIf, List<InstrBase> listInstrThen, out InstrIfColThen instrIfColThen)
+    {
+        InstrCompListColCellAnd instrCompListColCellAnd = new InstrCompListColCellAnd(listInstrCompIf);
+
+        ExecResult execResult = new ExecResult();
+        instrIfColThen = null;
+
+        //--check instr Then, should be allowed
+        foreach (var instrThen in listInstrThen)
+        {
+            // chkec the instr Then
+            if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
+            {
+                execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
+            }
+        }
+
+        // not allowed instr if or Then?
+        if (!execResult.Result)
+            return execResult;
+
+        // ok, create the IfCol Then instr
+        instrIfColThen = new InstrIfColThen();
+        instrIfColThen.InstrIf = instrCompListColCellAnd;
+        instrIfColThen.ListInstrThen.AddRange(listInstrThen);
+        return execResult;
+    }
+
+    /// <summary>
+    /// Create instr: If -instrCompIf- Then -instrThen-
+    /// used in a ForEach Row instruction.
+    /// </summary>
+    /// <param name="instrCompIf"></param>
+    /// <param name="instrThen"></param>
+    /// <param name="instrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrIfColThen(InstrRetBoolBase instrCompIf, InstrBase instrThen, out InstrIfColThen instrIfColThen)
+    {
+        List<InstrBase> listInstrThen = new List<InstrBase>
         {
             instrThen
         };
-        return CreateInstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, instrIf, listInstr);
+        return CreateInstrIfColThen(instrCompIf, listInstrThen, out instrIfColThen);
     }
 
-    public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrBase instrIf, List<InstrBase> listInstrThen)
+    /// <summary>
+    /// Create instr: If -instrIf- Then -listOf instrThen-
+    /// used in a ForEach Row instruction.
+    /// </summary>
+    /// <param name="instrCompIf"></param>
+    /// <param name="instrSetValThen"></param>
+    /// <param name="instrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrIfColThen(InstrRetBoolBase instrCompIf, List<InstrBase> listInstrThen, out InstrIfColThen instrIfColThen)
     {
         ExecResult execResult = new ExecResult();
+        instrIfColThen = null;
+
+        //--check instr Then, should be allowed
+        foreach (var instrThen in listInstrThen)
+        {
+            // chkec the instr Then
+            if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
+            {
+                execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
+            }
+        }
+
+        // not allowed instr if or Then?
+        if (!execResult.Result)
+            return execResult;
+
+        // ok, create the IfCol Then instr
+        instrIfColThen = new InstrIfColThen();
+        instrIfColThen.InstrIf = instrCompIf;
+        instrIfColThen.ListInstrThen.AddRange(listInstrThen);
+        return execResult;
+    }
+
+    /// <summary>
+    /// Create an instr and save it:
+    /// ForEach Row
+    ///     If -instrIf- Then -listOf instrThen-
+    /// </summary>
+    /// <param name="excelFileObjectName"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="firstDataRowNumline"></param>
+    /// <param name="listInstrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrIfColThen instrIfColThen)
+    {
+        List<InstrIfColThen> listInstrIfColThen = new List<InstrIfColThen>
+        {
+            instrIfColThen
+        };
+        return CreateInstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, listInstrIfColThen);
+    }
+
+    /// <summary>
+    /// Create an instr and save it:
+    /// ForEach Row
+    ///     listOf If -instrIf- Then -listOf instrThen-
+    /// </summary>
+    /// <param name="excelFileObjectName"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="firstDataRowNumline"></param>
+    /// <param name="listInstrIfColThen"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, List<InstrIfColThen> listInstrIfColThen)
+    {
+        ExecResult execResult = new ExecResult();
+
+        // possible to create the instr?
+        if (_coreData.Stage != CoreStage.Build)
+        {
+            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            return execResult;
+        }
 
         if (string.IsNullOrWhiteSpace(excelFileObjectName))
         {
@@ -301,36 +436,126 @@ public class CoreBuilder
         }
 
         // check instr Then, only SetCellVal is authorized
-        if (listInstrThen.Count == 0) 
+        if (listInstrIfColThen.Count == 0)
         {
-            execResult.AddError(new CoreError(ErrorCode.AtLeastOneInstrThenExpected, null));
+            execResult.AddError(new CoreError(ErrorCode.AtLeastOneInstrIfColThenExpected, null));
             return execResult;
         }
-
-        InstrForEachRowIfThen instrForIfThen = null;
-
-        // check the instr If, should be allowed
-        if(instrIf.InstrType!= InstrType.CompCellVal && instrIf.InstrType != InstrType.CompCellValIsNull)
-            execResult.AddError(new CoreError(ErrorCode.IfConditionInstrNotAllowed, instrIf.ToString()));
-
-        // check Then instructions
-        foreach (var instrThen in listInstrThen)
-        {
-            if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
-            {
-                execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
-            }
-        }
-
-        // not allowed instr if or Then?
-        if (!execResult.Result)
-            return execResult;
 
         // by default data table header is on the row 0, first data row is 1
-        instrForIfThen = new InstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, instrIf, listInstrThen);
-        _coreData.ListInstr.Add(instrForIfThen);
+        InstrForEachRowIfThen instrForEachRowIfThen = new InstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, listInstrIfColThen);
+        _coreData.ListInstr.Add(instrForEachRowIfThen);
         return execResult;
     }
+
+
+    //XXXXXXXXXXXXXXXXXXXX-REWORK:
+
+    /// <summary>
+    /// Create an instr:
+    /// ForEach Row
+    ///     If -instrIf- Then -instrThen-
+    /// </summary>
+    /// <param name="excelFileObjectName"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="firstDataRowNumline"></param>
+    /// <param name="instrIf"></param>
+    /// <param name="instrThen"></param>
+    /// <returns></returns>
+    //public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrBase instrIf, InstrBase instrThen)
+    //{
+    //    List<InstrBase> listInstr= new List<InstrBase>
+    //    {
+    //        instrThen
+    //    };
+    //    return CreateInstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, instrIf, listInstr);
+    //}
+
+    /// <summary>
+    /// Create an instr:
+    /// ForEach Row
+    ///     If -instrIf- Then -list of instrThen-
+    /// </summary>
+    /// <param name="excelFileObjectName"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="firstDataRowNumline"></param>
+    /// <param name="instrIf"></param>
+    /// <param name="listInstrThen"></param>
+    /// <returns></returns>
+    //public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrBase instrIf, List<InstrBase> listInstrThen)
+    //{
+    //    ExecResult execResult = new ExecResult();
+
+    //    // possible to create the instr?
+    //    if (_coreData.Stage != CoreStage.Build)
+    //    {
+    //        execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+    //        return execResult;
+    //    }
+
+    //    if (string.IsNullOrWhiteSpace(excelFileObjectName))
+    //    {
+    //        execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameIsNull, null));
+    //        return execResult;
+    //    }
+
+    //    if (sheetNum < 0)
+    //    {
+    //        execResult.AddError(new CoreError(ErrorCode.SheetNumValueWrong, null));
+    //        return execResult;
+    //    }
+
+    //    if (firstDataRowNumline < 0)
+    //    {
+    //        execResult.AddError(new CoreError(ErrorCode.FirstDatarowNumLineValueWrong, null));
+    //        return execResult;
+    //    }
+
+    //    // check the syntax of the excel file object name
+    //    if (!SyntaxUtils.CheckIdSyntax(excelFileObjectName))
+    //    {
+    //        execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, null));
+    //        return execResult;
+    //    }
+
+    //    // check the excelFileObject name, should be defined previsouly
+    //    if (!FindExcelFileObjectName(excelFileObjectName))
+    //    {
+    //        execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
+    //        return execResult;
+    //    }
+
+    //    // check instr Then, only SetCellVal is authorized
+    //    if (listInstrThen.Count == 0) 
+    //    {
+    //        execResult.AddError(new CoreError(ErrorCode.AtLeastOneInstrThenExpected, null));
+    //        return execResult;
+    //    }
+
+    //    InstrForEachRowIfThen instrForIfThen = null;
+
+    //    // check the instr If, should be allowed
+    //    if(instrIf.InstrType!= InstrType.CompCellVal && instrIf.InstrType != InstrType.CompCellValIsNull)
+    //        execResult.AddError(new CoreError(ErrorCode.IfConditionInstrNotAllowed, instrIf.ToString()));
+
+    //    // check Then instructions
+    //    foreach (var instrThen in listInstrThen)
+    //    {
+    //        if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
+    //        {
+    //            execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
+    //        }
+    //    }
+
+    //    // not allowed instr if or Then?
+    //    if (!execResult.Result)
+    //        return execResult;
+
+    //    // by default data table header is on the row 0, first data row is 1
+    //    instrForIfThen = new InstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, instrIf, listInstrThen);
+    //    _coreData.ListInstr.Add(instrForIfThen);
+    //    return execResult;
+    //}
 
     /// <summary>
     /// Check the excel Filename, should be defined previsouly

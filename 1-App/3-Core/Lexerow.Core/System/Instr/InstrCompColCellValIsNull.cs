@@ -10,9 +10,9 @@ namespace Lexerow.Core.System;
 /// Comparison instruction:
 /// A.Cell = null  or <>
 /// </summary>
-public class InstrCompCellValIsNull : InstrBase
+public class InstrCompColCellValIsNull : InstrRetBoolBase
 {
-    public InstrCompCellValIsNull(int colNum, InstrCompCellValOperator oper)
+    public InstrCompColCellValIsNull(int colNum, InstrCompValOperator oper)
     {
         InstrType = InstrType.CompCellValIsNull;
         ColNum = colNum;
@@ -21,6 +21,6 @@ public class InstrCompCellValIsNull : InstrBase
 
     public int ColNum { get; set; }
 
-    public InstrCompCellValOperator Operator { get; set; }
+    public InstrCompValOperator Operator { get; set; }
 
 }

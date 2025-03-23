@@ -6,19 +6,46 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
+
+/// <summary>
+/// One If Col Then instruction.
+/// </summary>
+public class InstrIfColThen : InstrBase
+{
+    /// <summary>
+    /// If condition instruction.
+    /// Only comparison instruction is allowed.
+    /// </summary>
+    public InstrRetBoolBase InstrIf { get; set; }
+
+    /// <summary>
+    /// Then list of instructions.
+    /// only InstrSetCellVal is allowed.
+    /// </summary>
+    public List<InstrBase> ListInstrThen { get; set; } = new List<InstrBase>();
+
+}
+
 /// <summary>
 /// Instruction ForEach Row If Then
 /// </summary>
 public class InstrForEachRowIfThen : InstrBase
 {
-    public InstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, InstrBase instrIf, List<InstrBase> listInstrThen)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="excelFileObjectName"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="firstDataRowNum"></param>
+    /// <param name="instrIf"></param>
+    /// <param name="listInstrThen"></param>
+    public InstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, List<InstrIfColThen> listInstrIfColThen)
     { 
         InstrType = InstrType.ForEachRowIfThen;
         ExcelFileObjectName = excelFileObjectName;
         SheetNum = sheetNum;
         FirstDataRowNum= firstDataRowNum;
-        InstrIf = instrIf;
-        ListInstrThen.AddRange(listInstrThen);
+        ListInstrIfColThen.AddRange(listInstrIfColThen);
     }
 
     /// <summary>
@@ -40,14 +67,9 @@ public class InstrForEachRowIfThen : InstrBase
     public int FirstDataRowNum { get; set; } = 1;
 
     /// <summary>
-    /// If condition instruction.
-    /// Only comparison instruction is allowed.
+    /// List of instr If-Then for the same: excel file, excel sheet, and FirstDataRowNum.
+    /// InstrIfColThen
     /// </summary>
-    public InstrBase InstrIf { get; set; }
+    public List<InstrIfColThen> ListInstrIfColThen { get; private set; } = new List<InstrIfColThen>();
 
-    /// <summary>
-    /// Then list of instructions.
-    /// only InstrSetCellVal is allowed.
-    /// </summary>
-    public List<InstrBase> ListInstrThen { get; set; } = new List<InstrBase>();
 }

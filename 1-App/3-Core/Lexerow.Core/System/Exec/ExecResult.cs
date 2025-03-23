@@ -30,4 +30,13 @@ public class ExecResult
         this.ListError.Add(error);
         Result = false;
     }
+
+    public void AddListError(List<CoreError> listError)
+    {
+        if (listError.Count == 0) return;
+
+        this.ListError.AddRange(listError);
+        Result = false;
+    }
+
 }

@@ -140,9 +140,12 @@ public enum ErrorCode
     ExcelRowIsEmpty,
 
     AtLeastOneInstrThenExpected,
+    AtLeastOneInstrIfColThenExpected,
 
-
+    InstrNotAllowed,
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
 
+
+    UnableCreateInstrNotInStageBuild,
 }

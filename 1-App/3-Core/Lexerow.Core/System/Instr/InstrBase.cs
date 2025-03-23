@@ -18,6 +18,8 @@ public enum InstrType
     CompCellVal,
     CompCellValIsNull,
 
+    CompListColCellAnd,
+
     ForEachRowIfThen,
 }
 

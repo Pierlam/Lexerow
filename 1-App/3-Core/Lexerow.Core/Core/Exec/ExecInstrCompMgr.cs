@@ -25,7 +25,7 @@ public class ExecInstrCompMgr
     /// <param name="instrComp"></param>
     /// <param name="compResult"></param>
     /// <returns></returns>
-    public static ExecResult ExecInstrCompCellVal(IExcelProcessor excelProcessor, InstrCompCellVal instrComp, IExcelCell excelCell, out bool compResult)
+    public static ExecResult ExecInstrCompCellVal(IExcelProcessor excelProcessor, InstrCompColCellVal instrComp, IExcelCell excelCell, out bool compResult)
     {
         ExecResult execResult = new ExecResult();
 
@@ -92,20 +92,20 @@ public class ExecInstrCompMgr
     /// <param name="excelCell"></param>
     /// <param name="compResult"></param>
     /// <returns></returns>
-    public static ExecResult ExecInstrCompCellValIsNull(IExcelProcessor excelProcessor, InstrCompCellValIsNull instrComp, IExcelCell excelCell, out bool compResult)
+    public static ExecResult ExecInstrCompCellValIsNull(IExcelProcessor excelProcessor, InstrCompColCellValIsNull instrComp, IExcelCell excelCell, out bool compResult)
     {
         ExecResult execResult = new ExecResult();
 
         if (excelCell == null || excelCell.GetRawValueString().Length==0)
         {
             // if A.Cell = null -> yes
-            if (instrComp.Operator == InstrCompCellValOperator.Equal)
+            if (instrComp.Operator == InstrCompValOperator.Equal)
             {
                 compResult = true;
                 return execResult;
             }
             // if A.Cell = null -> no
-            if (instrComp.Operator == InstrCompCellValOperator.NotEqual)
+            if (instrComp.Operator == InstrCompValOperator.NotEqual)
             {
                 compResult = false;
                 return execResult;
@@ -117,14 +117,14 @@ public class ExecInstrCompMgr
 
         // the cell hasa value
         // if A.Cell <> null -> yes
-        if (instrComp.Operator == InstrCompCellValOperator.NotEqual)
+        if (instrComp.Operator == InstrCompValOperator.NotEqual)
         {
             compResult = true;
             return execResult;
         }
 
         // if A.Cell = null -> no
-        if (instrComp.Operator == InstrCompCellValOperator.Equal)
+        if (instrComp.Operator == InstrCompValOperator.Equal)
         {
             compResult = false;
             return execResult;
@@ -144,73 +144,73 @@ public class ExecInstrCompMgr
         /// <param name="cellValue"></param>
         /// <param name="valueComp"></param>
         /// <returns></returns>
-        static bool ExecCompNumeric(InstrCompCellVal instrComp, double cellValue, double valueComp)
+        static bool ExecCompNumeric(InstrCompColCellVal instrComp, double cellValue, double valueComp)
     {
-        if(instrComp.Operator== InstrCompCellValOperator.Equal) 
+        if(instrComp.Operator== InstrCompValOperator.Equal) 
             return cellValue == valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.NotEqual)
+        if (instrComp.Operator == InstrCompValOperator.NotEqual)
             return cellValue != valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.GreaterThan)
+        if (instrComp.Operator == InstrCompValOperator.GreaterThan)
             return cellValue > valueComp;
-        if (instrComp.Operator == InstrCompCellValOperator.GreaterOrEqualThan)
+        if (instrComp.Operator == InstrCompValOperator.GreaterOrEqualThan)
             return cellValue >= valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.LesserThan)
+        if (instrComp.Operator == InstrCompValOperator.LesserThan)
             return cellValue < valueComp;
-        if (instrComp.Operator == InstrCompCellValOperator.LesserOrEqualThan)
+        if (instrComp.Operator == InstrCompValOperator.LesserOrEqualThan)
             return cellValue <= valueComp;
         return false;
     }
 
-    static bool ExecCompDateTime(InstrCompCellVal instrComp, DateTime cellValue, DateTime valueComp)
+    static bool ExecCompDateTime(InstrCompColCellVal instrComp, DateTime cellValue, DateTime valueComp)
     {
-        if (instrComp.Operator == InstrCompCellValOperator.Equal)
+        if (instrComp.Operator == InstrCompValOperator.Equal)
             return cellValue == valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.NotEqual)
+        if (instrComp.Operator == InstrCompValOperator.NotEqual)
             return cellValue != valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.GreaterThan)
+        if (instrComp.Operator == InstrCompValOperator.GreaterThan)
             return cellValue > valueComp;
-        if (instrComp.Operator == InstrCompCellValOperator.GreaterOrEqualThan)
+        if (instrComp.Operator == InstrCompValOperator.GreaterOrEqualThan)
             return cellValue >= valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.LesserThan)
+        if (instrComp.Operator == InstrCompValOperator.LesserThan)
             return cellValue < valueComp;
-        if (instrComp.Operator == InstrCompCellValOperator.LesserOrEqualThan)
+        if (instrComp.Operator == InstrCompValOperator.LesserOrEqualThan)
             return cellValue <= valueComp;
         return false;
     }
 
     
-    static bool ExecCompTimeOnly(InstrCompCellVal instrComp, TimeOnly cellValue, TimeOnly valueComp)
+    static bool ExecCompTimeOnly(InstrCompColCellVal instrComp, TimeOnly cellValue, TimeOnly valueComp)
     {
-        if (instrComp.Operator == InstrCompCellValOperator.Equal)
+        if (instrComp.Operator == InstrCompValOperator.Equal)
             return cellValue == valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.NotEqual)
+        if (instrComp.Operator == InstrCompValOperator.NotEqual)
             return cellValue != valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.GreaterThan)
+        if (instrComp.Operator == InstrCompValOperator.GreaterThan)
             return cellValue > valueComp;
-        if (instrComp.Operator == InstrCompCellValOperator.GreaterOrEqualThan)
+        if (instrComp.Operator == InstrCompValOperator.GreaterOrEqualThan)
             return cellValue >= valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.LesserThan)
+        if (instrComp.Operator == InstrCompValOperator.LesserThan)
             return cellValue < valueComp;
-        if (instrComp.Operator == InstrCompCellValOperator.LesserOrEqualThan)
+        if (instrComp.Operator == InstrCompValOperator.LesserOrEqualThan)
             return cellValue <= valueComp;
         return false;
     }
 
-    static bool ExecCompString(InstrCompCellVal instrComp, string cellValue, string valueComp)
+    static bool ExecCompString(InstrCompColCellVal instrComp, string cellValue, string valueComp)
     {
-        if (instrComp.Operator == InstrCompCellValOperator.Equal)
+        if (instrComp.Operator == InstrCompValOperator.Equal)
             return cellValue == valueComp;
 
-        if (instrComp.Operator == InstrCompCellValOperator.NotEqual)
+        if (instrComp.Operator == InstrCompValOperator.NotEqual)
             return cellValue != valueComp;
 
 

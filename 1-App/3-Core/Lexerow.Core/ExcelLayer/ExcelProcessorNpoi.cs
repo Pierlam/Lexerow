@@ -240,17 +240,6 @@ public class ExcelProcessorNpoi : IExcelProcessor
         return true;
     }
 
-    public bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, DateOnly value)
-    {
-        ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
-        var row = excelSheetNpoi.Sheet.GetRow(rowNum);
-        if (row == null) return false;
-
-        var cell = row.CreateCell(colNum);
-        cell.SetCellValue(value);
-        return true;
-    }
-
     public bool DeleteCell(IExcelSheet excelSheet, int rowNum, int colNum)
     {
         ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;

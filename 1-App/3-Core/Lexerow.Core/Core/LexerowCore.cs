@@ -1,8 +1,6 @@
 ﻿using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.Logger;
 using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
-using Microsoft.Extensions.Logging;
 
 namespace Lexerow.Core;
 public class LexerowCore

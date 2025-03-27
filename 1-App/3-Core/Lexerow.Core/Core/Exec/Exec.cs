@@ -2,7 +2,6 @@
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.Exec.Event;
 using Lexerow.Core.Utils;
-using Microsoft.Extensions.Logging;
 using NPOI.HPSF;
 using NPOI.SS.Extractor;
 using NPOI.SS.Formula.Functions;
@@ -20,7 +19,6 @@ namespace Lexerow.Core;
 /// </summary>
 public class Exec
 {
-    ILoggerFactory _loggerFactory;
 
     IExcelProcessor _excelProcessor;
 

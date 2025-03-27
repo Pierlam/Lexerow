@@ -1,9 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Description>Lexerow is a backend dotnet library to process very easily datarows and cells in Excel files. You can for example detect empty cell in a column and set a specific value.</Description>
+    <Title>backend dotnet library to process very easily datarows and cells in Excel files. </Title>
+	  <AssemblyName>Lexerow</AssemblyName>
+    <Authors>Pierlam</Authors>
+    <Company>Pierlam Project</Company>
+	<VersionPrefix>0.1.0-beta</VersionPrefix>
+	<RepositoryUrl>https://github.com/Pierlam/Lexerow</RepositoryUrl>
+	<PackageTags>dotnet csharp parse excel row col cell</PackageTags>
+	<RepositoryType>git</RepositoryType>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<PackageReadmeFile>readme.md</PackageReadmeFile>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +26,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
     <PackageReference Include="NPOI" Version="2.7.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="_Docs\readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

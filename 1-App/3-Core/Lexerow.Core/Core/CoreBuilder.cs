@@ -1,6 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Utils;
-using Microsoft.Extensions.Logging;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
 using System;
@@ -12,15 +11,14 @@ using System.Threading.Tasks;
 namespace Lexerow.Core;
 public class CoreBuilder
 {
-    ILoggerFactory _loggerFactory;
-
     CoreData _coreData;
 
-    public CoreBuilder(ILoggerFactory loggerFactory, CoreData coreData)
+    public CoreBuilder(CoreData coreData)
     {
-        _loggerFactory = loggerFactory;
         _coreData = coreData;
     }
+
+    public Action<AppTrace> AppTraceEvent;
 
     /// <summary>
     /// Create an instruction, Cell Value comparison.
@@ -211,9 +209,10 @@ public class CoreBuilder
     public ExecResult CreateInstrOpenExcel(string excelFileObjectName, string fileName)
     {
         ExecResult execResult = new ExecResult();
+        SendAppTrace(AppTraceLevel.Info, "CoreBuilder.CreateInstrOpenExcel: Start");
 
         // possible to create the instr?
-        if(_coreData.Stage != CoreStage.Build)
+        if (_coreData.Stage != CoreStage.Build)
         {
             execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
             return execResult;
@@ -600,6 +599,15 @@ public class CoreBuilder
         }
 
         return false;
+    }
+
+
+    public void SendAppTrace(AppTraceLevel level, string msg)
+    {
+        if (AppTraceEvent == null) return;
+
+        AppTrace appTrace = new AppTrace(level, msg);
+        AppTraceEvent(appTrace);
     }
 
 }

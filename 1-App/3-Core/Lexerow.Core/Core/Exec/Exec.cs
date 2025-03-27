@@ -38,13 +38,13 @@ public class Exec
     /// <param name="loggerFactory"></param>
     /// <param name="coreData"></param>
     /// <param name="excelProcessor"></param>
-    public Exec(ILoggerFactory loggerFactory, CoreData coreData, IExcelProcessor excelProcessor)
+    public Exec(CoreData coreData, IExcelProcessor excelProcessor)
     {
-        _loggerFactory = loggerFactory;
         _coreData = coreData;
         _excelProcessor = excelProcessor;
-
     }
+
+    public Action<AppTrace> AppTraceEvent { get; set; }
 
     /// <summary>
     /// When a rule is fired.
@@ -61,19 +61,26 @@ public class Exec
     {
         ExecResult execResult = new ExecResult();
 
+        SendAppTrace(AppTraceLevel.Info, "Exec.Compile: Start");
+
         // possible to create the instr?
         if (_coreData.Stage != CoreStage.Build)
         {
             execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            SendAppTrace(AppTraceLevel.Error, "Exec.Compile: " + ErrorCode.UnableCreateInstrNotInStageBuild);
             return execResult;
         }
 
         // check all instruction, one by one 
         execResult= ExecCompileInstrMgr.CheckAllInstr(_coreData.ListInstr);
         if(!execResult.Result)
+        {
+            SendAppTrace(AppTraceLevel.Error, "Compile.CheckAllInstr: " + execResult.ListError[0].Message);
             _coreData.Stage = CoreStage.InstrError;
+        }
 
         _coreData.Stage = CoreStage.ReadyToExec;
+        SendAppTrace(AppTraceLevel.Info, "Compile: End");
         return execResult;
     }
 
@@ -223,4 +230,13 @@ public class Exec
         if (EventOccurs != null)
             EventOccurs(execEvent);
     }
+
+    public void SendAppTrace(AppTraceLevel level, string msg)
+    {
+        if (AppTraceEvent == null) return;
+
+        AppTrace appTrace = new AppTrace(level, msg);
+        AppTraceEvent(appTrace);
+    }
+
 }

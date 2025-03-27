@@ -1,13 +1,12 @@
 ﻿using Lexerow.Core.ExcelLayer;
 using Lexerow.Core.Logger;
+using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
 using Microsoft.Extensions.Logging;
 
 namespace Lexerow.Core;
 public class LexerowCore
 {
-    ILoggerFactory _loggerFactory;
-
     IExcelProcessor _excelProcessor;
 
     CoreData _coreData=new CoreData();
@@ -17,16 +16,10 @@ public class LexerowCore
     /// </summary>
     public LexerowCore()
     {
-        _loggerFactory = new InternalLoggerFactory();
         _excelProcessor= new ExcelProcessorNpoi();
 
-        Builder= new CoreBuilder(_loggerFactory, _coreData);
-        Exec = new Exec(_loggerFactory, _coreData, _excelProcessor);
-    }
-
-    public LexerowCore(ILoggerFactory loggerFactory)
-    {
-        _loggerFactory= loggerFactory;
+        Builder= new CoreBuilder(_coreData);
+        Exec = new Exec(_coreData, _excelProcessor);
     }
 
     /// <summary>
@@ -38,4 +31,13 @@ public class LexerowCore
     /// Execute instructions.
     /// </summary>
     public Exec Exec { get; private set; }
+
+    public Action<AppTrace> AppTraceEvent 
+    {
+        get { return AppTraceEvent; } 
+        set { 
+            Builder.AppTraceEvent = value;
+            Exec.AppTraceEvent = value;
+        }
+    }
 }

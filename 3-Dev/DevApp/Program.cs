@@ -5,6 +5,11 @@ using Lexerow.Core.System.Exec.Event;
 
 Console.WriteLine("==>Lexerow Dev:");
 
+void AppTraceEvent(AppTrace appTrace)
+{
+    Console.WriteLine(appTrace.When.ToString() + "|" + appTrace.Level.ToString() + "|" + appTrace.Msg);
+}
+
 void EventOccured(InstrBaseExecEvent execEvent)
 {
     InstrOpenExcelExecEvent oe = execEvent as InstrOpenExcelExecEvent;
@@ -20,6 +25,7 @@ void EventOccured(InstrBaseExecEvent execEvent)
     }
 }
 
+
 ///
 // In col(D) if cell.Value > 50 Then Cell.Value=12
 //
@@ -29,6 +35,7 @@ void EventOccured(InstrBaseExecEvent execEvent)
 void Test1()
 {
     LexerowCore core = new LexerowCore();
+    core.AppTraceEvent = AppTraceEvent;
 
     //--Instr: file=OpenExcel(fileName)
     string fileName = @"Input\BasicDataTable.xlsx";
@@ -157,9 +164,9 @@ DevNpoi devNpoi = new DevNpoi();
 //string fileName = @"Input\TestDate.xlsx";
 //devNpoi.TestDateTime(fileName);
 
-devNpoi.TestBlankNull();
+//devNpoi.TestBlankNull();
 
-//Test1();
+Test1();
 
 //Test2();
 

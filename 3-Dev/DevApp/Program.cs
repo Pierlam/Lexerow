@@ -63,7 +63,7 @@ void Test1()
         return;
     }
 
-    core.Exec.EventOccurs = EventOccured;
+    //core.Exec.EventOccurs = EventOccured;
 
     execRes = core.Exec.Compile();
     if (!execRes.Result)
@@ -106,7 +106,7 @@ void Test2()
     //    return;
     //}
 
-    core.Exec.EventOccurs = EventOccured;
+    //core.Exec.EventOccurs = EventOccured;
 
     // by default, the header is on row 1 
 

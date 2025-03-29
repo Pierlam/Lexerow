@@ -209,7 +209,7 @@ public class CoreBuilder
     public ExecResult CreateInstrOpenExcel(string excelFileObjectName, string fileName)
     {
         ExecResult execResult = new ExecResult();
-        SendAppTrace(AppTraceLevel.Info, "CoreBuilder.CreateInstrOpenExcel: Start");
+        SendAppTrace(AppTraceLevel.Info, "CreateInstrOpenExcel: Start");
 
         // possible to create the instr?
         if (_coreData.Stage != CoreStage.Build)
@@ -256,6 +256,7 @@ public class CoreBuilder
             return execResult;
         }
 
+        SendAppTrace(AppTraceLevel.Info, "CreateInstrOpenExcel: End");
         _coreData.ListInstr.Add(instrOpenExcel);
         return execResult;
     }
@@ -285,6 +286,7 @@ public class CoreBuilder
     /// <returns></returns>
     public ExecResult CreateInstrIfColAndThen(List<InstrRetBoolBase> listInstrCompIf, List<InstrBase> listInstrThen, out InstrIfColThen instrIfColThen)
     {
+        SendAppTrace(AppTraceLevel.Info, "CreateInstrIfColAndThen: Start");
         InstrCompListColCellAnd instrCompListColCellAnd = new InstrCompListColCellAnd(listInstrCompIf);
 
         ExecResult execResult = new ExecResult();
@@ -308,6 +310,7 @@ public class CoreBuilder
         instrIfColThen = new InstrIfColThen();
         instrIfColThen.InstrIf = instrCompListColCellAnd;
         instrIfColThen.ListInstrThen.AddRange(listInstrThen);
+        SendAppTrace(AppTraceLevel.Info, "CreateInstrIfColAndThen: End");
         return execResult;
     }
 
@@ -447,115 +450,6 @@ public class CoreBuilder
         return execResult;
     }
 
-
-    //XXXXXXXXXXXXXXXXXXXX-REWORK:
-
-    /// <summary>
-    /// Create an instr:
-    /// ForEach Row
-    ///     If -instrIf- Then -instrThen-
-    /// </summary>
-    /// <param name="excelFileObjectName"></param>
-    /// <param name="sheetNum"></param>
-    /// <param name="firstDataRowNumline"></param>
-    /// <param name="instrIf"></param>
-    /// <param name="instrThen"></param>
-    /// <returns></returns>
-    //public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrBase instrIf, InstrBase instrThen)
-    //{
-    //    List<InstrBase> listInstr= new List<InstrBase>
-    //    {
-    //        instrThen
-    //    };
-    //    return CreateInstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, instrIf, listInstr);
-    //}
-
-    /// <summary>
-    /// Create an instr:
-    /// ForEach Row
-    ///     If -instrIf- Then -list of instrThen-
-    /// </summary>
-    /// <param name="excelFileObjectName"></param>
-    /// <param name="sheetNum"></param>
-    /// <param name="firstDataRowNumline"></param>
-    /// <param name="instrIf"></param>
-    /// <param name="listInstrThen"></param>
-    /// <returns></returns>
-    //public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrBase instrIf, List<InstrBase> listInstrThen)
-    //{
-    //    ExecResult execResult = new ExecResult();
-
-    //    // possible to create the instr?
-    //    if (_coreData.Stage != CoreStage.Build)
-    //    {
-    //        execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
-    //        return execResult;
-    //    }
-
-    //    if (string.IsNullOrWhiteSpace(excelFileObjectName))
-    //    {
-    //        execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameIsNull, null));
-    //        return execResult;
-    //    }
-
-    //    if (sheetNum < 0)
-    //    {
-    //        execResult.AddError(new CoreError(ErrorCode.SheetNumValueWrong, null));
-    //        return execResult;
-    //    }
-
-    //    if (firstDataRowNumline < 0)
-    //    {
-    //        execResult.AddError(new CoreError(ErrorCode.FirstDatarowNumLineValueWrong, null));
-    //        return execResult;
-    //    }
-
-    //    // check the syntax of the excel file object name
-    //    if (!SyntaxUtils.CheckIdSyntax(excelFileObjectName))
-    //    {
-    //        execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, null));
-    //        return execResult;
-    //    }
-
-    //    // check the excelFileObject name, should be defined previsouly
-    //    if (!FindExcelFileObjectName(excelFileObjectName))
-    //    {
-    //        execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
-    //        return execResult;
-    //    }
-
-    //    // check instr Then, only SetCellVal is authorized
-    //    if (listInstrThen.Count == 0) 
-    //    {
-    //        execResult.AddError(new CoreError(ErrorCode.AtLeastOneInstrThenExpected, null));
-    //        return execResult;
-    //    }
-
-    //    InstrForEachRowIfThen instrForIfThen = null;
-
-    //    // check the instr If, should be allowed
-    //    if(instrIf.InstrType!= InstrType.CompCellVal && instrIf.InstrType != InstrType.CompCellValIsNull)
-    //        execResult.AddError(new CoreError(ErrorCode.IfConditionInstrNotAllowed, instrIf.ToString()));
-
-    //    // check Then instructions
-    //    foreach (var instrThen in listInstrThen)
-    //    {
-    //        if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
-    //        {
-    //            execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
-    //        }
-    //    }
-
-    //    // not allowed instr if or Then?
-    //    if (!execResult.Result)
-    //        return execResult;
-
-    //    // by default data table header is on the row 0, first data row is 1
-    //    instrForIfThen = new InstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, instrIf, listInstrThen);
-    //    _coreData.ListInstr.Add(instrForIfThen);
-    //    return execResult;
-    //}
-
     /// <summary>
     /// Check the excel Filename, should be defined previsouly
     /// </summary>
@@ -606,7 +500,7 @@ public class CoreBuilder
     {
         if (AppTraceEvent == null) return;
 
-        AppTrace appTrace = new AppTrace(level, msg);
+        AppTrace appTrace = new AppTrace(AppTraceModule.Builder, level, msg);
         AppTraceEvent(appTrace);
     }
 

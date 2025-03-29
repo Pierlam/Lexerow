@@ -47,7 +47,7 @@ public class Exec
     /// <summary>
     /// When a rule is fired.
     /// </summary>
-    public Action<InstrBaseExecEvent> EventOccurs { get; set; }
+    //public Action<InstrBaseExecEvent> EventOccurs { get; set; }
 
     public bool AddInstr(InstrBase instrBase)
     {
@@ -59,13 +59,13 @@ public class Exec
     {
         ExecResult execResult = new ExecResult();
 
-        SendAppTrace(AppTraceLevel.Info, "Exec.Compile: Start");
+        SendAppTraceCompile(AppTraceLevel.Info, "Compile all: Start");
 
         // possible to create the instr?
         if (_coreData.Stage != CoreStage.Build)
         {
             execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
-            SendAppTrace(AppTraceLevel.Error, "Exec.Compile: " + ErrorCode.UnableCreateInstrNotInStageBuild);
+            SendAppTraceCompile(AppTraceLevel.Error, ErrorCode.UnableCreateInstrNotInStageBuild.ToString());
             return execResult;
         }
 
@@ -73,12 +73,12 @@ public class Exec
         execResult= ExecCompileInstrMgr.CheckAllInstr(_coreData.ListInstr);
         if(!execResult.Result)
         {
-            SendAppTrace(AppTraceLevel.Error, "Compile.CheckAllInstr: " + execResult.ListError[0].Message);
+            SendAppTraceCompile(AppTraceLevel.Error, "CheckAllInstr: " + execResult.ListError[0].Message);
             _coreData.Stage = CoreStage.InstrError;
         }
 
         _coreData.Stage = CoreStage.ReadyToExec;
-        SendAppTrace(AppTraceLevel.Info, "Compile: End");
+        SendAppTraceCompile(AppTraceLevel.Info, "Compile all: End");
         return execResult;
     }
 
@@ -157,19 +157,22 @@ public class Exec
     ExecResult ExecInstrOpenExcelFile(InstrOpenExcel instrOpenExcel, List<ExecVar> listExecVar, DateTime execStart)
     {
         ExecResult result = new ExecResult();
-        FireEvent(InstrOpenExcelExecEvent.CreateStart(instrOpenExcel.FileName));
+        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateStart(instrOpenExcel.FileName));
+        //FireEvent(InstrOpenExcelExecEvent.CreateStart(instrOpenExcel.FileName));
 
         if (!_excelProcessor.Open(instrOpenExcel.FileName, out IExcelFile excelFile, out CoreError error))
         {
             result.AddError(error);
-            FireEvent(InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error, instrOpenExcel.FileName));
+            SendAppTraceExec(AppTraceLevel.Error, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error, instrOpenExcel.FileName));
+            //FireEvent(InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error, instrOpenExcel.FileName));
             return result;
         }
 
         ExecVar execVar = new ExecVar(instrOpenExcel.ExcelFileObjectName, ExecVarType.ExcelFile, excelFile);
         listExecVar.Add(execVar);
 
-        FireEvent(InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Ok, instrOpenExcel.FileName));
+        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Ok, instrOpenExcel.FileName));
+        //FireEvent(InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Ok, instrOpenExcel.FileName));
         return result;
     }
 
@@ -185,13 +188,15 @@ public class Exec
     ExecResult ExecInstrForEachRowIfThen(InstrForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
     {
         ExecResult execResult = new ExecResult();
-        FireEvent(InstrForEachRowIfThenExecEvent.CreateStart());
+        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateStart());
+        //FireEvent(InstrForEachRowIfThenExecEvent.CreateStart());
 
         // get the file object by name
         ExecVar execVar = listExecVar.FirstOrDefault(ev => ev.Name.Equals(instr.ExcelFileObjectName, StringComparison.InvariantCultureIgnoreCase));
         if(execVar==null)
         {
-            FireEvent(InstrForEachRowIfThenExecEvent.CreateFinished(execStart,InstrBaseExecEventResult.Error));
+            SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error));
+            //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinished(execStart,InstrBaseExecEventResult.Error));
             execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
             return execResult;
         }
@@ -203,7 +208,7 @@ public class Exec
         }
 
         // execute the instr on each cols, on each datarow
-        execResult = ExecInstrForEachRowIfThenMgr.Exec(FireEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
+        execResult = ExecInstrForEachRowIfThenMgr.Exec(AppTraceEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
 
         return execResult;
     }
@@ -223,17 +228,25 @@ public class Exec
         }
     }
 
-    public void FireEvent(InstrBaseExecEvent execEvent)
-    {
-        if (EventOccurs != null)
-            EventOccurs(execEvent);
-    }
+    //public void FireEvent(InstrBaseExecEvent execEvent)
+    //{
+    //    if (EventOccurs != null)
+    //        EventOccurs(execEvent);
+    //}
 
-    public void SendAppTrace(AppTraceLevel level, string msg)
+    public void SendAppTraceCompile(AppTraceLevel level, string msg)
     {
         if (AppTraceEvent == null) return;
 
-        AppTrace appTrace = new AppTrace(level, msg);
+        AppTrace appTrace = new AppTrace(AppTraceModule.Compile, level, msg);
+        AppTraceEvent(appTrace);
+    }
+
+    public void SendAppTraceExec(AppTraceLevel level, string msg, InstrBaseExecEvent execEvent)
+    {
+        if (AppTraceEvent == null) return;
+
+        AppTrace appTrace = new AppTrace(AppTraceModule.Exec, level, msg, execEvent);
         AppTraceEvent(appTrace);
     }
 

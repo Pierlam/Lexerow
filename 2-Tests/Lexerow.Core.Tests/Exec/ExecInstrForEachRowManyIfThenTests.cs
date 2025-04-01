@@ -53,7 +53,7 @@ public class ExecInstrForEachRowManyIfThenTests
         // ForEach Row  -> add 2 If Col Then
         List<InstrIfColThen> listInstrIfColThen = [instrIfColThen, instrIfColThen2];
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, listInstrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, listInstrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

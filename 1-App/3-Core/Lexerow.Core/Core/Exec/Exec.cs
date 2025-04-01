@@ -129,7 +129,7 @@ public class Exec
             if(instr.InstrType == InstrType.ForEachRowIfThen)
             {
                 _execStartCurrInstr = DateTime.Now;
-                execResult = ExecInstrForEachRowIfThen(instr as InstrForEachRowIfThen, _listExecVar, _execStartCurrInstr);
+                execResult = ExecInstrForEachRowIfThen(instr as InstrOnExcelForEachRowIfThen, _listExecVar, _execStartCurrInstr);
                 if (!execResult.Result)
                 {
                     _coreData.Stage = CoreStage.Build;
@@ -185,7 +185,7 @@ public class Exec
     /// <param name="instr"></param>
     /// <param name="listExecVar"></param>
     /// <returns></returns>
-    ExecResult ExecInstrForEachRowIfThen(InstrForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
+    ExecResult ExecInstrForEachRowIfThen(InstrOnExcelForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
     {
         ExecResult execResult = new ExecResult();
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateStart());

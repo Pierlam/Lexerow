@@ -27,7 +27,7 @@ public class ExecCompileInstrMgr
             // TODO: others not allowed!!
 
             //--instr InstrForEachRowIfThen?
-            InstrForEachRowIfThen instrForEachRowIfThen = instrBase as InstrForEachRowIfThen;
+            InstrOnExcelForEachRowIfThen instrForEachRowIfThen = instrBase as InstrOnExcelForEachRowIfThen;
             if (instrForEachRowIfThen != null)
             {
                 var er = CheckInstrForEachRowIfThen(instrForEachRowIfThen);
@@ -38,7 +38,7 @@ public class ExecCompileInstrMgr
         return execResult;
     }
 
-    static ExecResult CheckInstrForEachRowIfThen(InstrForEachRowIfThen instrForEachRowIfThen)
+    static ExecResult CheckInstrForEachRowIfThen(InstrOnExcelForEachRowIfThen instrForEachRowIfThen)
     {
         ExecResult execResult = new ExecResult();
 

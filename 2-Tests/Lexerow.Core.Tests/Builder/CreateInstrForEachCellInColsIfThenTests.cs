@@ -35,7 +35,7 @@ public  class CreateInstrForEachCellInColsIfThenTests
         Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsTrue(execResult.Result);
@@ -58,7 +58,7 @@ public  class CreateInstrForEachCellInColsIfThenTests
         Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);
@@ -83,7 +83,7 @@ public  class CreateInstrForEachCellInColsIfThenTests
         Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        execResult = core.Builder.CreateInstrForEachRowIfThen(null, 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen(null, 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);

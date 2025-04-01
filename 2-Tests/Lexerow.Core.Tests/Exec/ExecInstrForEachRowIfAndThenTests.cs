@@ -55,7 +55,7 @@ public class ExecInstrForEachRowIfAndThenTests
         Assert.IsTrue(execResult.Result);
 
         // ForEach Row If A.Cell>10 And A.Cell<50 Then B.Cell= 12
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

@@ -367,21 +367,22 @@ public class CoreBuilder
 
     /// <summary>
     /// Create an instr and save it:
-    /// ForEach Row
-    ///     If -instrIf- Then -listOf instrThen-
+    /// OnExcel
+    ///     ForEach Row
+    ///         If -instrIf- Then -listOf instrThen-
     /// </summary>
     /// <param name="excelFileObjectName"></param>
     /// <param name="sheetNum"></param>
     /// <param name="firstDataRowNumline"></param>
     /// <param name="listInstrIfColThen"></param>
     /// <returns></returns>
-    public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrIfColThen instrIfColThen)
+    public ExecResult CreateInstrOnExcelForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, InstrIfColThen instrIfColThen)
     {
         List<InstrIfColThen> listInstrIfColThen = new List<InstrIfColThen>
         {
             instrIfColThen
         };
-        return CreateInstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, listInstrIfColThen);
+        return CreateInstrOnExcelForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, listInstrIfColThen);
     }
 
     /// <summary>
@@ -394,7 +395,7 @@ public class CoreBuilder
     /// <param name="firstDataRowNumline"></param>
     /// <param name="listInstrIfColThen"></param>
     /// <returns></returns>
-    public ExecResult CreateInstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, List<InstrIfColThen> listInstrIfColThen)
+    public ExecResult CreateInstrOnExcelForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNumline, List<InstrIfColThen> listInstrIfColThen)
     {
         ExecResult execResult = new ExecResult();
 
@@ -445,7 +446,7 @@ public class CoreBuilder
         }
 
         // by default data table header is on the row 0, first data row is 1
-        InstrForEachRowIfThen instrForEachRowIfThen = new InstrForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, listInstrIfColThen);
+        InstrOnExcelForEachRowIfThen instrForEachRowIfThen = new InstrOnExcelForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, listInstrIfColThen);
         _coreData.ListInstr.Add(instrForEachRowIfThen);
         return execResult;
     }

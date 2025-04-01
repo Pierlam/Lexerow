@@ -30,7 +30,7 @@ void EventOccured(InstrBaseExecEvent execEvent)
 // In col(D) if cell.Value > 50 Then Cell.Value=12
 //
 // file=OpenExcel(fileName)
-// ForEachCellInColsIfThen(file, 0, "D", ">50", "=12")
+// OnExcelForEachRowIfThen(file, 0, D, >50, =12)
 //
 void Test1()
 {
@@ -56,7 +56,7 @@ void Test1()
     InstrIfColThen instrIfColThen;
     execRes = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
 
-    execRes = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+    execRes = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
     if(!execRes.Result)
     {
         Console.WriteLine("ERR, Unable to create the instrForIfThen!");

@@ -29,7 +29,7 @@ public class InstrIfColThen : InstrBase
 /// <summary>
 /// Instruction ForEach Row If Then
 /// </summary>
-public class InstrForEachRowIfThen : InstrBase
+public class InstrOnExcelForEachRowIfThen : InstrBase
 {
     /// <summary>
     /// Constructor.
@@ -39,7 +39,7 @@ public class InstrForEachRowIfThen : InstrBase
     /// <param name="firstDataRowNum"></param>
     /// <param name="instrIf"></param>
     /// <param name="listInstrThen"></param>
-    public InstrForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, List<InstrIfColThen> listInstrIfColThen)
+    public InstrOnExcelForEachRowIfThen(string excelFileObjectName, int sheetNum, int firstDataRowNum, List<InstrIfColThen> listInstrIfColThen)
     { 
         InstrType = InstrType.ForEachRowIfThen;
         ExcelFileObjectName = excelFileObjectName;

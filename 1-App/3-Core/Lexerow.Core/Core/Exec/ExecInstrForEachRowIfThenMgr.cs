@@ -27,7 +27,7 @@ public class ExecInstrForEachRowIfThenMgr
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public static ExecResult Exec(Action<AppTrace> appTraceEvent, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, InstrForEachRowIfThen instr)
+    public static ExecResult Exec(Action<AppTrace> appTraceEvent, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, InstrOnExcelForEachRowIfThen instr)
     {
         _appTraceEvent = appTraceEvent;
         ExecResult execResult = new ExecResult();

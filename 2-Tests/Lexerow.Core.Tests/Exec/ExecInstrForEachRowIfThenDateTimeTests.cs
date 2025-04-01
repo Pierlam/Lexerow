@@ -42,7 +42,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
 
@@ -91,7 +91,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -138,7 +138,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -194,7 +194,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -239,7 +239,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

@@ -38,7 +38,7 @@ public class ExecInstrForEachRowIfThenBasicTests
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //core.Exec.FireEvent = EventOccured;
@@ -89,7 +89,7 @@ public class ExecInstrForEachRowIfThenBasicTests
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //core.Exec.FireEvent = EventOccured;
@@ -145,7 +145,7 @@ public class ExecInstrForEachRowIfThenBasicTests
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

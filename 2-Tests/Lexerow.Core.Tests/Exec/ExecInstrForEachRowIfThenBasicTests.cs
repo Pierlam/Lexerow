@@ -26,7 +26,7 @@ public class ExecInstrForEachRowIfThenBasicTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: col D, D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Create: colD, D.Cell= 12
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
@@ -78,7 +78,7 @@ public class ExecInstrForEachRowIfThenBasicTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create Comp instr: B.Cell=Null
-        InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1, InstrCompValOperator.Equal);
+        InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1, ValCompOperator.Equal);
 
         //--Create: B.Cell="NA"
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, "NA");
@@ -134,7 +134,7 @@ public class ExecInstrForEachRowIfThenBasicTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create Comp instr: B.Cell=Null
-        InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1, InstrCompValOperator.Equal);
+        InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1, ValCompOperator.Equal);
 
         //--Create: C.Cell= "09/02/2025 00:00:00"
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(2, new DateTime(2025,02,09));

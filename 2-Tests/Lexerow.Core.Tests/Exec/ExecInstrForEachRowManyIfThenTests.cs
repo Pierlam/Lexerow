@@ -29,7 +29,7 @@ public class ExecInstrForEachRowManyIfThenTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //-- A.Cell<10 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, InstrCompValOperator.LesserThan, 10);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LesserThan, 10);
 
         //--B.Cell= 10
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 10);
@@ -40,7 +40,7 @@ public class ExecInstrForEachRowManyIfThenTests
         Assert.IsTrue(execResult.Result);
 
         //-- A.Cell>50
-        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, InstrCompValOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 50);
 
         //--B.Cell= 50
         InstrSetCellVal instrSetValThen2 = core.Builder.CreateInstrSetCellVal(1, 50);

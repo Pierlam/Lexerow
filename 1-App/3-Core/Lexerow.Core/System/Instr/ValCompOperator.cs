@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.System;
 
 /// <summary>
-/// InstrCompValOperator
+/// Value comparison operator.
 /// </summary>
-public enum InstrCompValOperator
+public enum ValCompOperator
 {
     Equal,
     NotEqual,
@@ -19,7 +19,10 @@ public enum InstrCompValOperator
     LesserOrEqualThan,
 }
 
-public enum InstrCompIntervalValOperator
+/// <summary>
+/// Interval comparison operator.
+/// </summary>
+public enum IntervalCompOperator
 {
     // valMin < val < valMax
     Between,

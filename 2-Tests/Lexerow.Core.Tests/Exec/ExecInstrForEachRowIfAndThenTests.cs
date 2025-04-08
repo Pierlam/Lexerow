@@ -34,16 +34,15 @@ public class ExecInstrForEachRowIfAndThenTests
     {
         LexerowCore core = new LexerowCore();
 
-        // TODO: créer excel
         string fileName = @"10-Files\TestForEachRowIfAndThen.xlsx";
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //-- A.Cell>10 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, InstrCompValOperator.GreaterThan, 10);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
 
         //-- A.Cell<50 
-        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, InstrCompValOperator.LesserThan, 50);
+        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LesserThan, 50);
 
         //--B.Cell= 12
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 12);

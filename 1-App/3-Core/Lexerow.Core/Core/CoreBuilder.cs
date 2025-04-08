@@ -27,7 +27,7 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, int value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, ValCompOperator oper, int value)
     {
         // convert the value to an object Value
         ValueInt valueInt = new ValueInt(value);
@@ -44,7 +44,7 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, double value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, ValCompOperator oper, double value)
     {
         // convert the value to an object Value
         ValueDouble valueDouble = new ValueDouble(value);
@@ -61,7 +61,7 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, string value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, ValCompOperator oper, string value)
     {
         // convert the value to an object Value
         ValueString valueString = new ValueString(value);
@@ -77,7 +77,7 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, DateOnly value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, ValCompOperator oper, DateOnly value)
     {
         // convert the value to an object Value
         ValueDateOnly valueDateOnly = new ValueDateOnly(value);
@@ -93,7 +93,7 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, DateTime value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, ValCompOperator oper, DateTime value)
     {
         // convert the value to an object Value
         ValueDateTime valueDateTime = new ValueDateTime(value);
@@ -109,7 +109,7 @@ public class CoreBuilder
     /// <param name="oper"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, InstrCompValOperator oper, TimeOnly value)
+    public InstrCompColCellVal CreateInstrCompCellVal(int colNum, ValCompOperator oper, TimeOnly value)
     {
         // convert the value to an object Value
         ValueTimeOnly valueTimeOnly = new ValueTimeOnly(value);
@@ -125,7 +125,7 @@ public class CoreBuilder
     /// <param name="colNum"></param>
     /// <param name="oper"></param>
     /// <returns></returns>
-    public InstrCompColCellValIsNull CreateInstrCompCellValIsNull(int colNum, InstrCompValOperator oper)
+    public InstrCompColCellValIsNull CreateInstrCompCellValIsNull(int colNum, ValCompOperator oper)
     {
         return new InstrCompColCellValIsNull(colNum, oper);
     }

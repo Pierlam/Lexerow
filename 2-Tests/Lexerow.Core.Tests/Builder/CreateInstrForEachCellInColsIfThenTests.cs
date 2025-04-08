@@ -24,7 +24,7 @@ public  class CreateInstrForEachCellInColsIfThenTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Create: D.Cell= 12
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
@@ -47,7 +47,7 @@ public  class CreateInstrForEachCellInColsIfThenTests
         LexerowCore core = new LexerowCore();
 
         //--Create: D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Create: D.Cell= 12
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
@@ -72,7 +72,7 @@ public  class CreateInstrForEachCellInColsIfThenTests
         LexerowCore core = new LexerowCore();
 
         //--Create: D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Create: D.Cell= 12
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);

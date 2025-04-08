@@ -17,7 +17,8 @@ public class ExecInstrForEachRowIfThenMgr
     /// </summary>
     static int _ifConditionFiredCount = 0;
 
-    static Action<InstrBaseExecEvent> _eventOccurs;
+    //static Action<InstrBaseExecEvent> _eventOccurs;
+    static Action<AppTrace> _appTraceEvent;
 
     /// <summary>
     /// Execute the instr on each cols, on each datarow.
@@ -26,9 +27,9 @@ public class ExecInstrForEachRowIfThenMgr
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public static ExecResult Exec(Action<InstrBaseExecEvent> eventOccurs, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, InstrForEachRowIfThen instr)
+    public static ExecResult Exec(Action<AppTrace> appTraceEvent, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, InstrOnExcelForEachRowIfThen instr)
     {
-        _eventOccurs = eventOccurs;
+        _appTraceEvent = appTraceEvent;
         ExecResult execResult = new ExecResult();
         _dataRowCount = 0;
         _ifConditionFiredCount = 0;
@@ -40,7 +41,8 @@ public class ExecInstrForEachRowIfThenMgr
             CoreError error= new CoreError(ErrorCode.UnableFindSheetByNum, instr.SheetNum.ToString());
             execResult.AddError(error);
 
-            FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
+            SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
+            //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
             return execResult;
         }
         int currRowNum = instr.FirstDataRowNum;
@@ -57,7 +59,8 @@ public class ExecInstrForEachRowIfThenMgr
                     CoreError error = new CoreError(ErrorCode.InternalError, instr.SheetNum.ToString());
                     execResult.AddError(error);
 
-                    FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
+                    SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
+                    //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
                     return execResult;
                 }
             }
@@ -65,7 +68,8 @@ public class ExecInstrForEachRowIfThenMgr
             _dataRowCount++;
         }
 
-        FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
+        //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
+        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
 
         return execResult;
     }
@@ -89,7 +93,8 @@ public class ExecInstrForEachRowIfThenMgr
         execResult= ExecIfCondition(excelProcessor, excelFile, excelSheet, instrIf, rowNum, out bool condResult); 
         if(!execResult.Result)
         {
-            FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, execResult.ListError.FirstOrDefault()));
+            SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.ExecOnDataRow", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, execResult.ListError.FirstOrDefault()));
+            //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, execResult.ListError.FirstOrDefault()));
             // error occurs during the If condition instr execution
             return execResult;
         }
@@ -99,7 +104,8 @@ public class ExecInstrForEachRowIfThenMgr
             return execResult;
 
         _ifConditionFiredCount++;
-        FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
+        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.ExecOnDataRow", InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
+        //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
 
         // execute Then instructions
         foreach (InstrBase instrThen in listInstrThen)
@@ -248,10 +254,18 @@ public class ExecInstrForEachRowIfThenMgr
         return execResult;
     }
 
-    static void FireEvent(InstrBaseExecEvent execEvent)
+    //static void FireEvent(InstrBaseExecEvent execEvent)
+    //{
+    //    if (_eventOccurs != null)
+    //        _eventOccurs(execEvent);
+    //}
+
+    public static void SendAppTraceExec(AppTraceLevel level, string msg, InstrBaseExecEvent execEvent)
     {
-        if (_eventOccurs != null)
-            _eventOccurs(execEvent);
+        if (_appTraceEvent == null) return;
+
+        AppTrace appTrace = new AppTrace(AppTraceModule.Exec, level, msg, execEvent);
+        _appTraceEvent(appTrace);
     }
 
 }

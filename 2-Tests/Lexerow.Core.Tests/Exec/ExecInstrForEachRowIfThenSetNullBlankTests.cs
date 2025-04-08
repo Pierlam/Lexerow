@@ -29,7 +29,7 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: A.Cell > 10
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, InstrCompValOperator.GreaterThan, 10);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
 
         //--Create: B.Cell= null
         InstrSetCellNull instrSetValThen = core.Builder.CreateInstrSetCellNull(1);
@@ -39,7 +39,7 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -81,7 +81,7 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: A.Cell > 10
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, InstrCompValOperator.GreaterThan, 10);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
 
         //--Create: B.Cell= blank
         InstrSetCellValueBlank instrSetValThen = core.Builder.CreateInstrSetCellValueBlank(1);
@@ -91,7 +91,7 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

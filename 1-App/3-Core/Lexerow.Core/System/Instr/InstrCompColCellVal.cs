@@ -14,7 +14,7 @@ namespace Lexerow.Core.System;
 /// </summary>
 public class InstrCompColCellVal : InstrRetBoolBase
 {
-    public InstrCompColCellVal(int colNum, InstrCompValOperator oper, ValueBase value)
+    public InstrCompColCellVal(int colNum, ValCompOperator oper, ValueBase value)
     {
         InstrType = InstrType.CompCellVal;
         ColNum = colNum;
@@ -24,7 +24,7 @@ public class InstrCompColCellVal : InstrRetBoolBase
 
     public int ColNum { get; set; }
 
-    public InstrCompValOperator Operator { get; set; }
+    public ValCompOperator Operator { get; set; }
 
     // operand, always a value?
     public ValueBase Value { get; set; }

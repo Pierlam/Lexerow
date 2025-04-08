@@ -5,6 +5,11 @@ using Lexerow.Core.System.Exec.Event;
 
 Console.WriteLine("==>Lexerow Dev:");
 
+void AppTraceEvent(AppTrace appTrace)
+{
+    Console.WriteLine(appTrace.When.ToString() + "|" + appTrace.Level.ToString() + "|" + appTrace.Msg);
+}
+
 void EventOccured(InstrBaseExecEvent execEvent)
 {
     InstrOpenExcelExecEvent oe = execEvent as InstrOpenExcelExecEvent;
@@ -20,17 +25,22 @@ void EventOccured(InstrBaseExecEvent execEvent)
     }
 }
 
+
 ///
-// In col(D) if cell.Value > 50 Then Cell.Value=12
+//
+// OnExcel fileName
+//   OnEach Row
+//     If D.Cell > 50 Then D.Cell= 12
 //
 // file=OpenExcel(fileName)
-// ForEachCellInColsIfThen(file, 0, "D", ">50", "=12")
+// OnExcelForEachRowIfThen(file, 0, D, >50, =12)
 //
 void Test1()
 {
     LexerowCore core = new LexerowCore();
+    core.AppTraceEvent = AppTraceEvent;
 
-    //--Instr: file=OpenExcel(fileName)
+    //--Create: file=OpenExcel(fileName)
     string fileName = @"Input\BasicDataTable.xlsx";
     ExecResult execRes = core.Builder.CreateInstrOpenExcel("file", fileName);
     if(!execRes.Result)
@@ -39,24 +49,25 @@ void Test1()
         return;
     }
 
-    //--Create: col D, c.Value > 50 
-    InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 50);
+    //--Create: D.Cell > 50 
+    InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
-    //--Create: colD, c.Value:=12
+    //--Create: D.Cell= 12
     InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
 
-    // If A.Cell < 10 Then B.Cell= 10
+    //--Create: If D.Cell > 50 Then D.Cell= 12
     InstrIfColThen instrIfColThen;
     execRes = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
 
-    execRes = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+    //--Create: OnExcel ForEach Row
+    execRes = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
     if(!execRes.Result)
     {
         Console.WriteLine("ERR, Unable to create the instrForIfThen!");
         return;
     }
 
-    core.Exec.EventOccurs = EventOccured;
+    //core.Exec.EventOccurs = EventOccured;
 
     execRes = core.Exec.Compile();
     if (!execRes.Result)
@@ -99,12 +110,12 @@ void Test2()
     //    return;
     //}
 
-    core.Exec.EventOccurs = EventOccured;
+    //core.Exec.EventOccurs = EventOccured;
 
     // by default, the header is on row 1 
 
     // In col(D) if cell.Value > 15 Then Cell.Value=14
-    InstrCompColCellVal exprComp = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, 15);
+    InstrCompColCellVal exprComp = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 15);
     //var res2 = core.Exec.SetCellsIf(res.ExcelFile, 0, "D", exprComp, 14);
 
     //if (res.Error == null)
@@ -157,9 +168,9 @@ DevNpoi devNpoi = new DevNpoi();
 //string fileName = @"Input\TestDate.xlsx";
 //devNpoi.TestDateTime(fileName);
 
-devNpoi.TestBlankNull();
+//devNpoi.TestBlankNull();
 
-//Test1();
+Test1();
 
 //Test2();
 

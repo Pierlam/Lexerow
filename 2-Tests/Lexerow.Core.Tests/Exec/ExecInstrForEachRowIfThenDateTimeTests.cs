@@ -32,7 +32,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: C.Cell > 01/02/2020
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(2, InstrCompValOperator.GreaterThan, new DateOnly(2020,02,01));
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(2, ValCompOperator.GreaterThan, new DateOnly(2020,02,01));
 
         //--Create: C.Cell= 01/02/2020
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(2, new DateOnly(2020, 02, 01));
@@ -42,7 +42,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
 
@@ -81,7 +81,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: D.Cell > 01/02/2020
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.GreaterThan, new DateTime(2020, 02, 01));
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, new DateTime(2020, 02, 01));
 
         //--Create: D.Cell= 01/02/2020 09:27:59
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, new DateTime(2020, 02, 01,9,27,59));
@@ -91,7 +91,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -128,7 +128,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: C.Cell < 10:20:30
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(2, InstrCompValOperator.LesserThan, new TimeOnly(10,20,30));
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(2, ValCompOperator.LesserThan, new TimeOnly(10,20,30));
 
         //--Create: C.Cell= 10:20:30
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(2, new TimeOnly(10,20,30));
@@ -138,7 +138,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -184,7 +184,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: D.Cell < 01/02/2020
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.LesserThan, new DateOnly(2020, 02, 01));
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.LesserThan, new DateOnly(2020, 02, 01));
 
         //--Create: D.Cell= 01/02/2020
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, new DateOnly(2020, 02, 01));
@@ -194,7 +194,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -229,7 +229,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: D.Cell < 01/02/2020 12:34:56
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, InstrCompValOperator.LesserThan, new DateTime(2020, 02, 01, 12,34,56));
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.LesserThan, new DateTime(2020, 02, 01, 12,34,56));
 
         //--Create: D.Cell= 01/02/2020 12:34:56
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, new DateTime(2020, 02, 01, 12, 34, 56));
@@ -239,7 +239,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

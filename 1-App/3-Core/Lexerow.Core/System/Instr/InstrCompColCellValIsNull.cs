@@ -8,7 +8,7 @@ namespace Lexerow.Core.System;
 
 /// <summary>
 /// Comparison instruction:
-/// A.Cell = null  or <>
+/// A.Cell = null  or A.Cell <> null
 /// </summary>
 public class InstrCompColCellValIsNull : InstrRetBoolBase
 {

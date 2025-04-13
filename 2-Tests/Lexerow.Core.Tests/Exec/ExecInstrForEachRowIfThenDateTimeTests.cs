@@ -127,10 +127,10 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
-        //--Create: C.Cell < 10:20:30
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(2, ValCompOperator.LesserThan, new TimeOnly(10,20,30));
+        //--Comp: C.Cell < 10:20:30
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(2, ValCompOperator.LessThan, new TimeOnly(10,20,30));
 
-        //--Create: C.Cell= 10:20:30
+        //--Set: C.Cell= 10:20:30
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(2, new TimeOnly(10,20,30));
 
         // If C.Cell < 10:20:30 Then C.Cell= 10:20:30
@@ -183,10 +183,10 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
-        //--Create: D.Cell < 01/02/2020
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.LesserThan, new DateOnly(2020, 02, 01));
+        //--Comparison: D.Cell < 01/02/2020
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.LessThan, new DateOnly(2020, 02, 01));
 
-        //--Create: D.Cell= 01/02/2020
+        //--Set: D.Cell= 01/02/2020
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, new DateOnly(2020, 02, 01));
 
         // If D.Cell < 01/02/2020 Then D.Cell= 01/02/2020
@@ -229,7 +229,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: D.Cell < 01/02/2020 12:34:56
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.LesserThan, new DateTime(2020, 02, 01, 12,34,56));
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.LessThan, new DateTime(2020, 02, 01, 12,34,56));
 
         //--Create: D.Cell= 01/02/2020 12:34:56
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, new DateTime(2020, 02, 01, 12, 34, 56));

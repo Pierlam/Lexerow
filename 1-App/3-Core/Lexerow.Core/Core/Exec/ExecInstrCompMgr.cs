@@ -157,9 +157,9 @@ public class ExecInstrCompMgr
         if (instrComp.Operator == ValCompOperator.GreaterOrEqualThan)
             return cellValue >= valueComp;
 
-        if (instrComp.Operator == ValCompOperator.LesserThan)
+        if (instrComp.Operator == ValCompOperator.LessThan)
             return cellValue < valueComp;
-        if (instrComp.Operator == ValCompOperator.LesserOrEqualThan)
+        if (instrComp.Operator == ValCompOperator.LessOrEqualThan)
             return cellValue <= valueComp;
         return false;
     }
@@ -177,9 +177,9 @@ public class ExecInstrCompMgr
         if (instrComp.Operator == ValCompOperator.GreaterOrEqualThan)
             return cellValue >= valueComp;
 
-        if (instrComp.Operator == ValCompOperator.LesserThan)
+        if (instrComp.Operator == ValCompOperator.LessThan)
             return cellValue < valueComp;
-        if (instrComp.Operator == ValCompOperator.LesserOrEqualThan)
+        if (instrComp.Operator == ValCompOperator.LessOrEqualThan)
             return cellValue <= valueComp;
         return false;
     }
@@ -198,9 +198,9 @@ public class ExecInstrCompMgr
         if (instrComp.Operator == ValCompOperator.GreaterOrEqualThan)
             return cellValue >= valueComp;
 
-        if (instrComp.Operator == ValCompOperator.LesserThan)
+        if (instrComp.Operator == ValCompOperator.LessThan)
             return cellValue < valueComp;
-        if (instrComp.Operator == ValCompOperator.LesserOrEqualThan)
+        if (instrComp.Operator == ValCompOperator.LessOrEqualThan)
             return cellValue <= valueComp;
         return false;
     }

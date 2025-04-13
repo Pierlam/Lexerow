@@ -42,7 +42,7 @@ public class ExecInstrForEachRowIfAndThenTests
         InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
 
         //-- A.Cell<50 
-        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LesserThan, 50);
+        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LessThan, 50);
 
         //--B.Cell= 12
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 12);

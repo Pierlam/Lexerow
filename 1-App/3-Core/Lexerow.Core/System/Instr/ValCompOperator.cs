@@ -14,9 +14,9 @@ public enum ValCompOperator
     Equal,
     NotEqual,
     GreaterThan,
-    LesserThan,
+    LessThan,
     GreaterOrEqualThan,
-    LesserOrEqualThan,
+    LessOrEqualThan,
 }
 
 /// <summary>

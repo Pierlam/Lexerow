@@ -32,7 +32,7 @@ public class ExecInstrManyForEachRowIfThenTests
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
         //-- A.Cell<10 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LesserThan, 10);
+        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LessThan, 10);
 
         //--B.Cell= 10
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 10);

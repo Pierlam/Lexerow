@@ -120,14 +120,25 @@ public class CoreBuilder
     }
 
     /// <summary>
-    /// Create Comp instr: B.Cell=Null.
+    /// Create Comparison instr: B.Cell=Null.
     /// </summary>
     /// <param name="colNum"></param>
     /// <param name="oper"></param>
     /// <returns></returns>
-    public InstrCompColCellValIsNull CreateInstrCompCellValIsNull(int colNum, ValCompOperator oper)
+    public InstrCompColCellValIsNull CreateInstrCompCellValIsNull(int colNum)
     {
-        return new InstrCompColCellValIsNull(colNum, oper);
+        return new InstrCompColCellValIsNull(colNum, ValCompOperator.Equal);
+    }
+
+    /// <summary>
+    /// Create Comparison instr: B.Cell != Null.
+    /// </summary>
+    /// <param name="colNum"></param>
+    /// <param name="oper"></param>
+    /// <returns></returns>
+    public InstrCompColCellValIsNull CreateInstrCompCellValIsNotNull(int colNum)
+    {
+        return new InstrCompColCellValIsNull(colNum, ValCompOperator.NotEqual);
     }
 
     /// <summary>

@@ -25,10 +25,10 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
-        //--Create: col D, D.Cell > 50 
+        //--Comparison: D.Cell > 50 
         InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
-        //--Create: colD, D.Cell= 12
+        //--Set: D.Cell= 12
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
         List<InstrBase> listInstrThen = [instrSetValThen];
 

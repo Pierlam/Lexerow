@@ -15,6 +15,7 @@ Lexerow is an open source library.
 You have an Excel file containing a datatable: the first line is the header, and others are datarows of the table.
 In column B, some cells are empty, and it's a problem to do calculation. It would better to have a value in each cell.
 
+```
 +------+-------+
 |  Id  | Value |
 +------+-------+
@@ -24,10 +25,12 @@ In column B, some cells are empty, and it's a problem to do calculation. It woul
 |   4  |       |  <= is empty!
 |   5  |  631  |
 +------+-------+
+```
 
 
 So to put the value 0 in each empty cell in column B, Lexerow will help you to do that easily with some lines of code.
 
+```
 +------+-------+
 |  Id  | Value |
 +------+-------+
@@ -37,6 +40,7 @@ So to put the value 0 in each empty cell in column B, Lexerow will help you to d
 |   4  |    0  |  <= set to 0
 |   5  |  631  |
 +------+-------+
+```
 
 
 ## How to proceed

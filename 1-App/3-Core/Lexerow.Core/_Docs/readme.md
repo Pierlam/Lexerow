@@ -52,30 +52,3 @@ core.Exec.Execute();
 ```
 
 
-# Other If-Then cases
-
-There are many other possible cases.
-
-It's possible to check the value of a cell for type: int, double, dateTime, DateOnly and TimeOnly.
-
-## If cases
-
-If cell value of the column D is greater than 50.
-
-If D.Cell>50
-
-```
-InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
-```
-
-
-If cell date only of the column D is smaller than 01/02/2020.
-
-If D.Cell < 01/02/2020
-
-```
-InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.LesserThan, new DateOnly(2020, 02, 01));
-```
-
-
-

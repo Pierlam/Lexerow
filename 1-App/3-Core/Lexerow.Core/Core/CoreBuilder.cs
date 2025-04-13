@@ -115,7 +115,6 @@ public class CoreBuilder
         ValueTimeOnly valueTimeOnly = new ValueTimeOnly(value);
 
         InstrCompColCellVal exprComp = new InstrCompColCellVal(colNum, oper, valueTimeOnly);
-
         return exprComp;
     }
 

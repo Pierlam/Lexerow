@@ -12,7 +12,7 @@ You have an Excel file containing a datatable: the first line is the header, and
 In one column, some cells are empty, and it's a problem to do calculation.
 
 
-![Some cells are empty](0-Docs/Readmemd/datarow cells empty 2025-04-13 112407.jpg)
+![Some cells are empty](0-Docs/Readmemd/datarow_cells_empty_2025-04-13.jpg)
 
 The goal is for each empty cell in the column B, to put in place the value 0.
 Lexerow can do that very easily.and you want to put in place the value 0.

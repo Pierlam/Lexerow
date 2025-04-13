@@ -19,7 +19,7 @@ The goal is for each empty cell in the column B, to put in place the value 0.
 Lexerow can do that very easily.and you want to put in place the value 0.
 
 <p align="center">
-    <img src="0-Docs/Readmemd/datarow_cells_set_zero_2025-04-13" alt="Cells have now values">
+    <img src="0-Docs/Readmemd/datarow_cells_set_zero_2025-04-13.jpg" alt="Cells have now values">
 </p>
 
 

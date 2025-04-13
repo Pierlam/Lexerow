@@ -49,13 +49,13 @@ void Test1()
         return;
     }
 
-    //--Create: D.Cell > 50 
+    //--Comp: D.Cell > 50 
     InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
-    //--Create: D.Cell= 12
+    //--Set: D.Cell= 12
     InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
 
-    //--Create: If D.Cell > 50 Then D.Cell= 12
+    //--If D.Cell > 50 Then D.Cell= 12
     InstrIfColThen instrIfColThen;
     execRes = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
 
@@ -67,7 +67,6 @@ void Test1()
         return;
     }
 
-    //core.Exec.EventOccurs = EventOccured;
 
     execRes = core.Exec.Compile();
     if (!execRes.Result)
@@ -87,8 +86,6 @@ void Test1()
 
 // 	si est dans le range de valeur
 //If InRange(c.Value, valMin, valMax)
-
-
 // InstrInRangeCellVal
 // 
 void TestInRange()

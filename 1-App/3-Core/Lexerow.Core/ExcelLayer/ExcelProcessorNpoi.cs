@@ -17,7 +17,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
         if (!File.Exists(fileName)) 
         {
             excelFile = null;
-            error = new CoreError(ErrorCode.FileNotFound, null);
+            error = new CoreError(ErrorCode.FileNotFound, fileName);
             return false;
         }
 

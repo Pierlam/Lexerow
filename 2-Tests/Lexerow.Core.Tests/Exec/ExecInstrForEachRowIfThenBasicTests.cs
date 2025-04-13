@@ -77,10 +77,10 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
 
-        //--Create Comp instr: B.Cell=Null
+        //--Comp: B.Cell=Null
         InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1);
 
-        //--Create: B.Cell="NA"
+        //--Set: B.Cell="NA"
         InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, "NA");
 
         // If B.Cell= null Then B.Cell= "NA"

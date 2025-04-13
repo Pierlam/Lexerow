@@ -11,7 +11,13 @@ public class CoreError
     {
         DateTimeCreation=DateTime.UtcNow;
         ErrorCode = errorCode;
-        Message = msg;
+        Param = msg;
+    }
+
+    public CoreError(ErrorCode errorCode)
+    {
+        DateTimeCreation = DateTime.UtcNow;
+        ErrorCode = errorCode;
     }
 
     /// <summary>
@@ -29,6 +35,13 @@ public class CoreError
     /// </summary>
     public ErrorCode ErrorCode { get; set; }
 
+    /// <summary>
+    /// Parameter 1 of the error.
+    /// </summary>
+    public string Param { get; set; }=string.Empty;
 
-    public string Message { get; set; }=string.Empty;
+    /// <summary>
+    /// Parameter 2 of the error.
+    /// </summary>
+    public string Param2 { get; set; } = string.Empty;
 }

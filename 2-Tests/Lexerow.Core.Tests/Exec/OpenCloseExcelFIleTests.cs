@@ -11,7 +11,7 @@ namespace Lexerow.Core.Tests.Exec;
 public class OpenCloseExcelFIleTests
 {
     /// <summary>
-    /// 
+    /// ok the input excel file exists.
     /// </summary>
     [TestMethod]
     public void OpenExcelOk()
@@ -49,5 +49,6 @@ public class OpenCloseExcelFIleTests
         execResult = core.Exec.Execute();
         Assert.IsFalse(execResult.Result);
         Assert.AreEqual(ErrorCode.FileNotFound, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(fileName, execResult.ListError[0].Param);
     }
 }

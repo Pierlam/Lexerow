@@ -224,26 +224,26 @@ public class CoreBuilder
         // possible to create the instr?
         if (_coreData.Stage != CoreStage.Build)
         {
-            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, "OpenExcel"));
             return execResult;
         }
 
         if (string.IsNullOrWhiteSpace(excelFileObjectName))
         {
-            execResult.AddError(new CoreError(ErrorCode.FileObjectNameNullOrEmpty, null));
+            execResult.AddError(new CoreError(ErrorCode.FileObjectNameNullOrEmpty, "OpenExcel"));
             return execResult;
         }
 
         if (string.IsNullOrWhiteSpace(fileName))
         {
-            execResult.AddError(new CoreError(ErrorCode.FileNameNullOrEmpty, null));
+            execResult.AddError(new CoreError(ErrorCode.FileNameNullOrEmpty));
             return execResult;
         }
 
         // check the syntax of the excel file object name
         if (!SyntaxUtils.CheckIdSyntax(excelFileObjectName)) 
         {
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, null));
+            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, excelFileObjectName));
             return execResult;
         }
 
@@ -254,7 +254,7 @@ public class CoreBuilder
         if (FindExcelFileName(fileName))
         {
             // todo: fix code error
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileNameAlreadyOpen, null));
+            execResult.AddError(new CoreError(ErrorCode.ExcelFileNameAlreadyOpen, fileName));
             return execResult;
         }
 
@@ -262,7 +262,7 @@ public class CoreBuilder
         if (FindExcelFileObjectName(excelFileObjectName))
         {
             // todo: fix code error
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameAlreadyOpen, null));
+            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameAlreadyOpen, excelFileObjectName));
             return execResult;
         }
 

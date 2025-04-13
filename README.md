@@ -11,17 +11,12 @@ Lexerow is developed in C# and can be used in any dotnet application.
 You have an Excel file containing a datatable: the first line is the header, and others datarows.
 In one column, some cells are empty, and it's a problem to do calculation.
 
-<p align="center">
-    <img src="0-Docs/Readmemd/datarow_cells_empty_2025-04-13.jpg" alt="Some cells are empty">
-</p>
+![Some cells are empty](0-Docs/Readmemd/datarow_cells_empty_2025-04-13.jpg)
 
 The goal is for each empty cell in the column B, to put in place the value 0.
 Lexerow can do that very easily.and you want to put in place the value 0.
 
-<p align="center">
-    <img src="0-Docs/Readmemd/datarow_cells_set_zero_2025-04-13.jpg" alt="Cells have now values">
-</p>
-
+![Cells have now values](0-Docs/Readmemd/datarow_cells_set_zero_2025-04-13.jpg)
 
 ## How to proceed
 

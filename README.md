@@ -18,7 +18,7 @@ The goal is for each empty cell in the column B, to put in place the value 0.
 Lexerow can do that very easily.and you want to put in place the value 0.
 
 
-![Cells have now values](0-Docs/Readmemd/datarow cells set zero 2025-04-13 112407.jpg)
+![Cells have now values](0-Docs/Readmemd/datarow_cells_set_zero_2025-04-13.jpg)
 
 ## How to proceed
 

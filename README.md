@@ -27,7 +27,25 @@ So to put the value 0 in each empty cell in column B, Lexerow will help you to d
 </p>
 
 
-## How to proceed
+## How it works
+
+To proceed datarow as explained, Lexerow provide the main function which is: "OnExcel ForEachRow If-Then".
+
+To understand how it works here is the pseudo code:
+
+```
+# open the excel file to process
+file=OpenExcel("MyFile.xlsx")
+
+# process datarow of the Excel, one by one
+OnExcel
+	OnSheet 0,0
+	ForEach Row
+		If B.Cell=null Then B.Cell= 0
+	End
+```
+
+## How to implement using C# 
 
 Create a program in C# and use the Lexerow library in this way:
 
@@ -38,17 +56,17 @@ string fileName = "MyFile.xlsx";
 // file= OpenExcel("MyExcelFile.xlsx")
 core.Builder.CreateInstrOpenExcel("file", fileName);
    
-//--Comparison: B.Cell=null  (B -> index 1)
+// Comparison: B.Cell=null  (B -> index 1)
 InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1);
 
-//--Set: B.Cell= 0
+// Set: B.Cell= 0
 InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 0);
 
 // If B.Cell=null Then B.Cell= 0
 InstrIfColThen instrIfColThen;
 core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
 
-// OnExcel ForEach Row IfColThen, sheetNum=0, firstDataRow=1 below the header
+// OnExcel ForEach Row IfColThen, sheetNum=0, firstRow=1 below the header
 core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
 
 // execute the instructions -> empty cells in col B will be remplaced by the value 0
@@ -65,8 +83,21 @@ https://www.nuget.org/packages/Lexerow#versions-body-tab
 
 It is possible to check many cell type in If instruction: IsNull, Int, Double, DateTime, DateOnly and also TimeOnly.
 
-You can put one or more Set Cell Value instruction in the Then part. Many type to set are available:
-Null, Int, Double, DateTime, DateOnly and also TimeOnly.
+```
+If A.Cell = 12
+```
+
+You can put one or more Set Cell Value instruction in the Then part. 
+Many type to set are available: Int, Double, DateTime, DateOnly and also TimeOnly.
+
+It is also possible to remove the cell by setting null. 
+Another option is to set Blank to a cell value, in this case the style of cell (BgColor, FgColor, Border,..) will remain.
+
+```
+A.Cell= 13
+A.Cell= null
+A.Cell= blank
+```
 
 You can find more information on how use all available functions on the library here:
 

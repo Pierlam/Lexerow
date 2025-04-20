@@ -53,11 +53,11 @@ To understand how it works here is the pseudo code:
 file=OpenExcel("MyFile.xlsx")
 
 # process datarow of the Excel, one by one
-OnExcel
-	OnSheet 0,0
-	ForEach Row
-		If B.Cell=null Then B.Cell= 0
-	End
+OnExcel file
+  OnSheet 0,0
+    ForEach Row
+	  If B.Cell=null Then B.Cell= 0
+    End
 ```
 
 ## How to implement using C# 
@@ -111,6 +111,8 @@ Another option is to set Blank to a cell value, in this case the style of cell (
 
 ```
 A.Cell= 13
+A.Cell= "Hello"
+A.Cell= 12/04/2025
 A.Cell= null
 A.Cell= blank
 ```

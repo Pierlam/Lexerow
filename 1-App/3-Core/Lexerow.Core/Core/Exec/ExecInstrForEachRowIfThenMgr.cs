@@ -42,7 +42,6 @@ public class ExecInstrForEachRowIfThenMgr
             execResult.AddError(error);
 
             SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
-            //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
             return execResult;
         }
         int currRowNum = instr.FirstDataRowNum;
@@ -60,7 +59,6 @@ public class ExecInstrForEachRowIfThenMgr
                     execResult.AddError(error);
 
                     SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
-                    //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
                     return execResult;
                 }
             }
@@ -68,7 +66,6 @@ public class ExecInstrForEachRowIfThenMgr
             _dataRowCount++;
         }
 
-        //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
 
         return execResult;
@@ -94,7 +91,6 @@ public class ExecInstrForEachRowIfThenMgr
         if(!execResult.Result)
         {
             SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.ExecOnDataRow", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, execResult.ListError.FirstOrDefault()));
-            //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, execResult.ListError.FirstOrDefault()));
             // error occurs during the If condition instr execution
             return execResult;
         }
@@ -105,7 +101,6 @@ public class ExecInstrForEachRowIfThenMgr
 
         _ifConditionFiredCount++;
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.ExecOnDataRow", InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
-        //FireEvent(InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
 
         // execute Then instructions
         foreach (InstrBase instrThen in listInstrThen)
@@ -154,11 +149,28 @@ public class ExecInstrForEachRowIfThenMgr
             return ExecInstrCompListColCellAnd(excelProcessor, excelFile, excelSheet, instrCompListColCellAnd, rowNum, out condResult);
         }
 
+        //--is If instr: A.Cell In ["y","yes"] ? 
+        InstrCompColCellInStringItems instrCompColCellInStringItems= instrIf as InstrCompColCellInStringItems;
+        if(instrCompColCellInStringItems!=null)
+        {
+            return ExecInstrCompColCellInStringItems(excelProcessor, excelFile, excelSheet, instrCompColCellInStringItems, rowNum, out condResult);
+        }
+
         //--Not allowed
         execResult.AddError(new CoreError(ErrorCode.IfConditionInstrNotAllowed, instrIf.InstrType.ToString()));
         return execResult;
     }
 
+    /// <summary>
+    /// If instr is a basic comparison, exp: A.Cell=12
+    /// </summary>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelFile"></param>
+    /// <param name="excelSheet"></param>
+    /// <param name="instrCompColCellVal"></param>
+    /// <param name="rowNum"></param>
+    /// <param name="condResult"></param>
+    /// <returns></returns>
     static ExecResult ExecInstrCompColCellVal(IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrCompColCellVal instrCompColCellVal, int rowNum, out bool condResult)
     {
         ExecResult execResult = new ExecResult();
@@ -185,6 +197,16 @@ public class ExecInstrForEachRowIfThenMgr
         return ExecInstrCompMgr.ExecInstrCompCellValIsNull(excelProcessor, instrCompColCellValIsNull, cell, out condResult);
     }
 
+    /// <summary>
+    /// If A.Cell=12 And B.Cell=34 And...
+    /// </summary>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelFile"></param>
+    /// <param name="excelSheet"></param>
+    /// <param name="instrCompListColCellAnd"></param>
+    /// <param name="rowNum"></param>
+    /// <param name="condResult"></param>
+    /// <returns></returns>
     static ExecResult ExecInstrCompListColCellAnd(IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrCompListColCellAnd instrCompListColCellAnd, int rowNum, out bool condResult)
     {
         ExecResult execResult = new ExecResult();
@@ -218,6 +240,39 @@ public class ExecInstrForEachRowIfThenMgr
             }
         }
 
+        return execResult;
+    }
+
+    /// <summary>
+    /// If A.Cell In [ "y", "yes", "ok"]
+    /// the cell type should be string.
+    /// </summary>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelFile"></param>
+    /// <param name="excelSheet"></param>
+    /// <param name="instrCompListColCellAnd"></param>
+    /// <param name="rowNum"></param>
+    /// <param name="condResult"></param>
+    /// <returns></returns>
+    static ExecResult ExecInstrCompColCellInStringItems(IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrCompColCellInStringItems instr, int rowNum, out bool condResult)
+    {
+        ExecResult execResult = new ExecResult();
+        condResult = false;
+
+        var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instr.ColNum);
+
+        // get the cell value type            
+        CellRawValueType cellType = excelProcessor.GetCellValueType(excelSheet, cell);
+
+        // the cell type should be string
+        if (cellType != CellRawValueType.String) 
+        {
+            execResult.AddError(new CoreError(ErrorCode.CellTypeStringExpected, instr.ToString()));
+            return execResult;
+        }
+
+        // execute the If part: comparison condition
+        condResult = ExecInstrCompMgr.ExecInstrCompColCellInStringItems(excelProcessor, instr, cell);
         return execResult;
     }
 

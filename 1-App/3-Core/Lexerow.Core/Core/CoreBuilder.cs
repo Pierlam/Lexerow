@@ -141,6 +141,57 @@ public class CoreBuilder
     }
 
     /// <summary>
+    /// Create Comparison instr: A.Cell In [ "y", "ok", "oui" ]
+    /// In /I ->Case Insensitive  
+    /// A.Cell, listOfItems, In=true/NotIn=false, case sensitive=true
+    /// </summary>
+    /// <param name="colNum"></param>
+    /// <param name="listItems"></param>
+    /// <param name="inOrNotIn"></param>
+    /// <param name="caseSensitive"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrCompCellInItems(int colNum, List<string> listItems, bool caseSensitive, out InstrCompColCellInStringItems instr)
+    {
+        ExecResult execResult = new ExecResult();
+        
+        // check the items
+        if(!ItemsCheckUtils.CheckItemsUnique(listItems))
+        {
+            instr = null;
+            execResult.AddError(new CoreError(ErrorCode.ItemsShouldBeNotNullAndUnique, "InsrCompColCellInItems"));
+            return execResult;
+        }
+
+        instr = new InstrCompColCellInStringItems(colNum,  true, caseSensitive, listItems);
+        return execResult;
+    }
+
+    /// <summary>
+    /// Create Comparison instr: A.Cell NOt In [ "y", "ok", "oui" ]
+    /// In /I ->Case Insensitive  
+    /// A.Cell, listOfItems, In=true/NotIn=false, case sensitive=true
+    /// </summary>
+    /// <param name="colNum"></param>
+    /// <param name="listItems"></param>
+    /// <param name="caseSensitive"></param>
+    /// <returns></returns>
+    public ExecResult CreateInstrCompCellNotInItems(int colNum, List<string> listItems, bool caseSensitive, out InstrCompColCellInStringItems instr)
+    {
+        ExecResult execResult = new ExecResult();
+
+        // check the items
+        if (!ItemsCheckUtils.CheckItemsUnique(listItems))
+        {
+            instr = null;
+            execResult.AddError(new CoreError(ErrorCode.ItemsShouldBeNotNullAndUnique, "InsrCompColCellNotInItems"));
+            return execResult;
+        }
+
+        instr = new InstrCompColCellInStringItems(colNum, false, caseSensitive, listItems);
+        return execResult;
+    }
+
+    /// <summary>
     /// Create an instruction Set CellValue := val
     /// </summary>
     /// <param name="value"></param>
@@ -241,7 +292,7 @@ public class CoreBuilder
         }
 
         // check the syntax of the excel file object name
-        if (!SyntaxUtils.CheckIdSyntax(excelFileObjectName)) 
+        if (!ItemsCheckUtils.CheckIdSyntax(excelFileObjectName)) 
         {
             execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, excelFileObjectName));
             return execResult;
@@ -435,7 +486,7 @@ public class CoreBuilder
         }
 
         // check the syntax of the excel file object name
-        if (!SyntaxUtils.CheckIdSyntax(excelFileObjectName))
+        if (!ItemsCheckUtils.CheckIdSyntax(excelFileObjectName))
         {
             execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, null));
             return execResult;

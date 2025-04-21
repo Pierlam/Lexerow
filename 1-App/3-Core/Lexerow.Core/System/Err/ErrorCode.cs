@@ -146,6 +146,9 @@ public enum ErrorCode
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
 
+    ItemsShouldBeNotNullAndUnique,
 
     UnableCreateInstrNotInStageBuild,
+
+    CellTypeStringExpected
 }

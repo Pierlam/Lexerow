@@ -134,17 +134,44 @@ public class ExecInstrCompMgr
         compResult = false;
             return execResult;
 
+    }
+
+    /// <summary>
+    /// A.Cell In [ "y", "yes", "ok"]
+    /// in string items.
+    /// </summary>
+    /// <param name="excelProcessor"></param>
+    /// <param name="instr"></param>
+    /// <param name="excelCell"></param>
+    /// <returns></returns>
+    public static bool ExecInstrCompColCellInStringItems(IExcelProcessor excelProcessor, InstrCompColCellInStringItems instr, IExcelCell excelCell)
+    {
+        if (excelCell == null) return false;
+
+        string stringVal = excelCell.GetRawValueString();
+        if(stringVal.Length==0) return false;
+
+        StringComparison stringComparison = StringComparison.InvariantCulture;
+        if(!instr.CaseSensitive)
+            stringComparison= StringComparison.InvariantCultureIgnoreCase;
+
+        foreach (string item in instr.ListItems)
+        {
+            if(stringVal.Equals(item, stringComparison))return true;
         }
 
-        /// <summary>
-        /// CellValue operator value
-        /// exp >12
-        /// </summary>
-        /// <param name="instrComp"></param>
-        /// <param name="cellValue"></param>
-        /// <param name="valueComp"></param>
-        /// <returns></returns>
-        static bool ExecCompNumeric(InstrCompColCellVal instrComp, double cellValue, double valueComp)
+        return false;
+    }
+
+    /// <summary>
+    /// CellValue operator value
+    /// exp >12
+    /// </summary>
+    /// <param name="instrComp"></param>
+    /// <param name="cellValue"></param>
+    /// <param name="valueComp"></param>
+    /// <returns></returns>
+    static bool ExecCompNumeric(InstrCompColCellVal instrComp, double cellValue, double valueComp)
     {
         if(instrComp.Operator== ValCompOperator.Equal) 
             return cellValue == valueComp;

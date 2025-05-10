@@ -153,12 +153,20 @@ public class CoreBuilder
     public ExecResult CreateInstrCompCellInItems(int colNum, List<string> listItems, bool caseSensitive, out InstrCompColCellInStringItems instr)
     {
         ExecResult execResult = new ExecResult();
-        
-        // check the items
-        if(!ItemsCheckUtils.CheckItemsUnique(listItems))
+
+        // list should contains one item at list
+        if (listItems == null || listItems.Count == 0)
         {
             instr = null;
-            execResult.AddError(new CoreError(ErrorCode.ItemsShouldBeNotNullAndUnique, "InsrCompColCellInItems"));
+            execResult.AddError(new ExecResultError(ErrorCode.EntryListIsEmpty, "InsrCompColCellInItems"));
+            return execResult;
+        }
+
+        // check the items
+        if (!ItemsCheckUtils.CheckItemsUnique(listItems))
+        {
+            instr = null;
+            execResult.AddError(new ExecResultError(ErrorCode.ItemsShouldBeNotNullAndUnique, "InsrCompColCellInItems"));
             return execResult;
         }
 
@@ -179,11 +187,19 @@ public class CoreBuilder
     {
         ExecResult execResult = new ExecResult();
 
+        // list should contains one item at list
+        if(listItems==null || listItems.Count==0)
+        {
+            instr = null;
+            execResult.AddError(new ExecResultError(ErrorCode.EntryListIsEmpty, "InsrCompColCellNotInItems"));
+            return execResult;
+        }
+
         // check the items
         if (!ItemsCheckUtils.CheckItemsUnique(listItems))
         {
             instr = null;
-            execResult.AddError(new CoreError(ErrorCode.ItemsShouldBeNotNullAndUnique, "InsrCompColCellNotInItems"));
+            execResult.AddError(new ExecResultError(ErrorCode.ItemsShouldBeNotNullAndUnique, "InsrCompColCellNotInItems"));
             return execResult;
         }
 
@@ -275,26 +291,26 @@ public class CoreBuilder
         // possible to create the instr?
         if (_coreData.Stage != CoreStage.Build)
         {
-            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, "OpenExcel"));
+            execResult.AddError(new ExecResultError(ErrorCode.UnableCreateInstrNotInStageBuild, "OpenExcel"));
             return execResult;
         }
 
         if (string.IsNullOrWhiteSpace(excelFileObjectName))
         {
-            execResult.AddError(new CoreError(ErrorCode.FileObjectNameNullOrEmpty, "OpenExcel"));
+            execResult.AddError(new ExecResultError(ErrorCode.FileObjectNameNullOrEmpty, "OpenExcel"));
             return execResult;
         }
 
         if (string.IsNullOrWhiteSpace(fileName))
         {
-            execResult.AddError(new CoreError(ErrorCode.FileNameNullOrEmpty));
+            execResult.AddError(new ExecResultError(ErrorCode.FileNameNullOrEmpty));
             return execResult;
         }
 
         // check the syntax of the excel file object name
         if (!ItemsCheckUtils.CheckIdSyntax(excelFileObjectName)) 
         {
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, excelFileObjectName));
+            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameSyntaxWrong, excelFileObjectName));
             return execResult;
         }
 
@@ -305,7 +321,7 @@ public class CoreBuilder
         if (FindExcelFileName(fileName))
         {
             // todo: fix code error
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileNameAlreadyOpen, fileName));
+            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileNameAlreadyOpen, fileName));
             return execResult;
         }
 
@@ -313,7 +329,7 @@ public class CoreBuilder
         if (FindExcelFileObjectName(excelFileObjectName))
         {
             // todo: fix code error
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameAlreadyOpen, excelFileObjectName));
+            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameAlreadyOpen, excelFileObjectName));
             return execResult;
         }
 
@@ -359,7 +375,7 @@ public class CoreBuilder
             // chkec the instr Then
             if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
             {
-                execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
+                execResult.AddError(new ExecResultError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
             }
         }
 
@@ -411,7 +427,7 @@ public class CoreBuilder
             // chkec the instr Then
             if (instrThen.InstrType != InstrType.SetCellVal && instrThen.InstrType != InstrType.SetCellNull && instrThen.InstrType != InstrType.SetCellBlank)
             {
-                execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
+                execResult.AddError(new ExecResultError(ErrorCode.ThenConditionInstrNotAllowed, instrThen.ToString()));
             }
         }
 
@@ -463,46 +479,46 @@ public class CoreBuilder
         // possible to create the instr?
         if (_coreData.Stage != CoreStage.Build)
         {
-            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            execResult.AddError(new ExecResultError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
             return execResult;
         }
 
         if (string.IsNullOrWhiteSpace(excelFileObjectName))
         {
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameIsNull, null));
+            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameIsNull, null));
             return execResult;
         }
 
         if (sheetNum < 0)
         {
-            execResult.AddError(new CoreError(ErrorCode.SheetNumValueWrong, null));
+            execResult.AddError(new ExecResultError(ErrorCode.SheetNumValueWrong, null));
             return execResult;
         }
 
         if (firstDataRowNumline < 0)
         {
-            execResult.AddError(new CoreError(ErrorCode.FirstDatarowNumLineValueWrong, null));
+            execResult.AddError(new ExecResultError(ErrorCode.FirstDatarowNumLineValueWrong, null));
             return execResult;
         }
 
         // check the syntax of the excel file object name
         if (!ItemsCheckUtils.CheckIdSyntax(excelFileObjectName))
         {
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameSyntaxWrong, null));
+            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameSyntaxWrong, null));
             return execResult;
         }
 
         // check the excelFileObject name, should be defined previsouly
         if (!FindExcelFileObjectName(excelFileObjectName))
         {
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
+            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
             return execResult;
         }
 
         // check instr Then, only SetCellVal is authorized
         if (listInstrIfColThen.Count == 0)
         {
-            execResult.AddError(new CoreError(ErrorCode.AtLeastOneInstrIfColThenExpected, null));
+            execResult.AddError(new ExecResultError(ErrorCode.AtLeastOneInstrIfColThenExpected, null));
             return execResult;
         }
 

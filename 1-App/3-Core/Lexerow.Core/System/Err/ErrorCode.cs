@@ -25,6 +25,9 @@ public class ErrorParam
     public string Value { get; set; }
 }
 
+/// <summary>
+/// Error/warning code.
+/// </summary>
 public enum ErrorCode
 {
     Ok,
@@ -150,5 +153,6 @@ public enum ErrorCode
 
     UnableCreateInstrNotInStageBuild,
 
-    CellTypeStringExpected
+    CellTypeStringExpected,
+    EntryListIsEmpty
 }

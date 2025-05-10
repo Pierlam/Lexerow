@@ -59,7 +59,7 @@ public class Exec
         // possible to create the instr?
         if (_coreData.Stage != CoreStage.Build)
         {
-            execResult.AddError(new CoreError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
+            execResult.AddError(new ExecResultError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
             SendAppTraceCompile(AppTraceLevel.Error, ErrorCode.UnableCreateInstrNotInStageBuild.ToString());
             return execResult;
         }
@@ -154,7 +154,7 @@ public class Exec
         ExecResult result = new ExecResult();
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateStart(instrOpenExcel.FileName));
 
-        if (!_excelProcessor.Open(instrOpenExcel.FileName, out IExcelFile excelFile, out CoreError error))
+        if (!_excelProcessor.Open(instrOpenExcel.FileName, out IExcelFile excelFile, out ExecResultError error))
         {
             result.AddError(error);
             SendAppTraceExec(AppTraceLevel.Error, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error, instrOpenExcel.FileName));
@@ -185,7 +185,7 @@ public class Exec
         if(execVar==null)
         {
             SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error));
-            execResult.AddError(new CoreError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
+            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
             return execResult;
         }
 

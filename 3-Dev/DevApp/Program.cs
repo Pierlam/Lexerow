@@ -105,11 +105,10 @@ void TestFuncInListOfItems()
         Console.WriteLine("=>Error occured!");
         return;
     }
-
+    
     List<string> listYes = ["yes", "y", "ok"];
 
     //--Comp: A.Cell In [ "y", "yes", "ok" ]
-    //InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 50);
     // A.Cell, listOfItems, In=true/NotIn=false, case sensitive=true
     execRes = core.Builder.CreateInstrCompCellInItems(0, listYes, true, out InstrCompColCellInStringItems instrCompIf);
 
@@ -138,6 +137,7 @@ void TestFuncInListOfItems()
 
     //--Execute all saved instruction
     execRes = core.Exec.Execute();
+
 
     if (execRes.Result)
         Console.WriteLine("Finished with success.");

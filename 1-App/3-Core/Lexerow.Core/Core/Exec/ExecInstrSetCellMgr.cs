@@ -149,7 +149,7 @@ public class ExecInstrSetCellMgr
         }
 
         // type not managed
-        execResult.AddError(new CoreError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
+        execResult.AddError(new ExecResultError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
         return execResult;
     }
 
@@ -194,7 +194,7 @@ public class ExecInstrSetCellMgr
         }
 
         // type not managed
-        execResult.AddError(new CoreError(ErrorCode.ExcelCellTypeNotManaged, value.ValueType.ToString()));
+        execResult.AddError(new ExecResultError(ErrorCode.ExcelCellTypeNotManaged, value.ValueType.ToString()));
         return execResult;
     }
 

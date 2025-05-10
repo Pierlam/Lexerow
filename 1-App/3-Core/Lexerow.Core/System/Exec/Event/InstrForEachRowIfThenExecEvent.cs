@@ -12,7 +12,7 @@ public class InstrForEachRowIfThenExecEvent : InstrBaseExecEvent
         Type = InstrBaseExecEventType.ForEachRowCellIfThen;
     }
 
-    public CoreError? Error { get; set; } = null;
+    public ExecResultError? Error { get; set; } = null;
 
     public int DataRowCount { get; set; } = 0;
     
@@ -58,7 +58,7 @@ public class InstrForEachRowIfThenExecEvent : InstrBaseExecEvent
         return execEvent;
     }
 
-    public static InstrForEachRowIfThenExecEvent CreateFinishedError(DateTime dtStart, CoreError error)
+    public static InstrForEachRowIfThenExecEvent CreateFinishedError(DateTime dtStart, ExecResultError error)
     {
         var execEvent = new InstrForEachRowIfThenExecEvent();
         execEvent.State = InstrBaseExecEventState.Finished;

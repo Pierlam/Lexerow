@@ -20,7 +20,7 @@ public class ExecCompileInstrMgr
             InstrIfColThen instrIfColThen = instrBase as InstrIfColThen;
             if (instrIfColThen != null)
             {
-                execResult.AddError(new CoreError(ErrorCode.InstrNotAllowed, instrIfColThen.InstrType.ToString()));
+                execResult.AddError(new ExecResultError(ErrorCode.InstrNotAllowed, instrIfColThen.InstrType.ToString()));
                 continue;
             }
 
@@ -44,13 +44,13 @@ public class ExecCompileInstrMgr
 
         // check instr if 
         if (instrForEachRowIfThen.ListInstrIfColThen.Count == 0)
-            execResult.AddError(new CoreError(ErrorCode.AtLeastOneInstrIfColThenExpected, null));
+            execResult.AddError(new ExecResultError(ErrorCode.AtLeastOneInstrIfColThenExpected, null));
 
         // check instr then
         foreach (InstrIfColThen instrIfColThen in instrForEachRowIfThen.ListInstrIfColThen)
         {
             if (instrIfColThen.ListInstrThen.Count == 0)
-                execResult.AddError(new CoreError(ErrorCode.AtLeastOneInstrThenExpected, null));
+                execResult.AddError(new ExecResultError(ErrorCode.AtLeastOneInstrThenExpected, null));
         }
 
         return execResult;

@@ -24,7 +24,7 @@ public class ExcelProcessorOpenCloseFileTests
 
         string fileName = @"..\..\..\10-Files\TestOpenClose.xlsx";
 
-        bool res = proc.Open(fileName, out IExcelFile excelFile, out CoreError coreError);
+        bool res = proc.Open(fileName, out IExcelFile excelFile, out ExecResultError coreError);
         Assert.IsTrue(res);
         Assert.IsNull(coreError);
         Assert.IsNotNull(excelFile);
@@ -42,7 +42,7 @@ public class ExcelProcessorOpenCloseFileTests
 
         string fileName = @"..\..\..\10-Files\Blabla.xlsx";
 
-        bool res = proc.Open(fileName, out IExcelFile excelFile, out CoreError coreError);
+        bool res = proc.Open(fileName, out IExcelFile excelFile, out ExecResultError coreError);
         Assert.IsFalse(res);
         Assert.IsNull(excelFile);
         Assert.IsNotNull(coreError);

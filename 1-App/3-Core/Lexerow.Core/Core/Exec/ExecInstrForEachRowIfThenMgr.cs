@@ -38,7 +38,7 @@ public class ExecInstrForEachRowIfThenMgr
         IExcelSheet sheet = excelProcessor.GetSheetAt(excelFile, instr.SheetNum);
         if (sheet == null)
         {
-            CoreError error= new CoreError(ErrorCode.UnableFindSheetByNum, instr.SheetNum.ToString());
+            ExecResultError error= new ExecResultError(ErrorCode.UnableFindSheetByNum, instr.SheetNum.ToString());
             execResult.AddError(error);
 
             SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
@@ -55,7 +55,7 @@ public class ExecInstrForEachRowIfThenMgr
                 execResult = ExecOnDataRow(execStart, excelProcessor, excelFile, sheet, instrIfThen.InstrIf, instrIfThen.ListInstrThen, currRowNum);
                 if(!execResult.Result)
                 {
-                    CoreError error = new CoreError(ErrorCode.InternalError, instr.SheetNum.ToString());
+                    ExecResultError error = new ExecResultError(ErrorCode.InternalError, instr.SheetNum.ToString());
                     execResult.AddError(error);
 
                     SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
@@ -127,37 +127,36 @@ public class ExecInstrForEachRowIfThenMgr
         ExecResult execResult= new ExecResult();
         condResult = false;
 
-        //--is the If cond instr InstrCompCellVal or InstrCompCellValIsNull?
+        //--is it: If A.Cell=12 ?
         InstrCompColCellVal instrCompCellVal = instrIf as InstrCompColCellVal;
         if (instrCompCellVal != null)
         {
             return ExecInstrCompColCellVal(excelProcessor, excelFile, excelSheet, instrCompCellVal, rowNum, out condResult);
         }
 
-
-        //--is the If cond instr InstrCompCellValIsNull?
+        //--is it: If A.Cell=null ?
         InstrCompColCellValIsNull instrCompCellValIsNull = instrIf as InstrCompColCellValIsNull;
         if(instrCompCellValIsNull!=null)
         {
             return ExecInstrCompColCellValIsNull(excelProcessor, excelFile, excelSheet, instrCompCellValIsNull, rowNum, out condResult);
         }
 
-        //--is the If cond instr InstrCompListColCellAnd?
+        //--is it: if A.Cell=12 And ... ?
         InstrCompListColCellAnd instrCompListColCellAnd = instrIf as InstrCompListColCellAnd;
         if(instrCompListColCellAnd!=null)
         {
             return ExecInstrCompListColCellAnd(excelProcessor, excelFile, excelSheet, instrCompListColCellAnd, rowNum, out condResult);
         }
 
-        //--is If instr: A.Cell In ["y","yes"] ? 
+        //--is it: A.Cell In ["y","yes"] ? 
         InstrCompColCellInStringItems instrCompColCellInStringItems= instrIf as InstrCompColCellInStringItems;
         if(instrCompColCellInStringItems!=null)
         {
             return ExecInstrCompColCellInStringItems(excelProcessor, excelFile, excelSheet, instrCompColCellInStringItems, rowNum, out condResult);
         }
 
-        //--Not allowed
-        execResult.AddError(new CoreError(ErrorCode.IfConditionInstrNotAllowed, instrIf.InstrType.ToString()));
+        //--instr Not allowed as an If condition
+        execResult.AddError(new ExecResultError(ErrorCode.IfConditionInstrNotAllowed, instrIf.InstrType.ToString()));
         return execResult;
     }
 
@@ -183,12 +182,26 @@ public class ExecInstrForEachRowIfThenMgr
 
         // does the cell type match the If-Comparison cell.Value type?
         if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrCompColCellVal.Value))
+        {
+            // TODO: CoreWarning, recherche si un warning existe déjà sur: Code=IfCondTypeMismatch, ExcelFile+fileName, SheetNum=, col=A, type=Number
             return execResult;
+        }
 
         // execute the If part: comparison condition
         return ExecInstrCompMgr.ExecInstrCompCellVal(excelProcessor, instrCompColCellVal, cell, out condResult);
     }
 
+    /// <summary>
+    /// Is instr if a comparison with null?
+    /// exp: A.Cell=null
+    /// </summary>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelFile"></param>
+    /// <param name="excelSheet"></param>
+    /// <param name="instrCompColCellValIsNull"></param>
+    /// <param name="rowNum"></param>
+    /// <param name="condResult"></param>
+    /// <returns></returns>
     static ExecResult ExecInstrCompColCellValIsNull(IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrCompColCellValIsNull instrCompColCellValIsNull, int rowNum, out bool condResult)
     {
         var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrCompColCellValIsNull.ColNum);
@@ -267,7 +280,9 @@ public class ExecInstrForEachRowIfThenMgr
         // the cell type should be string
         if (cellType != CellRawValueType.String) 
         {
-            execResult.AddError(new CoreError(ErrorCode.CellTypeStringExpected, instr.ToString()));
+            // TODO: pas une erreur!! un warning juste non?
+            ici();
+            execResult.AddError(new ExecResultError(ErrorCode.CellTypeStringExpected, instr.ToString()));
             return execResult;
         }
 
@@ -305,7 +320,7 @@ public class ExecInstrForEachRowIfThenMgr
         if (instrSetCellValueBlank != null)
             return ExecInstrSetCellMgr.ExecSetCellValueBlank(excelProcessor, instrSetCellValueBlank, sheet, rowNum);
 
-        execResult.AddError(new CoreError(ErrorCode.ThenConditionInstrNotAllowed, instr.ToString()));
+        execResult.AddError(new ExecResultError(ErrorCode.ThenConditionInstrNotAllowed, instr.ToString()));
         return execResult;
     }
 

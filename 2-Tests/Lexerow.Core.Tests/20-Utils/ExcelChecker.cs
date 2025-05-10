@@ -44,6 +44,11 @@ public class ExcelChecker
         return CheckCellValue(workbook, sheetNum, rowNum, colNum, expectedValue);
     }
 
+    public static bool CheckCellValueColRow(XSSFWorkbook workbook, int sheetNum, int colNum, int rowNum, string expectedValue)
+    {
+        return CheckCellValue(workbook, sheetNum, rowNum, colNum, expectedValue);
+    }
+
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, double expectedValue)
     {
         var sheet = workbook.GetSheetAt(sheetNum);

@@ -45,10 +45,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
-
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
@@ -94,9 +90,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
-
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
@@ -139,9 +132,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        execResult = core.Exec.Compile();
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();
@@ -197,9 +187,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
-
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
@@ -240,9 +227,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        execResult = core.Exec.Compile();
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();

@@ -5,7 +5,7 @@ using Lexerow.Core.Utils;
 namespace Lexerow.Core;
 
 /// <summary>
-/// Execute instruciotn: ForEachRow IfThen
+/// Execute instruction: ForEachRow IfThen
 /// </summary>
 public class ExecInstrForEachRowIfThenMgr
 {
@@ -13,11 +13,9 @@ public class ExecInstrForEachRowIfThenMgr
 
     /// <summary>
     /// If Condition Fired count
-    /// TODO: plutot IFcondition qui est vrai!
     /// </summary>
     static int _ifConditionFiredCount = 0;
 
-    //static Action<InstrBaseExecEvent> _eventOccurs;
     static Action<AppTrace> _appTraceEvent;
 
     /// <summary>
@@ -141,18 +139,24 @@ public class ExecInstrForEachRowIfThenMgr
             return ExecInstrCompColCellValIsNull(excelProcessor, excelFile, excelSheet, instrCompCellValIsNull, rowNum, out condResult);
         }
 
-        //--is it: if A.Cell=12 And ... ?
-        InstrCompListColCellAnd instrCompListColCellAnd = instrIf as InstrCompListColCellAnd;
-        if(instrCompListColCellAnd!=null)
-        {
-            return ExecInstrCompListColCellAnd(excelProcessor, excelFile, excelSheet, instrCompListColCellAnd, rowNum, out condResult);
-        }
+        //--is it: If A.Cell=blank ?
+        // TODO:
+
+        //--is it: If A.Cell=nullblank ?  null or blank
+        // TODO:
 
         //--is it: A.Cell In ["y","yes"] ? 
-        InstrCompColCellInStringItems instrCompColCellInStringItems= instrIf as InstrCompColCellInStringItems;
+        InstrCompColCellInStringItems instrCompColCellInStringItems = instrIf as InstrCompColCellInStringItems;
         if(instrCompColCellInStringItems!=null)
         {
             return ExecInstrCompColCellInStringItems(excelProcessor, excelFile, excelSheet, instrCompColCellInStringItems, rowNum, out condResult);
+        }
+
+        //--is it: if A.Cell=12 And B.Cell="Y" And ... ?
+        InstrCompListColCellAnd instrCompListColCellAnd = instrIf as InstrCompListColCellAnd;
+        if (instrCompListColCellAnd != null)
+        {
+            return ExecInstrCompListColCellAnd(excelProcessor, excelFile, excelSheet, instrCompListColCellAnd, rowNum, out condResult);
         }
 
         //--instr Not allowed as an If condition
@@ -183,7 +187,9 @@ public class ExecInstrForEachRowIfThenMgr
         // does the cell type match the If-Comparison cell.Value type?
         if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrCompColCellVal.Value))
         {
-            // TODO: CoreWarning, recherche si un warning existe déjà sur: Code=IfCondTypeMismatch, ExcelFile+fileName, SheetNum=, col=A, type=Number
+            // is there an warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
+            execResult.AddWarning(ErrorCode.IfCondTypeMismatch, excelFile.FileName, excelSheet.Index, instrCompColCellVal.ColNum, cellType);
+            // TODO: si existe -> +1, sinon créer un nouveau warning
             return execResult;
         }
 
@@ -211,52 +217,6 @@ public class ExecInstrForEachRowIfThenMgr
     }
 
     /// <summary>
-    /// If A.Cell=12 And B.Cell=34 And...
-    /// </summary>
-    /// <param name="excelProcessor"></param>
-    /// <param name="excelFile"></param>
-    /// <param name="excelSheet"></param>
-    /// <param name="instrCompListColCellAnd"></param>
-    /// <param name="rowNum"></param>
-    /// <param name="condResult"></param>
-    /// <returns></returns>
-    static ExecResult ExecInstrCompListColCellAnd(IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrCompListColCellAnd instrCompListColCellAnd, int rowNum, out bool condResult)
-    {
-        ExecResult execResult = new ExecResult();
-        bool condResultLocal;
-        condResult = true;
-
-        foreach (InstrRetBoolBase instrRetBoolBase in instrCompListColCellAnd.ListInstrComp)
-        {
-            // stop when the condition result becomes false
-            if (!condResult)
-                break;
-
-            //--is the If cond instr InstrCompCellVal or InstrCompCellValIsNull?
-            InstrCompColCellVal instrCompCellVal = instrRetBoolBase as InstrCompColCellVal;
-            if (instrCompCellVal != null)
-            {
-                var execResultLocal= ExecInstrCompColCellVal(excelProcessor, excelFile, excelSheet, instrCompCellVal, rowNum, out condResultLocal);
-                if (!execResultLocal.Result)
-                    execResult.AddListError(execResultLocal.ListError);
-                condResult &= condResultLocal;
-                continue;
-            }
-
-            InstrCompColCellValIsNull instrCompCellValIsNull = instrRetBoolBase as InstrCompColCellValIsNull;
-            if (instrCompCellValIsNull != null)
-            {
-                var execResultLocal = ExecInstrCompColCellValIsNull(excelProcessor, excelFile, excelSheet, instrCompCellValIsNull, rowNum, out condResultLocal);
-                if (!execResultLocal.Result)
-                    execResult.AddListError(execResultLocal.ListError);
-                condResult &= condResultLocal;
-            }
-        }
-
-        return execResult;
-    }
-
-    /// <summary>
     /// If A.Cell In [ "y", "yes", "ok"]
     /// the cell type should be string.
     /// </summary>
@@ -278,11 +238,10 @@ public class ExecInstrForEachRowIfThenMgr
         CellRawValueType cellType = excelProcessor.GetCellValueType(excelSheet, cell);
 
         // the cell type should be string
-        if (cellType != CellRawValueType.String) 
+        if (cellType != CellRawValueType.String)
         {
-            // TODO: pas une erreur!! un warning juste non?
-            ici();
-            execResult.AddError(new ExecResultError(ErrorCode.CellTypeStringExpected, instr.ToString()));
+            // is there an warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
+            execResult.AddWarning(ErrorCode.IfCondTypeMismatch, excelFile.FileName, excelSheet.Index, instr.ColNum, cellType);
             return execResult;
         }
 
@@ -292,9 +251,63 @@ public class ExecInstrForEachRowIfThenMgr
     }
 
     /// <summary>
+    /// If A.Cell=12 And B.Cell="Y" And ...
+    /// </summary>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelFile"></param>
+    /// <param name="excelSheet"></param>
+    /// <param name="instrCompListColCellAnd"></param>
+    /// <param name="rowNum"></param>
+    /// <param name="condResult"></param>
+    /// <returns></returns>
+    static ExecResult ExecInstrCompListColCellAnd(IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrCompListColCellAnd instrCompListColCellAnd, int rowNum, out bool condResult)
+    {
+        ExecResult execResult = new ExecResult();
+        bool condResultLocal;
+        condResult = true;
+
+        foreach (InstrRetBoolBase instrRetBoolBase in instrCompListColCellAnd.ListInstrComp)
+        {
+            // stop when the condition result becomes false
+            if (!condResult)
+                break;
+
+            //--is it: A.Cell=12 ?
+            InstrCompColCellVal instrCompCellVal = instrRetBoolBase as InstrCompColCellVal;
+            if (instrCompCellVal != null)
+            {
+                // TODO: gestion des ExecResultWarning!! 
+                var execResultLocal = ExecInstrCompColCellVal(excelProcessor, excelFile, excelSheet, instrCompCellVal, rowNum, out condResultLocal);
+                if (!execResultLocal.Result)
+                    // TODO: gestion error ou warning!
+                    execResult.AddListError(execResultLocal.ListError);
+                condResult &= condResultLocal;
+                continue;
+            }
+
+            // is it: A.Cell=null ?
+            InstrCompColCellValIsNull instrCompCellValIsNull = instrRetBoolBase as InstrCompColCellValIsNull;
+            if (instrCompCellValIsNull != null)
+            {
+                // TODO: gestion des ExecResultWarning!! 
+                var execResultLocal = ExecInstrCompColCellValIsNull(excelProcessor, excelFile, excelSheet, instrCompCellValIsNull, rowNum, out condResultLocal);
+                if (!execResultLocal.Result)
+                    // TODO: gestion error ou warning!
+                    execResult.AddListError(execResultLocal.ListError);
+                condResult &= condResultLocal;
+            }
+
+            //--is it: A.Cell In [ "y", "yes", "ok"] ?
+            // TODO:
+        }
+
+        return execResult;
+    }
+
+    /// <summary>
     /// Execute the then instruction.
-    /// For now, only InstrSetCellVal is authorized.
-    /// exp: Cell.Val= 12
+    /// InstrSetCellVal, ExecSetCellNull ExecSetCellValueBlank are authorized.
+    /// exp: Cell.Val= 12, Cell.Val= null, Cell.Val= blank
     /// </summary>
     /// <param name="excelProcessor"></param>
     /// <param name="instr"></param>

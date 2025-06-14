@@ -148,11 +148,15 @@ public enum ErrorCode
     InstrNotAllowed,
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
+    IfCondTypeMismatch,
+
 
     ItemsShouldBeNotNullAndUnique,
 
     UnableCreateInstrNotInStageBuild,
 
     CellTypeStringExpected,
-    EntryListIsEmpty
+    EntryListIsEmpty,
+
+
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NPOI.HPSF;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,17 @@ public class ExecResultWarning
         ErrorCode = errorCode;
     }
 
+    public ExecResultWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    {
+        if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
+        ErrorCode = errorCode;
+        fileName = fileName;
+        SheetNum = sheetNum;
+        ColNum = colNum;
+        CellValueType = cellValueType;
+
+    }
+
     /// <summary>
     /// When the error was created.
     /// </summary>
@@ -41,6 +53,16 @@ public class ExecResultWarning
     /// </summary>
     public ErrorCode ErrorCode { get; set; }
 
+    public string FileName { get; set; } = string.Empty;
+    
+    public int SheetNum { get; set; }
+    
+    public int ColNum { get; set; }
+    
+    public CellRawValueType CellValueType { get; set; }= CellRawValueType.Unknow;
+
+    public int Counter { get; set; } = 1;
+
     /// <summary>
     /// Parameter 1 of the error.
     /// </summary>
@@ -50,5 +72,11 @@ public class ExecResultWarning
     /// Parameter 2 of the error.
     /// </summary>
     public string Param2 { get; set; } = string.Empty;
+
+    public int IncCounter()
+    {
+        Counter++;
+        return Counter;
+    }
 
 }

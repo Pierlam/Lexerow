@@ -175,7 +175,7 @@ public class CoreBuilder
     }
 
     /// <summary>
-    /// Create Comparison instr: A.Cell NOt In [ "y", "ok", "oui" ]
+    /// Create Comparison instr: A.Cell NOT In [ "y", "ok", "oui" ]
     /// In /I ->Case Insensitive  
     /// A.Cell, listOfItems, In=true/NotIn=false, case sensitive=true
     /// </summary>

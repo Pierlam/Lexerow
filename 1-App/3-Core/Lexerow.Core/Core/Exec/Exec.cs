@@ -86,7 +86,7 @@ public class Exec
     {
         _execStart= DateTime.Now;
 
-        ExecResult execResult;
+        ExecResult execResult= new ExecResult();
 
         // not yet compiled?
         if (_coreData.Stage == CoreStage.Build)
@@ -99,14 +99,15 @@ public class Exec
 
         _coreData.Stage = CoreStage.Exec;
 
+        bool res;
         // execute saved instructions, one by one
         foreach (var instr in _coreData.ListInstr) 
         {
             if (instr.InstrType == InstrType.OpenExcel)
             {
                 _execStartCurrInstr= DateTime.Now;
-                execResult= ExecInstrOpenExcelFile(instr as InstrOpenExcel, _listExecVar, _execStartCurrInstr);
-                if(!execResult.Result)
+                res= ExecInstrOpenExcelFile(execResult, instr as InstrOpenExcel, _listExecVar, _execStartCurrInstr);
+                if(!res)
                 {
                     _coreData.Stage = CoreStage.Build;
                     return execResult;
@@ -124,8 +125,8 @@ public class Exec
             if(instr.InstrType == InstrType.ForEachRowIfThen)
             {
                 _execStartCurrInstr = DateTime.Now;
-                execResult = ExecInstrForEachRowIfThen(instr as InstrOnExcelForEachRowIfThen, _listExecVar, _execStartCurrInstr);
-                if (!execResult.Result)
+                res = ExecInstrForEachRowIfThen(execResult, instr as InstrOnExcelForEachRowIfThen, _listExecVar, _execStartCurrInstr);
+                if (!res)
                 {
                     _coreData.Stage = CoreStage.Build;
                     return execResult;
@@ -149,23 +150,22 @@ public class Exec
     /// </summary>
     /// <param name="instrOpenExcel"></param>
     /// <returns></returns>
-    ExecResult ExecInstrOpenExcelFile(InstrOpenExcel instrOpenExcel, List<ExecVar> listExecVar, DateTime execStart)
+    bool ExecInstrOpenExcelFile(ExecResult execResult, InstrOpenExcel instrOpenExcel, List<ExecVar> listExecVar, DateTime execStart)
     {
-        ExecResult result = new ExecResult();
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateStart(instrOpenExcel.FileName));
 
         if (!_excelProcessor.Open(instrOpenExcel.FileName, out IExcelFile excelFile, out ExecResultError error))
         {
-            result.AddError(error);
+            execResult.AddError(error);
             SendAppTraceExec(AppTraceLevel.Error, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error, instrOpenExcel.FileName));
-            return result;
+            return false;
         }
 
         ExecVar execVar = new ExecVar(instrOpenExcel.ExcelFileObjectName, ExecVarType.ExcelFile, excelFile);
         listExecVar.Add(execVar);
 
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Ok, instrOpenExcel.FileName));
-        return result;
+        return true;
     }
 
     /// <summary>
@@ -175,9 +175,8 @@ public class Exec
     /// <param name="instr"></param>
     /// <param name="listExecVar"></param>
     /// <returns></returns>
-    ExecResult ExecInstrForEachRowIfThen(InstrOnExcelForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
+    bool ExecInstrForEachRowIfThen(ExecResult execResult, InstrOnExcelForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
     {
-        ExecResult execResult = new ExecResult();
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateStart());
 
         // get the file object by name
@@ -186,7 +185,7 @@ public class Exec
         {
             SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error));
             execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
-            return execResult;
+            return false;
         }
 
         // check that the var value in an excel file object
@@ -196,9 +195,7 @@ public class Exec
         }
 
         // execute the instr on each cols, on each datarow
-        execResult = ExecInstrForEachRowIfThenMgr.Exec(AppTraceEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
-
-        return execResult;
+        return ExecInstrForEachRowIfThenMgr.Exec(execResult, AppTraceEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
     }
 
     /// <summary>

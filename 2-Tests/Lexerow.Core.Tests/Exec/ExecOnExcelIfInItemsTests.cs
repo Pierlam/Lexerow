@@ -53,9 +53,6 @@ public class ExecOnExcelIfInItemsTests
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
-
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
@@ -78,7 +75,11 @@ public class ExecOnExcelIfInItemsTests
         ExcelChecker.CloseExcel(stream);
     }
 
-    // test: cell pas de type string
+    /// <summary>
+    /// All cell value type in col A are integer, so the if co nditino fails each time.
+    /// But should finish with success.
+    /// Contains 4 rows.
+    /// </summary>
     [TestMethod]
     public void OnExcelIfInStringItemsErrAreNumber()
     {
@@ -105,12 +106,12 @@ public class ExecOnExcelIfInItemsTests
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
-
         execResult = core.Exec.Execute();
 
-        // should failed
+        // should finishes wwith success, (no modification)
         Assert.IsTrue(execResult.Result);
+
+        // should contains several warning
+        Assert.AreEqual(4, execResult.ListWarning.Count);
     }
 }

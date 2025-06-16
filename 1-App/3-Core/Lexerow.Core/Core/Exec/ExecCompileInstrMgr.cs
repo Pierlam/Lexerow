@@ -9,7 +9,11 @@ namespace Lexerow.Core;
 
 public class ExecCompileInstrMgr
 {
-    // check all instruction, one by one 
+    /// <summary>
+    /// check all instruction, one by one.
+    /// </summary>
+    /// <param name="listInstr"></param>
+    /// <returns></returns>
     public static ExecResult CheckAllInstr(List<InstrBase> listInstr)
     {
         ExecResult execResult = new ExecResult();

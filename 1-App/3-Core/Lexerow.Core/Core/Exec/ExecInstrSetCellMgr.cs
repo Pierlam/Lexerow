@@ -26,20 +26,18 @@ public class ExecInstrSetCellMgr
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public static ExecResult ExecSetCellVal(IExcelProcessor excelProcessor, InstrSetCellVal instrSetCellVal, IExcelSheet sheet, int rowNum)
+    public static bool ExecSetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellVal instrSetCellVal, IExcelSheet sheet, int rowNum)
     {
-        ExecResult execResult = new ExecResult();
-
         // get the cell
         IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrSetCellVal.ColNum);
 
         if(cell!=null) 
-            return ExecCellExists(excelProcessor, instrSetCellVal, sheet, rowNum, cell);
+            return ExecCellExists(execResult, excelProcessor, instrSetCellVal, sheet, rowNum, cell);
 
         // create a new cell object
         cell = excelProcessor.CreateCell(sheet, rowNum, instrSetCellVal.ColNum);
 
-        return ApplySetCellValAndType(excelProcessor, sheet, cell, instrSetCellVal.Value);
+        return ApplySetCellValAndType(execResult, excelProcessor, sheet, cell, instrSetCellVal.Value);
     }
 
     /// <summary>
@@ -50,37 +48,33 @@ public class ExecInstrSetCellMgr
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public static ExecResult ExecSetCellNull(IExcelProcessor excelProcessor, InstrSetCellNull instrSetCellNull, IExcelSheet sheet, int rowNum)
+    public static bool ExecSetCellNull(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellNull instrSetCellNull, IExcelSheet sheet, int rowNum)
     {
-        ExecResult execResult = new ExecResult();
-
         // get the cell
         IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrSetCellNull.ColNum);
 
         if (cell == null)
-            return execResult;
+            return true;
 
         // create a new cell object
         excelProcessor.DeleteCell(sheet, rowNum, instrSetCellNull.ColNum);
-        return execResult;
+        return true;
     }
 
-    public static ExecResult ExecSetCellValueBlank(IExcelProcessor excelProcessor, InstrSetCellValueBlank instrSetCellBlank, IExcelSheet sheet, int rowNum)
+    public static bool ExecSetCellValueBlank(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellValueBlank instrSetCellBlank, IExcelSheet sheet, int rowNum)
     {
-        ExecResult execResult = new ExecResult();
-
         // get the cell
         IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrSetCellBlank.ColNum);
 
         if (cell == null)
-            return execResult;
+            return true;
 
         // create a new cell object
         excelProcessor.SetCellValueBlank(cell);
-        return execResult;
+        return true;
     }
 
-    public static ExecResult ExecCellExists(IExcelProcessor excelProcessor, InstrSetCellVal instrSetCellVal, IExcelSheet sheet, int rowNum, IExcelCell cell)
+    public static bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellVal instrSetCellVal, IExcelSheet sheet, int rowNum, IExcelCell cell)
     {
         // get the cell value type
         CellRawValueType cellType = excelProcessor.GetCellValueType(sheet, cell);
@@ -90,48 +84,46 @@ public class ExecInstrSetCellMgr
 
         // yes
         if (res)
-            return ApplySetCellVal(excelProcessor, sheet, cell, instrSetCellVal.Value);
+            return ApplySetCellVal(execResult, excelProcessor, sheet, cell, instrSetCellVal.Value);
 
         // type mismatch:problem, the cell exists but the value type to set is different
-        return ApplySetCellValAndType(excelProcessor, sheet, cell, instrSetCellVal.Value);
+        return ApplySetCellValAndType(execResult, excelProcessor, sheet, cell, instrSetCellVal.Value);
     }
 
-    static ExecResult ApplySetCellVal(IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    static bool ApplySetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
-        ExecResult execResult = new ExecResult();
-
         if (value.ValueType == System.ValueType.Int)
         {
             // set the new value to the cell
             excelProcessor.SetCellValue(cell, (value as ValueInt).Val);
-            return execResult;
+            return true;
         }
         if (value.ValueType == System.ValueType.Double)
         {
             // set the new value to the cell
             excelProcessor.SetCellValue(cell, (value as ValueDouble).Val);
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.String)
         {
             // set the new value to the cell
             excelProcessor.SetCellValue(cell, (value as ValueString).Val);
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.DateOnly)
         {
             // set the new value to the cell
             excelProcessor.SetCellValue(cell, (value as ValueDateOnly).ToDouble());
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.TimeOnly)
         {
             // set the new value to the cell
             excelProcessor.SetCellValue(cell, (value as ValueTimeOnly).ToDouble());
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.DateTime)
@@ -145,57 +137,55 @@ public class ExecInstrSetCellMgr
 
             // set the new value to the cell
             excelProcessor.SetCellValue(cell, dbVal);
-            return execResult;
+            return true;
         }
 
         // type not managed
         execResult.AddError(new ExecResultError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
-        return execResult;
+        return false;
     }
 
-    static ExecResult ApplySetCellValAndType(IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    static bool ApplySetCellValAndType(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
-        ExecResult execResult = new ExecResult();
-
         if (value.ValueType == System.ValueType.String)
         {
             excelProcessor.SetCellValueString(cell, (value as ValueString).Val);
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.Int)
         {
             excelProcessor.SetCellValueInt(cell, (value as ValueInt).Val);
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.Double)
         {
             excelProcessor.SetCellValueDouble(cell, (value as ValueDouble).Val);
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.DateOnly)
         {
             excelProcessor.SetCellValueDateOnly(cell, value as ValueDateOnly);
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.DateTime)
         {
             excelProcessor.SetCellValueDateTime(cell, value as ValueDateTime);
-            return execResult;
+            return true;
         }
 
         if (value.ValueType == System.ValueType.TimeOnly)
         {
             excelProcessor.SetCellValueTimeOnly(cell, value as ValueTimeOnly);
-            return execResult;
+            return true;
         }
 
         // type not managed
         execResult.AddError(new ExecResultError(ErrorCode.ExcelCellTypeNotManaged, value.ValueType.ToString()));
-        return execResult;
+        return false;
     }
 
 }

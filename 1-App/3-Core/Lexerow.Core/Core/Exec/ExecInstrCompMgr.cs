@@ -25,22 +25,20 @@ public class ExecInstrCompMgr
     /// <param name="instrComp"></param>
     /// <param name="compResult"></param>
     /// <returns></returns>
-    public static ExecResult ExecInstrCompCellVal(IExcelProcessor excelProcessor, InstrCompColCellVal instrComp, IExcelCell excelCell, out bool compResult)
+    public static bool ExecInstrCompCellVal(ExecResult execResult, IExcelProcessor excelProcessor, InstrCompColCellVal instrComp, IExcelCell excelCell, out bool compResult)
     {
-        ExecResult execResult = new ExecResult();
-
         if (instrComp.Value.ValueType == System.ValueType.Int)
         {
             double dblVal = excelCell.GetRawValueNumeric();
             compResult= ExecCompNumeric(instrComp, dblVal, ((ValueInt)instrComp.Value).Val);
-            return execResult;  
+            return true;  
         }
 
         if (instrComp.Value.ValueType == System.ValueType.Double)
         {
             double dblVal = excelCell.GetRawValueNumeric();
             compResult = ExecCompNumeric(instrComp, dblVal, ((ValueDouble)instrComp.Value).Val);
-            return execResult;
+            return true;
         }
 
         if (instrComp.Value.ValueType== System.ValueType.String)
@@ -48,7 +46,7 @@ public class ExecInstrCompMgr
             string stringVal= excelCell.GetRawValueString();
             // only Equal or NotEqual is possible
             compResult = ExecCompString(instrComp, stringVal, ((ValueString)instrComp.Value).Val);
-            return execResult;
+            return true;
         }
 
         if (instrComp.Value.ValueType == System.ValueType.DateOnly)
@@ -56,7 +54,7 @@ public class ExecInstrCompMgr
             double doubleVal = excelCell.GetRawValueNumeric();
             DateTime dtVal = DateTime.FromOADate(doubleVal);
             compResult = ExecCompDateTime(instrComp, dtVal, ((ValueDateOnly)instrComp.Value).ToDateTime());
-            return execResult;
+            return true;
         }
 
         if (instrComp.Value.ValueType == System.ValueType.TimeOnly)
@@ -65,7 +63,7 @@ public class ExecInstrCompMgr
             double doubleVal = excelCell.GetRawValueNumeric();
             TimeOnly timeOnly= DateTimeUtils.ToTimeOnly(doubleVal);
             compResult = ExecCompTimeOnly(instrComp, timeOnly, ((ValueTimeOnly)instrComp.Value).Val);
-            return execResult;
+            return true;
         }
 
         if (instrComp.Value.ValueType == System.ValueType.DateTime)
@@ -73,11 +71,11 @@ public class ExecInstrCompMgr
             double doubleVal = excelCell.GetRawValueNumeric();
             DateTime dtVal = DateTimeUtils.ToDateTime(doubleVal);
             compResult = ExecCompDateTime(instrComp, dtVal, ((ValueDateTime)instrComp.Value).Val);
-            return execResult;
+            return true;
         }
 
         compResult = false;
-        return execResult;
+        return true;
     }
 
     /// <summary>
@@ -92,27 +90,25 @@ public class ExecInstrCompMgr
     /// <param name="excelCell"></param>
     /// <param name="compResult"></param>
     /// <returns></returns>
-    public static ExecResult ExecInstrCompCellValIsNull(IExcelProcessor excelProcessor, InstrCompColCellValIsNull instrComp, IExcelCell excelCell, out bool compResult)
+    public static bool ExecInstrCompCellValIsNull(ExecResult execResult, IExcelProcessor excelProcessor, InstrCompColCellValIsNull instrComp, IExcelCell excelCell, out bool compResult)
     {
-        ExecResult execResult = new ExecResult();
-
         if (excelCell == null || excelCell.GetRawValueString().Length==0)
         {
             // if A.Cell = null -> yes
             if (instrComp.Operator == ValCompOperator.Equal)
             {
                 compResult = true;
-                return execResult;
+                return true;
             }
             // if A.Cell = null -> no
             if (instrComp.Operator == ValCompOperator.NotEqual)
             {
                 compResult = false;
-                return execResult;
+                return true;
             }
             // XX ERROR
             compResult = false;
-            return execResult;
+            return true;
         }
 
         // the cell hasa value
@@ -120,19 +116,19 @@ public class ExecInstrCompMgr
         if (instrComp.Operator == ValCompOperator.NotEqual)
         {
             compResult = true;
-            return execResult;
+            return true;
         }
 
         // if A.Cell = null -> no
         if (instrComp.Operator == ValCompOperator.Equal)
         {
             compResult = false;
-            return execResult;
+            return true;
         }
 
         // XX ERROR
         compResult = false;
-            return execResult;
+            return true;
 
     }
 

@@ -141,7 +141,7 @@ public class Exec
 
         _coreData.Stage = CoreStage.Build;
 
-        return new ExecResult(); 
+        return execResult; 
     }
 
     /// <summary>

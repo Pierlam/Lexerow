@@ -63,12 +63,6 @@ public class ExecInstrForEachRowIfThenMgr
             _dataRowCount++;
         }
 
-        //if (!execResult.Result)
-        //{
-        //    SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedError(execStart, error));
-        //    return false;
-        //}
-
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
 
         return true;
@@ -87,8 +81,7 @@ public class ExecInstrForEachRowIfThenMgr
     /// <returns></returns>
     static bool ExecOnDataRow(ExecResult execResult, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrRetBoolBase instrIf, List<InstrBase> listInstrThen, int rowNum)
     {
-        // execute If cond on the cells of the datarow
-        bool res= ExecIfCondition(execResult, excelProcessor, excelFile, excelSheet, instrIf, rowNum, out bool condResult); 
+        bool res = ExecIfCondition(execResult, excelProcessor, excelFile, excelSheet, instrIf, rowNum, out bool condResult); 
         if(!res)
         {
             // stop on error, not an warning
@@ -194,7 +187,8 @@ public class ExecInstrForEachRowIfThenMgr
         {
             // is there an warning already existing? 
             execResult.AddWarning(ErrorCode.IfCondTypeMismatch, excelFile.FileName, excelSheet.Index, instrCompColCellVal.ColNum, cellType);
-            return false;
+            // just a warning stop here but return true
+            return true;
         }
 
         // execute the If part: comparison condition
@@ -245,7 +239,8 @@ public class ExecInstrForEachRowIfThenMgr
         {
             // is there an warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
             execResult.AddWarning(ErrorCode.IfCondTypeMismatch, excelFile.FileName, excelSheet.Index, instr.ColNum, cellType);
-            return false;
+            // just a warning stop here but return true
+            return true;
         }
 
         // execute the If part: comparison condition
@@ -278,11 +273,7 @@ public class ExecInstrForEachRowIfThenMgr
             InstrCompColCellVal instrCompCellVal = instrRetBoolBase as InstrCompColCellVal;
             if (instrCompCellVal != null)
             {
-                // TODO: gestion des ExecResultWarning!! 
                 ExecInstrCompColCellVal(execResult, excelProcessor, excelFile, excelSheet, instrCompCellVal, rowNum, out condResultLocal);
-                //if (!execResultLocal.Result)
-                    // TODO: gestion error ou warning!
-                  //  execResult.AddListError(execResultLocal.ListError);
                 condResult &= condResultLocal;
                 continue;
             }
@@ -291,11 +282,7 @@ public class ExecInstrForEachRowIfThenMgr
             InstrCompColCellValIsNull instrCompCellValIsNull = instrRetBoolBase as InstrCompColCellValIsNull;
             if (instrCompCellValIsNull != null)
             {
-                // TODO: gestion des ExecResultWarning!! 
                 ExecInstrCompColCellValIsNull(execResult, excelProcessor, excelFile, excelSheet, instrCompCellValIsNull, rowNum, out condResultLocal);
-                //if (!execResultLocal.Result)
-                    // TODO: gestion error ou warning!
-                  //  execResult.AddListError(execResultLocal.ListError);
                 condResult &= condResultLocal;
             }
 
@@ -336,12 +323,6 @@ public class ExecInstrForEachRowIfThenMgr
         execResult.AddError(new ExecResultError(ErrorCode.ThenConditionInstrNotAllowed, instr.ToString()));
         return false;
     }
-
-    //static void FireEvent(InstrBaseExecEvent execEvent)
-    //{
-    //    if (_eventOccurs != null)
-    //        _eventOccurs(execEvent);
-    //}
 
     public static void SendAppTraceExec(AppTraceLevel level, string msg, InstrBaseExecEvent execEvent)
     {

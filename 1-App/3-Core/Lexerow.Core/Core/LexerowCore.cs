@@ -3,6 +3,10 @@ using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
 
 namespace Lexerow.Core;
+
+/// <summary>
+/// Lexerow core backend application.
+/// </summary>
 public class LexerowCore
 {
     IExcelProcessor _excelProcessor;

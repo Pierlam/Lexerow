@@ -108,7 +108,7 @@ public class ExecOnExcelIfInItemsTests
 
         execResult = core.Exec.Execute();
 
-        // should finishes wwith success, (no modification)
+        // should finish with success, (no modification)
         Assert.IsTrue(execResult.Result);
 
         // should contains several warning

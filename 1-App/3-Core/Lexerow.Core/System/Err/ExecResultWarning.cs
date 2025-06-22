@@ -15,14 +15,12 @@ public class ExecResultWarning
 {
     public ExecResultWarning(ErrorCode errorCode, string param)
     {
-        DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
         Param = param;
     }
 
     public ExecResultWarning(ErrorCode errorCode)
     {
-        DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
     }
 
@@ -30,7 +28,7 @@ public class ExecResultWarning
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
         ErrorCode = errorCode;
-        fileName = fileName;
+        FileName = fileName;
         SheetNum = sheetNum;
         ColNum = colNum;
         CellValueType = cellValueType;
@@ -40,7 +38,7 @@ public class ExecResultWarning
     /// <summary>
     /// When the error was created.
     /// </summary>
-    public DateTime DateTimeCreation { get; private set; }
+    public DateTime DateTimeCreation { get; private set; } = DateTime.UtcNow;
 
     /// <summary>
     /// Type of the error: BuildInstr, ExecInstr, CompileScript

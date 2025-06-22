@@ -58,7 +58,12 @@ public class ExecOnExcelIfInItemsTests
 
         // check the number of if condition which are matched
         Assert.AreEqual(2, execResult.Insights.IfCondMatchCount);
-        Assert.AreEqual(4, execResult.Insights.AnalyzedDatarowCount);
+        Assert.AreEqual(5, execResult.Insights.AnalyzedDatarowCount);
+
+        // one warning: one A.cell type is int in place of string 
+        Assert.AreEqual(1, execResult.ListWarning.Count);
+        Assert.AreEqual(ErrorCode.IfCondTypeMismatch, execResult.ListWarning[0].ErrorCode);
+        Assert.AreEqual(1, execResult.ListWarning[0].Counter);
 
         // check the content of modified excel file
         var stream = ExcelChecker.OpenExcel(fileName);
@@ -76,11 +81,15 @@ public class ExecOnExcelIfInItemsTests
         res = ExcelChecker.CheckCellValueColRow(wb, 0, 0, 4, "X");
         Assert.IsTrue(res);
 
+        // A6 : special case, is: 12  type is int in place of string
+        res = ExcelChecker.CheckCellValueColRow(wb, 0, 0, 5, 12);
+        Assert.IsTrue(res);
+
         ExcelChecker.CloseExcel(stream);
     }
 
     /// <summary>
-    /// All cell value type in col A are integer, so the if co nditino fails each time.
+    /// All cell value type in col A are integer, so the if condition fails each time.
     /// But should finish with success.
     /// Contains 4 rows.
     /// </summary>
@@ -115,7 +124,10 @@ public class ExecOnExcelIfInItemsTests
         // should finish with success, (no modification)
         Assert.IsTrue(execResult.Result);
 
-        // should contains several warning
-        Assert.AreEqual(4, execResult.ListWarning.Count);
+        // should contains one warning
+        Assert.AreEqual(1, execResult.ListWarning.Count);
+        Assert.AreEqual(ErrorCode.IfCondTypeMismatch, execResult.ListWarning[0].ErrorCode);
+        Assert.AreEqual(4, execResult.ListWarning[0].Counter);
+
     }
 }

@@ -54,7 +54,15 @@ public class ExecResult
         Result = false;
     }
 
-    // is there an warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
+    /// <summary>
+    /// Is there a warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
+    /// </summary>
+    /// <param name="errorCode"></param>
+    /// <param name="fileName"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="colNum"></param>
+    /// <param name="cellValueType"></param>
+    /// <returns></returns>
     public ExecResultWarning? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
     {
         if(fileName== null)fileName = string.Empty; 
@@ -65,7 +73,7 @@ public class ExecResult
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
 
-        // is there an warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
+        // is there a warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
         ExecResultWarning? warning = FindWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
         if (warning != null)
         {

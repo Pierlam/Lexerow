@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
+/// <summary>
+/// Execution result insights/Informations.
+/// </summary>
 public class ExecResultInsights
 {
-    public int IfCondMatchCount { get; set; } = 0;
-
+    /// <summary>
+    /// All Analyzed datarow counter in ForEach Row/If condition.
+    /// </summary>
     public int AnalyzedDatarowCount { get; set; } = 0;
 
-    //public int DatarowModifiedCount { get; set; } = 0;
-
-    //public int DatarowCreatedCount { get; set; } = 0;
-
-    //public int DatarowRemovedCount { get; set; } = 0;
+    /// <summary>
+    /// all If condition matching in ForEach Row/If condition.
+    /// </summary>
+    public int IfCondMatchCount { get; set; } = 0;
 
     public void Clear()
     {

@@ -56,6 +56,10 @@ public class ExecOnExcelIfInItemsTests
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
+        // check the number of if condition which are matched
+        Assert.AreEqual(2, execResult.Insights.IfCondMatchCount);
+        Assert.AreEqual(4, execResult.Insights.AnalyzedDatarowCount);
+
         // check the content of modified excel file
         var stream = ExcelChecker.OpenExcel(fileName);
         var wb = ExcelChecker.GetWorkbook(stream);
@@ -64,7 +68,7 @@ public class ExecOnExcelIfInItemsTests
         bool res = ExcelChecker.CheckCellValueColRow(wb, 0, 0, 2, "X");
         Assert.IsTrue(res);
 
-        // A4 : xxx -> xxx
+        // A4 : xxx -> xxx, not modified
         res = ExcelChecker.CheckCellValueColRow(wb, 0, 0, 3, "xxx");
         Assert.IsTrue(res);
 

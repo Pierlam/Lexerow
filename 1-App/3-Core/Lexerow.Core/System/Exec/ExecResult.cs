@@ -35,6 +35,11 @@ public class ExecResult
     /// </summary>
     public List<ExecResultWarning> ListWarning { get; private set; } = new List<ExecResultWarning>();
 
+    /// <summary>
+    /// execution result insights/informations: how many datarow are modified, created or removed.
+    /// </summary>
+    public ExecResultInsights Insights { get; private set; } = new ExecResultInsights();
+
     public void AddError(ExecResultError error)
     { 
         this.ListError.Add(error);

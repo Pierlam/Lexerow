@@ -11,11 +11,6 @@ public class ExecInstrForEachRowIfThenMgr
 {
     static int _dataRowCount = 0;
 
-    /// <summary>
-    /// If Condition Fired count
-    /// </summary>
-    static int _ifConditionFiredCount = 0;
-
     static Action<AppTrace> _appTraceEvent;
 
     /// <summary>
@@ -29,7 +24,7 @@ public class ExecInstrForEachRowIfThenMgr
     {
         _appTraceEvent = appTraceEvent;
         _dataRowCount = 0;
-        _ifConditionFiredCount = 0;
+        execResult.Insights.Clear();
 
         // only one root/starting sheet
         IExcelSheet sheet = excelProcessor.GetSheetAt(excelFile, instr.SheetNum);
@@ -63,7 +58,7 @@ public class ExecInstrForEachRowIfThenMgr
             _dataRowCount++;
         }
 
-        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, _ifConditionFiredCount));
+        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.Exec", InstrForEachRowIfThenExecEvent.CreateFinishedOk(execStart, _dataRowCount, execResult.Insights.IfCondMatchCount));
 
         return true;
     }
@@ -81,6 +76,8 @@ public class ExecInstrForEachRowIfThenMgr
     /// <returns></returns>
     static bool ExecOnDataRow(ExecResult execResult, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrRetBoolBase instrIf, List<InstrBase> listInstrThen, int rowNum)
     {
+        execResult.Insights.AnalyzedDatarowCount++;
+
         bool res = ExecIfCondition(execResult, excelProcessor, excelFile, excelSheet, instrIf, rowNum, out bool condResult); 
         if(!res)
         {
@@ -91,11 +88,12 @@ public class ExecInstrForEachRowIfThenMgr
         }
 
         // the If condition return false, so doesn't execute Then instructions
-        if(!condResult)
+        if (!condResult)
             return true;
 
-        _ifConditionFiredCount++;
-        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.ExecOnDataRow", InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, _ifConditionFiredCount));
+        execResult.Insights.IfCondMatchCount++;
+
+        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.ExecOnDataRow", InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, execResult.Insights.IfCondMatchCount));
 
         // execute Then instructions
         foreach (InstrBase instrThen in listInstrThen)

@@ -47,6 +47,8 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
+        // no warning
+        Assert.AreEqual(0, execResult.ListWarning.Count);
 
         //--check the content of modified excel file
         var stream = ExcelChecker.OpenExcel(fileName);

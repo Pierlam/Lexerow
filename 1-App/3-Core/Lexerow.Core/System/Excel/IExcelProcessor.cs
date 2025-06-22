@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.System.Excel;
 public interface IExcelProcessor
 {
-    bool Open(string fileName, out IExcelFile excelFile, out CoreError coreError);
+    bool Open(string fileName, out IExcelFile excelFile, out ExecResultError coreError);
 
     bool Close(IExcelFile excelFile);
 

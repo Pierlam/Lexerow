@@ -5,19 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-public class CoreError
+
+
+/// <summary>
+/// Execution result error.
+/// </summary>
+public class ExecResultError
 {
-    public CoreError(ErrorCode errorCode, string msg)
+    public ExecResultError(ErrorCode errorCode, string param)
     {
         DateTimeCreation=DateTime.UtcNow;
         ErrorCode = errorCode;
-        Param = msg;
+        Param = param;
     }
 
-    public CoreError(ErrorCode errorCode)
+    public ExecResultError(ErrorCode errorCode)
     {
         DateTimeCreation = DateTime.UtcNow;
-        ErrorCode = errorCode;
+        ErrorCode = errorCode;       
     }
 
     /// <summary>
@@ -26,7 +31,8 @@ public class CoreError
     public DateTime DateTimeCreation { get; private set; }
 
     /// <summary>
-    /// Type of the error: License, parse, Exec or config.
+    /// Type of the error: BuildInstr, ExecInstr, CompileScript
+    /// and more: License config.
     /// </summary>
     //public ErrorType ErrorType { get; set; }
 

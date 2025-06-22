@@ -9,7 +9,7 @@ namespace Lexerow.Core.System;
 // TODO: supprimer
 public class ExecResultOpenExcel_DEL
 {
-    public CoreError Error { get; set; } = null;
+    public ExecResultError Error { get; set; } = null;
 
     public IExcelFile? ExcelFile { get; set; } = null;
 }

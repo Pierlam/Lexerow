@@ -84,71 +84,65 @@ void Test1()
 
 }
 
-// 	si est dans le range de valeur
-//If InRange(c.Value, valMin, valMax)
-// InstrInRangeCellVal
-// 
-void TestInRange()
-{
 
-}
-
-
-void Test2()
-{
-    LexerowCore core = new LexerowCore();
-
-    string fileName = @"Input\Test2.xlsx";
-   // ExecResultOpenExcel res = core.Exec.OpenExcel(fileName);
-
-    //if (res.Error != null)
-    //{
-    //    Console.WriteLine("=>Error occured!");
-    //    return;
-    //}
-
-    //core.Exec.EventOccurs = EventOccured;
-
-    // by default, the header is on row 1 
-
-    // In col(D) if cell.Value > 15 Then Cell.Value=14
-    InstrCompColCellVal exprComp = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 15);
-    //var res2 = core.Exec.SetCellsIf(res.ExcelFile, 0, "D", exprComp, 14);
-
-    //if (res.Error == null)
-    //    Console.WriteLine("Finished with success.");
-    //else Console.WriteLine("Finished with error!");
-
-}
-
-void TestDateTime()
-{
-    DateTime dt;
-    DateOnly d;
-    // Hour only??
-
-    //--DateOnly
-    // In col(D) if cell.Value > 01/01/2024 Then Cell.Value=31/12/2023
-    //ici();
-
-}
-
-void TestItemList()
+///
+/// If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
+/// by default, it is case sensitive.
+/// 
+/// Case insensitive:
+/// If A.Cell In /I [ "y", "yes", "ok" ] Then A.Cell= "X"
+///  In /CI -> In case Insensitive
+///  In    -> In case Sensitive
+void TestFuncInListOfItems()
 {
     LexerowCore core = new LexerowCore();
 
-    string fileName = @"Input\Test2.xlsx";
-    //ExecResultOpenExcel res = core.Exec.OpenExcel(fileName);
-
-    //if (res.Error != null)
-    //{
-    //    Console.WriteLine("=>Error occured!");
-    //    return;
-    //}
-
-    // If cell.Value in [ "yes", "y", "ok" ] Then SetCell Value= "X"
+    //--Create: file=OpenExcel(fileName)
+    string fileName = @"Input\TestFuncInListOfItems.xlsx";
+    ExecResult execRes = core.Builder.CreateInstrOpenExcel("file", fileName);
+    if (!execRes.Result)
+    {
+        Console.WriteLine("=>Error occured!");
+        return;
+    }
+    
     List<string> listYes = ["yes", "y", "ok"];
-    //var res2 = core.Exec.SetCellsIf(res.ExcelFile, 0, "A", listYes, false, "X");
+
+    //--Comp: A.Cell In [ "y", "yes", "ok" ]
+    // A.Cell, listOfItems, In=true/NotIn=false, case sensitive=true
+    execRes = core.Builder.CreateInstrCompCellInItems(0, listYes, true, out InstrCompColCellInStringItems instrCompIf);
+
+    //--Set: A.Cell= "X"
+    InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(0, "X");
+
+    //--If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
+    InstrIfColThen instrIfColThen;
+    execRes = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+
+    //--Create: OnExcel ForEach Row
+    execRes = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+    if (!execRes.Result)
+    {
+        Console.WriteLine("ERR, Unable to create the instrForIfThen!");
+        return;
+    }
+
+
+    execRes = core.Exec.Compile();
+    if (!execRes.Result)
+    {
+        Console.WriteLine("ERR, Unable to compile the source code");
+        return;
+    }
+
+    //--Execute all saved instruction
+    execRes = core.Exec.Execute();
+
+
+    if (execRes.Result)
+        Console.WriteLine("Finished with success.");
+    else Console.WriteLine("Finished with error!");
+
 
 }
 
@@ -167,10 +161,11 @@ DevNpoi devNpoi = new DevNpoi();
 
 //devNpoi.TestBlankNull();
 
-Test1();
+//Test1();
 
 //Test2();
 
+TestFuncInListOfItems();
 
 Console.WriteLine("ends.");
 

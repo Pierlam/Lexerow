@@ -45,12 +45,10 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
-
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
+        // no warning
+        Assert.AreEqual(0, execResult.ListWarning.Count);
 
         //--check the content of modified excel file
         var stream = ExcelChecker.OpenExcel(fileName);
@@ -92,9 +90,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        execResult = core.Exec.Compile();
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();
@@ -139,9 +134,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        execResult = core.Exec.Compile();
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();
@@ -197,9 +189,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
-
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
@@ -240,9 +229,6 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        execResult = core.Exec.Compile();
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();

@@ -100,6 +100,10 @@ public class ExecInstrForEachRowIfThenBasicTests
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
+        // check the number of if condition which are matched
+        Assert.AreEqual(5, execResult.Insights.AnalyzedDatarowCount);
+        Assert.AreEqual(3, execResult.Insights.IfCondMatchCount);
+
         //--check the content of the modified excel file
         var stream = ExcelChecker.OpenExcel(fileName);
         var wb = ExcelChecker.GetWorkbook(stream);

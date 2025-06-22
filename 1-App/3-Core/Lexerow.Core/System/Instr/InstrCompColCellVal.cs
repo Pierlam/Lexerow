@@ -26,6 +26,5 @@ public class InstrCompColCellVal : InstrRetBoolBase
 
     public ValCompOperator Operator { get; set; }
 
-    // operand, always a value?
     public ValueBase Value { get; set; }
 }

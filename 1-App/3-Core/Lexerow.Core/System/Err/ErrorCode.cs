@@ -25,6 +25,9 @@ public class ErrorParam
     public string Value { get; set; }
 }
 
+/// <summary>
+/// Error/warning code.
+/// </summary>
 public enum ErrorCode
 {
     Ok,
@@ -145,7 +148,15 @@ public enum ErrorCode
     InstrNotAllowed,
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
+    IfCondTypeMismatch,
 
+
+    ItemsShouldBeNotNullAndUnique,
 
     UnableCreateInstrNotInStageBuild,
+
+    CellTypeStringExpected,
+    EntryListIsEmpty,
+
+
 }

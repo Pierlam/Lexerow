@@ -12,12 +12,12 @@ using NPOI.XWPF.UserModel;
 namespace Lexerow.Core.ExcelLayer;
 public class ExcelProcessorNpoi : IExcelProcessor
 {
-    public bool Open(string fileName, out IExcelFile excelFile, out CoreError error)
+    public bool Open(string fileName, out IExcelFile excelFile, out ExecResultError error)
     {
         if (!File.Exists(fileName)) 
         {
             excelFile = null;
-            error = new CoreError(ErrorCode.FileNotFound, fileName);
+            error = new ExecResultError(ErrorCode.FileNotFound, fileName);
             return false;
         }
 
@@ -33,7 +33,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
         catch (Exception ex) 
         {
             excelFile = null;
-            error= new CoreError(ErrorCode.ExcelUnableOpenFile, ex.Message);
+            error= new ExecResultError(ErrorCode.ExcelUnableOpenFile, ex.Message);
             return false;
         }
     }

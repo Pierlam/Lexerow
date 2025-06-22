@@ -48,6 +48,9 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
 
+        // one warning, last datarow, col A value type is string
+        Assert.AreEqual(1, execResult.ListWarning.Count);
+
         //--check the content of modified excel file
         var stream = ExcelChecker.OpenExcel(fileName);
         var wb = ExcelChecker.GetWorkbook(stream);

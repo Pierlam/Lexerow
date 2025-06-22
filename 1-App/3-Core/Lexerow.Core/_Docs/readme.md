@@ -1,7 +1,8 @@
 ﻿# What is Lexerow ?
-Lexerow is a backend dotnet library to process easily datarows and cells in Excel files (xlsx).
 
-You can for example detect empty cell in a column and set a specific value.
+Lexerow is a backend dotnet library to process easily datarows and cells in Excel files.
+
+For example you can detect empty cell in a column and set a specific value.
 You can compare a cell value to a specific value and then put a new value in the same cell row or in another cell.
 
 Lexerow is developed in C# and can be used in any dotnet application.
@@ -12,7 +13,7 @@ Lexerow is an open source library.
 
 ## Problem: empty cells
 
-You have an Excel file containing a datatable: the first line is the header, and others are datarows of the table.
+You have an Excel file containing a datatable in the first sheet: the first line is the header, and others are datarows of the table.
 In column B, some cells are empty, and it's a problem to do calculation. It would better to have a value in each cell.
 
 ```
@@ -88,6 +89,7 @@ core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
 core.Exec.Execute();
 ```
 
+
 # Project Github 
 
 The source code is hosted on github here:
@@ -100,7 +102,13 @@ https://github.com/Pierlam/Lexerow
 It is possible to check many cell type in If instruction: IsNull, Int, Double, DateTime, DateOnly and also TimeOnly.
 
 ```
+If A.Cell = null
+If A.Cell = blank
 If A.Cell = 12
+If A.Cell = "tchao"
+If A.Cell > 02/19/2025
+If A.Cell < 01/02/2020 12:34:56
+if A.Cell in ["yes", "y", "ok"]
 ```
 
 You can put one or more Set Cell Value instruction in the Then part. 
@@ -110,11 +118,11 @@ It is also possible to remove the cell by setting null.
 Another option is to set Blank to a cell value, in this case the style of cell (BgColor, FgColor, Border,..) will remain.
 
 ```
-A.Cell= 13
-A.Cell= "Hello"
-A.Cell= 12/04/2025
-A.Cell= null
-A.Cell= blank
+Then A.Cell= 13
+Then A.Cell= "Hello"
+Then A.Cell= 12/04/2025
+Then A.Cell= null
+Then A.Cell= blank
 ```
 
 You can find more information on how use all available functions on the library here:

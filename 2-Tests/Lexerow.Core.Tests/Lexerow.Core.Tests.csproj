@@ -24,6 +24,12 @@
     <None Update="10-Files\ForIfCellIsNullSetDate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="10-Files\OnExcelIfInStringItemsErrAreNumber.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-Files\OnExcelIfInStringItemsOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="10-Files\ForIfThenDateTimeOnDateOnly.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

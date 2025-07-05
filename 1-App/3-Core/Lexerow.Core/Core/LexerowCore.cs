@@ -41,6 +41,26 @@ public class LexerowCore
     /// </summary>
     public Exec Exec { get; private set; }
 
+    public ExecResult CompileProgram()
+    {
+        return Exec.CompileProgram();
+    }
+
+    public ExecResult CompileProgram(string programName)
+    {
+        return Exec.CompileProgram(programName);
+    }
+
+    public ExecResult ExecuteProgram()
+    {
+        return Exec.ExecuteProgram();
+    }
+
+    public ExecResult ExecuteProgram(string programName)
+    {
+        return Exec.ExecuteProgram(programName);
+    }
+
     public Action<AppTrace> AppTraceEvent 
     {
         get { return AppTraceEvent; } 

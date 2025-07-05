@@ -23,11 +23,11 @@ public class OpenCloseExcelFIleTests
         ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
+        execResult = core.CompileProgram();
         Assert.IsTrue(execResult.Result);
 
         //--Execute all saved instruction
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
     }
 
@@ -42,11 +42,11 @@ public class OpenCloseExcelFIleTests
         ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
+        execResult = core.CompileProgram();
         Assert.IsTrue(execResult.Result);
 
         //--Execute all saved instruction
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsFalse(execResult.Result);
         Assert.AreEqual(ErrorCode.FileNotFound, execResult.ListError[0].ErrorCode);
         Assert.AreEqual(fileName, execResult.ListError[0].Param);

@@ -43,7 +43,7 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         //core.Exec.FireEvent = EventOccured;
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         // check the content of modified excel file
@@ -91,7 +91,7 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         //core.Exec.FireEvent = EventOccured;
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         // check the number of if condition which are matched
@@ -146,7 +146,7 @@ public class ExecInstrForEachRowIfThenBasicTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         //--start checks

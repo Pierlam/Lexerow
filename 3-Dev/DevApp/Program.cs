@@ -68,7 +68,7 @@ void Test1()
     }
 
     //--Execute all saved instruction
-    execRes = core.Exec.Execute();
+    execRes = core.ExecuteProgram();
 
     if (execRes.Result)
         Console.WriteLine("Finished with success.");
@@ -120,7 +120,7 @@ void TestFuncInListOfItems()
     }
 
 
-    execRes = core.Exec.Compile();
+    execRes = core.CompileProgram();
     if (!execRes.Result)
     {
         Console.WriteLine("ERR, Unable to compile the source code");
@@ -128,7 +128,7 @@ void TestFuncInListOfItems()
     }
 
     //--Execute all saved instruction
-    execRes = core.Exec.Execute();
+    execRes = core.ExecuteProgram();
 
 
     if (execRes.Result)

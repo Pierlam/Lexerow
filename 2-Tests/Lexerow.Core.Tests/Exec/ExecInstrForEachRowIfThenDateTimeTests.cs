@@ -45,7 +45,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
         // no warning
         Assert.AreEqual(0, execResult.ListWarning.Count);
@@ -92,7 +92,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         //--check the content of modified excel file
@@ -136,7 +136,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         //--check the content of modified excel file
@@ -189,7 +189,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         //--check the content of modified excel file
@@ -231,7 +231,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         //--check the content of modified excel file

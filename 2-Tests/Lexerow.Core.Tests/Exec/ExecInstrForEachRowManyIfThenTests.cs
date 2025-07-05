@@ -56,7 +56,7 @@ public class ExecInstrForEachRowManyIfThenTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, listInstrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         // check the content of modified excel file

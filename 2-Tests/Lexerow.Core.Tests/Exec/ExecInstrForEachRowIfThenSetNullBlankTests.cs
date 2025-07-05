@@ -42,10 +42,10 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
+        execResult = core.CompileProgram();
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         // one warning, last datarow, col A value type is string
@@ -97,10 +97,10 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
         execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Compile();
+        execResult = core.CompileProgram();
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Exec.Execute();
+        execResult = core.ExecuteProgram();
         Assert.IsTrue(execResult.Result);
 
         //--check the content of modified excel file

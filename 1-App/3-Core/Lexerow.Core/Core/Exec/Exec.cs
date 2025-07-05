@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Lexerow.Core;
 
@@ -42,13 +43,8 @@ public class Exec
 
     public Action<AppTrace> AppTraceEvent { get; set; }
 
-    //public bool AddInstr(InstrBase instrBase)
-    //{
-    //    _coreData.ListInstr.Add(instrBase);
-    //    return true;
-    //}
 
-    public ExecResult Compile()
+    public ExecResult CompileProgram()
     {
         ExecResult execResult = new ExecResult();
 
@@ -58,14 +54,41 @@ public class Exec
             return execResult;
         }
 
-        return Compile(_coreData.CurrProgramInstr);
+        return CompileProgram(_coreData.CurrProgramInstr);
+    }
+
+    public ExecResult CompileProgram(string programName)
+    {
+        ExecResult execResult = new ExecResult();
+
+        if (_coreData.CurrProgramInstr == null)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist, null));
+            return execResult;
+        }
+
+        if (string.IsNullOrWhiteSpace(programName))
+        {
+            if (programName == null) programName = string.Empty;
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, programName));
+            return execResult;
+        }
+
+        ProgramInstr program = _coreData.GetProgramByName(programName);
+        if (program == null)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramNotFound, programName));
+            return execResult;
+        }
+
+        return CompileProgram(_coreData.CurrProgramInstr);
     }
 
     /// <summary>
     /// Execute the current program.
     /// </summary>
     /// <returns></returns>
-    public ExecResult Execute()
+    public ExecResult ExecuteProgram()
     {
         ExecResult execResult = new ExecResult();
 
@@ -83,7 +106,7 @@ public class Exec
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public ExecResult Execute(string name)
+    public ExecResult ExecuteProgram(string name)
     {
         ExecResult execResult = new ExecResult();
 
@@ -104,7 +127,7 @@ public class Exec
         return ExecuteProgram(program);
     }
 
-    ExecResult Compile(ProgramInstr program)
+    ExecResult CompileProgram(ProgramInstr program)
     {
         ExecResult execResult = new ExecResult();
 
@@ -143,7 +166,7 @@ public class Exec
         // not yet compiled?
         if (program.Stage == CoreStage.Build)
         {
-            execResult = Compile();
+            execResult = CompileProgram();
             if (!execResult.Result)
                 // error occured during the compilation process, bye
                 return execResult;

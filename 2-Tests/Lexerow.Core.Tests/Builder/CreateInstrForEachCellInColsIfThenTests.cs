@@ -21,21 +21,21 @@ public  class CreateInstrForEachCellInColsIfThenTests
 
         string fileName = @"..\..\..\10-Files\TestCoreOpenClose.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Create: D.Cell= 12
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(3, 12);
 
         // If D.Cell > 50 Then D.Cell= 12
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsTrue(execResult.Result);
@@ -47,18 +47,18 @@ public  class CreateInstrForEachCellInColsIfThenTests
         LexerowCore core = new LexerowCore();
 
         //--Create: D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Create: D.Cell= 12
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(3, 12);
 
         // If D.Cell > 50 Then D.Cell= 12
         InstrIfColThen instrIfColThen;
-        ExecResult execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        ExecResult execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);
@@ -72,18 +72,18 @@ public  class CreateInstrForEachCellInColsIfThenTests
         LexerowCore core = new LexerowCore();
 
         //--Create: D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Create: D.Cell= 12
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(3, 12);
 
         // If D.Cell > 50 Then D.Cell= 12
         InstrIfColThen instrIfColThen;
-        ExecResult execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        ExecResult execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //--create the instr ForEach x If x Then
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen(null, 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen(null, 0, 1, instrIfColThen);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);

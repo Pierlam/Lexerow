@@ -158,5 +158,8 @@ public enum ErrorCode
     CellTypeStringExpected,
     EntryListIsEmpty,
 
-
+    ProgramWrongName,
+    ProgramNameAlreadyUsed,
+    ProgramNotFound,
+    NoCurrentProgramExist,
 }

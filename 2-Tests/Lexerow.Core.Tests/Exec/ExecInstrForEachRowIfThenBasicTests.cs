@@ -23,28 +23,25 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         string fileName = @"10-Files\Greater50Set12.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--Comparison: D.Cell > 50 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
         //--Set: D.Cell= 12
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(3, 12);
         List<InstrBase> listInstrThen = [instrSetValThen];
 
         // If D.Cell>50 Then D.Cell= 12
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //core.Exec.FireEvent = EventOccured;
-
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
@@ -75,27 +72,24 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         string fileName = @"10-Files\ForIfCellIsNullSetNA.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--Comp: B.Cell=Null
-        InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1);
+        InstrCompColCellValIsNull instrCompIf = core.ProgBuilder.CreateInstrCompCellValIsNull(1);
 
         //--Set: B.Cell="NA"
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, "NA");
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(1, "NA");
 
         // If B.Cell= null Then B.Cell= "NA"
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //core.Exec.FireEvent = EventOccured;
-
-        execResult = core.Exec.Compile();
-        Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();
         Assert.IsTrue(execResult.Result);
@@ -135,24 +129,21 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         string fileName = @"10-Files\ForIfCellIsNullSetDate.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--Create Comp instr: B.Cell=Null
-        InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1);
+        InstrCompColCellValIsNull instrCompIf = core.ProgBuilder.CreateInstrCompCellValIsNull(1);
 
         //--Create: C.Cell= "09/02/2025 00:00:00"
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(2, new DateTime(2025,02,09));
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(2, new DateTime(2025,02,09));
 
         // If B.Cell= null Then C.Cell= "09/02/2025 00:00:00"
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        execResult = core.Exec.Compile();
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();

@@ -34,23 +34,23 @@ public class ExecOnExcelIfInItemsTests
 
         string fileName = @"10-Files\OnExcelIfInStringItemsOk.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--A.Cell In [ "y", "yes", "ok" ] 
         List<string> listVal = ["y", "yes", "ok"];
-        execResult = core.Builder.CreateInstrCompCellInItems(0, listVal, true, out InstrCompColCellInStringItems instrCompIf);
+        execResult = core.ProgBuilder.CreateInstrCompCellInItems(0, listVal, true, out InstrCompColCellInStringItems instrCompIf);
         Assert.IsTrue(execResult.Result);
 
         //--A.Cell= "X"
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(0, "X");
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(0, "X");
 
         // If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();
@@ -100,23 +100,23 @@ public class ExecOnExcelIfInItemsTests
 
         string fileName = @"10-Files\OnExcelIfInStringItemsErrAreNumber.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--A.Cell In [ "y", "yes", "ok" ] 
         List<string> listVal = ["y", "yes", "ok"];
-        execResult = core.Builder.CreateInstrCompCellInItems(0, listVal, true, out InstrCompColCellInStringItems instrCompIf);
+        execResult = core.ProgBuilder.CreateInstrCompCellInItems(0, listVal, true, out InstrCompColCellInStringItems instrCompIf);
         Assert.IsTrue(execResult.Result);
 
         //--A.Cell= "X"
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(0, "X");
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(0, "X");
 
         // If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         // ForEeach Row IfColThen
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();

@@ -9,16 +9,59 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core;
-public class CoreBuilder
+
+/// <summary>
+/// Program builder.
+/// By adding instructions.
+/// don't manage script/source code.
+/// </summary>
+public class ProgBuilder
 {
+    /// <summary>
+    /// Contains programs
+    /// </summary>
     CoreData _coreData;
 
-    public CoreBuilder(CoreData coreData)
+    public ProgBuilder(CoreData coreData)
     {
         _coreData = coreData;
     }
 
     public Action<AppTrace> AppTraceEvent;
+
+    /// <summary>
+    /// Create a new program.
+    /// Check the name
+    /// Becomes the current program.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public ExecResult CreateProgram(string name)
+    {
+        ExecResult execResult = new ExecResult();
+
+        // check the name syntax
+        if (!ItemsCheckUtils.CheckIdSyntax(name))
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, name));
+            return execResult;
+        }
+
+        // the name should not be already used
+        if (_coreData.GetProgramByName(name) != null) 
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramNameAlreadyUsed, name));
+            return execResult;
+        }
+
+        // create the program and save it
+        ProgramInstr programInstr = new ProgramInstr(name);
+        _coreData.ListProgram.Add(programInstr);
+
+        // becomes the current one
+        _coreData.CurrProgramInstr = programInstr;
+        return execResult;
+    }
 
     /// <summary>
     /// Create an instruction, Cell Value comparison.
@@ -288,8 +331,15 @@ public class CoreBuilder
         ExecResult execResult = new ExecResult();
         SendAppTrace(AppTraceLevel.Info, "CreateInstrOpenExcel: Start");
 
+        // no current program, error
+        if(_coreData.CurrProgramInstr == null)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist));
+            return execResult;
+        }
+
         // possible to create the instr?
-        if (_coreData.Stage != CoreStage.Build)
+        if (_coreData.CurrProgramInstr.Stage != CoreStage.Build)
         {
             execResult.AddError(new ExecResultError(ErrorCode.UnableCreateInstrNotInStageBuild, "OpenExcel"));
             return execResult;
@@ -334,7 +384,7 @@ public class CoreBuilder
         }
 
         SendAppTrace(AppTraceLevel.Info, "CreateInstrOpenExcel: End");
-        _coreData.ListInstr.Add(instrOpenExcel);
+        _coreData.CurrProgramInstr.ListInstr.Add(instrOpenExcel);
         return execResult;
     }
 
@@ -476,8 +526,15 @@ public class CoreBuilder
     {
         ExecResult execResult = new ExecResult();
 
+        // no current program, error
+        if (_coreData.CurrProgramInstr == null)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist));
+            return execResult;
+        }
+
         // possible to create the instr?
-        if (_coreData.Stage != CoreStage.Build)
+        if (_coreData.CurrProgramInstr.Stage != CoreStage.Build)
         {
             execResult.AddError(new ExecResultError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
             return execResult;
@@ -524,7 +581,7 @@ public class CoreBuilder
 
         // by default data table header is on the row 0, first data row is 1
         InstrOnExcelForEachRowIfThen instrForEachRowIfThen = new InstrOnExcelForEachRowIfThen(excelFileObjectName, sheetNum, firstDataRowNumline, listInstrIfColThen);
-        _coreData.ListInstr.Add(instrForEachRowIfThen);
+        _coreData.CurrProgramInstr.ListInstr.Add(instrForEachRowIfThen);
         return execResult;
     }
 
@@ -535,11 +592,15 @@ public class CoreBuilder
     /// <returns></returns>
     bool FindExcelFileName(string excelFileName)
     {
+        // no current program, error
+        if (_coreData.CurrProgramInstr == null)
+            return false;
+
         // starting from the last instr, back to the first one
-        for (int i = _coreData.ListInstr.Count() - 1; i >= 0; i--)
+        for (int i = _coreData.CurrProgramInstr.ListInstr.Count() - 1; i >= 0; i--)
         {
             // is it an openExcel instr?
-            InstrBase instr = _coreData.ListInstr[i];
+            InstrBase instr = _coreData.CurrProgramInstr.ListInstr[i];
             InstrOpenExcel instrOpenExcel = instr as InstrOpenExcel;
             if (instrOpenExcel != null)
             {
@@ -557,11 +618,15 @@ public class CoreBuilder
     /// <returns></returns>
     bool FindExcelFileObjectName(string excelFileObjectName)
     {
+        // no current program, error
+        if (_coreData.CurrProgramInstr == null)
+            return false;
+
         // starting from the last instr, back to the first one
-        for(int i = _coreData.ListInstr.Count() - 1;i>=0; i--)
+        for (int i = _coreData.CurrProgramInstr.ListInstr.Count() - 1;i>=0; i--)
         {
             // is it an openExcel instr?
-            InstrBase instr= _coreData.ListInstr[i];
+            InstrBase instr= _coreData.CurrProgramInstr.ListInstr[i];
             InstrOpenExcel instrOpenExcel= instr as InstrOpenExcel;
             if (instrOpenExcel != null)
             {

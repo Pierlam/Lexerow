@@ -36,28 +36,25 @@ public class ExecInstrForEachRowIfAndThenTests
 
         string fileName = @"10-Files\TestForEachRowIfAndThen.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //-- A.Cell>10 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
 
         //-- A.Cell<50 
-        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LessThan, 50);
+        InstrCompColCellVal instrCompIf2 = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.LessThan, 50);
 
         //--B.Cell= 12
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 12);
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(1, 12);
 
         // If A.Cell>10 And A.Cell<50 Then B.Cell= 12
         InstrIfColThen instrIfColThen;
         List<InstrRetBoolBase> listInstrCompIf = [instrCompIf, instrCompIf2];
-        execResult = core.Builder.CreateInstrIfColAndThen(listInstrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColAndThen(listInstrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         // ForEach Row If A.Cell>10 And A.Cell<50 Then B.Cell= 12
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-        Assert.IsTrue(execResult.Result);
-
-        execResult = core.Exec.Compile();
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();

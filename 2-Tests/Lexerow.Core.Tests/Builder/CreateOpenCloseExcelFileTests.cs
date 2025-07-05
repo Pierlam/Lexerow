@@ -18,7 +18,7 @@ public sealed class CreateOpenCloseExcelFileTests
 
         string fileName = @"..\..\..\10-Files\TestCoreOpenClose.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         Assert.IsNotNull(execResult);
         Assert.IsTrue(execResult.Result);
@@ -34,7 +34,7 @@ public sealed class CreateOpenCloseExcelFileTests
 
         //string fileName = @"..\..\..\10-Files\TestCoreOpenClose.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", null);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", null);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);
@@ -51,7 +51,7 @@ public sealed class CreateOpenCloseExcelFileTests
 
         string fileName = @"..\..\..\10-Files\TestCoreOpenClose.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("fi<!ù$=le", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("fi<!ù$=le", fileName);
 
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);
@@ -70,13 +70,13 @@ public sealed class CreateOpenCloseExcelFileTests
 
         string fileName = @"..\..\..\10-Files\TestCoreOpenClose.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         Assert.IsNotNull(execResult);
         Assert.IsTrue(execResult.Result);
 
         // 2nd time!
-        execResult = core.Builder.CreateInstrOpenExcel("file2", fileName);
+        execResult = core.ProgBuilder.CreateInstrOpenExcel("file2", fileName);
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);
         Assert.AreEqual(ErrorCode.ExcelFileNameAlreadyOpen, execResult.ListError[0].ErrorCode);
@@ -92,14 +92,14 @@ public sealed class CreateOpenCloseExcelFileTests
 
         string fileName = @"..\..\..\10-Files\MyExcel.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         Assert.IsNotNull(execResult);
         Assert.IsTrue(execResult.Result);
 
         // 2nd time!
         fileName = @"..\..\..\10-Files\MyExcel2.xlsx";
-        execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
         Assert.IsNotNull(execResult);
         Assert.IsFalse(execResult.Result);
         // TODO:

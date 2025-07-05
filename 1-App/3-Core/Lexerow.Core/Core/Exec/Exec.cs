@@ -26,8 +26,6 @@ public class Exec
 
     List<ExecVar> _listExecVar = new List<ExecVar>();
 
-    DateTime _execStart;
-
     DateTime _execStartCurrInstr;
 
     /// <summary>
@@ -44,20 +42,76 @@ public class Exec
 
     public Action<AppTrace> AppTraceEvent { get; set; }
 
-    public bool AddInstr(InstrBase instrBase)
-    {
-        _coreData.ListInstr.Add(instrBase);
-        return true;
-    }
+    //public bool AddInstr(InstrBase instrBase)
+    //{
+    //    _coreData.ListInstr.Add(instrBase);
+    //    return true;
+    //}
 
     public ExecResult Compile()
+    {
+        ExecResult execResult = new ExecResult();
+
+        if (_coreData.CurrProgramInstr == null)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist, null));
+            return execResult;
+        }
+
+        return Compile(_coreData.CurrProgramInstr);
+    }
+
+    /// <summary>
+    /// Execute the current program.
+    /// </summary>
+    /// <returns></returns>
+    public ExecResult Execute()
+    {
+        ExecResult execResult = new ExecResult();
+
+        if (_coreData.CurrProgramInstr == null)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist, null));
+            return execResult;
+        }
+
+        return ExecuteProgram(_coreData.CurrProgramInstr);
+    }
+
+    /// <summary>
+    /// Execute a program by the name.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public ExecResult Execute(string name)
+    {
+        ExecResult execResult = new ExecResult();
+
+        if(string.IsNullOrWhiteSpace(name))
+        {
+            if (name == null) name = string.Empty;
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, name));
+            return execResult;
+        }
+
+        ProgramInstr program= _coreData.GetProgramByName(name);
+        if(program==null)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramNotFound, name));
+            return execResult;
+        }
+
+        return ExecuteProgram(program);
+    }
+
+    ExecResult Compile(ProgramInstr program)
     {
         ExecResult execResult = new ExecResult();
 
         SendAppTraceCompile(AppTraceLevel.Info, "Compile all: Start");
 
         // possible to create the instr?
-        if (_coreData.Stage != CoreStage.Build)
+        if (program.Stage != CoreStage.Build)
         {
             execResult.AddError(new ExecResultError(ErrorCode.UnableCreateInstrNotInStageBuild, null));
             SendAppTraceCompile(AppTraceLevel.Error, ErrorCode.UnableCreateInstrNotInStageBuild.ToString());
@@ -65,14 +119,14 @@ public class Exec
         }
 
         // check all instruction, one by one 
-        execResult= ExecCompileInstrMgr.CheckAllInstr(_coreData.ListInstr);
-        if(!execResult.Result)
+        execResult = ExecCompileInstrMgr.CheckAllInstr(program.ListInstr);
+        if (!execResult.Result)
         {
             SendAppTraceCompile(AppTraceLevel.Error, "CheckAllInstr: " + execResult.ListError[0].Param);
-            _coreData.Stage = CoreStage.InstrError;
+            program.Stage = CoreStage.InstrError;
         }
 
-        _coreData.Stage = CoreStage.ReadyToExec;
+        program.Stage = CoreStage.ReadyToExec;
         SendAppTraceCompile(AppTraceLevel.Info, "Compile all: End");
         return execResult;
     }
@@ -82,14 +136,12 @@ public class Exec
     /// Need to compile instr before execute them.
     /// </summary>
     /// <returns></returns>
-    public ExecResult Execute()
+    ExecResult ExecuteProgram(ProgramInstr program)
     {
-        _execStart= DateTime.Now;
-
         ExecResult execResult= new ExecResult();
 
         // not yet compiled?
-        if (_coreData.Stage == CoreStage.Build)
+        if (program.Stage == CoreStage.Build)
         {
             execResult = Compile();
             if (!execResult.Result)
@@ -97,11 +149,11 @@ public class Exec
                 return execResult;
         }
 
-        _coreData.Stage = CoreStage.Exec;
+        program.Stage = CoreStage.Exec;
 
         bool res;
         // execute saved instructions, one by one
-        foreach (var instr in _coreData.ListInstr) 
+        foreach (var instr in program.ListInstr) 
         {
             if (instr.InstrType == InstrType.OpenExcel)
             {
@@ -109,7 +161,7 @@ public class Exec
                 res= ExecInstrOpenExcelFile(execResult, instr as InstrOpenExcel, _listExecVar, _execStartCurrInstr);
                 if(!res)
                 {
-                    _coreData.Stage = CoreStage.Build;
+                    program.Stage = CoreStage.Build;
                     return execResult;
                 }
 
@@ -128,7 +180,7 @@ public class Exec
                 res = ExecInstrForEachRowIfThen(execResult, instr as InstrOnExcelForEachRowIfThen, _listExecVar, _execStartCurrInstr);
                 if (!res)
                 {
-                    _coreData.Stage = CoreStage.Build;
+                    program.Stage = CoreStage.Build;
                     return execResult;
                 }
  
@@ -139,7 +191,7 @@ public class Exec
         // close all opened excel file, if its not done
         CloseAllOpenedExcelFile(_listExecVar);
 
-        _coreData.Stage = CoreStage.Build;
+        program.Stage = CoreStage.Build;
 
         return execResult; 
     }

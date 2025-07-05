@@ -20,14 +20,21 @@ public class LexerowCore
     {
         _excelProcessor= new ExcelProcessorNpoi();
 
-        Builder= new CoreBuilder(_coreData);
+        ProgBuilder= new ProgBuilder(_coreData);
         Exec = new Exec(_coreData, _excelProcessor);
+
+        // create the default program, becomes the current one
+        ProgramInstr programInstr= new ProgramInstr("Default");
+        programInstr.IsDefault = true;
+        _coreData.ListProgram.Add(programInstr);
+        _coreData.CurrProgramInstr= programInstr;
     }
 
     /// <summary>
-    /// Build instruction, expression,...
+    /// Build program by adding instructions.
+    /// Don't manage script/source code.
     /// </summary>
-    public CoreBuilder Builder { get; private set; }
+    public ProgBuilder ProgBuilder { get; private set; }
 
     /// <summary>
     /// Execute instructions.
@@ -38,7 +45,7 @@ public class LexerowCore
     {
         get { return AppTraceEvent; } 
         set { 
-            Builder.AppTraceEvent = value;
+            ProgBuilder.AppTraceEvent = value;
             Exec.AppTraceEvent = value;
         }
     }

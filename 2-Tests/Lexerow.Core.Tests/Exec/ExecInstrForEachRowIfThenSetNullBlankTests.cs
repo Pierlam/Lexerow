@@ -26,20 +26,20 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
 
         string fileName = @"10-Files\ForIfThenSetNullBasic.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: A.Cell > 10
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
 
         //--Create: B.Cell= null
-        InstrSetCellNull instrSetValThen = core.Builder.CreateInstrSetCellNull(1);
+        InstrSetCellNull instrSetValThen = core.ProgBuilder.CreateInstrSetCellNull(1);
 
         // If A.Cell > 10 Then B.Cell= null
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -81,20 +81,20 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
 
         string fileName = @"10-Files\ForIfThenSetBlankBasic.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //--Create: A.Cell > 10
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
 
         //--Create: B.Cell= blank
-        InstrSetCellValueBlank instrSetValThen = core.Builder.CreateInstrSetCellValueBlank(1);
+        InstrSetCellValueBlank instrSetValThen = core.ProgBuilder.CreateInstrSetCellValueBlank(1);
 
         // If A.Cell > 10 Then B.Cell= blank
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

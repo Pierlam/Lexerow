@@ -42,7 +42,7 @@ void Test1()
 
     //--Create: file=OpenExcel(fileName)
     string fileName = @"Input\BasicDataTable.xlsx";
-    ExecResult execRes = core.Builder.CreateInstrOpenExcel("file", fileName);
+    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
     if(!execRes.Result)
     {
         Console.WriteLine("=>Error occured!");
@@ -50,28 +50,20 @@ void Test1()
     }
 
     //--Comp: D.Cell > 50 
-    InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
+    InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
 
     //--Set: D.Cell= 12
-    InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(3, 12);
+    InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(3, 12);
 
     //--If D.Cell > 50 Then D.Cell= 12
     InstrIfColThen instrIfColThen;
-    execRes = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+    execRes = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
 
     //--Create: OnExcel ForEach Row
-    execRes = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+    execRes = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
     if(!execRes.Result)
     {
         Console.WriteLine("ERR, Unable to create the instrForIfThen!");
-        return;
-    }
-
-
-    execRes = core.Exec.Compile();
-    if (!execRes.Result)
-    {
-        Console.WriteLine("ERR, Unable to compile the source code");
         return;
     }
 
@@ -90,7 +82,7 @@ void Test1()
 /// by default, it is case sensitive.
 /// 
 /// Case insensitive:
-/// If A.Cell In /I [ "y", "yes", "ok" ] Then A.Cell= "X"
+/// If A.Cell In [ "y", "yes", "ok" ] /I Then A.Cell= "X"
 ///  In /CI -> In case Insensitive
 ///  In    -> In case Sensitive
 void TestFuncInListOfItems()
@@ -99,7 +91,7 @@ void TestFuncInListOfItems()
 
     //--Create: file=OpenExcel(fileName)
     string fileName = @"Input\TestFuncInListOfItems.xlsx";
-    ExecResult execRes = core.Builder.CreateInstrOpenExcel("file", fileName);
+    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
     if (!execRes.Result)
     {
         Console.WriteLine("=>Error occured!");
@@ -110,17 +102,17 @@ void TestFuncInListOfItems()
 
     //--Comp: A.Cell In [ "y", "yes", "ok" ]
     // A.Cell, listOfItems, In=true/NotIn=false, case sensitive=true
-    execRes = core.Builder.CreateInstrCompCellInItems(0, listYes, true, out InstrCompColCellInStringItems instrCompIf);
+    execRes = core.ProgBuilder.CreateInstrCompCellInItems(0, listYes, true, out InstrCompColCellInStringItems instrCompIf);
 
     //--Set: A.Cell= "X"
-    InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(0, "X");
+    InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(0, "X");
 
     //--If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
     InstrIfColThen instrIfColThen;
-    execRes = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+    execRes = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
 
     //--Create: OnExcel ForEach Row
-    execRes = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
+    execRes = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
     if (!execRes.Result)
     {
         Console.WriteLine("ERR, Unable to create the instrForIfThen!");

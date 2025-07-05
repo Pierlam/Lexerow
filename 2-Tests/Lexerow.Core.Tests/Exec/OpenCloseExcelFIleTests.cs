@@ -20,7 +20,7 @@ public class OpenCloseExcelFIleTests
 
         string fileName = @"10-Files\Test2OpenClose.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();
@@ -39,7 +39,7 @@ public class OpenCloseExcelFIleTests
 
         string fileName = @"10-Files\blablabla.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Compile();

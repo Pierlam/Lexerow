@@ -26,34 +26,34 @@ public class ExecInstrForEachRowManyIfThenTests
 
         string fileName = @"10-Files\TestForEachRow2IfThen.xlsx";
 
-        ExecResult execResult = core.Builder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
 
         //-- A.Cell<10 
-        InstrCompColCellVal instrCompIf = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.LessThan, 10);
+        InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.LessThan, 10);
 
         //--B.Cell= 10
-        InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 10);
+        InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(1, 10);
 
         // instr1: If A.Cell<10 Then B.Cell= 10
         InstrIfColThen instrIfColThen;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         //-- A.Cell>50
-        InstrCompColCellVal instrCompIf2 = core.Builder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 50);
+        InstrCompColCellVal instrCompIf2 = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 50);
 
         //--B.Cell= 50
-        InstrSetCellVal instrSetValThen2 = core.Builder.CreateInstrSetCellVal(1, 50);
+        InstrSetCellVal instrSetValThen2 = core.ProgBuilder.CreateInstrSetCellVal(1, 50);
 
         // instr1: If A.Cell>50 Then B.Cell= 50
         InstrIfColThen instrIfColThen2;
-        execResult = core.Builder.CreateInstrIfColThen(instrCompIf2, instrSetValThen2, out instrIfColThen2);
+        execResult = core.ProgBuilder.CreateInstrIfColThen(instrCompIf2, instrSetValThen2, out instrIfColThen2);
         Assert.IsTrue(execResult.Result);
 
         // ForEach Row  -> add 2 If Col Then
         List<InstrIfColThen> listInstrIfColThen = [instrIfColThen, instrIfColThen2];
 
-        execResult = core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, listInstrIfColThen);
+        execResult = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, listInstrIfColThen);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.Exec.Execute();

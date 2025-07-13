@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lexerow.Core.System.Compilator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,14 @@ public class ProgramInstr
     public ProgramInstr(string name)
     {
         Name = name;
+    }
+
+    public ProgramInstr(string name, string scriptFileName, SourceScript sourceScript, List<InstrBase> listInstr)
+    {
+        Name = name;
+        ScriptFileName= scriptFileName;
+        SourceScript =sourceScript;
+        ListInstr = listInstr;
     }
 
     public bool IsDefault { get; set; } = false;
@@ -41,6 +50,9 @@ public class ProgramInstr
     /// </summary>
     public string ScriptFileName {  get; set; }=string.Empty;
 
-    // source code lines
-    // TODO:
+    /// <summary>
+    /// Script/source code text lines.
+    /// Exists only if a script if provided, from a text file or from a string stream.
+    /// </summary>
+    public SourceScript? SourceScript { get; private set; } = null;
 }

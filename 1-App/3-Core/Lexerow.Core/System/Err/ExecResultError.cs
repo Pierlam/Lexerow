@@ -19,6 +19,13 @@ public class ExecResultError
         Param = param;
     }
 
+    public ExecResultError(ErrorCode errorCode, Exception exception, string param)
+    {
+        DateTimeCreation = DateTime.UtcNow;
+        ErrorCode = errorCode;
+        Param = param;
+    }
+
     public ExecResultError(ErrorCode errorCode)
     {
         DateTimeCreation = DateTime.UtcNow;
@@ -40,6 +47,8 @@ public class ExecResultError
     /// The code of the error.
     /// </summary>
     public ErrorCode ErrorCode { get; set; }
+
+    public Exception? Exception { get; set; } = null;
 
     /// <summary>
     /// Parameter 1 of the error.

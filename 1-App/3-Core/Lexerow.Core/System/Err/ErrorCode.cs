@@ -162,4 +162,8 @@ public enum ErrorCode
     ProgramNameAlreadyUsed,
     ProgramNotFound,
     NoCurrentProgramExist,
+
+
+    LoadScriptFileException,
+    LoadScriptFileEmpty,
 }

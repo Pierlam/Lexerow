@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Tests.Exec;
 
 [TestClass]
-public class OpenCloseExcelFIleTests
+public class OpenCloseExcelFileTests
 {
     /// <summary>
     /// ok the input excel file exists.

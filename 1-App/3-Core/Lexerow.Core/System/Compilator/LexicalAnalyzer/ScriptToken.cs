@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System.Compilator;
+
 /// <summary>
-/// obtained by the paser, first stage: lexical analyse.
+/// obtained by the parser, first stage: lexical analyse.
 /// Split the code source line by line to obtains tokens.
 /// </summary>
-public enum SourceCodeTokenType
+public enum ScriptTokenType
 {
     Undefined,
 
@@ -57,7 +58,12 @@ public enum SourceCodeTokenType
     DoubleWrong
 }
 
-public class SourceCodeToken
+/// <summary>
+/// One script token.
+/// Is in a line of script/tokens.
+/// Obtained after the lexical analyze (parser).
+/// </summary>
+public class ScriptToken
 {
     /// <summary>
     /// Line Number in the source code.
@@ -76,7 +82,7 @@ public class SourceCodeToken
     /// </summary>
     public string Value { get; set; }
 
-    public SourceCodeTokenType SourceCodeTokenType { get; set; }
+    public ScriptTokenType ScriptTokenType { get; set; }
 
     /// <summary>
     /// Can be an integer, double, or a string.
@@ -85,9 +91,9 @@ public class SourceCodeToken
     public bool IsConstValue()
     {
         // is the token a const value?
-        if (SourceCodeTokenType == SourceCodeTokenType.Integer || SourceCodeTokenType == SourceCodeTokenType.String ||
-            SourceCodeTokenType == SourceCodeTokenType.StringBadFormed || SourceCodeTokenType == SourceCodeTokenType.Double ||
-            SourceCodeTokenType == SourceCodeTokenType.DoubleWrong)
+        if (ScriptTokenType == ScriptTokenType.Integer || ScriptTokenType == ScriptTokenType.String ||
+            ScriptTokenType == ScriptTokenType.StringBadFormed || ScriptTokenType == ScriptTokenType.Double ||
+            ScriptTokenType == ScriptTokenType.DoubleWrong)
             return true;
 
         return false;

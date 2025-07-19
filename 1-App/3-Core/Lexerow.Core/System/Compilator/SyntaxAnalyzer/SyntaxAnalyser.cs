@@ -17,11 +17,11 @@ public class SyntaxAnalyser
     /// <param name="listSourceCodeLineTokens"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public bool Process(List<SourceCodeLineTokens> listLineTokens, out List<InstrBase> listInstr)
+    public bool Process(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstr)
     {
 
         // no token in the source code! -> error ou warning?
-        if (listLineTokens.Count == 0)
+        if (listScriptLineTokens.Count == 0)
         {
             listInstr = null;
             //compiledScript.Errors=XXX

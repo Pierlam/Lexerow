@@ -99,7 +99,7 @@ public class LexerowCore
             return execResult;
         }
 
-        _scriptLoader.LoadScriptFromFile(execResult, fileName, out SourceScript sourceScript);
+        _scriptLoader.LoadScriptFromFile(execResult, fileName, out Script sourceScript);
         if(!execResult.Result)
             return execResult;
 

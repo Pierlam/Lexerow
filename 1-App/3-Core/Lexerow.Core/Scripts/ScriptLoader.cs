@@ -24,7 +24,7 @@ public class ScriptLoader
     /// <param name="progName"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public ExecResult LoadScriptFromFile(ExecResult execResult, string fileName, out SourceScript sourceScript)
+    public ExecResult LoadScriptFromFile(ExecResult execResult, string fileName, out Script sourceScript)
     {
         sourceScript = null;
 
@@ -42,7 +42,7 @@ public class ScriptLoader
         }
 
         // contains one line at least
-        if (sourceScript.Lines.Count == 0) 
+        if (sourceScript.ScriptLines.Count == 0) 
         {
             execResult.AddError(new ExecResultError(ErrorCode.LoadScriptFileEmpty, exception, fileName));
             return execResult;
@@ -51,9 +51,9 @@ public class ScriptLoader
         return execResult;
     }
 
-    private bool LoadScript(string fileName, out SourceScript sourceScript, out Exception exception)
+    private bool LoadScript(string fileName, out Script sourceScript, out Exception exception)
     {
-        sourceScript= new SourceScript(fileName);
+        sourceScript= new Script(fileName);
         exception = null;
 
         int numLine = 1;
@@ -67,7 +67,7 @@ public class ScriptLoader
             // Continue to read until you reach end of file
             while (line != null)
             {
-                sourceScript.AddLine(numLine, line);
+                sourceScript.AddScriptLine(numLine, line);
 
                 //Read the next line
                 line = sr.ReadLine();

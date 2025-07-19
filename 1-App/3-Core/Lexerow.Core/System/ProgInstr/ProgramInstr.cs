@@ -17,7 +17,7 @@ public class ProgramInstr
         Name = name;
     }
 
-    public ProgramInstr(string name, string scriptFileName, SourceScript sourceScript, List<InstrBase> listInstr)
+    public ProgramInstr(string name, string scriptFileName, Script sourceScript, List<InstrBase> listInstr)
     {
         Name = name;
         ScriptFileName= scriptFileName;
@@ -54,5 +54,5 @@ public class ProgramInstr
     /// Script/source code text lines.
     /// Exists only if a script if provided, from a text file or from a string stream.
     /// </summary>
-    public SourceScript? SourceScript { get; private set; } = null;
+    public Script? SourceScript { get; private set; } = null;
 }

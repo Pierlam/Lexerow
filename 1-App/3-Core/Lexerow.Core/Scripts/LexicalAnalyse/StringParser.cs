@@ -19,10 +19,10 @@ public class StringParser
     /// <param name="commentTag"></param>
     /// <param name="tokens"></param>
     /// <returns></returns>
-    public bool Parse(int lineNum, string line, string separators, char stringSep, string commentTag, out List<SourceCodeToken> tokens)
+    public bool Parse(int lineNum, string line, string separators, char stringSep, string commentTag, out List<ScriptToken> tokens)
     {
-        tokens = new List<SourceCodeToken>();
-        SourceCodeToken token;
+        tokens = new List<ScriptToken>();
+        ScriptToken token;
         int i = 0;
         int iOut;
 
@@ -90,8 +90,8 @@ public class StringParser
             }
 
             // if here, unexpected char!
-            token = new SourceCodeToken();
-            token.SourceCodeTokenType = SourceCodeTokenType.Undefined;
+            token = new ScriptToken();
+            token.ScriptTokenType = ScriptTokenType.Undefined;
             token.LineNum = lineNum;
             token.ColNum = i;
             token.Value = line[i].ToString();
@@ -124,7 +124,7 @@ public class StringParser
         }
     }
 
-    bool ProcessString(string line, int i, char stringSep, out int iOut, out SourceCodeToken item)
+    bool ProcessString(string line, int i, char stringSep, out int iOut, out ScriptToken item)
     {
         iOut = i;
         item = null;
@@ -135,8 +135,8 @@ public class StringParser
             return false;
 
         // it's a string
-        item = new SourceCodeToken();
-        item.SourceCodeTokenType = SourceCodeTokenType.String;
+        item = new ScriptToken();
+        item.ScriptTokenType = ScriptTokenType.String;
         item.Value = stringSep.ToString();
         item.ColNum = i;
 
@@ -148,7 +148,7 @@ public class StringParser
             if (i >= line.Length)
             {
                 iOut = i;
-                item.SourceCodeTokenType = SourceCodeTokenType.StringBadFormed;
+                item.ScriptTokenType = ScriptTokenType.StringBadFormed;
                 return true;
             }
 
@@ -183,7 +183,7 @@ public class StringParser
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessNumber(string line, int i, out int iOut, out SourceCodeToken token)
+    bool ProcessNumber(string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -200,8 +200,8 @@ public class StringParser
             {
                 if (token == null)
                 {
-                    token = new SourceCodeToken();
-                    token.SourceCodeTokenType = SourceCodeTokenType.Integer;
+                    token = new ScriptToken();
+                    token.ScriptTokenType = ScriptTokenType.Integer;
                     token.ColNum = i;
                 }
 
@@ -217,9 +217,9 @@ public class StringParser
             {
                 // contains already a decimal separator!
                 if (token.Value.Contains("."))
-                    token.SourceCodeTokenType = SourceCodeTokenType.DoubleWrong;
+                    token.ScriptTokenType = ScriptTokenType.DoubleWrong;
                 else
-                    token.SourceCodeTokenType = SourceCodeTokenType.Double;
+                    token.ScriptTokenType = ScriptTokenType.Double;
 
                 token.Value += c.ToString();
                 i++;
@@ -234,7 +234,7 @@ public class StringParser
         }
     }
 
-    bool ProcessSeparator(string line, int i, string separators, out int iOut, out SourceCodeToken token)
+    bool ProcessSeparator(string line, int i, string separators, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -242,8 +242,8 @@ public class StringParser
         if (separators.Contains(line[i]))
         {
             // it's a separator
-            token = new SourceCodeToken();
-            token.SourceCodeTokenType = SourceCodeTokenType.Separator;
+            token = new ScriptToken();
+            token.ScriptTokenType = ScriptTokenType.Separator;
             token.Value = line[i].ToString();
             token.ColNum = i;
             iOut = i + 1;
@@ -261,7 +261,7 @@ public class StringParser
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessName(string line, int i, out int iOut, out SourceCodeToken token)
+    bool ProcessName(string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -277,8 +277,8 @@ public class StringParser
             {
                 if (token == null)
                 {
-                    token = new SourceCodeToken();
-                    token.SourceCodeTokenType = SourceCodeTokenType.Name;
+                    token = new ScriptToken();
+                    token.ScriptTokenType = ScriptTokenType.Name;
                     token.ColNum = i;
                 }
 
@@ -304,7 +304,7 @@ public class StringParser
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessExcelColName(SourceCodeToken token)
+    bool ProcessExcelColName(ScriptToken token)
     {
         int i = 0;
         bool found = false;
@@ -329,7 +329,7 @@ public class StringParser
 
         if (found)
         {
-            token.SourceCodeTokenType = SourceCodeTokenType.ExcelColName;
+            token.ScriptTokenType = ScriptTokenType.ExcelColName;
         }
         return found;
     }
@@ -342,7 +342,7 @@ public class StringParser
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessExcelCellAddress(SourceCodeToken token)
+    bool ProcessExcelCellAddress(ScriptToken token)
     {
 
         string pattern = @"(\$?[A-Z]+\$?\d+)";
@@ -350,7 +350,7 @@ public class StringParser
         //MatchCollection matches = regex.Matches(token.Value);
         if (regex.Match(token.Value).Success)
         {
-            token.SourceCodeTokenType = SourceCodeTokenType.ExcelCellAddress;
+            token.ScriptTokenType = ScriptTokenType.ExcelCellAddress;
             return true;
         }
 

@@ -25,18 +25,18 @@ public class ScriptLoaderBasicTests
 
         ExecResult execResult = new ExecResult();
         string fileName = @"15-Scripts\script1.lxrw";
-        loader.LoadScriptFromFile(execResult, fileName, out SourceScript sourceScript);
+        loader.LoadScriptFromFile(execResult, fileName, out Script sourceScript);
 
         Assert.IsTrue(execResult.Result);
-        Assert.AreEqual(2, sourceScript.Lines.Count);
+        Assert.AreEqual(2, sourceScript.ScriptLines.Count);
 
         // check line 1
-        Assert.AreEqual(1, sourceScript.Lines[0].NumLine);
-        Assert.AreEqual("# basic script", sourceScript.Lines[0].Line);
+        Assert.AreEqual(1, sourceScript.ScriptLines[0].NumLine);
+        Assert.AreEqual("# basic script", sourceScript.ScriptLines[0].Line);
 
         // check line 2
-        Assert.AreEqual(2, sourceScript.Lines[1].NumLine);
-        Assert.AreEqual("file= OpenExcel(\"data.xslx\")", sourceScript.Lines[1].Line);
+        Assert.AreEqual(2, sourceScript.ScriptLines[1].NumLine);
+        Assert.AreEqual("file= OpenExcel(\"data.xslx\")", sourceScript.ScriptLines[1].Line);
 
     }
 
@@ -49,12 +49,12 @@ public class ScriptLoaderBasicTests
 
         ExecResult execResult = new ExecResult();
         string fileName = @"15-Scripts\scriptEmpty.lxrw";
-        loader.LoadScriptFromFile(execResult, fileName, out SourceScript sourceScript);
+        loader.LoadScriptFromFile(execResult, fileName, out Script sourceScript);
 
         Assert.IsFalse(execResult.Result);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.LoadScriptFileEmpty, execResult.ListError[0].ErrorCode);
-        Assert.AreEqual(0, sourceScript.Lines.Count);
+        Assert.AreEqual(0, sourceScript.ScriptLines.Count);
 
     }
 
@@ -67,7 +67,7 @@ public class ScriptLoaderBasicTests
 
         ExecResult execResult = new ExecResult();
         string fileName = @"15-Scripts\notexist.lxrw";
-        loader.LoadScriptFromFile(execResult, fileName, out SourceScript sourceScript);
+        loader.LoadScriptFromFile(execResult, fileName, out Script sourceScript);
 
         Assert.IsFalse(execResult.Result);
         Assert.AreEqual(1, execResult.ListError.Count);

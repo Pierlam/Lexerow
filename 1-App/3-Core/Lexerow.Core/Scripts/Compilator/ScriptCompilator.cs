@@ -10,27 +10,34 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.Scripts;
 
+/// <summary>
+/// Compile script coming from a texte file (or a string) into a list of instructions ready to execute.
+/// </summary>
 public class ScriptCompilator
 {
 
     CoreData _coreData;
     LexicalAnalyzerConfig lexicalAnalyzerConfig = new LexicalAnalyzerConfig();
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="coreData"></param>
     public ScriptCompilator(CoreData coreData)
     {
         _coreData = coreData;
     }
 
-    public ExecResult CompileScript(ExecResult execResult, SourceScript sourceScript, out List<InstrBase> listInstr)
+    public ExecResult CompileScript(ExecResult execResult, Script script, out List<InstrBase> listInstr)
     {
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(sourceScript, out List<SourceCodeLineTokens> listSourceCodeLineTokens, lexicalAnalyzerConfig);
+        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig);
 
         // re-arrange comparison separators, gather them, exp: >,= to >=  ...
         //ComparisonSepMgr.ReArrangeAllComparisonSep(listSourceCodeLineTokens);
 
         SyntaxAnalyser syntaxAnalyser = new SyntaxAnalyser();
-        syntaxAnalyser.Process(listSourceCodeLineTokens, out listInstr);
+        syntaxAnalyser.Process(execResult, listScriptLineTokens, out listInstr);
 
         // TODO: DEV:
         return new ExecResult();

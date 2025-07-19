@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.Scripts.Compilator;
+using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;
@@ -17,29 +18,32 @@ public class LexicalAnalyzer
     /// <param name="srcScript"></param>
     /// <param name="listSourceCodeLineTokens"></param>
     /// <returns></returns>
-    public static bool Process(SourceScript srcScript, out List<SourceCodeLineTokens> listSourceCodeLineTokens, LexicalAnalyzerConfig lac)
+    public static bool Process(Script srcScript, out List<ScriptLineTokens> listSourceCodeLineTokens, LexicalAnalyzerConfig lac)
     {
         StringParser stringParser = new StringParser();
 
-        listSourceCodeLineTokens = new List<SourceCodeLineTokens>();
+        listSourceCodeLineTokens = new List<ScriptLineTokens>();
 
         int i = -1;
-        foreach (SourceScriptLine sourceScriptLine in srcScript.Lines)
+        foreach (ScriptLine sourceScriptLine in srcScript.ScriptLines)
         {
             i++;
 
             // parse the line, split in tokens
-            stringParser.Parse(i, sourceScriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<SourceCodeToken> items);
+            stringParser.Parse(i, sourceScriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> items);
 
             // save the items: numLine+tokens
             if (items.Count == 0)
                 continue;
 
-            SourceCodeLineTokens sourceCodeLineTokens = new SourceCodeLineTokens();
-            sourceCodeLineTokens.SourceCodeLine = sourceScriptLine.Line;
+            ScriptLineTokens sourceCodeLineTokens = new ScriptLineTokens();
+            sourceCodeLineTokens.ScriptLine = sourceScriptLine.Line;
             sourceCodeLineTokens.Numline = i;
-            sourceCodeLineTokens.ListSourceCodeToken = items;
+            sourceCodeLineTokens.ListScriptToken.AddRange(items);
             listSourceCodeLineTokens.Add(sourceCodeLineTokens);
+
+            // pb, string end tag is missing
+            //ici();
         }
         return true;
     }

@@ -7,31 +7,31 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.System.Compilator;
 
 /// <summary>
-/// One line of a source code/script.
+/// One line of a script.
 /// </summary>
-public class SourceScriptLine
+public class ScriptLine
 {
-    public SourceScriptLine(int numLine, string line)
+    public ScriptLine(int numLine, string line)
     {
         NumLine = numLine;
         Line = line;
     }
 
     public int NumLine { get; set; }
+
+    /// <summary>
+    /// One line of a script.
+    /// </summary>
     public string Line { get; set; }
 }
 
 /// <summary>
-/// source code of a script, loaded from a text file. 
-/// Split in text lines.
+/// A Script, loaded from a text file. 
+/// contains a lsit of lines.
 /// </summary>
-public class SourceScript
+public class Script
 {
-    //int _numLine = 0;
-
-    //public List<Error> Errors { get; set; } = new List<Error>();
-
-    public SourceScript(string fileName)
+    public Script(string fileName)
     {
         FileName = fileName;
     }
@@ -42,13 +42,16 @@ public class SourceScript
     /// </summary>
     public string FileName { get; set; }    
 
-    public List<SourceScriptLine> Lines { get; set; } = new List<SourceScriptLine>();
+    /// <summary>
+    /// lines of script/source code
+    /// </summary>
+    public List<ScriptLine> ScriptLines { get; set; } = new List<ScriptLine>();
 
-    public void AddLine(int numLine, string line)
+    public void AddScriptLine(int numLine, string line)
     {
         if (string.IsNullOrEmpty(line))
             line = string.Empty;
 
-        Lines.Add(new SourceScriptLine(numLine, line));
+        ScriptLines.Add(new ScriptLine(numLine, line));
     }
 }

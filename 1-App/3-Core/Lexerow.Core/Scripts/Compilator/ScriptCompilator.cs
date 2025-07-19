@@ -28,10 +28,22 @@ public class ScriptCompilator
         _coreData = coreData;
     }
 
+    /// <summary>
+    /// Coimpile the script (source code). tis a list of lines.
+    /// Generate a list of instructions, ready to be executed.
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="script"></param>
+    /// <param name="listInstr"></param>
+    /// <returns></returns>
     public ExecResult CompileScript(ExecResult execResult, Script script, out List<InstrBase> listInstr)
     {
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig);
+        if (!LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
+        {
+            listInstr = new List<InstrBase>();
+            return execResult;
+        }
 
         // re-arrange comparison separators, gather them, exp: >,= to >=  ...
         //ComparisonSepMgr.ReArrangeAllComparisonSep(listSourceCodeLineTokens);

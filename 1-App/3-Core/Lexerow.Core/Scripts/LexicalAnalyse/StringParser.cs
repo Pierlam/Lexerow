@@ -19,15 +19,18 @@ public class StringParser
     /// <param name="commentTag"></param>
     /// <param name="tokens"></param>
     /// <returns></returns>
-    public bool Parse(int lineNum, string line, string separators, char stringSep, string commentTag, out List<ScriptToken> tokens)
+    public bool Parse(int lineNum, string line, string separators, char stringSep, string commentTag, out List<ScriptToken> tokens, out ScriptTokenType lastTokenType)
     {
+        lastTokenType = ScriptTokenType.Comment;
         tokens = new List<ScriptToken>();
         ScriptToken token;
         int i = 0;
         int iOut;
 
         if (string.IsNullOrEmpty(line))
+        {
             return true;
+        }
 
         while (true)
         {
@@ -40,6 +43,7 @@ public class StringParser
             //--is there some space separator?
             if (ProcessSpaceChars(line, i, out iOut))
             {
+                lastTokenType = ScriptTokenType.Comment;
                 i = iOut;
                 continue;
             }
@@ -47,15 +51,24 @@ public class StringParser
             //--is the token a 'string' ?
             if (ProcessString(line, i, stringSep, out iOut, out token))
             {
+                lastTokenType = ScriptTokenType.String;
                 tokens.Add(token);
                 i = iOut;
+
+                // manage case: StringBadFormated, end tag not found
+                if (token.ScriptTokenType == ScriptTokenType.StringBadFormed) 
+                {
+                    lastTokenType = ScriptTokenType.StringBadFormed;
+                    return false;
+                }
                 continue;
             }
 
             //--is it a comment ?
             if (ProcessComment(line, i, commentTag))
             {
-                // the comment atg is found, the rest ofthe string is a comment
+                lastTokenType = ScriptTokenType.Comment;
+                // the comment tag is found, the rest ofthe string is a comment
                 return true;
             }
 
@@ -64,6 +77,13 @@ public class StringParser
             {
                 tokens.Add(token);
                 i = iOut;
+
+                // manage case: StringBadFormated, end tag not found
+                if (token.ScriptTokenType == ScriptTokenType.DoubleWrong)
+                {
+                    lastTokenType = ScriptTokenType.DoubleWrong;
+                    return false;
+                }
                 continue;
             }
 
@@ -72,6 +92,8 @@ public class StringParser
             {
                 tokens.Add(token);
                 i = iOut;
+                lastTokenType = ScriptTokenType.Separator;
+
                 continue;
             }
 
@@ -85,6 +107,7 @@ public class StringParser
                 ProcessExcelCellAddress(token);
 
                 tokens.Add(token);
+                lastTokenType = ScriptTokenType.Name;
                 i = iOut;
                 continue;
             }
@@ -97,6 +120,9 @@ public class StringParser
             token.Value = line[i].ToString();
             tokens.Add(token);
             i++;
+
+            lastTokenType = ScriptTokenType.Undefined;
+            return false;
         }
 
         return true;

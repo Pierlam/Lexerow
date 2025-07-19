@@ -166,4 +166,9 @@ public enum ErrorCode
 
     LoadScriptFileException,
     LoadScriptFileEmpty,
+
+    // lexical analyzer error code
+    LexAnalyzeFoundDoubleWrong,
+    LexAnalyzeFoundSgtringBadFormatted,
+    LexAnalyzeFoundCharUndefined,
 }

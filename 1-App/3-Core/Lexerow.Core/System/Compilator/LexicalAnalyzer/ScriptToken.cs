@@ -15,6 +15,11 @@ public enum ScriptTokenType
     Undefined,
 
     /// <summary>
+    /// Comment or remark
+    /// </summary>
+    Comment,
+
+    /// <summary>
     /// An item can be: a variable, object, function or method name.
     /// </summary>
     Name,

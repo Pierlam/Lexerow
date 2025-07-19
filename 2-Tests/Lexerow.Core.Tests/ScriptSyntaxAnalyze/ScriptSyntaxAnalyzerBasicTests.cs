@@ -40,11 +40,10 @@ public class ScriptSyntaxAnalyzerBasicTests
         
         SyntaxAnalyser sa = new SyntaxAnalyser();
 
-        // TODO: gestion d'erreurs!!
         ExecResult execResult = new ExecResult();
         sa.Process(execResult, lt, out List<InstrBase> listInstr);
 
-        //ici();
+        //ici();  to dev!!
         
         Assert.Fail("todo");
     }

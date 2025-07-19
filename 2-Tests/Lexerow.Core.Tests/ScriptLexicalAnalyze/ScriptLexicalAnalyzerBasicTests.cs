@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.Scripts;
+using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
 using NPOI.SS.Formula.Functions;
@@ -26,8 +27,12 @@ public class ScriptLexicalAnalyzerBasicTests
     {
         Script script = ScriptBuilder.Build("#comment", "file=OpenExcel(\"data.xslx\")");
 
+        ExecResult execResult = new ExecResult();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult , script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+
+        Assert.IsTrue(execResult.Result);
 
         // only 1 line, remove the line containing the comment
         Assert.AreEqual(1, lt.Count);
@@ -47,9 +52,11 @@ public class ScriptLexicalAnalyzerBasicTests
     public void SourceScriptIsEmpty()
     {
         Script script = new Script("fileName");
+        ExecResult execResult = new ExecResult();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(0, lt.Count);
     }
@@ -61,15 +68,16 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void SourceTokenStringEndTagMissingErr()
     {
+        ExecResult execResult = new ExecResult();
+
         Script script = ScriptBuilder.Build("file=OpenExcel(\"data.xslx)");
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Assert.IsFalse(execResult.Result);
 
-        // TODO: manage error, StringBadFormatted!!
-        //ici();
+        Assert.AreEqual(ErrorCode.LexAnalyzeFoundSgtringBadFormatted, execResult.ListError[0].ErrorCode);
 
-        Assert.AreEqual(0, lt.Count);
     }
 
     /// <summary>
@@ -79,9 +87,11 @@ public class ScriptLexicalAnalyzerBasicTests
     public void SourceScriptHasOnlyComment()
     {
         Script script = ScriptBuilder.Build("#comment");
+        ExecResult execResult = new ExecResult();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(0, lt.Count);
     }
@@ -96,9 +106,11 @@ public class ScriptLexicalAnalyzerBasicTests
     public void ParseOnExcelFilenameOk()
     {
         Script script = ScriptBuilder.Build("OnExcel \"file.xlsx\"");
+        ExecResult execResult = new ExecResult();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(1, lt.Count);
 
@@ -117,8 +129,11 @@ public class ScriptLexicalAnalyzerBasicTests
     {
         Script script = ScriptBuilder.Build("  ForEach Row");
 
+        ExecResult execResult = new ExecResult();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Assert.IsTrue(execResult.Result);
 
         // only 1 line, remove the line containing the comment
         Assert.AreEqual(1, lt.Count);
@@ -138,8 +153,11 @@ public class ScriptLexicalAnalyzerBasicTests
     {
         Script script = ScriptBuilder.Build("  ForEach Row #comment");
 
+        ExecResult execResult = new ExecResult();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Assert.IsTrue(execResult.Result);
 
         // only 1 line, remove the line containing the comment
         Assert.AreEqual(1, lt.Count);
@@ -160,9 +178,11 @@ public class ScriptLexicalAnalyzerBasicTests
     public void ParseIfACellGt10ThenACellEq10Ok()
     {
         Script script = ScriptBuilder.Build("  If A.Cell>10 Then A.Cell=10");
+        ExecResult execResult = new ExecResult();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(1, lt.Count);
 

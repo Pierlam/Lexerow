@@ -21,7 +21,7 @@ public  class CreateInstrForEachCellInColsIfThenTests
 
         string fileName = @"..\..\..\10-Files\TestCoreOpenClose.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Create: D.Cell > 50 
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);

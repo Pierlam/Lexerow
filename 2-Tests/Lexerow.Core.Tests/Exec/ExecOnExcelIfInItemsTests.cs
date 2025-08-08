@@ -34,7 +34,7 @@ public class ExecOnExcelIfInItemsTests
 
         string fileName = @"10-Files\OnExcelIfInStringItemsOk.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--A.Cell In [ "y", "yes", "ok" ] 
         List<string> listVal = ["y", "yes", "ok"];
@@ -100,7 +100,7 @@ public class ExecOnExcelIfInItemsTests
 
         string fileName = @"10-Files\OnExcelIfInStringItemsErrAreNumber.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--A.Cell In [ "y", "yes", "ok" ] 
         List<string> listVal = ["y", "yes", "ok"];

@@ -24,18 +24,17 @@ public enum ScriptTokenType
     /// </summary>
     Name,
 
-
     /// <summary>
     /// excel column name.
     /// exp: A, VB,XFD
     /// </summary>
-    ExcelColName,
+    //ExcelColName,
 
     /// <summary>
     /// Excel cell address.
     /// exp: A1 , BN23
     /// </summary>
-    ExcelCellAddress,
+    //ExcelCellAddress,
 
     /// <summary>
     /// Separator

@@ -10,17 +10,24 @@ namespace Lexerow.Core.Tests.Exec;
 [TestClass]
 public class OpenCloseExcelFileTests
 {
+    public void AppTraceEvent(AppTrace trace)
+    {
+
+    }
+
     /// <summary>
     /// ok the input excel file exists.
+    /// file=OpenExcel("file.xlsx")
     /// </summary>
     [TestMethod]
     public void OpenExcelOk()
     {
         LexerowCore core = new LexerowCore();
+        core.AppTraceEvent = AppTraceEvent;
 
         string fileName = @"10-Files\Test2OpenClose.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.CompileProgram();
@@ -39,7 +46,7 @@ public class OpenCloseExcelFileTests
 
         string fileName = @"10-Files\blablabla.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
         Assert.IsTrue(execResult.Result);
 
         execResult = core.CompileProgram();

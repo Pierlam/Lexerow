@@ -26,7 +26,7 @@ public class ExecInstrForEachRowManyIfThenTests
 
         string fileName = @"10-Files\TestForEachRow2IfThen.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //-- A.Cell<10 
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.LessThan, 10);

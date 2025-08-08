@@ -36,7 +36,7 @@ public class ExecInstrForEachRowIfAndThenTests
 
         string fileName = @"10-Files\TestForEachRowIfAndThen.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //-- A.Cell>10 
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);

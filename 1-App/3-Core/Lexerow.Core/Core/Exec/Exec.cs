@@ -23,11 +23,14 @@ public class Exec
 
     IExcelProcessor _excelProcessor;
 
+    ExecFunctionMgr _execFunctionMgr;
+
     CoreData _coreData;
 
     List<ExecVar> _listExecVar = new List<ExecVar>();
 
     DateTime _execStartCurrInstr;
+
 
     /// <summary>
     /// Constructor.
@@ -37,11 +40,24 @@ public class Exec
     /// <param name="excelProcessor"></param>
     public Exec(CoreData coreData, IExcelProcessor excelProcessor)
     {
-        _coreData = coreData;
         _excelProcessor = excelProcessor;
+        _execFunctionMgr = new ExecFunctionMgr(excelProcessor);
+        _coreData = coreData;
+
     }
 
-    public Action<AppTrace> AppTraceEvent { get; set; }
+    //public Action<AppTrace> AppTraceEvent { get; set; }
+    Action<AppTrace> _appTraceEvent;
+
+    public Action<AppTrace> AppTraceEvent
+    {
+        get { return _appTraceEvent; }
+        set
+        {
+            _appTraceEvent = value;
+            _execFunctionMgr.AppTraceEvent = value;
+        }
+    }
 
 
     public ExecResult CompileProgram()
@@ -98,7 +114,9 @@ public class Exec
             return execResult;
         }
 
-        return ExecuteProgram(_coreData.CurrProgramInstr);
+        var res= ExecuteProgram(_coreData.CurrProgramInstr, _listExecVar);
+        _coreData.CurrProgramInstr.Stage = CoreStage.Build;
+        return res;
     }
 
     /// <summary>
@@ -124,7 +142,9 @@ public class Exec
             return execResult;
         }
 
-        return ExecuteProgram(program);
+        var res = ExecuteProgram(program, _listExecVar);
+        _coreData.CurrProgramInstr.Stage = CoreStage.Build;
+        return res;
     }
 
     ExecResult CompileProgram(ProgramInstr program)
@@ -159,7 +179,7 @@ public class Exec
     /// Need to compile instr before execute them.
     /// </summary>
     /// <returns></returns>
-    ExecResult ExecuteProgram(ProgramInstr program)
+    ExecResult ExecuteProgram(ProgramInstr program, List<ExecVar> listExecVar)
     {
         ExecResult execResult= new ExecResult();
 
@@ -172,22 +192,66 @@ public class Exec
                 return execResult;
         }
 
+        // create a stack
+        Stack<InstrBase> stackInstr = new Stack<InstrBase>();
+
         program.Stage = CoreStage.Exec;
 
         bool res;
         // execute saved instructions, one by one
         foreach (var instr in program.ListInstr) 
         {
+            _execStartCurrInstr = DateTime.Now;
+
+            //--end of line reached
+            if (instr.InstrType == InstrType.Eol)
+            {
+                ExecStackedInstr(execResult, stackInstr, listExecVar);
+                continue;
+            }
+
+            //--open bracket
+            if (instr.InstrType == InstrType.OpenBracket)
+            {
+                // just push the instr on the stack
+                stackInstr.Push(instr);
+                continue;
+            }
+
+            //--param separator ,  
+            // TODO: 
+
+            //--close bracket, end of function parameters
+            if (instr.InstrType == InstrType.CloseBracket)
+            {
+                if (!ExecCloseBracketReached(execResult, stackInstr, _listExecVar, _execStartCurrInstr))
+                    return execResult;
+                continue;
+            }
+
+            //--const value
+            if (instr.InstrType == InstrType.ConstValue)
+            {
+                // just push the instr on the stack
+                stackInstr.Push(instr);
+                continue;
+            }
+
+            //--set var
+            if (instr.InstrType == InstrType.SetVar)
+            {
+                // checks with instr already saved in the stack
+                // TODO: don't know 
+
+                // just push the instr on the stack
+                stackInstr.Push(instr);
+                continue;
+            }
+
             if (instr.InstrType == InstrType.OpenExcel)
             {
-                _execStartCurrInstr= DateTime.Now;
-                res= ExecInstrOpenExcelFile(execResult, instr as InstrOpenExcel, _listExecVar, _execStartCurrInstr);
-                if(!res)
-                {
-                    program.Stage = CoreStage.Build;
-                    return execResult;
-                }
-
+                // just push the instr on the stack
+                stackInstr.Push(instr);
                 continue;
             }
 
@@ -199,7 +263,6 @@ public class Exec
 
             if(instr.InstrType == InstrType.ForEachRowIfThen)
             {
-                _execStartCurrInstr = DateTime.Now;
                 res = ExecInstrForEachRowIfThen(execResult, instr as InstrOnExcelForEachRowIfThen, _listExecVar, _execStartCurrInstr);
                 if (!res)
                 {
@@ -214,38 +277,149 @@ public class Exec
         // close all opened excel file, if its not done
         CloseAllOpenedExcelFile(_listExecVar);
 
+        // check the stack, should be empty
+        if (stackInstr.Count > 0) 
+            // TODO: set a right error code!  
+            execResult.AddError(new ExecResultError(ErrorCode.InstrNotExpected, null));
+
         program.Stage = CoreStage.Build;
 
         return execResult; 
     }
 
     /// <summary>
-    /// Execute the instr OpenExcel.
-    /// return an object: an excel file.
+    /// End of line reached.
+    /// Execute stacked instructions.
     /// </summary>
-    /// <param name="instrOpenExcel"></param>
+    /// <param name="execResult"></param>
+    /// <param name="stackInstr"></param>
     /// <returns></returns>
-    bool ExecInstrOpenExcelFile(ExecResult execResult, InstrOpenExcel instrOpenExcel, List<ExecVar> listExecVar, DateTime execStart)
+    bool ExecStackedInstr(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar)
     {
-        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateStart(instrOpenExcel.FileName));
+        InstrBase instrTop= stackInstr.Peek();
 
-        if (!_excelProcessor.Open(instrOpenExcel.FileName, out IExcelFile excelFile, out ExecResultError error))
+        //--SetVar excelFileObj ?
+        InstrExcelFileObject instrExcelFileObject = instrTop as InstrExcelFileObject;
+        if (instrExcelFileObject!= null)
         {
-            execResult.AddError(error);
-            SendAppTraceExec(AppTraceLevel.Error, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error, instrOpenExcel.FileName));
-            return false;
+            // remove the obj from the stack
+            stackInstr.Pop();
+
+            // check the stack content
+            // TODO:
+
+            // the previous one is SetVar?
+            InstrSetVar instrSetVar = stackInstr.Peek() as InstrSetVar;
+            if (instrSetVar == null) 
+            {
+                // error!
+                throw new Exception("todo: error");
+            }
+
+            // remove the obj from the stack
+            stackInstr.Pop();
+
+            //--it's a SetVar
+            ExecVar execVar = new ExecVar(instrSetVar.VarName, ExecVarType.ExcelFile, instrExcelFileObject);
+            listExecVar.Add(execVar);
+            return true;
         }
 
-        ExecVar execVar = new ExecVar(instrOpenExcel.ExcelFileObjectName, ExecVarType.ExcelFile, excelFile);
-        listExecVar.Add(execVar);
+        //--others cases!
+        // TODO:
 
-        SendAppTraceExec(AppTraceLevel.Info, "ExecInstrOpenExcelFile", InstrOpenExcelExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Ok, instrOpenExcel.FileName));
         return true;
     }
 
     /// <summary>
+    /// close bracket reached, end of function parameters.
+    /// 3 cases: 
+    ///     function has no   parameter:  fct()
+    ///     function has only parameter:  fct(param)
+    ///     function has many parameters: fct(p1, p2, p3)
+    ///     
+    /// The close bracket is not saved in the stack    
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="stackInstr"></param>
+    /// <returns></returns>
+    bool ExecCloseBracketReached(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar, DateTime execStart)
+    {
+        // the stack should contains 2 item at least
+        if(stackInstr.Count < 2)
+        {
+            // TODO: set a right error code!  
+            execResult.AddError(new ExecResultError(ErrorCode.FileNameNotFound, null));
+            return false;
+        }
+
+        List<InstrBase> listFuncParams = new List<InstrBase>();
+
+        // read the item on the top of the stack, the last added
+        InstrBase instrBaseLast = stackInstr.Peek();
+
+        //--case 1: no parameter? the prev item is an open bracket
+        if (instrBaseLast.InstrType == InstrType.OpenBracket)
+        {
+            // remove the open bracket
+            stackInstr.Pop();
+
+            // get the function 
+            instrBaseLast = stackInstr.Pop();
+
+            // execute the function, has no parameter
+            return _execFunctionMgr.ExecFunction(execResult, stackInstr, instrBaseLast, listFuncParams, listExecVar, execStart);
+        }
+
+        // the stack should contains 3 item at least
+        if (stackInstr.Count < 3)
+        {
+            // TODO: set a right error code!  
+            execResult.AddError(new ExecResultError(ErrorCode.FileNameNotFound, null));
+            return false;
+        }
+
+        // get the top of the stack
+        instrBaseLast = stackInstr.Pop();
+
+        // read the next one
+        InstrBase instrBasePrev = stackInstr.Peek();
+
+        //--case 2: one parameter?  fct(param
+        // TODO: the prev item should be a const value, the prev-prev should be an open bracket
+        if (instrBasePrev.InstrType == InstrType.OpenBracket) 
+        {
+            // so the prev item is a param, it should be a const value
+            if (instrBaseLast.InstrType != InstrType.ConstValue)
+            {
+                // TODO: set a right error code!  
+                execResult.AddError(new ExecResultError(ErrorCode.FileNameNotFound, null));
+                return false;
+            }
+
+            // remove the open brack from the stack
+            instrBasePrev = stackInstr.Pop();
+
+            // get the function from the stack, provide the parameter
+            instrBasePrev = stackInstr.Pop();
+
+            // execute the function
+            listFuncParams.Add(instrBaseLast);
+            return _execFunctionMgr.ExecFunction(execResult, stackInstr, instrBasePrev, listFuncParams, listExecVar, execStart);
+        }
+
+        //--case 3: more parameter?
+        // TODO: the prev-prev item is a comma param separator
+
+        return true;
+    }
+
+
+    /// <summary>
     /// Execute instr: 
     /// 	ForEachRowIfThen(file, sheetNum, A,Value>10, Value=10)
+    /// 	
+    /// TODO: REWORK IT
     /// </summary>
     /// <param name="instr"></param>
     /// <param name="listExecVar"></param>
@@ -284,7 +458,7 @@ public class Exec
         foreach(ExecVar execVar in listExecVar)
         {
             if(execVar.ExecVarType== ExecVarType.ExcelFile)
-                ExecInstrCloseExcelFileMgr.Exec(_excelProcessor, execVar.Value as IExcelFile);
+                ExecInstrCloseExcelFileMgr.Exec(_excelProcessor, (execVar.Value as InstrExcelFileObject).ExcelFile);
         }
     }
 

@@ -48,7 +48,7 @@ public class ExcelUtils
             }
             // its a unique column, decode it
             int colIdx = ColumnNameToNumber(item);
-            if (colIdx < 1) return false;
+            if (colIdx < 0) return false;
 
             // save
             ExcelCol col = new ExcelCol(item, colIdx);
@@ -73,12 +73,12 @@ public class ExcelUtils
 
         // decode the col start
         int colStartIdx = ColumnNameToNumber(arrItems[0]);
-        if (colStartIdx < 1) return false;
+        if (colStartIdx < 0) return false;
 
 
         // decode the col end
         int colEndIdx = ColumnNameToNumber(arrItems[1]);
-        if (colEndIdx < 1) return false;
+        if (colEndIdx < 0) return false;
 
         // save the range
         excelRangeCols = new ExcelRangeCols(arrItems[0], colStartIdx, arrItems[1], colEndIdx);
@@ -87,7 +87,11 @@ public class ExcelUtils
     }
 
     /// <summary>
-    /// Convert an Excel column name (letter) to a nubmer.
+    /// Convert an Excel column name (letter) to a number.
+    /// 
+    /// Return the value of the column in base1.
+    /// return -1 if an the string is wrong.
+    /// return -2 if the col value is out of range.
     /// 
     /// 'A' the expected result will be 1
     /// 'AH' = 34
@@ -99,7 +103,7 @@ public class ExcelUtils
     {
         if (string.IsNullOrEmpty(columnName))
             // error
-            return 0;
+            return -1;
 
         columnName = columnName.ToUpperInvariant();
 
@@ -117,7 +121,7 @@ public class ExcelUtils
 
         if (sum > 16384)
             // out of range!
-            return 0;
+            return -2;
 
         return sum;
     }

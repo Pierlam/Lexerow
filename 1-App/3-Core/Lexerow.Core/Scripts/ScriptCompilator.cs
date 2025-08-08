@@ -51,8 +51,7 @@ public class ScriptCompilator
         SyntaxAnalyser syntaxAnalyser = new SyntaxAnalyser();
         syntaxAnalyser.Process(execResult, listScriptLineTokens, out listInstr);
 
-        // TODO: DEV:
-        return new ExecResult();
+        return execResult;
     }
 
 }

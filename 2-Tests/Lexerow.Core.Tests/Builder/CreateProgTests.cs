@@ -25,7 +25,7 @@ public class CreateProgTests
         Assert.IsTrue(execResult.Result);
 
         // add instr on this new program
-        execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //Assert.IsNotNull(execResult);
         Assert.IsTrue(execResult.Result);

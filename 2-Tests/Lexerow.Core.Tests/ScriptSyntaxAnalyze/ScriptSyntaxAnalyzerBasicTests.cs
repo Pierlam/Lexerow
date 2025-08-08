@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System;
+﻿using Lexerow.Core.Scripts;
+using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
 using System;
@@ -43,7 +44,7 @@ public class ScriptSyntaxAnalyzerBasicTests
         ExecResult execResult = new ExecResult();
         sa.Process(execResult, lt, out List<InstrBase> listInstr);
 
-        //ici();  to dev!!
+        //ici();  //to dev!!  sort une liste d'ExeTok
         
         Assert.Fail("todo");
     }

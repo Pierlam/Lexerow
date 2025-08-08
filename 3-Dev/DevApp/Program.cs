@@ -42,7 +42,7 @@ void Test1()
 
     //--Create: file=OpenExcel(fileName)
     string fileName = @"Input\BasicDataTable.xlsx";
-    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
     if(!execRes.Result)
     {
         Console.WriteLine("=>Error occured!");
@@ -91,7 +91,7 @@ void TestFuncInListOfItems()
 
     //--Create: file=OpenExcel(fileName)
     string fileName = @"Input\TestFuncInListOfItems.xlsx";
-    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
     if (!execRes.Result)
     {
         Console.WriteLine("=>Error occured!");

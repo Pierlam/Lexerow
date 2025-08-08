@@ -101,10 +101,10 @@ public class StringParser
             if (ProcessName(line, i, out iOut, out token))
             {
                 // is it an excel column name?
-                ProcessExcelColName(token);
+                //ProcessExcelColName(token);
 
                 //--is an Excel cell address?
-                ProcessExcelCellAddress(token);
+                //ProcessExcelCellAddress(token);
 
                 tokens.Add(token);
                 lastTokenType = ScriptTokenType.Name;
@@ -330,35 +330,35 @@ public class StringParser
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessExcelColName(ScriptToken token)
-    {
-        int i = 0;
-        bool found = false;
+    //bool ProcessExcelColName(ScriptToken token)
+    //{
+    //    int i = 0;
+    //    bool found = false;
 
-        // find the end string separator
-        while (true)
-        {
-            // stop until end of line reached or a separator char is found
-            if (i >= token.Value.Length) break;
+    //    // find the end string separator
+    //    while (true)
+    //    {
+    //        // stop until end of line reached or a separator char is found
+    //        if (i >= token.Value.Length) break;
 
-            // the char should be:letter+upper
-            if (char.IsLetter(token.Value[i]) && char.IsUpper(token.Value[i]))
-                found = true;
-            else
-            {
-                found = false;
-                break;
-            }
+    //        // the char should be:letter+upper
+    //        if (char.IsLetter(token.Value[i]) && char.IsUpper(token.Value[i]))
+    //            found = true;
+    //        else
+    //        {
+    //            found = false;
+    //            break;
+    //        }
 
-            i++;
-        }
+    //        i++;
+    //    }
 
-        if (found)
-        {
-            token.ScriptTokenType = ScriptTokenType.ExcelColName;
-        }
-        return found;
-    }
+    //    if (found)
+    //    {
+    //        token.ScriptTokenType = ScriptTokenType.ExcelColName;
+    //    }
+    //    return found;
+    //}
 
     /// <summary>
     /// Is the token an excel cell address?
@@ -368,18 +368,18 @@ public class StringParser
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessExcelCellAddress(ScriptToken token)
-    {
+    //bool ProcessExcelCellAddress(ScriptToken token)
+    //{
 
-        string pattern = @"(\$?[A-Z]+\$?\d+)";
-        Regex regex = new Regex(pattern);
-        //MatchCollection matches = regex.Matches(token.Value);
-        if (regex.Match(token.Value).Success)
-        {
-            token.ScriptTokenType = ScriptTokenType.ExcelCellAddress;
-            return true;
-        }
+    //    string pattern = @"(\$?[A-Z]+\$?\d+)";
+    //    Regex regex = new Regex(pattern);
+    //    //MatchCollection matches = regex.Matches(token.Value);
+    //    if (regex.Match(token.Value).Success)
+    //    {
+    //        token.ScriptTokenType = ScriptTokenType.ExcelCellAddress;
+    //        return true;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
 }

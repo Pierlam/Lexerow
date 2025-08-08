@@ -26,7 +26,7 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
 
         string fileName = @"10-Files\ForIfThenSetNullBasic.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Create: A.Cell > 10
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);
@@ -81,7 +81,7 @@ public class ExecInstrForEachRowIfThenSetNullBlankTests
 
         string fileName = @"10-Files\ForIfThenSetBlankBasic.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Create: A.Cell > 10
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(0, ValCompOperator.GreaterThan, 10);

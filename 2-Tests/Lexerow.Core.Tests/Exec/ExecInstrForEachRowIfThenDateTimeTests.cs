@@ -29,7 +29,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         string fileName = @"10-Files\ForIfDateOnlyBasic.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Create: C.Cell > 01/02/2020
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(2, ValCompOperator.GreaterThan, new DateOnly(2020,02,01));
@@ -76,7 +76,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         string fileName = @"10-Files\ForIfDateTimeBasic.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Create: D.Cell > 01/02/2020
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, new DateTime(2020, 02, 01));
@@ -120,7 +120,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         string fileName = @"10-Files\ForIfTimeOnlyBasic.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Comp: C.Cell < 10:20:30
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(2, ValCompOperator.LessThan, new TimeOnly(10,20,30));
@@ -173,7 +173,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         string fileName = @"10-Files\ForIfThenDateOnlyOnDateTime.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Comparison: D.Cell < 01/02/2020
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.LessThan, new DateOnly(2020, 02, 01));
@@ -215,7 +215,7 @@ public class ExecInstrForEachRowIfThenDateTimeTests
 
         string fileName = @"10-Files\ForIfThenDateTimeOnDateOnly.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Create: D.Cell < 01/02/2020 12:34:56
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.LessThan, new DateTime(2020, 02, 01, 12,34,56));

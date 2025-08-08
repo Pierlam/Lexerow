@@ -14,16 +14,69 @@ namespace Lexerow.Core.Tests.Exec;
 public class ExecInstrForEachRowIfThenBasicTests
 {
     /// <summary>
+    /// file=OpenExcel("10-Files\Greater50Set12.xlsx")
+    /// 
+    /// OnExcel file OnSheet 0,1
+    ///   ForEach Row
+    ///      If D.Cell>50 Then D.Cell=12
+    ///      
+    /// 
+    /// </summary>
+    //[TestMethod]
+    //public void Greater50Set12Ok()
+    //{
+    //    LexerowCore core = new LexerowCore();
+
+    //    string fileName = @"10-Files\Greater50Set12.xlsx";
+
+    //    //--instr: file=OpenExcel("10-Files\Greater50Set12.xlsx")
+    //    ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
+
+    //    // OnExcel file OnSheet 0,1	
+    //    execResult = core.ProgBuilder.CreateInstrOnExcelOnSheet("file", 0, 1, out BuildInstrOnExcelOnSheet buildInstrOnExcel);
+
+    //    //--instr: If D.Cell>50 Then D.Cell=12
+
+    //    // TODO: rework params!!
+    //    execResult = core.ProgBuilder.CreateInstrIf(buildInstrOnExcel, "D", "Cell", ">", 50, out BuildInstrOnExcelIf buildInstrIf);
+
+    //    execResult = core.ProgBuilder.CreateInstrThenSetVar(buildInstrOnExcel, buildInstrIf, "D.Cell", 12);
+
+    //    // save the instr OnExcel OnSheet ForEach Row IfThen
+    //    execResult = core.ProgBuilder.SaveInstrOnExcelOnSheet(buildInstrOnExcel);
+
+    //    //-execute the program
+    //    execResult = core.ExecuteProgram();
+    //    Assert.IsTrue(execResult.Result);
+
+    //    // check the content of modified excel file
+    //    var stream = ExcelChecker.OpenExcel(fileName);
+    //    var wb = ExcelChecker.GetWorkbook(stream);
+    //    bool res = ExcelChecker.CheckCellValue(wb, 0, 2, 3, 12);
+    //    Assert.IsTrue(res);
+
+    //    ExcelChecker.CloseExcel(stream);
+    //}
+
+    //--test with an undefined file varname
+    // will be detected during the compilation stage
+
+    //--test with the filenname, not var
+    // OnExcel "10-Files\Greater50Set12.xlsx"
+
+
+
+    /// <summary>
     /// If D.Cell>50 Then D.Cell=12
     /// </summary>
     [TestMethod]
-    public void Greater50Set12Ok()
+    public void Greater50Set12Ok_OLD()
     {
         LexerowCore core = new LexerowCore();
 
         string fileName = @"10-Files\Greater50Set12.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Comparison: D.Cell > 50 
         InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
@@ -72,7 +125,7 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         string fileName = @"10-Files\ForIfCellIsNullSetNA.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Comp: B.Cell=Null
         InstrCompColCellValIsNull instrCompIf = core.ProgBuilder.CreateInstrCompCellValIsNull(1);
@@ -129,7 +182,7 @@ public class ExecInstrForEachRowIfThenBasicTests
 
         string fileName = @"10-Files\ForIfCellIsNullSetDate.xlsx";
 
-        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcel("file", fileName);
+        ExecResult execResult = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
 
         //--Create Comp instr: B.Cell=Null
         InstrCompColCellValIsNull instrCompIf = core.ProgBuilder.CreateInstrCompCellValIsNull(1);

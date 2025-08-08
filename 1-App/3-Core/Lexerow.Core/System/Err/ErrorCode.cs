@@ -107,8 +107,13 @@ public enum ErrorCode
 
     //-----others error code
 
+    VarNameNotFound,
+    FileNameNotFound,
+
     NameNullOrEmpty,
     FileNameNullOrEmpty,
+    FileNameWrongSyntax,
+
     FileObjectNameNullOrEmpty,
     ObjectWithSameNameAlreadyExists,
 
@@ -134,8 +139,16 @@ public enum ErrorCode
     ExcelUnableGetSheet,
 
     ExcelCellNotUnique,
+    ExcelFuncNameIsEmpty,
+    ExcelColNameIsWrong,
+    ExcelFuncNameIsWrong,
+
+    CompOperatorIsEmpty,
+    CompOperatorIsWrong,
 
     ExcelWrongListCols,
+
+    ExcelColNameIsEmpty,
 
     /// <summary>
     /// All cells of a row are empty.
@@ -167,8 +180,17 @@ public enum ErrorCode
     LoadScriptFileException,
     LoadScriptFileEmpty,
 
-    // lexical analyzer error code
+    //--lexical analyzer error codes
     LexAnalyzeFoundDoubleWrong,
     LexAnalyzeFoundSgtringBadFormatted,
     LexAnalyzeFoundCharUndefined,
+
+    //--syntax analyzer error codes
+    SyntaxAnalyzerNoToken,
+
+    FuncNotExists,
+    FuncOneParamExpected,
+
+    InstrNotExpected,
+    IntMustBePositive
 }

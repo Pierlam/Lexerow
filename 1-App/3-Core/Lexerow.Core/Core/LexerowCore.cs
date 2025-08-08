@@ -124,9 +124,11 @@ public class LexerowCore
     //ExecResult Core.LoadExecScriptFromLines(string name, List<string> scriptLines)
 
 
+    Action<AppTrace> _appTraceEvent;
+
     public Action<AppTrace> AppTraceEvent 
     {
-        get { return AppTraceEvent; } 
+        get { return _appTraceEvent; } 
         set { 
             ProgBuilder.AppTraceEvent = value;
             Exec.AppTraceEvent = value;

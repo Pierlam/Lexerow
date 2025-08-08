@@ -189,8 +189,6 @@ public class ScriptLexicalAnalyzerBasicTests
         Assert.AreEqual(12, lt[0].ListScriptToken.Count);
         Assert.AreEqual("If", lt[0].ListScriptToken[0].Value);
         Assert.AreEqual("A", lt[0].ListScriptToken[1].Value);
-        // it's an excel colum name!
-        Assert.AreEqual(ScriptTokenType.ExcelColName, lt[0].ListScriptToken[1].ScriptTokenType);
 
         Assert.AreEqual(".", lt[0].ListScriptToken[2].Value);
         Assert.AreEqual(ScriptTokenType.Separator, lt[0].ListScriptToken[2].ScriptTokenType);

@@ -19,6 +19,14 @@ public class ExecResultError
         Param = param;
     }
 
+    public ExecResultError(ErrorCode errorCode, string param, string param2)
+    {
+        DateTimeCreation = DateTime.UtcNow;
+        ErrorCode = errorCode;
+        Param = param;
+        Param2 = param2;
+    }
+
     public ExecResultError(ErrorCode errorCode, Exception exception, string param)
     {
         DateTimeCreation = DateTime.UtcNow;

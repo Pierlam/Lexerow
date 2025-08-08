@@ -45,15 +45,6 @@ public class ScriptLineTokens
         AddToken(numLine, numCol, ScriptTokenType.Double, value);
     }
 
-    public void AddTokenExcelColName(int numLine, int numCol, string value)
-    {
-        AddToken(numLine, numCol, ScriptTokenType.ExcelColName, value);
-    }
-    public void AddTokenExcelCellAddress(int numLine, int numCol, string value)
-    {
-        AddToken(numLine, numCol, ScriptTokenType.ExcelCellAddress, value);
-    }
-
     public void AddTokenSeparator(int numLine, int numCol, string value)
     {
         AddToken(numLine, numCol, ScriptTokenType.Separator, value);

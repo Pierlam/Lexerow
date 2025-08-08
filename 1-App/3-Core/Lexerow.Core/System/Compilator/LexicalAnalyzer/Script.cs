@@ -31,6 +31,19 @@ public class ScriptLine
 /// </summary>
 public class Script
 {
+    /// <summary>
+    /// To create an internal one line script easily!
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    public static Script CreateOneLine(string line)
+    {
+        if (line == null) return null;
+        Script script = new Script("internal");
+        script.AddScriptLine(1, line);
+        return script;
+    }
+
     public Script(string fileName)
     {
         FileName = fileName;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.Utils;
 public class ExcelExtendedUtils : ExcelUtils
-{
+{    
     /// <summary>
     /// Does the cell type match the If-Comparison cell.Value type?
     /// </summary>

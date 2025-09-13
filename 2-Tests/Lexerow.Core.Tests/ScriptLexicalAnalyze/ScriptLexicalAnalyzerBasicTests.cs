@@ -116,7 +116,10 @@ public class ScriptLexicalAnalyzerBasicTests
 
         Assert.AreEqual(2, lt[0].ListScriptToken.Count);
         Assert.AreEqual("OnExcel", lt[0].ListScriptToken[0].Value);
+        Assert.AreEqual(ScriptTokenType.Name, lt[0].ListScriptToken[0].ScriptTokenType);
+
         Assert.AreEqual("\"file.xlsx\"", lt[0].ListScriptToken[1].Value);
+        Assert.AreEqual(ScriptTokenType.String, lt[0].ListScriptToken[1].ScriptTokenType);
     }
 
     /// <summary>
@@ -140,7 +143,9 @@ public class ScriptLexicalAnalyzerBasicTests
 
         Assert.AreEqual(2, lt[0].ListScriptToken.Count);
         Assert.AreEqual("ForEach", lt[0].ListScriptToken[0].Value);
+        Assert.AreEqual(ScriptTokenType.Name, lt[0].ListScriptToken[0].ScriptTokenType);
         Assert.AreEqual("Row", lt[0].ListScriptToken[1].Value);
+        Assert.AreEqual(ScriptTokenType.Name, lt[0].ListScriptToken[1].ScriptTokenType);
     }
 
     /// <summary>
@@ -177,7 +182,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void ParseIfACellGt10ThenACellEq10Ok()
     {
-        Script script = ScriptBuilder.Build("  If A.Cell>10 Then A.Cell=10");
+        Script script = ScriptBuilder.Build("If A.Cell>10 Then A.Cell=10");
         ExecResult execResult = new ExecResult();
 
         // analyse the source code, line by line

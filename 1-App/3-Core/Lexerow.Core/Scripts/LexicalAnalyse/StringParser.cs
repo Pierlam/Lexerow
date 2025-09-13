@@ -246,9 +246,21 @@ public class StringParser
             {
                 if (token == null)
                 {
-                    token = new ScriptToken();
-                    token.ScriptTokenType = ScriptTokenType.Double;
-                    token.ColNum = i;
+                    // the next char should exists and should be a digit
+                    if (i+1 < line.Length) 
+                    {
+                        // next char must be a digit
+                        if (char.IsDigit(line[i + 1]))
+                        {
+                            token = new ScriptToken();
+                            token.ScriptTokenType = ScriptTokenType.Double;
+                            token.ColNum = i;
+                            continue;
+                        }
+                    }
+
+                    // not a double number!
+                    break;
                 }
 
                 // sure it's a double
@@ -304,7 +316,6 @@ public class StringParser
             return false;
 
         // the next char must be a separator or there is no more char
-        //int iNext= iOut+1;
         if(iOut < line.Length)
         {
             // there is a next char, should be a space separator

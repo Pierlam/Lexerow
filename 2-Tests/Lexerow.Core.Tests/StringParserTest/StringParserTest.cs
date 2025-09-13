@@ -326,4 +326,81 @@ public class StringParserTest
         Assert.AreEqual(ScriptTokenType.Integer, listScriptTokens[3].ScriptTokenType);
         Assert.AreEqual(12, listScriptTokens[3].ValueInt);
     }
+
+    // "A.Cell "
+    [TestMethod]
+    public void Test_A_dot_Spc_Cell_spc_Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "A.Cell ";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(3, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Name, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual("A", listScriptTokens[0].Value);
+        Assert.AreEqual(ScriptTokenType.Separator, listScriptTokens[1].ScriptTokenType);
+        Assert.AreEqual(".", listScriptTokens[1].Value);
+        Assert.AreEqual(ScriptTokenType.Name, listScriptTokens[2].ScriptTokenType);
+        Assert.AreEqual("Cell", listScriptTokens[2].Value);
+    }
+
+    // "A.Cell "
+    [TestMethod]
+    public void Test_A_dot_Spc_Cell_Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "A.Cell";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(3, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Name, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual("A", listScriptTokens[0].Value);
+        Assert.AreEqual(ScriptTokenType.Separator, listScriptTokens[1].ScriptTokenType);
+        Assert.AreEqual(".", listScriptTokens[1].Value);
+        Assert.AreEqual(ScriptTokenType.Name, listScriptTokens[2].ScriptTokenType);
+        Assert.AreEqual("Cell", listScriptTokens[2].Value);
+    }
+
+    // "A."
+    [TestMethod]
+    public void Test_A_dot_Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "A.";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(2, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Name, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual("A", listScriptTokens[0].Value);
+        Assert.AreEqual(ScriptTokenType.Separator, listScriptTokens[1].ScriptTokenType);
+        Assert.AreEqual(".", listScriptTokens[1].Value);
+    }
+
+    // "A. "
+    [TestMethod]
+    public void Test_A_dot_spc_Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "A. ";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(2, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Name, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual("A", listScriptTokens[0].Value);
+        Assert.AreEqual(ScriptTokenType.Separator, listScriptTokens[1].ScriptTokenType);
+        Assert.AreEqual(".", listScriptTokens[1].Value);
+    }
+
 }

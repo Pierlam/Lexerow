@@ -19,7 +19,7 @@ public class ScriptSyntaxAnalyzerBasicTests
 {
     /// <summary>
     /// file=OpenExcel("data.xslx")
-    /// file; = ; OpenExcel; (; "data.xlsx"; )
+    /// file; =; OpenExcel; (; "data.xlsx"; )
     /// </summary>
     [TestMethod]
     public void FileEqOneExcelFileNameOk()
@@ -42,11 +42,15 @@ public class ScriptSyntaxAnalyzerBasicTests
         SyntaxAnalyser sa = new SyntaxAnalyser();
 
         ExecResult execResult = new ExecResult();
-        sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        sa.Process(execResult, lt, out List<ExecTokBase> listExeTok);
 
+        Assert.AreEqual(5, listExeTok.Count);
+        // first one is SetVar
+        Assert.AreEqual(ExecTokType.SetVar, listExeTok[0].ExecTokType);
+
+        // TODO: check others tokens
         //ici();  //to dev!!  sort une liste d'ExeTok
-        
-        Assert.Fail("todo");
+
     }
 
     // test empty!

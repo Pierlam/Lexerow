@@ -59,7 +59,7 @@ public enum ScriptTokenType
     /// <summary>
     /// has for example two or more decimal separator.
     /// </summary>
-    DoubleWrong
+    WrongNumber
 }
 
 /// <summary>
@@ -86,6 +86,9 @@ public class ScriptToken
     /// </summary>
     public string Value { get; set; }
 
+    public int ValueInt { get; set; } = 0;
+    public double ValueDouble { get; set; } = 0;
+
     public ScriptTokenType ScriptTokenType { get; set; }
 
     /// <summary>
@@ -97,7 +100,7 @@ public class ScriptToken
         // is the token a const value?
         if (ScriptTokenType == ScriptTokenType.Integer || ScriptTokenType == ScriptTokenType.String ||
             ScriptTokenType == ScriptTokenType.StringBadFormed || ScriptTokenType == ScriptTokenType.Double ||
-            ScriptTokenType == ScriptTokenType.DoubleWrong)
+            ScriptTokenType == ScriptTokenType.WrongNumber)
             return true;
 
         return false;

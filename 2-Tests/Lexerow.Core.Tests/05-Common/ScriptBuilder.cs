@@ -14,7 +14,7 @@ public class ScriptBuilder
 {
     public static Script Build(string l1)
     {
-        Script sc= new Script("filename");
+        Script sc= new Script("name", "filename");
 
         sc.AddScriptLine(1, l1);
         return sc;
@@ -22,7 +22,7 @@ public class ScriptBuilder
 
     public static Script Build(string l1, string l2)
     {
-        Script sc = new Script("filename");
+        Script sc = new Script("name", "filename");
 
         sc.AddScriptLine(1, l1);
         sc.AddScriptLine(2, l2);
@@ -31,7 +31,7 @@ public class ScriptBuilder
 
     public static Script Build(string l1, string l2, string l3)
     {
-        Script sc = new Script("filename");
+        Script sc = new Script("name", "filename");
 
         sc.AddScriptLine(1, l1);
         sc.AddScriptLine(2, l2);

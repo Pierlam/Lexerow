@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Scripts;
 public class ExcelFunctionNameDecoder
 {
-    public static bool Do(string excelFuncName, out InstrBase excelFunc)
+    public static bool Do(string excelFuncName, out ExecTokBase excelFunc)
     {
         excelFunc = null;
         if (string.IsNullOrEmpty(excelFuncName)) return false;
@@ -18,7 +18,7 @@ public class ExcelFunctionNameDecoder
 
         if (excelFuncName.Equals("Cell", StringComparison.CurrentCultureIgnoreCase)) 
         {
-            excelFunc = new ExecTokExcelFuncCell();
+            //excelFunc = new ExecTokExcelFuncCell();
             return true;
         }
 

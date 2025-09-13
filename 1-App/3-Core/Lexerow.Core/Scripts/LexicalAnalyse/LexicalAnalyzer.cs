@@ -30,9 +30,9 @@ public class LexicalAnalyzer
             i++;
 
             // parse the line, split in tokens
-            if(!stringParser.Parse(i, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> items, out ScriptTokenType lastTokenType))
+            if(!stringParser.Parse(i, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType))
             {
-                if(lastTokenType== ScriptTokenType.DoubleWrong)
+                if(lastTokenType== ScriptTokenType.WrongNumber)
                 {
                     execResult.AddError(new ExecResultError(ErrorCode.LexAnalyzeFoundDoubleWrong, scriptLine.Line));
                     return false;
@@ -50,13 +50,13 @@ public class LexicalAnalyzer
             }
 
             // save the items: numLine+tokens
-            if (items.Count == 0)
+            if (listScriptTokens.Count == 0)
                 continue;
 
             ScriptLineTokens scriptLineTokens = new ScriptLineTokens();
             scriptLineTokens.ScriptLine = scriptLine.Line;
             scriptLineTokens.Numline = i;
-            scriptLineTokens.ListScriptToken.AddRange(items);
+            scriptLineTokens.ListScriptToken.AddRange(listScriptTokens);
             listScriptLineTokens.Add(scriptLineTokens);
 
         }

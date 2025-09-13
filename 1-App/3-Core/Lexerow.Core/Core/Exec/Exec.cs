@@ -64,41 +64,41 @@ public class Exec
     {
         ExecResult execResult = new ExecResult();
 
-        if (_coreData.CurrProgramInstr == null)
+        if (_coreData.CurrProgramScript == null)
         {
             execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist, null));
             return execResult;
         }
 
-        return CompileProgram(_coreData.CurrProgramInstr);
+        return CompileProgram(_coreData.CurrProgramScript);
     }
 
-    public ExecResult CompileProgram(string programName)
-    {
-        ExecResult execResult = new ExecResult();
+    //public ExecResult CompileProgram(string programName)
+    //{
+    //    ExecResult execResult = new ExecResult();
 
-        if (_coreData.CurrProgramInstr == null)
-        {
-            execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist, null));
-            return execResult;
-        }
+    //    if (_coreData.CurrProgramInstr == null)
+    //    {
+    //        execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist, null));
+    //        return execResult;
+    //    }
 
-        if (string.IsNullOrWhiteSpace(programName))
-        {
-            if (programName == null) programName = string.Empty;
-            execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, programName));
-            return execResult;
-        }
+    //    if (string.IsNullOrWhiteSpace(programName))
+    //    {
+    //        if (programName == null) programName = string.Empty;
+    //        execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, programName));
+    //        return execResult;
+    //    }
 
-        ProgramInstr program = _coreData.GetProgramByName(programName);
-        if (program == null)
-        {
-            execResult.AddError(new ExecResultError(ErrorCode.ProgramNotFound, programName));
-            return execResult;
-        }
+    //    ProgramInstr program = _coreData.GetProgramByName(programName);
+    //    if (program == null)
+    //    {
+    //        execResult.AddError(new ExecResultError(ErrorCode.ProgramNotFound, programName));
+    //        return execResult;
+    //    }
 
-        return CompileProgram(_coreData.CurrProgramInstr);
-    }
+    //    return CompileProgram(_coreData.CurrProgramInstr);
+    //}
 
     /// <summary>
     /// Execute the current program.
@@ -108,14 +108,14 @@ public class Exec
     {
         ExecResult execResult = new ExecResult();
 
-        if (_coreData.CurrProgramInstr == null)
+        if (_coreData.CurrProgramScript == null)
         {
             execResult.AddError(new ExecResultError(ErrorCode.NoCurrentProgramExist, null));
             return execResult;
         }
 
-        var res= ExecuteProgram(_coreData.CurrProgramInstr, _listExecVar);
-        _coreData.CurrProgramInstr.Stage = CoreStage.Build;
+        var res= ExecuteProgram(_coreData.CurrProgramScript, _listExecVar);
+        _coreData.CurrProgramScript.Stage = CoreStage.Build;
         return res;
     }
 
@@ -135,7 +135,7 @@ public class Exec
             return execResult;
         }
 
-        ProgramInstr program= _coreData.GetProgramByName(name);
+        ProgramScript program= _coreData.GetProgramByName(name);
         if(program==null)
         {
             execResult.AddError(new ExecResultError(ErrorCode.ProgramNotFound, name));
@@ -143,11 +143,11 @@ public class Exec
         }
 
         var res = ExecuteProgram(program, _listExecVar);
-        _coreData.CurrProgramInstr.Stage = CoreStage.Build;
+        _coreData.CurrProgramScript.Stage = CoreStage.Build;
         return res;
     }
 
-    ExecResult CompileProgram(ProgramInstr program)
+    ExecResult CompileProgram(ProgramScript program)
     {
         ExecResult execResult = new ExecResult();
 
@@ -179,7 +179,7 @@ public class Exec
     /// Need to compile instr before execute them.
     /// </summary>
     /// <returns></returns>
-    ExecResult ExecuteProgram(ProgramInstr program, List<ExecVar> listExecVar)
+    ExecResult ExecuteProgram(ProgramScript program, List<ExecVar> listExecVar)
     {
         ExecResult execResult= new ExecResult();
 
@@ -193,7 +193,7 @@ public class Exec
         }
 
         // create a stack
-        Stack<InstrBase> stackInstr = new Stack<InstrBase>();
+        Stack<ExecTokBase> stackInstr = new Stack<ExecTokBase>();
 
         program.Stage = CoreStage.Exec;
 
@@ -204,14 +204,14 @@ public class Exec
             _execStartCurrInstr = DateTime.Now;
 
             //--end of line reached
-            if (instr.InstrType == InstrType.Eol)
+            if (instr.ExecTokType == ExecTokType.Eol)
             {
                 ExecStackedInstr(execResult, stackInstr, listExecVar);
                 continue;
             }
 
             //--open bracket
-            if (instr.InstrType == InstrType.OpenBracket)
+            if (instr.ExecTokType == ExecTokType.OpenBracket)
             {
                 // just push the instr on the stack
                 stackInstr.Push(instr);
@@ -222,7 +222,7 @@ public class Exec
             // TODO: 
 
             //--close bracket, end of function parameters
-            if (instr.InstrType == InstrType.CloseBracket)
+            if (instr.ExecTokType == ExecTokType.CloseBracket)
             {
                 if (!ExecCloseBracketReached(execResult, stackInstr, _listExecVar, _execStartCurrInstr))
                     return execResult;
@@ -230,7 +230,7 @@ public class Exec
             }
 
             //--const value
-            if (instr.InstrType == InstrType.ConstValue)
+            if (instr.ExecTokType == ExecTokType.ConstValue)
             {
                 // just push the instr on the stack
                 stackInstr.Push(instr);
@@ -238,7 +238,7 @@ public class Exec
             }
 
             //--set var
-            if (instr.InstrType == InstrType.SetVar)
+            if (instr.ExecTokType == ExecTokType.SetVar)
             {
                 // checks with instr already saved in the stack
                 // TODO: don't know 
@@ -248,20 +248,20 @@ public class Exec
                 continue;
             }
 
-            if (instr.InstrType == InstrType.OpenExcel)
+            if (instr.ExecTokType == ExecTokType.OpenExcel)
             {
                 // just push the instr on the stack
                 stackInstr.Push(instr);
                 continue;
             }
 
-            if(instr.InstrType == InstrType.CloseExcel)
+            if(instr.ExecTokType == ExecTokType.CloseExcel)
             {
                 // TODO: ExecInstrCloseExcelFile
                 continue;
             }
 
-            if(instr.InstrType == InstrType.ForEachRowIfThen)
+            if(instr.ExecTokType == ExecTokType.ForEachRowIfThen)
             {
                 res = ExecInstrForEachRowIfThen(execResult, instr as InstrOnExcelForEachRowIfThen, _listExecVar, _execStartCurrInstr);
                 if (!res)
@@ -294,9 +294,9 @@ public class Exec
     /// <param name="execResult"></param>
     /// <param name="stackInstr"></param>
     /// <returns></returns>
-    bool ExecStackedInstr(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar)
+    bool ExecStackedInstr(ExecResult execResult, Stack<ExecTokBase> stackInstr, List<ExecVar> listExecVar)
     {
-        InstrBase instrTop= stackInstr.Peek();
+        ExecTokBase instrTop= stackInstr.Peek();
 
         //--SetVar excelFileObj ?
         InstrExcelFileObject instrExcelFileObject = instrTop as InstrExcelFileObject;
@@ -343,7 +343,7 @@ public class Exec
     /// <param name="execResult"></param>
     /// <param name="stackInstr"></param>
     /// <returns></returns>
-    bool ExecCloseBracketReached(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar, DateTime execStart)
+    bool ExecCloseBracketReached(ExecResult execResult, Stack<ExecTokBase> stackInstr, List<ExecVar> listExecVar, DateTime execStart)
     {
         // the stack should contains 2 item at least
         if(stackInstr.Count < 2)
@@ -353,13 +353,13 @@ public class Exec
             return false;
         }
 
-        List<InstrBase> listFuncParams = new List<InstrBase>();
+        List<ExecTokBase> listFuncParams = new List<ExecTokBase>();
 
         // read the item on the top of the stack, the last added
-        InstrBase instrBaseLast = stackInstr.Peek();
+        ExecTokBase instrBaseLast = stackInstr.Peek();
 
         //--case 1: no parameter? the prev item is an open bracket
-        if (instrBaseLast.InstrType == InstrType.OpenBracket)
+        if (instrBaseLast.ExecTokType == ExecTokType.OpenBracket)
         {
             // remove the open bracket
             stackInstr.Pop();
@@ -383,14 +383,14 @@ public class Exec
         instrBaseLast = stackInstr.Pop();
 
         // read the next one
-        InstrBase instrBasePrev = stackInstr.Peek();
+        ExecTokBase instrBasePrev = stackInstr.Peek();
 
         //--case 2: one parameter?  fct(param
         // TODO: the prev item should be a const value, the prev-prev should be an open bracket
-        if (instrBasePrev.InstrType == InstrType.OpenBracket) 
+        if (instrBasePrev.ExecTokType == ExecTokType.OpenBracket) 
         {
             // so the prev item is a param, it should be a const value
-            if (instrBaseLast.InstrType != InstrType.ConstValue)
+            if (instrBaseLast.ExecTokType != ExecTokType.ConstValue)
             {
                 // TODO: set a right error code!  
                 execResult.AddError(new ExecResultError(ErrorCode.FileNameNotFound, null));

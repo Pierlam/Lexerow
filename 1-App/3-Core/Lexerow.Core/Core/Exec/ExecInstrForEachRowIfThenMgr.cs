@@ -74,7 +74,7 @@ public class ExecInstrForEachRowIfThenMgr
     /// <param name="listInstrThen"></param>
     /// <param name="rowNum"></param>
     /// <returns></returns>
-    static bool ExecOnDataRow(ExecResult execResult, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrRetBoolBase instrIf, List<InstrBase> listInstrThen, int rowNum)
+    static bool ExecOnDataRow(ExecResult execResult, DateTime execStart, IExcelProcessor excelProcessor, IExcelFile excelFile, IExcelSheet excelSheet, InstrRetBoolBase instrIf, List<ExecTokBase> listInstrThen, int rowNum)
     {
         execResult.Insights.AnalyzedDatarowCount++;
 
@@ -96,7 +96,7 @@ public class ExecInstrForEachRowIfThenMgr
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThenMgr.ExecOnDataRow", InstrForEachRowIfThenExecEvent.CreateFinishedInProgress(execStart, _dataRowCount, execResult.Insights.IfCondMatchCount));
 
         // execute Then instructions
-        foreach (InstrBase instrThen in listInstrThen)
+        foreach (ExecTokBase instrThen in listInstrThen)
         {
             ExecOnCellInstrThen(execResult, excelProcessor, excelSheet, instrThen, rowNum);
         }
@@ -157,7 +157,7 @@ public class ExecInstrForEachRowIfThenMgr
         }
 
         //--instr Not allowed as an If condition
-        execResult.AddError(new ExecResultError(ErrorCode.IfConditionInstrNotAllowed, instrIf.InstrType.ToString()));
+        execResult.AddError(new ExecResultError(ErrorCode.IfConditionInstrNotAllowed, instrIf.ExecTokType.ToString()));
         return false;
     }
 
@@ -302,7 +302,7 @@ public class ExecInstrForEachRowIfThenMgr
     /// <param name="colNum"></param>
     /// <param name="rowNum"></param>
     /// <returns></returns>
-    static bool ExecOnCellInstrThen(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, InstrBase instr, int rowNum)
+    static bool ExecOnCellInstrThen(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, ExecTokBase instr, int rowNum)
     {
         // check allowed Then instructions
 

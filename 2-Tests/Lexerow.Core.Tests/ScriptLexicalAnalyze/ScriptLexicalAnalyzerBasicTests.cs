@@ -51,7 +51,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void SourceScriptIsEmpty()
     {
-        Script script = new Script("fileName");
+        Script script = new Script("name", "fileName");
         ExecResult execResult = new ExecResult();
 
         // analyse the source code, line by line
@@ -125,7 +125,7 @@ public class ScriptLexicalAnalyzerBasicTests
     /// The result: split tokens
     /// </summary>
     [TestMethod]
-    public void ParseForEacRowOk()
+    public void ParseForEachRowOk()
     {
         Script script = ScriptBuilder.Build("  ForEach Row");
 

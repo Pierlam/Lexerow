@@ -22,19 +22,19 @@ public class ExecFunctionMgr
 
     public Action<AppTrace> AppTraceEvent { get; set; }
 
-    public bool ExecFunction(ExecResult execResult, Stack<InstrBase> stackInstr, InstrBase instrBaseFunction, List<InstrBase> listFuncParams, List<ExecVar> listExecVar, DateTime execStart)
+    public bool ExecFunction(ExecResult execResult, Stack<ExecTokBase> stackInstr, ExecTokBase instrBaseFunction, List<ExecTokBase> listFuncParams, List<ExecVar> listExecVar, DateTime execStart)
     {
         //--is it OpenExcel?
-        if (instrBaseFunction.InstrType == InstrType.OpenExcel)
+        if (instrBaseFunction.ExecTokType == ExecTokType.OpenExcel)
         {
             // should have one parameter, a filename
             if (listFuncParams.Count != 1)
             {
-                execResult.AddError(new ExecResultError(ErrorCode.FuncOneParamExpected, InstrType.OpenExcel.ToString(), listFuncParams.Count.ToString()));
+                execResult.AddError(new ExecResultError(ErrorCode.FuncOneParamExpected, ExecTokType.OpenExcel.ToString(), listFuncParams.Count.ToString()));
                 return false;
             }
             // check
-            InstrConstValue instrConstValue = listFuncParams[0] as InstrConstValue;
+            ExecTokConstValue instrConstValue = listFuncParams[0] as ExecTokConstValue;
             // TODO: if =null
 
             if (!_excelProcessor.Open(instrConstValue.RawValue, out IExcelFile excelFile, out ExecResultError error))
@@ -45,13 +45,13 @@ public class ExecFunctionMgr
             }
 
             // create instruction : ExcelFileObject and save it in the stack
-            InstrExcelFileObject excelFileObject = new InstrExcelFileObject(instrConstValue.RawValue, excelFile);
+            InstrExcelFileObject excelFileObject = new InstrExcelFileObject(instrConstValue.FirstScriptToken(), instrConstValue.RawValue, excelFile);
             stackInstr.Push(excelFileObject);
             return true;
         }
 
         //--function not implemented or unknow
-        execResult.AddError(new ExecResultError(ErrorCode.FuncNotExists, instrBaseFunction.InstrType.ToString()));
+        execResult.AddError(new ExecResultError(ErrorCode.FuncNotExists, instrBaseFunction.ExecTokType.ToString()));
         return false;
     }
 

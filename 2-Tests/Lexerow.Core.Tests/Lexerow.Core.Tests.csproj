@@ -81,13 +81,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Exec\ExecInstrForEachRowIfAndThenTests.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Compilation\" />
+    <Folder Include="Exec\" />
   </ItemGroup>
 
 </Project>

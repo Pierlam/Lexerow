@@ -35,46 +35,6 @@ void EventOccured(InstrBaseExecEvent execEvent)
 // file=OpenExcel(fileName)
 // OnExcelForEachRowIfThen(file, 0, D, >50, =12)
 //
-void Test1()
-{
-    LexerowCore core = new LexerowCore();
-    core.AppTraceEvent = AppTraceEvent;
-
-    //--Create: file=OpenExcel(fileName)
-    string fileName = @"Input\BasicDataTable.xlsx";
-    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
-    if(!execRes.Result)
-    {
-        Console.WriteLine("=>Error occured!");
-        return;
-    }
-
-    //--Comp: D.Cell > 50 
-    InstrCompColCellVal instrCompIf = core.ProgBuilder.CreateInstrCompCellVal(3, ValCompOperator.GreaterThan, 50);
-
-    //--Set: D.Cell= 12
-    InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(3, 12);
-
-    //--If D.Cell > 50 Then D.Cell= 12
-    InstrIfColThen instrIfColThen;
-    execRes = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
-
-    //--Create: OnExcel ForEach Row
-    execRes = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-    if(!execRes.Result)
-    {
-        Console.WriteLine("ERR, Unable to create the instrForIfThen!");
-        return;
-    }
-
-    //--Execute all saved instruction
-    execRes = core.ExecuteProgram();
-
-    if (execRes.Result)
-        Console.WriteLine("Finished with success.");
-    else Console.WriteLine("Finished with error!");
-
-}
 
 
 ///
@@ -85,58 +45,6 @@ void Test1()
 /// If A.Cell In [ "y", "yes", "ok" ] /I Then A.Cell= "X"
 ///  In /CI -> In case Insensitive
 ///  In    -> In case Sensitive
-void TestFuncInListOfItems()
-{
-    LexerowCore core = new LexerowCore();
-
-    //--Create: file=OpenExcel(fileName)
-    string fileName = @"Input\TestFuncInListOfItems.xlsx";
-    ExecResult execRes = core.ProgBuilder.CreateInstrOpenExcelParamConst("file", fileName);
-    if (!execRes.Result)
-    {
-        Console.WriteLine("=>Error occured!");
-        return;
-    }
-    
-    List<string> listYes = ["yes", "y", "ok"];
-
-    //--Comp: A.Cell In [ "y", "yes", "ok" ]
-    // A.Cell, listOfItems, In=true/NotIn=false, case sensitive=true
-    execRes = core.ProgBuilder.CreateInstrCompCellInItems(0, listYes, true, out InstrCompColCellInStringItems instrCompIf);
-
-    //--Set: A.Cell= "X"
-    InstrSetCellVal instrSetValThen = core.ProgBuilder.CreateInstrSetCellVal(0, "X");
-
-    //--If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
-    InstrIfColThen instrIfColThen;
-    execRes = core.ProgBuilder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
-
-    //--Create: OnExcel ForEach Row
-    execRes = core.ProgBuilder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-    if (!execRes.Result)
-    {
-        Console.WriteLine("ERR, Unable to create the instrForIfThen!");
-        return;
-    }
-
-
-    execRes = core.CompileProgram();
-    if (!execRes.Result)
-    {
-        Console.WriteLine("ERR, Unable to compile the source code");
-        return;
-    }
-
-    //--Execute all saved instruction
-    execRes = core.ExecuteProgram();
-
-
-    if (execRes.Result)
-        Console.WriteLine("Finished with success.");
-    else Console.WriteLine("Finished with error!");
-
-
-}
 
 //XXXXXXXXXXXXXXXXXXXX-MAIN:
 
@@ -157,7 +65,6 @@ DevNpoi devNpoi = new DevNpoi();
 
 //Test2();
 
-TestFuncInListOfItems();
 
 Console.WriteLine("ends.");
 

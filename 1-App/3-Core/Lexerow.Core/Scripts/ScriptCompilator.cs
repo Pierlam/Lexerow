@@ -36,12 +36,12 @@ public class ScriptCompilator
     /// <param name="script"></param>
     /// <param name="listInstr"></param>
     /// <returns></returns>
-    public ExecResult CompileScript(ExecResult execResult, Script script, out List<InstrBase> listInstr)
+    public ExecResult CompileScript(ExecResult execResult, Script script, out List<ExecTokBase> listInstr)
     {
         // analyse the source code, line by line
         if (!LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
         {
-            listInstr = new List<InstrBase>();
+            listInstr = new List<ExecTokBase>();
             return execResult;
         }
 

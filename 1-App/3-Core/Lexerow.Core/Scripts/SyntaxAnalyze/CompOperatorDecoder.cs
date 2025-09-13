@@ -16,31 +16,31 @@ public class CompOperatorDecoder
 
         if(strCompOperator.Equals("="))
         {
-            execTokCompOperator= new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.Equal);
+            //execTokCompOperator= new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.Equal);
             return true;
         }
 
         if (strCompOperator.Equals("<>") || strCompOperator.Equals("!="))
         {
-            execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.NotEqual);
+            //execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.NotEqual);
             return true;
         }
 
         if (strCompOperator.Equals(">"))
         {
-            execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.GreaterThan);
+            //execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.GreaterThan);
             return true;
         }
 
         if (strCompOperator.Equals(">="))
         {
-            execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.GreaterOrEqualThan);
+            //execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.GreaterOrEqualThan);
             return true;
         }
 
         if (strCompOperator.Equals("<"))
         {
-            execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.LessThan);
+            //execTokCompOperator = new ExecTokCompOperator(strCompOperator, ExecTokCompOperatorType.LessThan);
             return true;
         }
 

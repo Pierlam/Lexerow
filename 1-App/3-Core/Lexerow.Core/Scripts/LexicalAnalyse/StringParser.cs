@@ -73,22 +73,22 @@ public class StringParser
             }
 
             //--is is a number?, integer or double, should be before separators extraction! because of decimal separator
-            if (ProcessNumber(line, i, out iOut, out token))
+            if (ProcessNumber(separators, line, i, out iOut, out token))
             {
                 tokens.Add(token);
                 i = iOut;
 
                 // manage case: StringBadFormated, end tag not found
-                if (token.ScriptTokenType == ScriptTokenType.DoubleWrong)
+                if (token.ScriptTokenType == ScriptTokenType.WrongNumber)
                 {
-                    lastTokenType = ScriptTokenType.DoubleWrong;
+                    lastTokenType = ScriptTokenType.WrongNumber;
                     return false;
                 }
                 continue;
             }
 
             //--is is a char separator?
-            if (ProcessSeparator(line, i, separators, out iOut, out token))
+            if (ProcessSeparator(separators, line, i, out iOut, out token))
             {
                 tokens.Add(token);
                 i = iOut;
@@ -142,7 +142,9 @@ public class StringParser
         while (true)
         {
             if (i >= line.Length) return spaceFound;
-            if (line[i] != ' ') return spaceFound;
+
+            //if (line[i] != ' ') return spaceFound;
+            if(!IsSpaceCharExt(line[i]))return spaceFound;
 
             spaceFound = true;
             i++;
@@ -209,7 +211,7 @@ public class StringParser
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessNumber(string line, int i, out int iOut, out ScriptToken token)
+    bool ProcessNumber(string separators, string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -217,11 +219,11 @@ public class StringParser
 
         while (true)
         {
-            if (i >= line.Length) return tokenFound;
+            // no more char
+            if (i >= line.Length) break;
 
             char c = line[i];
 
-            // is it a letter or a digit or an underscore?
             if (char.IsDigit(c))
             {
                 if (token == null)
@@ -243,7 +245,7 @@ public class StringParser
             {
                 // contains already a decimal separator!
                 if (token.Value.Contains("."))
-                    token.ScriptTokenType = ScriptTokenType.DoubleWrong;
+                    token.ScriptTokenType = ScriptTokenType.WrongNumber;
                 else
                     token.ScriptTokenType = ScriptTokenType.Double;
 
@@ -254,13 +256,52 @@ public class StringParser
             }
 
             // not a digit or a decimal separator!
-            //ici();
+            break;
 
-            return tokenFound;
         }
+
+        // no integer or double found, bye
+        if (token==null)
+            return false;
+
+        // the next char must be a separator or there is no more char
+        //int iNext= iOut+1;
+        if(iOut < line.Length)
+        {
+            // there is a next char, should be a space separator
+            if (!IsSpaceCharExt(line[i]) && !separators.Contains(line[i]))
+            {
+                // error!  -> voir plus haut faire une fct
+                // TODO: space, \n,\r
+                token.ScriptTokenType = ScriptTokenType.WrongNumber;
+                return true;
+            }
+        }
+
+        // check the number, convert it
+        if(token.ScriptTokenType == ScriptTokenType.Double)
+        {
+            if (double.TryParse(token.Value, out double d))
+                token.ValueDouble = d;
+            else
+                token.ScriptTokenType= ScriptTokenType.WrongNumber;
+            return true;
+        }
+
+        if (token.ScriptTokenType == ScriptTokenType.Integer)
+        {
+            if (int.TryParse(token.Value, out int d))
+                token.ValueInt = d;
+            else
+                token.ScriptTokenType = ScriptTokenType.WrongNumber;
+            return true;
+        }
+
+        // a number was found
+        return true;
     }
 
-    bool ProcessSeparator(string line, int i, string separators, out int iOut, out ScriptToken token)
+    bool ProcessSeparator(string separators, string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -319,67 +360,11 @@ public class StringParser
         }
     }
 
-    /// <summary>
-    /// Is the token an excel column name?
-    /// exp: A
-    /// max: XFD
-    /// </summary>
-    /// <param name="line"></param>
-    /// <param name="i"></param>
-    /// <param name="separators"></param>
-    /// <param name="iOut"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    //bool ProcessExcelColName(ScriptToken token)
-    //{
-    //    int i = 0;
-    //    bool found = false;
-
-    //    // find the end string separator
-    //    while (true)
-    //    {
-    //        // stop until end of line reached or a separator char is found
-    //        if (i >= token.Value.Length) break;
-
-    //        // the char should be:letter+upper
-    //        if (char.IsLetter(token.Value[i]) && char.IsUpper(token.Value[i]))
-    //            found = true;
-    //        else
-    //        {
-    //            found = false;
-    //            break;
-    //        }
-
-    //        i++;
-    //    }
-
-    //    if (found)
-    //    {
-    //        token.ScriptTokenType = ScriptTokenType.ExcelColName;
-    //    }
-    //    return found;
-    //}
-
-    /// <summary>
-    /// Is the token an excel cell address?
-    /// exp: A1, BN456
-    /// max: XFD???
-    /// 
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    //bool ProcessExcelCellAddress(ScriptToken token)
-    //{
-
-    //    string pattern = @"(\$?[A-Z]+\$?\d+)";
-    //    Regex regex = new Regex(pattern);
-    //    //MatchCollection matches = regex.Matches(token.Value);
-    //    if (regex.Match(token.Value).Success)
-    //    {
-    //        token.ScriptTokenType = ScriptTokenType.ExcelCellAddress;
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
+    bool IsSpaceCharExt(char c)
+    {
+        if (c == ' ') return true;
+        if (c == '\r') return true;
+        if (c == '\n') return true;
+        return false;
+    }
 }

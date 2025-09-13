@@ -187,6 +187,7 @@ public enum ErrorCode
 
     //--syntax analyzer error codes
     SyntaxAnalyzerNoToken,
+    SyntaxAnalyzerTokenNotExpected,
 
     FuncNotExists,
     FuncOneParamExpected,

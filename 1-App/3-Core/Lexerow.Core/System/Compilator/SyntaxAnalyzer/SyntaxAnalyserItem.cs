@@ -8,25 +8,19 @@ namespace Lexerow.Core.System.Compilator;
 
 public enum SyntaxAnalyserItemType
 {
+    // TODO: rework!!
     SourceToken,
     Instruction
 }
 
+// TODO: vraiment besoin??
 public class SyntaxAnalyserItem
 {
-    public static SyntaxAnalyserItem CreateToken(ScriptToken sourceCodeToken)
+
+    public static SyntaxAnalyserItem CreateInstr(ExecTokBase instrBase)
     {
         SyntaxAnalyserItem item = new SyntaxAnalyserItem();
-        item.SourceCodeToken = sourceCodeToken;
-        item.Type = SyntaxAnalyserItemType.SourceToken;
-
-        return item;
-    }
-
-    public static SyntaxAnalyserItem CreateInstr(InstrBase instrBase)
-    {
-        SyntaxAnalyserItem item = new SyntaxAnalyserItem();
-        item.InstrBase = instrBase;
+        item.ExecTokBase = instrBase;
         item.Type = SyntaxAnalyserItemType.Instruction;
 
         return item;
@@ -41,9 +35,10 @@ public class SyntaxAnalyserItem
     public ScriptToken? SourceCodeToken { get; set; } = null;
 
     /// <summary>
-    /// The item can be a, instruction.
+    /// must be set.
+    /// A script token is always converted to an exec token.
     /// </summary>
-    public InstrBase? InstrBase { get; set; } = null;
+    public ExecTokBase? ExecTokBase { get; set; } = null;
 
     public bool IsTokenConstValue()
     {
@@ -145,17 +140,17 @@ public class SyntaxAnalyserItem
     public bool IsInstrSetVar()
     {
         if (Type != SyntaxAnalyserItemType.Instruction) return false;
-        return (InstrBase as InstrSetVar) != null;
+        return (ExecTokBase as InstrSetVar) != null;
     }
 
     public bool IsInstrIfThenElse()
     {
         if (Type != SyntaxAnalyserItemType.Instruction) return false;
-        return (InstrBase as InstrIfThenElse) != null;
+        return (ExecTokBase as InstrIfThenElse) != null;
     }
 
     public bool IsInstrCallMember()
     {
-        return (InstrBase as InstrCallMemberBase) != null;
+        return (ExecTokBase as InstrCallMemberBase) != null;
     }
 }

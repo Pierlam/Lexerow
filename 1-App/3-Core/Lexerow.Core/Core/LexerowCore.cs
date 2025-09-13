@@ -29,49 +29,42 @@ public class LexerowCore
     {
         _excelProcessor= new ExcelProcessorNpoi();
 
-        ProgBuilder= new ProgBuilder(_coreData);
         Exec = new Exec(_coreData, _excelProcessor);
 
         _scriptLoader= new ScriptLoader();
         _scriptCompilator = new ScriptCompilator(_coreData);
-
-        // create the default program, becomes the current one
-        ProgramInstr programInstr= new ProgramInstr("Default");
-        programInstr.IsDefault = true;
-        _coreData.ListProgram.Add(programInstr);
-        _coreData.CurrProgramInstr= programInstr;
     }
 
     /// <summary>
     /// Build program by adding instructions.
     /// Don't manage script/source code.
+    /// TODO: REMOVE IT?
     /// </summary>
-    public ProgBuilder ProgBuilder { get; private set; }
+    //public ProgBuilder ProgBuilder { get; private set; }
 
     /// <summary>
     /// Execute instructions.
     /// </summary>
     public Exec Exec { get; private set; }
 
-    public ExecResult CompileProgram()
-    {
-        return Exec.CompileProgram();
-    }
+    //public ExecResult CompileProgram()
+    //{
+    //    return Exec.CompileProgram();
+    //}
 
-    public ExecResult CompileProgram(string programName)
-    {
-        return Exec.CompileProgram(programName);
-    }
-
+    /// <summary>
+    /// TODO: REMOVE IT?
+    /// </summary>
+    /// <returns></returns>
     public ExecResult ExecuteProgram()
     {
         return Exec.ExecuteProgram();
     }
 
-    public ExecResult ExecuteProgram(string programName)
-    {
-        return Exec.ExecuteProgram(programName);
-    }
+    //public ExecResult ExecuteProgram(string programName)
+    //{
+    //    return Exec.ExecuteProgram(programName);
+    //}
 
     /// <summary>
     /// Load a script from a text file and compile it.
@@ -79,37 +72,37 @@ public class LexerowCore
     /// <param name="progName"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public ExecResult LoadScriptFromFile(string programName, string fileName)
+    public ExecResult LoadScriptFromFile(string scriptName, string fileName)
     {
         ExecResult execResult = new ExecResult();
 
         // check that the name is not already used by another program
-        if (string.IsNullOrWhiteSpace(programName))
+        if (string.IsNullOrWhiteSpace(scriptName))
         {
-            if (programName == null) programName = string.Empty;
-            execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, programName));
+            if (scriptName == null) scriptName = string.Empty;
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, scriptName));
             return execResult;
         }
 
         // any program should have the same name
-        ProgramInstr program = _coreData.GetProgramByName(programName);
+        ProgramScript program = _coreData.GetProgramByName(scriptName);
         if (program != null)
         {
-            execResult.AddError(new ExecResultError(ErrorCode.ProgramNameAlreadyUsed, programName));
+            execResult.AddError(new ExecResultError(ErrorCode.ProgramNameAlreadyUsed, scriptName));
             return execResult;
         }
 
-        _scriptLoader.LoadScriptFromFile(execResult, fileName, out Script sourceScript);
+        _scriptLoader.LoadScriptFromFile(execResult, scriptName, fileName, out Script script);
         if(!execResult.Result)
             return execResult;
 
         // compile the script,  generate instructions
-        _scriptCompilator.CompileScript(execResult, sourceScript, out List<InstrBase> listInstr);
+        _scriptCompilator.CompileScript(execResult, script, out List<ExecTokBase> listInstr);
         if (!execResult.Result)
             return execResult;
 
         // create the program
-        ProgramInstr programInstr = new ProgramInstr(programName, fileName, sourceScript, listInstr);
+        ProgramScript programInstr = new ProgramScript(script, listInstr);
 
         // save it
         _coreData.ListProgram.Add(programInstr);
@@ -117,12 +110,20 @@ public class LexerowCore
         return execResult;
     }
 
-    //ExecResult Core.LoadScriptFromLines(string name, List<string> scriptLines)
+    public ExecResult LoadScriptFromLines(string scriptName, List<string> scriptLines)
+    {
+        // TODO:
+        return null;
+    }
 
-    //ExecResult Core.LoadExecScriptFromFile(string name, string filename)
+    //ExecResult LoadExecScriptFromFile(string name, string filename)
 
-    //ExecResult Core.LoadExecScriptFromLines(string name, List<string> scriptLines)
+    //ExecResult LoadExecScriptFromLines(string name, List<string> scriptLines)
 
+    public ExecResult ExecuteScript(string name)
+    {
+        throw new Exception("todo");
+    }
 
     Action<AppTrace> _appTraceEvent;
 
@@ -130,7 +131,7 @@ public class LexerowCore
     {
         get { return _appTraceEvent; } 
         set { 
-            ProgBuilder.AppTraceEvent = value;
+            //ProgBuilder.AppTraceEvent = value;
             Exec.AppTraceEvent = value;
         }
     }

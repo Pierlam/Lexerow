@@ -39,15 +39,18 @@ public class Script
     public static Script CreateOneLine(string line)
     {
         if (line == null) return null;
-        Script script = new Script("internal");
+        Script script = new Script("internal", "internal");
         script.AddScriptLine(1, line);
         return script;
     }
 
-    public Script(string fileName)
+    public Script(string scriptName, string fileName)
     {
+        Name = scriptName;
         FileName = fileName;
     }
+
+    public string Name { get; set; }
 
     /// <summary>
     /// file name containing the source code/script.

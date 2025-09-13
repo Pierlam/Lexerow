@@ -42,12 +42,118 @@ public class StringParserTest
     }
 
     [TestMethod]
+    public void TestOneDouble_43dot95E10Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "43E10";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Double, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual(43E10, listScriptTokens[0].ValueDouble);
+    }
+
+
+    [TestMethod]
+    public void TestOneDouble_12dot45Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "12.45";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Double, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual(12.45, listScriptTokens[0].ValueDouble);
+    }
+
+    [TestMethod]
+    public void TestOneDouble_dot789Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = ".789";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Double, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual(.789, listScriptTokens[0].ValueDouble);
+    }
+
+    [TestMethod]
+    public void TestOneDouble_4dot95E10Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "4.95E10";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Double, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual(4.95E10, listScriptTokens[0].ValueDouble);
+    }
+
+    [TestMethod]
+    public void TestOneDouble_4dot95Eminus10Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = "4.95E-10";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Double, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual(4.95E-10, listScriptTokens[0].ValueDouble);
+    }
+
+    [TestMethod]
     public void TestOneIntWrong()
     {
         LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
 
         StringParser stringParser = new StringParser();
+        string line = " 12A";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        // return false -> error
+        Assert.IsFalse(res);
+        Assert.AreEqual(1, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.WrongNumber, listScriptTokens[0].ScriptTokenType);
+    }
+    [TestMethod]
+    public void TestOneIntWrong_spc()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
         string line = " 12A ";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+
+        // return false -> error
+        Assert.IsFalse(res);
+        Assert.AreEqual(1, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.WrongNumber, listScriptTokens[0].ScriptTokenType);
+    }
+
+
+    [TestMethod]
+    public void TestOneDoubleWrong()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+
+        StringParser stringParser = new StringParser();
+        string line = " 12.3A";
         bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         // return false -> error
@@ -196,8 +302,28 @@ public class StringParserTest
         Assert.AreEqual(23, listScriptTokens[3].ValueInt);
     }
 
-    // if a > -12    -> 5 tokens
+    // a>-12  -> 4 tok
+    [TestMethod]
+    public void Test_if_a_greater_minus_12_Ok()
+    {
+        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
 
+        StringParser stringParser = new StringParser();
+        string line = "a>-12";
+        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
-    // TODO: string, double
+        Assert.IsTrue(res);
+        Assert.AreEqual(4, listScriptTokens.Count);
+        Assert.AreEqual(ScriptTokenType.Name, listScriptTokens[0].ScriptTokenType);
+        Assert.AreEqual("a", listScriptTokens[0].Value);
+
+        Assert.AreEqual(ScriptTokenType.Separator, listScriptTokens[1].ScriptTokenType);
+        Assert.AreEqual(">", listScriptTokens[1].Value);
+
+        Assert.AreEqual(ScriptTokenType.Separator, listScriptTokens[2].ScriptTokenType);
+        Assert.AreEqual("-", listScriptTokens[2].Value);
+
+        Assert.AreEqual(ScriptTokenType.Integer, listScriptTokens[3].ScriptTokenType);
+        Assert.AreEqual(12, listScriptTokens[3].ValueInt);
+    }
 }

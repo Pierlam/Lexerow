@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -241,13 +242,17 @@ public class StringParser
             }
 
             // is it the decimal separator?
-            if (c == '.' && tokenFound)
+            if (c == '.')
             {
-                // contains already a decimal separator!
-                if (token.Value.Contains("."))
-                    token.ScriptTokenType = ScriptTokenType.WrongNumber;
-                else
+                if (token == null)
+                {
+                    token = new ScriptToken();
                     token.ScriptTokenType = ScriptTokenType.Double;
+                    token.ColNum = i;
+                }
+
+                // sure it's a double
+                token.ScriptTokenType = ScriptTokenType.Double;
 
                 token.Value += c.ToString();
                 i++;
@@ -255,9 +260,43 @@ public class StringParser
                 continue;
             }
 
+            // is it the E exposant separator ?
+            if (c == 'e' || c == 'E')
+            {
+                // the token should exists
+                if (token != null) 
+                {
+                    // sure it's a double
+                    token.ScriptTokenType = ScriptTokenType.Double;
+
+                    token.Value += c.ToString();
+                    i++;
+                    iOut = i;
+                    continue;
+                }
+            }
+
+            // special case: minus char, exp 23E-10
+            if(c=='-')
+            {
+                if(token != null)
+                {
+                    // previous char should exists and should be: E
+                    if(token.Value.Length > 0)
+                    {
+                        if(token.Value.Last() == 'E' || token.Value.Last() == 'e')
+                        {
+                            token.Value += c.ToString();
+                            i++;
+                            iOut = i;
+                            continue;
+                        }
+                    }
+                }
+            }
+
             // not a digit or a decimal separator!
             break;
-
         }
 
         // no integer or double found, bye
@@ -281,7 +320,7 @@ public class StringParser
         // check the number, convert it
         if(token.ScriptTokenType == ScriptTokenType.Double)
         {
-            if (double.TryParse(token.Value, out double d))
+            if (double.TryParse(token.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double d))
                 token.ValueDouble = d;
             else
                 token.ScriptTokenType= ScriptTokenType.WrongNumber;

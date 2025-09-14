@@ -214,4 +214,6 @@ public class ScriptLexicalAnalyzerBasicTests
         Assert.AreEqual("10", lt[0].ListScriptToken[11].Value);
         Assert.AreEqual(ScriptTokenType.Integer, lt[0].ListScriptToken[11].ScriptTokenType);
     }
+
+    // TODO: script is on several lines
 }

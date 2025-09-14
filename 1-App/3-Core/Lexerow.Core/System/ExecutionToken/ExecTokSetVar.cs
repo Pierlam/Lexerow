@@ -14,9 +14,9 @@ namespace Lexerow.Core.System;
 /// or the result of an instruction.
 /// exp: file= OpenExcel('list.xlsx')
 /// </summary>
-public class InstrSetVar: ExecTokBase
+public class ExecTokSetVar: ExecTokBase
 {
-    public InstrSetVar(ScriptToken scriptToken):base(scriptToken)
+    public ExecTokSetVar(ScriptToken scriptToken):base(scriptToken)
     {
         ExecTokType = ExecTokType.SetVar;
     }
@@ -34,7 +34,11 @@ public class InstrSetVar: ExecTokBase
     /// before the char equal.
     /// Used if the left part is an object.
     /// exp: 
-    ///   sheet.Cell(A,1)= 12
+    ///   file= 
+    ///   A.Cell= 
+    ///   A.Cell.BgColor=
+    ///  
+    /// TODO: design it! exp: A.Cell !!
     /// </summary>
     public ExecTokBase? InstrLeft { get; set; } = null;
 
@@ -45,7 +49,6 @@ public class InstrSetVar: ExecTokBase
     /// =a         -> InstrVar 
     /// =sheet.Cell(A,1)  -> InstrExcelValue 
     /// </summary>
-    //public InstrBase InstrRight { get; set; }
-    // TODO: remove it!!
+    public ExecTokBase InstrRight { get; set; }
 
 }

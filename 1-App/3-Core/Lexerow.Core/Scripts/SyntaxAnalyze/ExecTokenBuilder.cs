@@ -9,7 +9,13 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Scripts;
 public class ExecTokenBuilder
 {
-    public static bool Do(ScriptToken scriptToken, out ExecTokBase execTokBase)
+    /// <summary>
+    /// Create an execToken base donthe script token.
+    /// </summary>
+    /// <param name="scriptToken"></param>
+    /// <param name="execTokBase"></param>
+    /// <returns></returns>
+    public static bool Do(ExecResult execResult, ScriptToken scriptToken, out ExecTokBase execTokBase)
     {
         //--script token is a name/id
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
@@ -89,6 +95,8 @@ public class ExecTokenBuilder
         //--script token is a separator, TODO: préciser?
         // TODO:
 
+
+        execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken.Value));
         execTokBase = null;
         return true;
     }

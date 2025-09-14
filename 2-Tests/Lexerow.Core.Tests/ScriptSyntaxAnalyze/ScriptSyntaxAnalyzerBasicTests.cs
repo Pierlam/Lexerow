@@ -42,8 +42,9 @@ public class ScriptSyntaxAnalyzerBasicTests
         SyntaxAnalyser sa = new SyntaxAnalyser();
 
         ExecResult execResult = new ExecResult();
-        sa.Process(execResult, lt, out List<ExecTokBase> listExeTok);
+        bool res= sa.Process(execResult, lt, out List<ExecTokBase> listExeTok);
 
+        Assert.IsTrue(res);
         Assert.AreEqual(5, listExeTok.Count);
         // first one is SetVar
         Assert.AreEqual(ExecTokType.SetVar, listExeTok[0].ExecTokType);

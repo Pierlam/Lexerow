@@ -12,6 +12,11 @@ namespace Lexerow.Core.Scripts;
 public class SyntaxAnalyser
 {
     /// <summary>
+    /// Dictionary of variables definition.
+    /// </summary>
+    IDictionary<string,ExecTokBase> _dictVarDef= new Dictionary<string,ExecTokBase>();
+
+    /// <summary>
     /// process list of source code tokens to create instructions to execute.
     /// Analyse source code tokens line by line.
     /// 
@@ -22,6 +27,7 @@ public class SyntaxAnalyser
     /// <returns></returns>
     public bool Process(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<ExecTokBase> listInstr)
     {
+        _dictVarDef.Clear();
 
         // no token in the source code! -> error or warning?
         if (listScriptLineTokens.Count == 0)
@@ -35,7 +41,7 @@ public class SyntaxAnalyser
         // TODO: ->error, stop
 
         // process, loop on tokens 
-        ProcessLoopOnTokens(execResult, listScriptLineTokens, out listInstr);
+        ProcessLoopOnTokens(execResult, _dictVarDef, listScriptLineTokens, out listInstr);
         //if (compiledScript.ListError.Count > 0) return false;
 
         listInstr = null;
@@ -43,7 +49,7 @@ public class SyntaxAnalyser
         return true;
     }
 
-    public bool ProcessLoopOnTokens(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<ExecTokBase> listExecTok)
+    public bool ProcessLoopOnTokens(ExecResult execResult, IDictionary<string,ExecTokBase> dictVarDef, List<ScriptLineTokens> listScriptLineTokens, out List<ExecTokBase> listExecTok)
     {
         bool res;
         bool isToken = false;
@@ -59,7 +65,7 @@ public class SyntaxAnalyser
         ScriptToken currToken = null;
 
         // temporary save of SourceTokens and instr
-        Stack<SyntaxAnalyserItem> stkItems = new Stack<SyntaxAnalyserItem>();
+        Stack<ExecTokBase> stkItems = new Stack<ExecTokBase>();
 
         while (true) 
         {
@@ -91,7 +97,7 @@ public class SyntaxAnalyser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //--do some checks, according to the current stage
-            // TODO: check1: si previous=OpenExcel/SetLogFile et si current token diff from ( alors ->erreur
+            // TODO: check1: if previous=OpenExcel/SetLogFile and if current token is diff from ( so ->erreur
 
             //--is the token a comment?  dont manage it
             if (currToken.ScriptTokenType == ScriptTokenType.Comment)
@@ -109,7 +115,7 @@ public class SyntaxAnalyser
             // TODO:
 
             //--is it the SetVar equal char? SetVarDecoder
-            res = SetVarDecoder.ProcessSetVarEqualChar(execResult, stkItems, currToken, listExecTok, out isToken);
+            res = SetVarDecoder.ProcessSetVarEqualChar(execResult, dictVarDef, stkItems, currToken, listExecTok, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -118,13 +124,12 @@ public class SyntaxAnalyser
             //if (!res) break;
             //if (isToken) continue;
 
-            // TODO: process the current token
-
             // move the script token into an exec token
-            ExecTokenBuilder.Do(currToken, out ExecTokBase execTokBase);
+            res=ExecTokenBuilder.Do(execResult, currToken, out ExecTokBase execTokBase);
+            if (!res) break;
+
             // push it on the stack
-            //var item = SyntaxAnalyserItem.CreateToken(execTokBase);
-            //stkItems.Push(item);
+            stkItems.Push(execTokBase);
         }
 
         // finish the process
@@ -145,7 +150,7 @@ public class SyntaxAnalyser
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    bool ProcessTokenEndLine(int sourceCodeLineIndex, Stack<SyntaxAnalyserItem> stkItems, List<ExecTokBase> listExecTok)
+    bool ProcessTokenEndLine(int sourceCodeLineIndex, Stack<ExecTokBase> stkItems, List<ExecTokBase> listExecTok)
     {
         // no more item in the stack
         if (stkItems.Count == 0) return true;
@@ -172,7 +177,7 @@ public class SyntaxAnalyser
     /// <param name="stkItems"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    bool ProcessTokenEndLineSetVar(int sourceCodeLineIndex, Stack<SyntaxAnalyserItem> stkItems, List<ExecTokBase> listExecTok)
+    bool ProcessTokenEndLineSetVar(int sourceCodeLineIndex, Stack<ExecTokBase> stkItems, List<ExecTokBase> listExecTok)
     {
         // TODO: so? 
         return false;

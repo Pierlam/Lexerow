@@ -309,7 +309,7 @@ public class Exec
             // TODO:
 
             // the previous one is SetVar?
-            InstrSetVar instrSetVar = stackInstr.Peek() as InstrSetVar;
+            ExecTokSetVar instrSetVar = stackInstr.Peek() as ExecTokSetVar;
             if (instrSetVar == null) 
             {
                 // error!

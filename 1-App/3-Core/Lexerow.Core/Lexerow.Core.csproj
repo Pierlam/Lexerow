@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="DbAccess\" />
+    <Folder Include="System\Compilator\SyntaxAnalyzer\" />
   </ItemGroup>
 
   <ItemGroup>

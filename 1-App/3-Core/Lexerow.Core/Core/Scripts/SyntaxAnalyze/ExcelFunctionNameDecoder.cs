@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
+namespace Lexerow.Core.Scripts.SyntaxAnalyze;
 public class ExcelFunctionNameDecoder
 {
-    public static bool Do(string excelFuncName, out ExecTokBase excelFunc)
+    public static bool Do(string excelFuncName, out InstrBase excelFunc)
     {
         excelFunc = null;
         if (string.IsNullOrEmpty(excelFuncName)) return false;

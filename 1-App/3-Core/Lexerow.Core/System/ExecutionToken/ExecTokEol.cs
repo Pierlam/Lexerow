@@ -10,11 +10,11 @@ namespace Lexerow.Core.System;
 /// <summary>
 /// Execution token End of line.
 /// </summary>
-public class ExecTokEol :ExecTokBase
+public class ExecTokEol :InstrBase
 {
     public ExecTokEol(ScriptToken scriptToken):base(scriptToken)
     {
-        ExecTokType = ExecTokType.Eol;
+        InstrType = InstrType.Eol;
     }
 
 

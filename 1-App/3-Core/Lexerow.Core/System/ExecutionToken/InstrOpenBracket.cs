@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-public class InstrOpenBracket : ExecTokBase
+public class InstrOpenBracket : InstrBase
 {
     public InstrOpenBracket(ScriptToken scriptToken):base(scriptToken)
     {
-        ExecTokType = ExecTokType.OpenBracket;
+        InstrType = InstrType.OpenBracket;
     }
 }

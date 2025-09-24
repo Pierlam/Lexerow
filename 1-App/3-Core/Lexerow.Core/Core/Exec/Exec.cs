@@ -193,7 +193,7 @@ public class Exec
         }
 
         // create a stack
-        Stack<ExecTokBase> stackInstr = new Stack<ExecTokBase>();
+        Stack<InstrBase> stackInstr = new Stack<InstrBase>();
 
         program.Stage = CoreStage.Exec;
 
@@ -204,14 +204,14 @@ public class Exec
             _execStartCurrInstr = DateTime.Now;
 
             //--end of line reached
-            if (instr.ExecTokType == ExecTokType.Eol)
+            if (instr.InstrType == InstrType.Eol)
             {
                 ExecStackedInstr(execResult, stackInstr, listExecVar);
                 continue;
             }
 
             //--open bracket
-            if (instr.ExecTokType == ExecTokType.OpenBracket)
+            if (instr.InstrType == InstrType.OpenBracket)
             {
                 // just push the instr on the stack
                 stackInstr.Push(instr);
@@ -222,7 +222,7 @@ public class Exec
             // TODO: 
 
             //--close bracket, end of function parameters
-            if (instr.ExecTokType == ExecTokType.CloseBracket)
+            if (instr.InstrType == InstrType.CloseBracket)
             {
                 if (!ExecCloseBracketReached(execResult, stackInstr, _listExecVar, _execStartCurrInstr))
                     return execResult;
@@ -230,7 +230,7 @@ public class Exec
             }
 
             //--const value
-            if (instr.ExecTokType == ExecTokType.ConstValue)
+            if (instr.InstrType == InstrType.ConstValue)
             {
                 // just push the instr on the stack
                 stackInstr.Push(instr);
@@ -238,7 +238,7 @@ public class Exec
             }
 
             //--set var
-            if (instr.ExecTokType == ExecTokType.SetVar)
+            if (instr.InstrType == InstrType.SetVar)
             {
                 // checks with instr already saved in the stack
                 // TODO: don't know 
@@ -248,20 +248,20 @@ public class Exec
                 continue;
             }
 
-            if (instr.ExecTokType == ExecTokType.OpenExcel)
+            if (instr.InstrType == InstrType.OpenExcel)
             {
                 // just push the instr on the stack
                 stackInstr.Push(instr);
                 continue;
             }
 
-            if(instr.ExecTokType == ExecTokType.CloseExcel)
+            if(instr.InstrType == InstrType.CloseExcel)
             {
                 // TODO: ExecInstrCloseExcelFile
                 continue;
             }
 
-            if(instr.ExecTokType == ExecTokType.ForEachRowIfThen)
+            if(instr.InstrType == InstrType.ForEachRowIfThen)
             {
                 res = ExecInstrForEachRowIfThen(execResult, instr as InstrOnExcelForEachRowIfThen, _listExecVar, _execStartCurrInstr);
                 if (!res)
@@ -294,9 +294,9 @@ public class Exec
     /// <param name="execResult"></param>
     /// <param name="stackInstr"></param>
     /// <returns></returns>
-    bool ExecStackedInstr(ExecResult execResult, Stack<ExecTokBase> stackInstr, List<ExecVar> listExecVar)
+    bool ExecStackedInstr(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar)
     {
-        ExecTokBase instrTop= stackInstr.Peek();
+        InstrBase instrTop= stackInstr.Peek();
 
         //--SetVar excelFileObj ?
         InstrExcelFileObject instrExcelFileObject = instrTop as InstrExcelFileObject;
@@ -309,7 +309,7 @@ public class Exec
             // TODO:
 
             // the previous one is SetVar?
-            ExecTokSetVar instrSetVar = stackInstr.Peek() as ExecTokSetVar;
+            InstrSetVar instrSetVar = stackInstr.Peek() as InstrSetVar;
             if (instrSetVar == null) 
             {
                 // error!
@@ -320,7 +320,7 @@ public class Exec
             stackInstr.Pop();
 
             //--it's a SetVar
-            ExecVar execVar = new ExecVar(instrSetVar.VarName, ExecVarType.ExcelFile, instrExcelFileObject);
+            ExecVar execVar = new ExecVar("instrSetVar.VarName-TODO:", ExecVarType.ExcelFile, instrExcelFileObject);
             listExecVar.Add(execVar);
             return true;
         }
@@ -343,7 +343,7 @@ public class Exec
     /// <param name="execResult"></param>
     /// <param name="stackInstr"></param>
     /// <returns></returns>
-    bool ExecCloseBracketReached(ExecResult execResult, Stack<ExecTokBase> stackInstr, List<ExecVar> listExecVar, DateTime execStart)
+    bool ExecCloseBracketReached(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar, DateTime execStart)
     {
         // the stack should contains 2 item at least
         if(stackInstr.Count < 2)
@@ -353,13 +353,13 @@ public class Exec
             return false;
         }
 
-        List<ExecTokBase> listFuncParams = new List<ExecTokBase>();
+        List<InstrBase> listFuncParams = new List<InstrBase>();
 
         // read the item on the top of the stack, the last added
-        ExecTokBase instrBaseLast = stackInstr.Peek();
+        InstrBase instrBaseLast = stackInstr.Peek();
 
         //--case 1: no parameter? the prev item is an open bracket
-        if (instrBaseLast.ExecTokType == ExecTokType.OpenBracket)
+        if (instrBaseLast.InstrType == InstrType.OpenBracket)
         {
             // remove the open bracket
             stackInstr.Pop();
@@ -383,14 +383,14 @@ public class Exec
         instrBaseLast = stackInstr.Pop();
 
         // read the next one
-        ExecTokBase instrBasePrev = stackInstr.Peek();
+        InstrBase instrBasePrev = stackInstr.Peek();
 
         //--case 2: one parameter?  fct(param
         // TODO: the prev item should be a const value, the prev-prev should be an open bracket
-        if (instrBasePrev.ExecTokType == ExecTokType.OpenBracket) 
+        if (instrBasePrev.InstrType == InstrType.OpenBracket) 
         {
             // so the prev item is a param, it should be a const value
-            if (instrBaseLast.ExecTokType != ExecTokType.ConstValue)
+            if (instrBaseLast.InstrType != InstrType.ConstValue)
             {
                 // TODO: set a right error code!  
                 execResult.AddError(new ExecResultError(ErrorCode.FileNameNotFound, null));

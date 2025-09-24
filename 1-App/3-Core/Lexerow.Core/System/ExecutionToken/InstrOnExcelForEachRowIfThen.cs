@@ -11,7 +11,7 @@ namespace Lexerow.Core.System;
 /// <summary>
 /// One If Col Then instruction.
 /// </summary>
-public class InstrIfColThen : ExecTokBase
+public class InstrIfColThen : InstrBase
 {
     public InstrIfColThen(ScriptToken scriptToken) : base(scriptToken)
     {
@@ -27,14 +27,14 @@ public class InstrIfColThen : ExecTokBase
     /// Then list of instructions.
     /// only InstrSetCellVal is allowed.
     /// </summary>
-    public List<ExecTokBase> ListInstrThen { get; set; } = new List<ExecTokBase>();
+    public List<InstrBase> ListInstrThen { get; set; } = new List<InstrBase>();
 
 }
 
 /// <summary>
 /// Instruction ForEach Row If Then
 /// </summary>
-public class InstrOnExcelForEachRowIfThen : ExecTokBase
+public class InstrOnExcelForEachRowIfThen : InstrBase
 {
     /// <summary>
     /// Constructor.
@@ -46,7 +46,7 @@ public class InstrOnExcelForEachRowIfThen : ExecTokBase
     /// <param name="listInstrThen"></param>
     public InstrOnExcelForEachRowIfThen(ScriptToken scriptToken, string excelFileObjectName, int sheetNum, int firstDataRowNum, List<InstrIfColThen> listInstrIfColThen):base(scriptToken)
     { 
-        ExecTokType = ExecTokType.ForEachRowIfThen;
+        InstrType = InstrType.ForEachRowIfThen;
         ExcelFileObjectName = excelFileObjectName;
         SheetNum = sheetNum;
         FirstDataRowNum= firstDataRowNum;

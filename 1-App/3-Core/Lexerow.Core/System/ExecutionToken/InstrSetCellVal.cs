@@ -11,11 +11,11 @@ namespace Lexerow.Core.System;
 /// Instruction Set Cell Value.
 /// exp: Cell.Value:=12
 /// </summary>
-public class InstrSetCellVal :ExecTokBase
+public class InstrSetCellVal :InstrBase
 {
     public InstrSetCellVal(ScriptToken scriptToken, int colNum, ValueBase value):base (scriptToken)
     {
-        ExecTokType = ExecTokType.SetCellVal;
+        InstrType = InstrType.SetCellVal;
         ColNum = colNum;
         Value = value;
     }

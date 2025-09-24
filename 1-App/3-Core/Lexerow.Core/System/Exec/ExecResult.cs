@@ -1,4 +1,5 @@
-﻿using NPOI.SS.UserModel;
+﻿using Lexerow.Core.System.Compilator;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +51,53 @@ public class ExecResult
     {
         if (listError.Count == 0) return;
 
-        this.ListError.AddRange(listError);
+        ListError.AddRange(listError);
         Result = false;
+    }
+
+    /// <summary>
+    /// Error occurs during script compilation.
+    /// </summary>
+    /// <param name="errorCode"></param>
+    /// <param name="scriptToken"></param>
+    public void AddError(ErrorCode errorCode, ScriptToken scriptToken)
+    {
+        ExecResultError execResultError;
+        if (scriptToken != null)
+            execResultError = new ExecResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value);
+        else
+            execResultError = new ExecResultError(errorCode, 0, 0, string.Empty);
+        ListError.Add(execResultError);
+    }
+
+    /// <summary>
+    /// Error occurs during script compilation.
+    /// </summary>
+    /// <param name="errorCode"></param>
+    /// <param name="scriptToken"></param>
+    public void AddError(ErrorCode errorCode, ScriptToken scriptToken, string param)
+    {
+        ExecResultError execResultError;
+        if (scriptToken!=null)
+            execResultError = new ExecResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value, param);
+        else
+            execResultError = new ExecResultError(errorCode, 0, 0, string.Empty, param);
+        ListError.Add(execResultError);
+    }
+
+    /// <summary>
+    /// Error occurs during script compilation.
+    /// </summary>
+    /// <param name="errorCode"></param>
+    /// <param name="scriptToken"></param>
+    public void AddError(ErrorCode errorCode, ScriptToken scriptToken, Exception exception)
+    {
+        ExecResultError execResultError;
+        if (scriptToken != null)
+            execResultError = new ExecResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, exception, scriptToken.Value);
+        else
+            execResultError = new ExecResultError(errorCode, 0, 0, exception, string.Empty);
+        ListError.Add(execResultError);
     }
 
     /// <summary>

@@ -11,12 +11,14 @@ namespace Lexerow.Core.System;
 /// Represent a variable name present in the source code
 /// exp: a=12
 /// sheet.Cell(A,3)=a
+/// 
+/// TODO: InstrObjectName exists!!
 /// </summary>
-public class InstrVar : ExecTokBase
+public class InstrVar : InstrBase
 {
     public InstrVar(ScriptToken scriptToken, string varName):base(scriptToken)
     {
-        ExecTokType = ExecTokType.Var;
+        InstrType = InstrType.Var;
         VarName = varName;
     }
 

@@ -12,7 +12,7 @@ namespace Lexerow.Core.System;
 /// Comparison, function
 /// but not SetCell or SetVar.
 /// </summary>
-public class InstrRetBoolBase : ExecTokBase
+public class InstrRetBoolBase : InstrBase
 {
     public InstrRetBoolBase(ScriptToken scriptToken) : base(scriptToken)
     {

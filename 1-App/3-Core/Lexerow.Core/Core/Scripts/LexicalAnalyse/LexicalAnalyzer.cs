@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Scripts.Compilator;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
+namespace Lexerow.Core.Scripts.LexicalAnalyse;
 public class LexicalAnalyzer
 {
     /// <summary>

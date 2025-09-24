@@ -14,17 +14,17 @@ public class ExecCompileInstrMgr
     /// </summary>
     /// <param name="listInstr"></param>
     /// <returns></returns>
-    public static ExecResult CheckAllInstr(List<ExecTokBase> listInstr)
+    public static ExecResult CheckAllInstr(List<InstrBase> listInstr)
     {
         ExecResult execResult = new ExecResult();
 
-        foreach (ExecTokBase instrBase in listInstr)
+        foreach (InstrBase instrBase in listInstr)
         {
             //--instr IfThen?
             InstrIfColThen instrIfColThen = instrBase as InstrIfColThen;
             if (instrIfColThen != null)
             {
-                execResult.AddError(new ExecResultError(ErrorCode.InstrNotAllowed, instrIfColThen.ExecTokType.ToString()));
+                execResult.AddError(new ExecResultError(ErrorCode.InstrNotAllowed, instrIfColThen.InstrType.ToString()));
                 continue;
             }
 

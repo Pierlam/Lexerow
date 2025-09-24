@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-public abstract class InstrCallMemberBase : ExecTokBase
+public abstract class InstrCallMemberBase : InstrBase
 {
     protected InstrCallMemberBase(ScriptToken scriptToken) : base(scriptToken)
     {

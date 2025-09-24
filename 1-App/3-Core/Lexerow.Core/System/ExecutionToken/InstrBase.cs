@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
-public enum ExecTokType
+public enum InstrType
 {
     Eol,
     OpenBracket,
     CloseBracket,
+    Comma,
+    Dot,
 
     ConstValue,
 
@@ -62,9 +64,9 @@ public enum InstrFunctionReturnType
 /// Base of all execution token classes.
 /// Build by the syntax analyzer.
 /// </summary>
-public abstract class ExecTokBase
+public abstract class InstrBase
 {
-    public ExecTokBase(ScriptToken scriptToken)
+    public InstrBase(ScriptToken scriptToken)
     {
         if(scriptToken != null)
             ListScriptToken.Add(scriptToken);
@@ -80,7 +82,13 @@ public abstract class ExecTokBase
         return ListScriptToken[0];
     }
 
-    public ExecTokType ExecTokType { get; set; }
+    public InstrType InstrType { get; protected set; }
+
+    /// <summary>
+    /// Is it a function call?
+    /// exp: OpenExcel
+    /// </summary>
+    public bool IsFunctionCall { get; protected set; } = false;
 
     /// <summary>
     /// Return type of this function call.

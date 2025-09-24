@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
+namespace Lexerow.Core.Scripts.SyntaxAnalyze;
 internal class SetVarDecoder
 {
     /// <summary>
@@ -26,13 +26,13 @@ internal class SetVarDecoder
     /// <param name="listExecTok"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSetVarEqualChar(ExecResult execResult, IDictionary<string,ExecTokBase> dictVarDef, Stack<ExecTokBase> stkItems, ScriptToken scriptToken, List<ExecTokBase> listExecTok, out bool isToken)
+    public static bool ProcessSetVarEqualChar(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkItems, ScriptToken scriptToken, List<InstrBase> listExecTok, out bool isToken)
     {
         isToken = false;
 
         // is the script token the equal char?
         if(!scriptToken.Value.Equals("=",StringComparison.InvariantCultureIgnoreCase))
-            // not the equla char, bye without error
+            // not the equal char, bye without error
             return true;
 
         // the stack contains nothing, strange  =blabla
@@ -42,31 +42,32 @@ internal class SetVarDecoder
             return false;
         }
 
+        isToken = true;
+
         // the stack contains many tokens, bye without error
         if (stkItems.Count > 1)
-            // TODO: cases A.Cell, A.Cell.BgColor, ...
+            // TODO: manage this case! can be cases A.Cell, A.Cell.BgColor, ...?
             return true;
 
         // the stack contains one item which is an Object name, exp: file=
-        if(stkItems.Peek().ExecTokType != ExecTokType.ObjectName) 
-            return true;
+        if(stkItems.Peek().InstrType != InstrType.ObjectName)
+        {
+            execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, stkItems.Peek().FirstScriptToken().Value));
+            return false;
+        }
 
-        ExecTokObjectName execTokObjectName = stkItems.Peek() as ExecTokObjectName;
-        ExecTokSetVar execTokSetVar = new ExecTokSetVar(execTokObjectName.FirstScriptToken());
-        execTokSetVar.VarName= execTokObjectName.VarName;
+        InstrObjectName instrObjectName = stkItems.Peek() as InstrObjectName;
+        InstrSetVar instrSetVar = new InstrSetVar(instrObjectName.FirstScriptToken());
+        instrSetVar.InstrLeft= instrObjectName;
 
-        execTokSetVar.ListScriptToken.Add(scriptToken);
+        instrSetVar.ListScriptToken.Add(scriptToken);
 
         // remove the objectName from the stack and push the SetVar instr
         stkItems.Pop();
-        stkItems.Push(execTokSetVar);
+        stkItems.Push(instrSetVar);
 
-        // is the var already exists? defined previously?
-        //dictVarDef
-        // saver l'objectName qui est alors une var dans une liste particuliere? -> oui
-        // TODO:
-        //ici();
-
+        // save the var
+        listVar.Add(instrObjectName);
 
         return true;
     }

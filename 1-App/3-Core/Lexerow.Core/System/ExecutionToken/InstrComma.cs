@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-public class ExecTokOpenExcel: ExecTokBase
+public class InstrComma: InstrBase
 {
-    public ExecTokOpenExcel(ScriptToken scriptToken):base(scriptToken)
+    public InstrComma(ScriptToken scriptToken):base(scriptToken)
     {
-        ExecTokType = ExecTokType.OpenExcel;
+        InstrType = InstrType.Comma;
     }
 }

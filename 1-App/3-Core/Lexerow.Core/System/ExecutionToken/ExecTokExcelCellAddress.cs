@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-public class ExecTokExcelCellAddress : ExecTokBase
+public class ExecTokExcelCellAddress : InstrBase
 {
     public ExecTokExcelCellAddress(ScriptToken scriptToken, string strCellAddress, int intCellAddress): base(scriptToken)
     {
-        ExecTokType= ExecTokType.ExcelCellAddress;
+        InstrType= InstrType.ExcelCellAddress;
         StrCellAddress= strCellAddress;
         IntCellAddress = intCellAddress;
     }

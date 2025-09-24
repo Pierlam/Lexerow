@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.Compilator;
+namespace Lexerow.Core.Scripts.LexicalAnalyse;
 public class StringParser
 {
     /// <summary>

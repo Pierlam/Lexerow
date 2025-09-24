@@ -17,7 +17,7 @@ public class InstrCompColCellVal : InstrRetBoolBase
 {
     public InstrCompColCellVal(ScriptToken scriptToken, int colNum, ValCompOperator oper, ValueBase value):base(scriptToken)
     {
-        ExecTokType = ExecTokType.CompCellVal;
+        InstrType = InstrType.CompCellVal;
         ColNum = colNum;
         Operator = oper;
         Value = value;

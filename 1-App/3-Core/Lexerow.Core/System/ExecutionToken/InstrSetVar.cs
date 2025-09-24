@@ -14,11 +14,11 @@ namespace Lexerow.Core.System;
 /// or the result of an instruction.
 /// exp: file= OpenExcel('list.xlsx')
 /// </summary>
-public class ExecTokSetVar: ExecTokBase
+public class InstrSetVar: InstrBase
 {
-    public ExecTokSetVar(ScriptToken scriptToken):base(scriptToken)
+    public InstrSetVar(ScriptToken scriptToken):base(scriptToken)
     {
-        ExecTokType = ExecTokType.SetVar;
+        InstrType = InstrType.SetVar;
     }
 
     /// <summary>
@@ -26,8 +26,10 @@ public class ExecTokSetVar: ExecTokBase
     /// Set only if there is a basic name.
     /// exp: a= 12
     /// for an instruction like this: sheet.Cell(A,1)=12 VarName is not set.
+    /// 
+    /// TODO: on garde?  
     /// </summary>
-    public string VarName { get; set; } = string.Empty;
+    //public string VarName { get; set; } = string.Empty;
 
     /// <summary>
     /// The left part of the SetVar instruction.
@@ -37,10 +39,8 @@ public class ExecTokSetVar: ExecTokBase
     ///   file= 
     ///   A.Cell= 
     ///   A.Cell.BgColor=
-    ///  
-    /// TODO: design it! exp: A.Cell !!
     /// </summary>
-    public ExecTokBase? InstrLeft { get; set; } = null;
+    public InstrBase? InstrLeft { get; set; } = null;
 
 
     /// <summary>
@@ -49,6 +49,6 @@ public class ExecTokSetVar: ExecTokBase
     /// =a         -> InstrVar 
     /// =sheet.Cell(A,1)  -> InstrExcelValue 
     /// </summary>
-    public ExecTokBase InstrRight { get; set; }
+    public InstrBase InstrRight { get; set; }
 
 }

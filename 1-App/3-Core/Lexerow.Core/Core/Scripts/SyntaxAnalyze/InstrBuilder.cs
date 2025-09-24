@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
-public class ExecTokenBuilder
+namespace Lexerow.Core.Scripts.SyntaxAnalyze;
+public class InstrBuilder
 {
     /// <summary>
-    /// Create an execToken base donthe script token.
+    /// Create an instruction based on the script token.
     /// </summary>
     /// <param name="scriptToken"></param>
-    /// <param name="execTokBase"></param>
+    /// <param name="instrBase"></param>
     /// <returns></returns>
-    public static bool Do(ExecResult execResult, ScriptToken scriptToken, out ExecTokBase execTokBase)
+    public static bool Do(ExecResult execResult, ScriptToken scriptToken, out InstrBase instrBase)
     {
         //--script token is a name/id
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
@@ -23,7 +23,7 @@ public class ExecTokenBuilder
             // OpenExcel
             if (scriptToken.Value.Equals("OpenExcel", StringComparison.InvariantCultureIgnoreCase))
             {
-                execTokBase = new ExecTokOpenExcel(scriptToken);
+                instrBase = new InstrOpenExcel(scriptToken);
                 return true;
             }
 
@@ -45,16 +45,14 @@ public class ExecTokenBuilder
             // if
             if (scriptToken.Value.Equals("if",StringComparison.InvariantCultureIgnoreCase))
             {
-                //execTokBase = new ExecTokIf(scriptToken);
-                execTokBase = null;
+                instrBase = null;
                 return true;
             }
 
             // then
             if (scriptToken.Value.Equals("Then", StringComparison.InvariantCultureIgnoreCase))
             {
-                //execTokBase = new ExecTokThen(scriptToken);
-                execTokBase = null;
+                instrBase = null;
                 return true;
             }
 
@@ -66,38 +64,53 @@ public class ExecTokenBuilder
             // TODO:
 
             // if it is not a known keyword, it's an object name, can be: a variable or a user defined function 
-            execTokBase = new ExecTokObjectName(scriptToken);
+            instrBase = new InstrObjectName(scriptToken);
             return true;
+        }
+
+        //--script token is a separator
+        if (scriptToken.ScriptTokenType == ScriptTokenType.Separator)
+        {
+            if (scriptToken.Value.Equals("(", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrOpenBracket(scriptToken);
+                return true;
+            }
+            if (scriptToken.Value.Equals(")", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // TODO: needed? 
+                //instrBase = new InstrCloseBrace(scriptToken);
+                instrBase = null;
+                return true;
+            }
+
+
         }
 
         //--script token is a string
         if (scriptToken.ScriptTokenType == ScriptTokenType.String)
         {
-            execTokBase = new ExecTokConstValue(scriptToken, scriptToken.Value);
+            instrBase = new InstrConstValue(scriptToken, scriptToken.Value);
             return true;
         }
 
         //--script token is a int
         if (scriptToken.ScriptTokenType == ScriptTokenType.Integer)
         {
-            execTokBase = new ExecTokConstValue(scriptToken, scriptToken.ValueInt);
+            instrBase = new InstrConstValue(scriptToken, scriptToken.ValueInt);
             return true;
         }
 
         //--script token is a double
         if (scriptToken.ScriptTokenType == ScriptTokenType.Double)
         {
-            execTokBase = new ExecTokConstValue(scriptToken, scriptToken.ValueDouble);
+            instrBase = new InstrConstValue(scriptToken, scriptToken.ValueDouble);
             return true;
         }
 
 
-        //--script token is a separator, TODO: préciser?
-        // TODO:
-
-
         execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken.Value));
-        execTokBase = null;
+        instrBase = null;
         return true;
     }
 }

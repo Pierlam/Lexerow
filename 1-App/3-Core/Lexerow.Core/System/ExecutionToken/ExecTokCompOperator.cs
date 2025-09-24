@@ -16,7 +16,7 @@ public enum ExecTokCompOperatorType
     LessOrEqualThan,
 }
 
-public class ExecTokCompOperator : ExecTokBase
+public class ExecTokCompOperator : InstrBase
 {
     /// <summary>
     /// TODO: keep it?
@@ -25,7 +25,7 @@ public class ExecTokCompOperator : ExecTokBase
     /// <param name="type"></param>
     public ExecTokCompOperator(string value, ExecTokCompOperatorType type): base (null)
     {
-        ExecTokType = ExecTokType.CompOperator;
+        InstrType = InstrType.CompOperator;
         Value = value;
         Type = type;
     }

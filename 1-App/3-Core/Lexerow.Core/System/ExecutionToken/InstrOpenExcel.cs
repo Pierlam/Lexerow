@@ -11,11 +11,12 @@ namespace Lexerow.Core.System;
 /// instruction: OpenExcel("myfile.xlsx")
 /// return an InstrExcelFile object.
 /// </summary>
-public class InstrOpenExcel : ExecTokBase
+public class InstrOpenExcel : InstrBase
 {
     public InstrOpenExcel(ScriptToken scriptToken):base(scriptToken)
     {
-        ExecTokType = ExecTokType.OpenExcel;
+        InstrType = InstrType.OpenExcel;
+        IsFunctionCall = true;
         ReturnType = InstrFunctionReturnType.ExcelFile;
     }
 
@@ -26,6 +27,5 @@ public class InstrOpenExcel : ExecTokBase
     /// or a fct call, exp: OpenExcel(GetFileName())  TO_DEFINE
     /// or an expression, exp: OpenExcel('MyFile'+ '.xlsx') TO_DEFINE
     /// </summary>
-    //public InstrBase Param { get; set; }
-    // TODO: remove !
+    public InstrBase Param { get; set; }
 }

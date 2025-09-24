@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.Scripts.Compilator;
+﻿using Lexerow.Core.Scripts.LexicalAnalyse;
+using Lexerow.Core.Scripts.SyntaxAnalyze;
 using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Shared;
@@ -36,12 +37,12 @@ public class ScriptCompilator
     /// <param name="script"></param>
     /// <param name="listInstr"></param>
     /// <returns></returns>
-    public ExecResult CompileScript(ExecResult execResult, Script script, out List<ExecTokBase> listInstr)
+    public ExecResult CompileScript(ExecResult execResult, Script script, out List<InstrBase> listInstr)
     {
         // analyse the source code, line by line
         if (!LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
         {
-            listInstr = new List<ExecTokBase>();
+            listInstr = new List<InstrBase>();
             return execResult;
         }
 

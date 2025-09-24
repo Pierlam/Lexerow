@@ -13,7 +13,7 @@ namespace Lexerow.Core.System;
 /// </summary>
 public class ProgramScript
 {
-    public ProgramScript(Script script, List<ExecTokBase> listInstr)
+    public ProgramScript(Script script, List<InstrBase> listInstr)
     {
         //Name = name;
         //ScriptFileName= scriptFileName;
@@ -41,7 +41,7 @@ public class ProgramScript
     /// eol are ExeTokEol.
     /// TODO: RENAME_TO: List<ExeTokBase>
     /// </summary>
-    public List<ExecTokBase> ListInstr { get; set; } = new List<ExecTokBase>();
+    public List<InstrBase> ListInstr { get; set; } = new List<InstrBase>();
 
     /// <summary>
     /// If the program comes from a source code/script txt file.

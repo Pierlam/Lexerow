@@ -11,11 +11,11 @@ namespace Lexerow.Core.System;
 /// Delete a cell.
 /// Remove the value and the style.
 /// </summary>
-public class InstrSetCellNull : ExecTokBase
+public class InstrSetCellNull : InstrBase
 {
     public InstrSetCellNull(ScriptToken scriptToken, int colNum):base(scriptToken)
     {
-        ExecTokType = ExecTokType.SetCellNull;
+        InstrType = InstrType.SetCellNull;
         ColNum = colNum;
     }
 

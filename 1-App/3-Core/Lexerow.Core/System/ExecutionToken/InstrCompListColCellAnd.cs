@@ -14,7 +14,7 @@ public class InstrCompListColCellAnd : InstrRetBoolBase
 {
     public InstrCompListColCellAnd(ScriptToken scriptToken, List<InstrRetBoolBase> listInstrCompIf):base(scriptToken)
     {
-        ExecTokType = ExecTokType.CompListColCellAnd;
+        InstrType = InstrType.CompListColCellAnd;
         ListInstrComp.AddRange(listInstrCompIf);
     }
 

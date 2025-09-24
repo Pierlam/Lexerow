@@ -1,5 +1,5 @@
-﻿using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.Scripts;
+﻿using Lexerow.Core.Scripts;
+using Lexerow.Core.ExcelLayer;
 using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.System.Excel;
@@ -97,7 +97,7 @@ public class LexerowCore
             return execResult;
 
         // compile the script,  generate instructions
-        _scriptCompilator.CompileScript(execResult, script, out List<ExecTokBase> listInstr);
+        _scriptCompilator.CompileScript(execResult, script, out List<InstrBase> listInstr);
         if (!execResult.Result)
             return execResult;
 

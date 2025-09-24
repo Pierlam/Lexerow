@@ -11,11 +11,11 @@ namespace Lexerow.Core.System;
 /// Represent a excel file instance.
 /// opened or closed.
 /// </summary>
-public class InstrExcelFileObject : ExecTokBase
+public class InstrExcelFileObject : InstrBase
 {
     public InstrExcelFileObject(ScriptToken scriptToken, string filename, IExcelFile excelFile):base(scriptToken)
     {
-        ExecTokType = ExecTokType.ExcelFileObject;
+        InstrType = InstrType.ExcelFileObject;
         Filename = filename;
         ExcelFile= excelFile;
     }

@@ -12,11 +12,11 @@ namespace Lexerow.Core.System;
 /// Does not delete the cell.
 /// Remove only the value, keep the style.
 /// </summary>
-public class InstrSetCellValueBlank : ExecTokBase
+public class InstrSetCellValueBlank : InstrBase
 {
     public InstrSetCellValueBlank(ScriptToken scriptToken, int colNum):base(scriptToken)
     {
-        ExecTokType = ExecTokType.SetCellBlank;
+        InstrType = InstrType.SetCellBlank;
         ColNum = colNum;
     }
 

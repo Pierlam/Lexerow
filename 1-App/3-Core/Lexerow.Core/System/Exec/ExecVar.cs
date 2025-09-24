@@ -18,7 +18,7 @@ public enum ExecVarType
 
 public class ExecVar
 {
-    public ExecVar(string name, ExecVarType execVarType, ExecTokBase value)
+    public ExecVar(string name, ExecVarType execVarType, InstrBase value)
     {
         Name = name;
         ExecVarType = execVarType;
@@ -29,5 +29,5 @@ public class ExecVar
     
     public ExecVarType ExecVarType { get; set; }
 
-    public ExecTokBase Value { get; set; }
+    public InstrBase Value { get; set; }
 }

@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
+namespace Lexerow.Core.Scripts.SyntaxAnalyze;
 
 public class SyntaxAnalyser
 {
     /// <summary>
-    /// Dictionary of variables definition.
+    /// list of defined variables.
+    /// A variable can be created and set several times.
     /// </summary>
-    IDictionary<string,ExecTokBase> _dictVarDef= new Dictionary<string,ExecTokBase>();
+    List<InstrObjectName> _listVar = new List<InstrObjectName>();
 
     /// <summary>
     /// process list of source code tokens to create instructions to execute.
@@ -25,9 +26,9 @@ public class SyntaxAnalyser
     /// <param name="listSourceCodeLineTokens"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public bool Process(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<ExecTokBase> listInstr)
+    public bool Process(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstr)
     {
-        _dictVarDef.Clear();
+        _listVar.Clear();
 
         // no token in the source code! -> error or warning?
         if (listScriptLineTokens.Count == 0)
@@ -41,15 +42,16 @@ public class SyntaxAnalyser
         // TODO: ->error, stop
 
         // process, loop on tokens 
-        ProcessLoopOnTokens(execResult, _dictVarDef, listScriptLineTokens, out listInstr);
-        //if (compiledScript.ListError.Count > 0) return false;
+        ProcessLoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
 
-        listInstr = null;
-        // ok, no error
-        return true;
+        if(execResult.Result)
+            // ok, no error
+            return true;
+
+        return false;
     }
 
-    public bool ProcessLoopOnTokens(ExecResult execResult, IDictionary<string,ExecTokBase> dictVarDef, List<ScriptLineTokens> listScriptLineTokens, out List<ExecTokBase> listExecTok)
+    public bool ProcessLoopOnTokens(ExecResult execResult, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstrToExec)
     {
         bool res;
         bool isToken = false;
@@ -58,14 +60,16 @@ public class SyntaxAnalyser
         int currLineTokensIndex = 0;
         ScriptLineTokens currLineTokens = null;
         currLineTokens = listScriptLineTokens[0];
-        listExecTok = new List<ExecTokBase>();
+
+        // final list of compiled instructions to execute
+        listInstrToExec = new List<InstrBase>();
 
         //--init vars on tokens
         int currTokenIndex = -1;
         ScriptToken currToken = null;
 
         // temporary save of SourceTokens and instr
-        Stack<ExecTokBase> stkItems = new Stack<ExecTokBase>();
+        Stack<InstrBase> stkItems = new Stack<InstrBase>();
 
         while (true) 
         {
@@ -77,7 +81,7 @@ public class SyntaxAnalyser
                 //RaiseEvent("EndOfLineReached, LineIdx:" + currLineTokensIndex.ToString());
 
                 // no more token in the current line tokens, process items saved in the stack
-                res = ProcessTokenEndLine(currLineTokensIndex, stkItems, listExecTok);
+                res = ScriptEndLineProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stkItems, listInstrToExec);
                 if (!res) break;
 
                 // no more token in the current line tokens, go to the next one
@@ -96,9 +100,6 @@ public class SyntaxAnalyser
             // get the fist token of the line
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
-            //--do some checks, according to the current stage
-            // TODO: check1: if previous=OpenExcel/SetLogFile and if current token is diff from ( so ->erreur
-
             //--is the token a comment?  dont manage it
             if (currToken.ScriptTokenType == ScriptTokenType.Comment)
                 continue;
@@ -111,11 +112,8 @@ public class SyntaxAnalyser
                 return false;
             }
 
-            //--is the token the instr if?
-            // TODO:
-
             //--is it the SetVar equal char? SetVarDecoder
-            res = SetVarDecoder.ProcessSetVarEqualChar(execResult, dictVarDef, stkItems, currToken, listExecTok, out isToken);
+            res = SetVarDecoder.ProcessSetVarEqualChar(execResult, listVar, stkItems, currToken, listInstrToExec, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -124,12 +122,32 @@ public class SyntaxAnalyser
             //if (!res) break;
             //if (isToken) continue;
 
+            //--is the token the char ) ?  pop the stack until found ( et traite l'expression. parametre d'une fonction/méthode.
+            res= TokenCloseBracketProcessor.Do(execResult, listVar, stkItems, currToken, listInstrToExec, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
+            if (!res) break;
+            if (isListOfParams)
+            {
+                // process the fct call, check and set parameters, error saved
+                FunctionCallParamsProcessor.ProcessFunctionCallParams(execResult, listVar, stkItems, currToken, listInstrToExec, listItem);
+                continue;
+            }
+            if(isMathExpr)
+            {
+                // TODO: exp: (23+a)
+                //ProcessMathExpression(stkItems, listInstr, listItem);
+                continue;
+            }
+
             // move the script token into an exec token
-            res=ExecTokenBuilder.Do(execResult, currToken, out ExecTokBase execTokBase);
+            res = InstrBuilder.Do(execResult, currToken, out InstrBase instr);
+            if (!res) break;
+
+            // do checks in some cases
+            res=InstrChecker.Do(execResult, listVar, stkItems, instr);
             if (!res) break;
 
             // push it on the stack
-            stkItems.Push(execTokBase);
+            stkItems.Push(instr);
         }
 
         // finish the process
@@ -138,50 +156,7 @@ public class SyntaxAnalyser
         return true;
     }
 
-    /// <summary>
-    /// no more token in the current line tokens, process items saved in the stack.
-    /// cases:
-    /// a=12
-    /// b=a
-    /// if a=12
-    /// if sheet.Cell(A,1)=12 
-    /// </summary>
-    /// <param name="stkItems"></param>
-    /// <param name="token"></param>
-    /// <param name="compiledScript"></param>
-    /// <returns></returns>
-    bool ProcessTokenEndLine(int sourceCodeLineIndex, Stack<ExecTokBase> stkItems, List<ExecTokBase> listExecTok)
-    {
-        // no more item in the stack
-        if (stkItems.Count == 0) return true;
 
-        // TODO: revoir!!
-        //--2 items in the stack, is it SetVar instr?
-        if (ProcessTokenEndLineSetVar(sourceCodeLineIndex, stkItems, listExecTok))
-            return true;
-
-        //--TODO: gérer if a=12
-
-        //--TODO: gérer if a=12 then
-
-        // case unexpected -> error
-        // TODO:        
-        return false;
-    }
-
-    /// <summary>
-    /// a=12
-    /// b=a
-    /// sheet.Cell(A,1)=12 
-    /// </summary>
-    /// <param name="stkItems"></param>
-    /// <param name="compiledScript"></param>
-    /// <returns></returns>
-    bool ProcessTokenEndLineSetVar(int sourceCodeLineIndex, Stack<ExecTokBase> stkItems, List<ExecTokBase> listExecTok)
-    {
-        // TODO: so? 
-        return false;
-    }
 
 
 }

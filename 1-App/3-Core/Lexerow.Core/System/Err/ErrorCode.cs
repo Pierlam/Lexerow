@@ -189,6 +189,12 @@ public enum ErrorCode
     SyntaxAnalyzerNoToken,
     SyntaxAnalyzerTokenNotExpected,
 
+    SyntaxAnalyzerFunctionCallNameExpected,
+    SyntaxAnalyzerFctParamCountWrong,
+    SyntaxAnalyzerFctParamTypeWrong,
+    SyntaxAnalyzerFctParamVarNotDefined,
+    SyntaxAnalyzerSetVarWrongRightPart,
+
     FuncNotExists,
     FuncOneParamExpected,
 

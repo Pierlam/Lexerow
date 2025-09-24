@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
+public enum ExecResultErrorType
+{
+    NotSet,
+    ScriptCompilation,
+    ProgExecution
+}
 
 /// <summary>
 /// Execution result error.
@@ -40,6 +46,39 @@ public class ExecResultError
         ErrorCode = errorCode;       
     }
 
+    public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, string param)
+    {
+        DateTimeCreation = DateTime.UtcNow;
+        ErrorType = ExecResultErrorType.ScriptCompilation;
+        ErrorCode = errorCode;
+        Param = param;
+        LineNum = LineNum;
+        ColNum = ColNum;
+    }
+
+    public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, string param, string param2)
+    {
+        DateTimeCreation = DateTime.UtcNow;
+        ErrorType = ExecResultErrorType.ScriptCompilation;
+        ErrorCode = errorCode;
+        Param = param;
+        Param2 =param2;
+        LineNum = LineNum;
+        ColNum = ColNum;
+    }
+
+    public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, Exception exception, string param)
+    {
+        DateTimeCreation = DateTime.UtcNow;
+        ErrorType = ExecResultErrorType.ScriptCompilation;
+        ErrorCode = errorCode;
+        Exception= exception;
+        Param = param;
+        LineNum = LineNum;
+        ColNum = ColNum;
+    }
+
+
     /// <summary>
     /// When the error was created.
     /// </summary>
@@ -49,15 +88,18 @@ public class ExecResultError
     /// Type of the error: BuildInstr, ExecInstr, CompileScript
     /// and more: License config.
     /// </summary>
-    //public ErrorType ErrorType { get; set; }
+    public ExecResultErrorType ErrorType { get; set; }= ExecResultErrorType.NotSet;
 
     /// <summary>
     /// The code of the error.
     /// </summary>
     public ErrorCode ErrorCode { get; set; }
 
-    public Exception? Exception { get; set; } = null;
+    public int LineNum { get; set; } = 0;
+    public int ColNum { get; set; } = 0;
 
+    public Exception? Exception { get; set; } = null;
+    
     /// <summary>
     /// Parameter 1 of the error.
     /// </summary>

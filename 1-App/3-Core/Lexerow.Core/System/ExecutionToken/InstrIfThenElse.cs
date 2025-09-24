@@ -10,24 +10,24 @@ namespace Lexerow.Core.System;
 /// <summary>
 /// If -comparison- Then InstrThen  Else InstrElse
 /// </summary>
-public class InstrIfThenElse : ExecTokBase
+public class InstrIfThenElse : InstrBase
 {
     public InstrIfThenElse(ScriptToken scriptToken):base(scriptToken)
     {
-        ExecTokType = ExecTokType.IfThenElse;
+        InstrType = InstrType.IfThenElse;
     }
 
     /// <summary>
     /// If -comparison- 
     /// can be a comparison or an fct call, should return a bool.
     /// </summary>
-    public ExecTokBase InstrIf { get; set; }
+    public InstrBase InstrIf { get; set; }
 
     /// <summary>
     /// If -comparison- Then InstrThen  Else InstrElse
     /// </summary>
-    public ExecTokBase InstrThen { get; set; }
+    public InstrBase InstrThen { get; set; }
 
-    public ExecTokBase InstrElse { get; set; }
+    public InstrBase InstrElse { get; set; }
 
 }

@@ -12,25 +12,25 @@ namespace Lexerow.Core.System;
 /// Represents a const value.
 /// can be an int, double, string, ...
 /// </summary>
-public class ExecTokConstValue : ExecTokBase
+public class InstrConstValue : InstrBase
 {
-    public ExecTokConstValue(ScriptToken scriptToken, string rawValue): base(scriptToken)
+    public InstrConstValue(ScriptToken scriptToken, string rawValue): base(scriptToken)
     {
-        ExecTokType = ExecTokType.ConstValue;
+        InstrType = InstrType.ConstValue;
         RawValue = rawValue;
         ValueBase= new ValueString(rawValue);
     }
 
-    public ExecTokConstValue(ScriptToken scriptToken, int value) : base(scriptToken)
+    public InstrConstValue(ScriptToken scriptToken, int value) : base(scriptToken)
     {
-        ExecTokType = ExecTokType.ConstValue;
+        InstrType = InstrType.ConstValue;
         RawValue = value.ToString();
         ValueBase = new ValueInt(value);
     }
 
-    public ExecTokConstValue(ScriptToken scriptToken, double value) : base(scriptToken)
+    public InstrConstValue(ScriptToken scriptToken, double value) : base(scriptToken)
     {
-        ExecTokType = ExecTokType.ConstValue;
+        InstrType = InstrType.ConstValue;
         RawValue = value.ToString();
         ValueBase = new ValueDouble(value);
     }

@@ -9,10 +9,10 @@ namespace Lexerow.Core.System;
 
 /// <summary>
 /// </summary>
-public class ExecTokCloseBracket:ExecTokBase
+public class ExecTokCloseBracket:InstrBase
 {
     public ExecTokCloseBracket(ScriptToken scriptToken): base(scriptToken) 
     {
-        ExecTokType = ExecTokType.CloseBracket;
+        InstrType = InstrType.CloseBracket;
     }  
 }

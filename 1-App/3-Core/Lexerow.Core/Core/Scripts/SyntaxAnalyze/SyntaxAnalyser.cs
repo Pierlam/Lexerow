@@ -128,7 +128,8 @@ public class SyntaxAnalyser
             if (isListOfParams)
             {
                 // process the fct call, check and set parameters, error saved
-                FunctionCallParamsProcessor.ProcessFunctionCallParams(execResult, listVar, stkItems, currToken, listInstrToExec, listItem);
+                res=FunctionCallParamsProcessor.ProcessFunctionCallParams(execResult, listVar, stkItems, currToken, listInstrToExec, listItem);
+                if (!res) break;
                 continue;
             }
             if(isMathExpr)
@@ -143,8 +144,8 @@ public class SyntaxAnalyser
             if (!res) break;
 
             // do checks in some cases
-            res=InstrChecker.Do(execResult, listVar, stkItems, instr);
-            if (!res) break;
+            //res=InstrChecker.Do(execResult, listVar, stkItems, instr);
+            //if (!res) break;
 
             // push it on the stack
             stkItems.Push(instr);

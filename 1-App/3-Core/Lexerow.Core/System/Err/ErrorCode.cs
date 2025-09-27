@@ -195,6 +195,7 @@ public enum ErrorCode
     SyntaxAnalyzerFctParamTypeWrong,
     SyntaxAnalyzerFctParamVarNotDefined,
     SyntaxAnalyzerSetVarWrongRightPart,
+    SyntaxAnalyzerFctResultNotSet,
 
     FuncNotExists,
     FuncOneParamExpected,

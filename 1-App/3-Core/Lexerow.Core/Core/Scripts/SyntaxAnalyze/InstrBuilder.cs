@@ -45,14 +45,14 @@ public class InstrBuilder
             // if
             if (scriptToken.Value.Equals("if",StringComparison.InvariantCultureIgnoreCase))
             {
-                instrBase = null;
+                instrBase = new InstrIf(scriptToken);
                 return true;
             }
 
             // then
             if (scriptToken.Value.Equals("Then", StringComparison.InvariantCultureIgnoreCase))
             {
-                instrBase = null;
+                instrBase = new InstrThen(scriptToken);
                 return true;
             }
 

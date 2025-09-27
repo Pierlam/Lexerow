@@ -1,5 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
+using NPOI.OpenXmlFormats.Spreadsheet;
+using Org.BouncyCastle.Utilities.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,23 +34,27 @@ internal class ScriptEndLineProcessor
         // no more item in the stack
         if (stkItems.Count == 0) return true;
 
-        //--2 items in the stack, is it SetVar instr?
-        if (ProcessSetVar(execResult, listVar, sourceCodeLineIndex, stkItems, listInstrToExec))
-            return true;
+        bool res;
 
-        //--case a=12
+        //--is it SetVar instr?  exp: a=12,  a=b, a=OpenExcel(), ...
+        res = ProcessSetVar(execResult, listVar, sourceCodeLineIndex, stkItems, listInstrToExec, out bool isToken);
+        if(!res)return false;
+        if (isToken) return true;
+
+        //--is if If instr?
         // TODO:
 
-        //--case a=b
+        //--is if Then instr?
         // TODO:
 
-        //--case a=Fct()
-        // TODO:
+        //--is it a fct call, without setVar, exp: fct()
+        res = ProcessFctCall(execResult, stkItems, sourceCodeLineIndex, listInstrToExec, out isToken);
+        if (!res) return false;
+        if (isToken) return true;
 
 
-        // other cases: unexpected -> error
-        // TODO:
-
+        // case not managed, error or not yet implemented
+        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, null, sourceCodeLineIndex.ToString());
         return false;
     }
 
@@ -63,21 +69,28 @@ internal class ScriptEndLineProcessor
     /// <param name="stkItems"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    static bool ProcessSetVar(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, Stack<InstrBase> stkItems, List<InstrBase> listInstrToExec)
+    static bool ProcessSetVar(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, Stack<InstrBase> stkItems, List<InstrBase> listInstrToExec, out bool isToken)
     {
+        isToken = false;
+
+        if (stkItems.Count == 0)
+            return true;
+
+        // get the first/oldest item pushed in the stack
+        var firstItem = stkItems.Last();
+
+        // the first one is a SetVar instr?
+        if (firstItem.InstrType != InstrType.SetVar)
+            // not a set var instr
+            return true;
+
+        // setVar: 2 items expected in the stack
         if (stkItems.Count != 2)
         {
             execResult.AddError(ErrorCode.SyntaxAnalyzerSetVarWrongRightPart, null, sourceCodeLineIndex.ToString());
             return false;
         }
-
-        // get the first/oldest item pushed in the stack
-        var firstItem = stkItems.Last();
-
-        // the first one is a SetVar instr?  can be an if instr
-        if (firstItem.InstrType != InstrType.SetVar)
-            // TODO: sortir une erreur et tracer
-            return false;
+        isToken = true;
 
         // the left part of the instr is set previously
         InstrSetVar instrSetVar = firstItem as InstrSetVar;
@@ -112,7 +125,7 @@ internal class ScriptEndLineProcessor
             return false;
         }
 
-        //--case a=Fct()
+        //--case a=Fct(), apply the setVar
         if (instrBase.IsFunctionCall) 
         {
             // check that the function return something to set to a var
@@ -121,6 +134,10 @@ internal class ScriptEndLineProcessor
                 execResult.AddError(ErrorCode.SyntaxAnalyzerSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;
             }
+
+            // check the fct call: params set and type ok?
+            if (!InstrChecker.CheckFunctionCall(execResult, instrBase))
+                return false;
 
             instrSetVar.InstrRight= instrBase;
             listInstrToExec.Add(instrSetVar);
@@ -132,4 +149,47 @@ internal class ScriptEndLineProcessor
         return false;
     }
 
+    /// <summary>
+    /// is it a fct call, without setVar, exp: fct()
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="stkItems"></param>
+    /// <param name="listInstrToExec"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    static bool ProcessFctCall(ExecResult execResult, Stack<InstrBase> stkItems, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    {
+        isToken = false;
+
+        if (stkItems.Count == 0)
+            return true;
+
+        // get the first/oldest item pushed in the stack
+        var instrBase = stkItems.Last();
+
+        // the first one is a SetVar instr?
+        if (!instrBase.IsFunctionCall)
+            // not a set var instr
+            return true;
+
+        // it's a fct call, the stack should contains onyl one item
+        if (stkItems.Count != 1)
+        {
+            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, null, sourceCodeLineIndex.ToString());
+            return false;
+        }
+
+        InstrOpenExcel instrOpenExcel = instrBase as  InstrOpenExcel;
+        if (instrOpenExcel != null) 
+        {
+            // OpenExcel result not used, warning?
+            execResult.AddError(ErrorCode.SyntaxAnalyzerFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            return false;
+        }
+
+
+        // other cases: unexpected -> error
+        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+        return false;
+    }
 }

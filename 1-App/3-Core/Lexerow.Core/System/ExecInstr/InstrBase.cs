@@ -48,6 +48,8 @@ public enum InstrType
 
     ForEachRowIfThen,
 
+    If,
+    Then,
     IfThenElse
 }
 

@@ -14,6 +14,11 @@ public enum InstrType
     CloseBracket,
     Comma,
     Dot,
+    Plus,
+    Minus,
+    Mul,
+    Div,
+    Percent,
 
     ConstValue,
 

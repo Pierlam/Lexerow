@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System;
+﻿using Lexerow.Core.Core.Scripts;
+using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using Org.BouncyCastle.Utilities.Collections;
@@ -49,20 +50,34 @@ internal class TokenCloseBracketProcessor
         InstrBase item = stkItems.Peek();
         if (item is InstrOpenBracket)
         {
-            // no item in the stack? case: ()
+            // remove the openBracket from the stack
+            stkItems.Pop();
+
+            // no more item in the stack? case: ()
             if (stkItems.Count == 0)
                 return true;                    
 
-            InstrBase instStackLast = stkItems.Pop();
+            // read without remove it the item on the top of the stack
+            InstrBase instBeforeOpenBracket = stkItems.Peek();
 
-            // the last item on the stack is an object name? exp: OpenExcel(f)
-            if (instStackLast.IsFunctionCall)
+            //-item before openBracket is an object name? exp: fct()
+            if (instBeforeOpenBracket.IsFunctionCall)
             {
-                // TODO: tagg that open and closed brackets are presents
-                //instStackLast.OpenCloseBracketsArePresent = true;
+                // tag that open and closed brackets are presents
+                // TODO: how to manage that open and close bracket are present?
+                //instBeforeOpenBracket.OpenCloseBracketsArePresent = true;
+
+                // it's an empty list of params for a fct call
+                isListOfParams = true;
+                return true;
             }
 
-            return true;
+            //-item before openBracket is an math operator? exp: +()
+            // TODO: error? to confirm
+
+            // error, item before the open bracket is not expected
+            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
+            return false;
         }
 
         //--loop on stacked item: item, a string, a number or an instruction and then , comma sep
@@ -138,18 +153,26 @@ internal class TokenCloseBracketProcessor
                 return true; 
             }
 
-            // read the item on the top of the stack
-            InstrBase instStackLast= stkItems.Peek();
+            // read the item from the stack
+            InstrBase instBeforeOpenBracket= stkItems.Peek();
 
             // the last item on the stack is an object name? exp: OpenExcel(f)
-            if(instStackLast.IsFunctionCall)
+            if(instBeforeOpenBracket.IsFunctionCall)
             {
                 isListOfParams= true;
                 return true;
             }
-            // other cases, it's a math expression
-            isMathExpr = true;
-            return true;
+
+            // the item is an math operator, before the open bracket? exp: *(2)
+            if(SyntaxAnalyserUtils.IsMathOperator(instBeforeOpenBracket))
+            {
+                isMathExpr = true;
+                return true;
+            }
+
+            // error, wrong object name
+            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
+            return false;
         }
         return true;
 

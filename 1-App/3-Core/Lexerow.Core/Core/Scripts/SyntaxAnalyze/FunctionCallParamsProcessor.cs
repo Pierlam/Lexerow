@@ -26,7 +26,7 @@ internal class FunctionCallParamsProcessor
         if (stkItems.Count == 0)
         {
             // function call name expected
-            execResult.AddError(ErrorCode.SyntaxAnalyzerFunctionCallNameExpected, scriptToken);
+            execResult.AddError(ErrorCode.SyntaxAnalyzerFctNameExpected, scriptToken);
 
             return false;
         }

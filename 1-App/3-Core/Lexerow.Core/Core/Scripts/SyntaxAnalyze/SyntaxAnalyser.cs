@@ -42,9 +42,9 @@ public class SyntaxAnalyser
         // TODO: ->error, stop
 
         // process, loop on tokens 
-        ProcessLoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
+        bool res= ProcessLoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
 
-        if(execResult.Result)
+        if(res)
             // ok, no error
             return true;
 
@@ -151,12 +151,12 @@ public class SyntaxAnalyser
         }
 
         // finish the process
-        // TODO:
+        if(!execResult.Result)
+        {
+            // clear the list of instructions obtained
+            listInstrToExec.Clear();
+        }
 
-        return true;
+        return execResult.Result;
     }
-
-
-
-
 }

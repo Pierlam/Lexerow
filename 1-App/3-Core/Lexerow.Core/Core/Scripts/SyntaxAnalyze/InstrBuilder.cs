@@ -84,7 +84,37 @@ public class InstrBuilder
                 return true;
             }
 
+            if (scriptToken.Value.Equals("+", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrCharPlus(scriptToken);
+                return true;
+            }
+            if (scriptToken.Value.Equals("-", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrCharMinus(scriptToken);
+                return true;
+            }
+            if (scriptToken.Value.Equals("*", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrCharMul(scriptToken);
+                return true;
+            }
 
+            if (scriptToken.Value.Equals("/", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrCharDiv(scriptToken);
+                return true;
+            }
+
+            if (scriptToken.Value.Equals("%", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrCharPlus(scriptToken);
+                return true;
+            }
+
+            execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken.Value));
+            instrBase = null;
+            return false;
         }
 
         //--script token is a string
@@ -111,6 +141,6 @@ public class InstrBuilder
 
         execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken.Value));
         instrBase = null;
-        return true;
+        return false;
     }
 }

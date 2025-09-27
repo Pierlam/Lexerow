@@ -29,7 +29,6 @@ public class ScriptSyntaxAnalyzerBasicTests
     [TestMethod]
     public void FileEqOpenExcelConstOk()
     {
-        ScriptToken st;
         ScriptLineTokens slt;
 
         //-build one line of tokens
@@ -79,18 +78,137 @@ public class ScriptSyntaxAnalyzerBasicTests
     [TestMethod]
     public void FileEqOpenOuxcelWrong()
     {
-        ici();
+        ScriptLineTokens slt;
+
+        //-build one line of tokens
+        slt = new ScriptLineTokens();
+        slt.AddTokenName(1, 1, "file");
+        slt.AddTokenSeparator(1, 1, "=");
+        slt.AddTokenName(1, 1, "OpenOuxcel");
+        slt.AddTokenSeparator(1, 1, "(");
+        slt.AddTokenString(1, 1, "\"data.xlsx\"");
+        slt.AddTokenSeparator(1, 1, ")");
+
+        //-build source code lines of tokens
+        List<ScriptLineTokens> lt = [slt];
+
+        SyntaxAnalyser sa = new SyntaxAnalyser();
+
+        ExecResult execResult = new ExecResult();
+        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+
+        Assert.IsFalse(res);
+        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(1, execResult.ListError.Count);
+        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
 
 
-	//"john"=OpenExcel(..)    type incorrect, variable attendue
-	//12=OpenExcel(...)       type incorrect, variable attendue
- //   file = OpenExcel()        paramètre attendu
+    /// <summary>
+    /// "john"=OpenExcel(..)    
+    /// error -> variable expected
+    /// </summary>
+    [TestMethod]
+    public void StrJohnEqOpenExcelWrong()
+    {
+        ScriptLineTokens slt;
 
- //   file=OpenExcel parenthèses de fonction attendues
- //   file = OpenExcel(f)      variable f n'est pas déclaré avant
-	//file=blabla()           Nom fonction inconnue
- //   file = OpenExcel("file.xlsx") load Instruction 'load' après fonction non-autorisé
- //   then = OpenExcel("dd")   nom variable non-authorisé, mot-clé réservé
+        //-build one line of tokens
+        slt = new ScriptLineTokens();
+        slt.AddTokenString(1, 1, "\"john\"");
+        slt.AddTokenSeparator(1, 1, "=");
+        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenSeparator(1, 1, "(");
+        slt.AddTokenString(1, 1, "\"data.xlsx\"");
+        slt.AddTokenSeparator(1, 1, ")");
 
+        //-build source code lines of tokens
+        List<ScriptLineTokens> lt = [slt];
+
+        SyntaxAnalyser sa = new SyntaxAnalyser();
+
+        ExecResult execResult = new ExecResult();
+        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+
+        Assert.IsFalse(res);
+        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(1, execResult.ListError.Count);
+        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
+    }
+
+    /// <summary>
+    /// 12=OpenExcel(...)       
+    /// error -> variable expected
+    /// </summary>
+    [TestMethod]
+    public void i12EqOpenExcelWrong()
+    {
+        ScriptLineTokens slt;
+
+        //-build one line of tokens
+        slt = new ScriptLineTokens();
+        slt.AddTokenInteger(1, 1, "12");
+        slt.AddTokenSeparator(1, 1, "=");
+        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenSeparator(1, 1, "(");
+        slt.AddTokenString(1, 1, "\"data.xlsx\"");
+        slt.AddTokenSeparator(1, 1, ")");
+
+        //-build source code lines of tokens
+        List<ScriptLineTokens> lt = [slt];
+
+        SyntaxAnalyser sa = new SyntaxAnalyser();
+
+        ExecResult execResult = new ExecResult();
+        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+
+        Assert.IsFalse(res);
+        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(1, execResult.ListError.Count);
+        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
+    }
+
+    /// <summary>
+    /// file = OpenExcel()   
+    /// error -> param is missing
+    /// </summary>
+    [TestMethod]
+    public void FileEqOpenExcelParamMissingWrong()
+    {
+        ScriptLineTokens slt;
+
+        //-build one line of tokens
+        slt = new ScriptLineTokens();
+        slt.AddTokenName(1, 1, "file");
+        slt.AddTokenSeparator(1, 1, "=");
+        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenSeparator(1, 1, "(");
+        slt.AddTokenSeparator(1, 1, ")");
+
+        //-build source code lines of tokens
+        List<ScriptLineTokens> lt = [slt];
+
+        SyntaxAnalyser sa = new SyntaxAnalyser();
+
+        ExecResult execResult = new ExecResult();
+        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+
+        Assert.IsFalse(res);
+        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(1, execResult.ListError.Count);
+        Assert.AreEqual(ErrorCode.SyntaxAnalyzerFctParamCountWrong, execResult.ListError[0].ErrorCode);
+    }
+
+
+    // file=OpenExcel parenthèses de fonction attendues
+
+    // file = OpenExcel(f)      variable f n'est pas déclaré avant
+
+    // file=blabla()           Nom fonction inconnue
+
+    // file = OpenExcel("file.xlsx") load               Instruction 'load' après fonction non-autorisé
+
+    // then = OpenExcel("dd")   nom variable non-authorisé, mot-clé réservé
+
+    // OpenExcel("ee")  -> error! ne sert à rien!!
 }

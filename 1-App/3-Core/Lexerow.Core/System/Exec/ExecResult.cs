@@ -68,6 +68,7 @@ public class ExecResult
         else
             execResultError = new ExecResultError(errorCode, 0, 0, string.Empty);
         ListError.Add(execResultError);
+        Result = false;
     }
 
     /// <summary>
@@ -83,6 +84,7 @@ public class ExecResult
         else
             execResultError = new ExecResultError(errorCode, 0, 0, string.Empty, param);
         ListError.Add(execResultError);
+        Result = false;
     }
 
     /// <summary>
@@ -98,6 +100,7 @@ public class ExecResult
         else
             execResultError = new ExecResultError(errorCode, 0, 0, exception, string.Empty);
         ListError.Add(execResultError);
+        Result = false;
     }
 
     /// <summary>
@@ -128,6 +131,6 @@ public class ExecResult
         }
 
         warning = new ExecResultWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
-        this.ListWarning.Add(warning);
+        ListWarning.Add(warning);
     }
 }

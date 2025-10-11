@@ -32,6 +32,7 @@ public enum InstrType
 
     ExcelFuncCell,
 
+    ColCellFunc,
     ExcelFileObject,
 
     ExcelCellAddress,
@@ -39,6 +40,8 @@ public enum InstrType
     SetCellVal,
     SetCellNull,
     SetCellBlank,
+
+    SepComparison, 
 
     CompOperator,
     CompCellVal,
@@ -48,14 +51,31 @@ public enum InstrType
 
     ForEachRowIfThen,
 
+    OnExcel,
+    OnSheet,
+    ForEach,
+    Row,
+    Col,
+    Cell,
+    Next,
+    End,
     If,
     Then,
-    IfThenElse
+    IfThenElse,
+
+    EndIf,
+    EndOnExcel
 }
 
 public enum InstrFunctionReturnType
 {
     Nothing,
+
+    ValueBool,
+    ValueInt,
+    ValueDouble,
+    ValueString,
+
     ExcelFile,
     ExcelSheet,
     ExcelCols,

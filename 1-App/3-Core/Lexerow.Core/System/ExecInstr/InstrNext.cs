@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.System;
 
 /// <summary>
+///  ForEach Row
+///     instr
+///   Next
 /// </summary>
-public class ExecTokCloseBracket:InstrBase
+public class InstrNext : InstrBase
 {
-    public ExecTokCloseBracket(ScriptToken scriptToken): base(scriptToken) 
+    public InstrNext(ScriptToken scriptToken) : base(scriptToken)
     {
-        InstrType = InstrType.CloseBracket;
-    }  
+        InstrType = InstrType.Next;
+    }
 }

@@ -15,11 +15,18 @@ public class InstrBuilder
     /// <param name="scriptToken"></param>
     /// <param name="instrBase"></param>
     /// <returns></returns>
-    public static bool Do(ExecResult execResult, ScriptToken scriptToken, out InstrBase instrBase)
+    public static bool Build(ExecResult execResult, ScriptToken scriptToken, out InstrBase instrBase)
     {
         //--script token is a name/id
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
         {
+            // End
+            if (scriptToken.Value.Equals("End", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrEnd(scriptToken);
+                return true;
+            }
+
             // OpenExcel
             if (scriptToken.Value.Equals("OpenExcel", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -28,19 +35,53 @@ public class InstrBuilder
             }
 
             // OnExcel
-            // TODO:
+            if (scriptToken.Value.Equals("OnExcel", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrOnExcel(scriptToken);
+                return true;
+            }
 
             // OnSheet
-            // TODO:
+            if (scriptToken.Value.Equals("OnSheet", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrOnSheet(scriptToken);
+                return true;
+            }
 
             // ForEach
-            // TODO:
+            if (scriptToken.Value.Equals("ForEach", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrForEach(scriptToken);
+                return true;
+            }
 
             // Row
-            // TODO:
+            if (scriptToken.Value.Equals("Row", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrRow(scriptToken);
+                return true;
+            }
+
+            // Next
+            if (scriptToken.Value.Equals("Next", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrNext(scriptToken);
+                return true;
+            }
 
             // Col
-            // TODO:
+            if (scriptToken.Value.Equals("Col", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrCol(scriptToken);
+                return true;
+            }
+
+            // Cell
+            if (scriptToken.Value.Equals("Cell", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrCell(scriptToken);
+                return true;
+            }
 
             // if
             if (scriptToken.Value.Equals("if",StringComparison.InvariantCultureIgnoreCase))
@@ -81,6 +122,11 @@ public class InstrBuilder
                 // TODO: needed? 
                 //instrBase = new InstrCloseBrace(scriptToken);
                 instrBase = null;
+                return true;
+            }
+            if (scriptToken.Value.Equals(".", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrDot(scriptToken);
                 return true;
             }
 
@@ -138,9 +184,15 @@ public class InstrBuilder
             return true;
         }
 
-
         execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken.Value));
         instrBase = null;
         return false;
     }
+
+    public static InstrSepComparison CreateSepComparison(ScriptToken scriptToken)
+    {
+        if (string.IsNullOrWhiteSpace(scriptToken.Value)) return null;
+        return new InstrSepComparison(scriptToken);
+    }
+
 }

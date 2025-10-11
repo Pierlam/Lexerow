@@ -12,7 +12,7 @@ namespace Lexerow.Core.Tests.ScriptSyntaxAnalyze;
 
 
 /// <summary>
-/// Test script lexical analyzer.
+/// Test script lexical analyzer on OpenExcel instr.
 /// </summary>
 [TestClass]
 public class ScriptSyntaxAnalyzerOpenExcelTests
@@ -147,7 +147,7 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
 
         //-build one line of tokens
         slt = new ScriptLineTokens();
-        slt.AddTokenInteger(1, 1, "12");
+        slt.AddTokenInteger(1, 1, 12);
         slt.AddTokenSeparator(1, 1, "=");
         slt.AddTokenName(1, 1, "OpenExcel");
         slt.AddTokenSeparator(1, 1, "(");
@@ -214,7 +214,7 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         slt.AddTokenSeparator(1, 1, "=");
         slt.AddTokenName(1, 1, "OpenExcel");
         slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenInteger(1, 1, "12");
+        slt.AddTokenInteger(1, 1, 12);
         slt.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
@@ -358,7 +358,7 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
 
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerSetVarWrongRightPart, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>

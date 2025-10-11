@@ -188,7 +188,7 @@ public enum ErrorCode
     //--syntax analyzer error codes
     SyntaxAnalyzerNoToken,
     SyntaxAnalyzerTokenNotExpected,
-
+    
     SyntaxAnalyzerFctNameExpected,
     //SyntaxAnalyzerFctNameNotDefined,
     SyntaxAnalyzerFctParamCountWrong,
@@ -196,6 +196,16 @@ public enum ErrorCode
     SyntaxAnalyzerFctParamVarNotDefined,
     SyntaxAnalyzerSetVarWrongRightPart,
     SyntaxAnalyzerFctResultNotSet,
+    SyntaxAnalyzerConstStringValueExpected,
+
+    SyntaxAnalyzerOnSheetExpected,
+    SyntaxAnalyzerTokenDotExpected,
+    SyntaxAnalyzerColAddressExpected,
+    SyntaxAnalyzerColNumWrong,
+    SyntaxAnalyzerSepComparatorExpected,
+    SyntaxAnalyzerReturnTypeWrong,
+    SyntaxAnalyzerTokenIfExpected,
+    SyntaxAnalyzerTokenThenExpected,
 
     FuncNotExists,
     FuncOneParamExpected,

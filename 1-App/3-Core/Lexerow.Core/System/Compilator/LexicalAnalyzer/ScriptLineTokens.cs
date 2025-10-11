@@ -36,13 +36,15 @@ public class ScriptLineTokens
         AddToken(numLine, numCol, ScriptTokenType.String, value);
     }
 
-    public void AddTokenInteger(int numLine, int numCol, string value)
+    public void AddTokenInteger(int numLine, int numCol, int value)
     {
-        AddToken(numLine, numCol, ScriptTokenType.Integer, value);
+        var st= AddToken(numLine, numCol, ScriptTokenType.Integer, value.ToString());
+        st.ValueInt = value;
     }
-    public void AddTokenDouble(int numLine, int numCol, string value)
+    public void AddTokenDouble(int numLine, int numCol, double value)
     {
-        AddToken(numLine, numCol, ScriptTokenType.Double, value);
+        var st=AddToken(numLine, numCol, ScriptTokenType.Double, value.ToString());
+        st.ValueDouble = value;    
     }
 
     public void AddTokenSeparator(int numLine, int numCol, string value)
@@ -50,17 +52,17 @@ public class ScriptLineTokens
         AddToken(numLine, numCol, ScriptTokenType.Separator, value);
     }
 
-    public void AddToken(int numLine, int numCol, ScriptTokenType type, string value)
+    public ScriptToken AddToken(int numLine, int numCol, ScriptTokenType type, string value)
     {
-        if (string.IsNullOrWhiteSpace(value)) return;
+        if (string.IsNullOrWhiteSpace(value)) return null;
 
         ScriptToken st = new ScriptToken();
-        st.ColNum = numCol;
         st.LineNum = numLine;
+        st.ColNum = numCol;
         st.ScriptTokenType = type;
         st.Value = value;
-
-        ListScriptToken.Add(st);    
+        ListScriptToken.Add(st);
+        return st;
     }
 
 }

@@ -21,12 +21,12 @@ public class InstrIfThenElse : InstrBase
     /// If -comparison- 
     /// can be a comparison or an fct call, should return a bool.
     /// </summary>
-    public InstrBase InstrIf { get; set; }
+    public InstrIf InstrIf { get; set; }
 
     /// <summary>
     /// If -comparison- Then InstrThen  Else InstrElse
     /// </summary>
-    public InstrBase InstrThen { get; set; }
+    public InstrThen InstrThen { get; set; }
 
     public InstrBase InstrElse { get; set; }
 

@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-public class ExecTokExcelFuncCell : InstrBase
+public class InstrCol : InstrBase
 {
-    public ExecTokExcelFuncCell(ScriptToken scriptToken):base(scriptToken)
+    public InstrCol(ScriptToken scriptToken) : base(scriptToken)
     {
-        InstrType = InstrType.ExcelFuncCell;
+        InstrType = InstrType.Col;
     }
 }

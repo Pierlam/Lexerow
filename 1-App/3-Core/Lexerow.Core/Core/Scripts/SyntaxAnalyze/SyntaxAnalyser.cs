@@ -1,6 +1,8 @@
-﻿using Lexerow.Core.System;
+﻿using Lexerow.Core.Core.Scripts;
+using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Spreadsheet;
+using Org.BouncyCastle.Utilities.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,9 +44,9 @@ public class SyntaxAnalyser
         // TODO: ->error, stop
 
         // process, loop on tokens 
-        bool res= ProcessLoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
+        bool res = ProcessLoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
 
-        if(res)
+        if (res)
             // ok, no error
             return true;
 
@@ -68,10 +70,10 @@ public class SyntaxAnalyser
         int currTokenIndex = -1;
         ScriptToken currToken = null;
 
-        // temporary save of SourceTokens and instr
-        Stack<InstrBase> stkItems = new Stack<InstrBase>();
+        // temporary save of instr
+        Stack<InstrBase> stackInstr = new Stack<InstrBase>();
 
-        while (true) 
+        while (true)
         {
             // goto the next token, if it exists
             currTokenIndex++;
@@ -81,7 +83,7 @@ public class SyntaxAnalyser
                 //RaiseEvent("EndOfLineReached, LineIdx:" + currLineTokensIndex.ToString());
 
                 // no more token in the current line tokens, process items saved in the stack
-                res = ScriptEndLineProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stkItems, listInstrToExec);
+                res = StackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
                 if (!res) break;
 
                 // no more token in the current line tokens, go to the next one
@@ -100,6 +102,12 @@ public class SyntaxAnalyser
             // get the fist token of the line
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
+            //XXX-DEBUG:
+            if (currToken.Value.Equals("Then"))
+            {
+                int a = 12;
+            }
+
             //--is the token a comment?  dont manage it
             if (currToken.ScriptTokenType == ScriptTokenType.Comment)
                 continue;
@@ -113,26 +121,35 @@ public class SyntaxAnalyser
             }
 
             //--is it the SetVar equal char? SetVarDecoder
-            res = SetVarDecoder.ProcessSetVarEqualChar(execResult, listVar, stkItems, currToken, listInstrToExec, out isToken);
+            res = SetVarDecoder.ProcessSetVarEqualChar(execResult, listVar, stackInstr, currToken, listInstrToExec, out isToken);
             if (!res) break;
             if (isToken) continue;
 
-            //--is the token equal or a comparison operator ?  SetVar or If/comparison
-            //res = TokenSepEqGreatLessProcessor.Do(stkItems, currToken, compiledScript.ListError, out isToken);
-            //if (!res) break;
-            //if (isToken) continue;
+            //--Is it comparison separator =, >, <, ...?
+            if(SyntaxAnalyserUtils.IsComparisonSeparator(currToken))
+            {
+                // process the content of the stack until the If instr
+                res= TokenIfThenDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(execResult, listVar, stackInstr, currToken);
+                if (!res) break;
+                continue;
+            }
+
+            //--Is if the Then token?
+            res = TokenIfThenDecoder.ProcessStackBeforeTokenThen(execResult, listVar, stackInstr, currToken, out isToken);
+            if (!res) break;
+            if (isToken) continue;
 
             //--is the token the char ) ?  pop the stack until found ( et traite l'expression. parametre d'une fonction/méthode.
-            res= TokenCloseBracketProcessor.Do(execResult, listVar, stkItems, currToken, listInstrToExec, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
+            res = TokenCloseBracketProcessor.Do(execResult, listVar, stackInstr, currToken, listInstrToExec, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
             if (!res) break;
             if (isListOfParams)
             {
                 // process the fct call, check and set parameters, error saved
-                res=FunctionCallParamsProcessor.ProcessFunctionCallParams(execResult, listVar, stkItems, currToken, listInstrToExec, listItem);
+                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(execResult, listVar, stackInstr, currToken, listInstrToExec, listItem);
                 if (!res) break;
                 continue;
             }
-            if(isMathExpr)
+            if (isMathExpr)
             {
                 // TODO: exp: (23+a)
                 //ProcessMathExpression(stkItems, listInstr, listItem);
@@ -140,19 +157,25 @@ public class SyntaxAnalyser
             }
 
             // move the script token into an exec token
-            res = InstrBuilder.Do(execResult, currToken, out InstrBase instr);
+            res = InstrBuilder.Build(execResult, currToken, out InstrBase instr);
             if (!res) break;
 
-            // do checks in some cases
-            //res=InstrChecker.Do(execResult, listVar, stkItems, instr);
-            //if (!res) break;
+            // is it the OnExcel instr build ongoing?
+            res = InstrOnExcelBuilder.OnExcelBuildOngoing(execResult, listVar, stackInstr, instr, listInstrToExec, out isToken);
+            if (!res) break;
+            if (isToken) continue;
+
+            // process special cases: all token of OnExcel instr inline for exp
+            res= ProcessSpecialCases(execResult, listVar, currLineTokensIndex, stackInstr, instr, listInstrToExec, out isToken);
+            if (!res) break;
+            if (isToken) continue;
 
             // push it on the stack
-            stkItems.Push(instr);
+            stackInstr.Push(instr);
         }
 
         // finish the process
-        if(!execResult.Result)
+        if (!execResult.Result)
         {
             // clear the list of instructions obtained
             listInstrToExec.Clear();
@@ -160,4 +183,38 @@ public class SyntaxAnalyser
 
         return execResult.Result;
     }
+
+    /// <summary>
+    /// Process special cases like:
+    ///  all token are inline, pb is on token Next:
+    ///     OnExcel "data.xlsx" ForEach Row If A.Cell >10 Then A.Cell=10 Next
+    ///
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="listVar"></param>
+    /// <param name="currLineTokensIndex"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="instr"></param>
+    /// <param name="listInstrToExec"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    public static bool ProcessSpecialCases(ExecResult execResult, List<InstrObjectName> listVar, int currLineTokensIndex, Stack<InstrBase> stackInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
+    {
+        isToken = false;
+
+        if (instr.InstrType == InstrType.Next)
+        {
+            // special case? Next inline: ..Then A.Cell= 12 Next   or  ..Then fct() Next
+            bool res = StackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
+            if (!res) return false;
+
+            // now process the token Next of the OnExcel instr
+            res = InstrOnExcelBuilder.OnExcelBuildOngoing(execResult, listVar, stackInstr, instr, listInstrToExec, out isToken);
+            if (!res) return false;
+            return true;
+        }
+
+        return true;
+    }
+
 }

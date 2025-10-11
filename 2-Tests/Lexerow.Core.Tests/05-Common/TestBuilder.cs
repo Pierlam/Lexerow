@@ -13,8 +13,8 @@ public class TestBuilder
         InstrColCellFunc instrColCellFunc = instrBase as InstrColCellFunc;
         Assert.IsNotNull(instrColCellFunc);
 
-        Assert.AreEqual("A", instrColCellFunc.ColName);
-        Assert.AreEqual(1, instrColCellFunc.ColNum);
+        Assert.AreEqual(colName, instrColCellFunc.ColName);
+        Assert.AreEqual(colNum, instrColCellFunc.ColNum);
         Assert.AreEqual(InstrColCellFuncType.Value, instrColCellFunc.InstrColCellFuncType);
     }
 

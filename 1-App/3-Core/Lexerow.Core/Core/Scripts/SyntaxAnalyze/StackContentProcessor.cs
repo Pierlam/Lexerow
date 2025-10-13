@@ -33,7 +33,7 @@ internal class StackContentProcessor
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public static bool ScriptEndLineReached(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, Stack<InstrBase> stackInstr, List<InstrBase> listInstrToExec)
+    public static bool ScriptEndLineReached(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
     {
         bool res, isToken;
 
@@ -104,7 +104,7 @@ internal class StackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool ProcessOnExcel(ExecResult execResult, Stack<InstrBase> stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool ProcessOnExcel(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -139,7 +139,7 @@ internal class StackContentProcessor
     /// <param name="stackInstr"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    static bool GatherSetVar(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, Stack<InstrBase> stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool GatherSetVar(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -147,7 +147,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  SetVar, instr
-        var instrBefTop= SyntaxAnalyserUtils.GetBeforeTop(stackInstr);
+        var instrBefTop= stackInstr.GetBeforeTop();
         if(instrBefTop==null)
             // not a set var instr to finish
             return true;
@@ -252,7 +252,7 @@ internal class StackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool GatherThen(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, Stack<InstrBase> stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool GatherThen(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -260,7 +260,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  Then; instr
-        var instrBefTop = SyntaxAnalyserUtils.GetBeforeTop(stackInstr);
+        var instrBefTop = stackInstr.GetBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -300,7 +300,7 @@ internal class StackContentProcessor
     /// </summary>
     /// <param name="stackInstr"></param>
     /// <param name="isToken"></param>
-    static void ManageCaseThenWithoutInstrSameLine(Stack<InstrBase> stackInstr, out bool isToken)
+    static void ManageCaseThenWithoutInstrSameLine(CompilStackInstr stackInstr, out bool isToken)
     {
         isToken = false;
 
@@ -326,7 +326,7 @@ internal class StackContentProcessor
         isToken = true;
     }
 
-    static bool GatherForEachRow(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, Stack<InstrBase> stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool GatherForEachRow(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -334,7 +334,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  ForEachRow; instr
-        var instrBefTop = SyntaxAnalyserUtils.GetBeforeTop(stackInstr);
+        var instrBefTop = stackInstr.GetBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -370,7 +370,7 @@ internal class StackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool GatherIfThen(ExecResult execResult, Stack<InstrBase> stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool GatherIfThen(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -378,7 +378,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  
-        var instrBefTop = SyntaxAnalyserUtils.GetBeforeTop(stackInstr);
+        var instrBefTop = stackInstr.GetBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -437,7 +437,7 @@ internal class StackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool GatherEnd(ExecResult execResult, Stack<InstrBase> stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool GatherEnd(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -445,7 +445,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  
-        var instrBefTop = SyntaxAnalyserUtils.GetBeforeTop(stackInstr);
+        var instrBefTop = stackInstr.GetBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -500,7 +500,7 @@ internal class StackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool ProcessThen(ExecResult execResult, Stack<InstrBase> stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool ProcessThen(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -568,7 +568,7 @@ internal class StackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool ProcessFctCall(ExecResult execResult, Stack<InstrBase> stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    static bool ProcessFctCall(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 

@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.Core.Scripts;
 using Lexerow.Core.System;
+using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using Org.BouncyCastle.Utilities.Collections;
@@ -13,14 +14,22 @@ namespace Lexerow.Core.Scripts.SyntaxAnalyze;
 
 public class SyntaxAnalyser
 {
+    IActivityLogger _logger;
+
     /// <summary>
     /// list of defined variables.
     /// A variable can be created and set several times.
     /// </summary>
     List<InstrObjectName> _listVar = new List<InstrObjectName>();
 
+    
+    public SyntaxAnalyser(IActivityLogger activityLogger)
+    {
+        _logger= activityLogger;
+    }
+
     /// <summary>
-    /// process list of source code tokens to create instructions to execute.
+    /// process a script, create instructions to execute.
     /// Analyse source code tokens line by line.
     /// 
     /// Comparison sep are re-arranged, exp:<,=  to <=
@@ -30,6 +39,7 @@ public class SyntaxAnalyser
     /// <returns></returns>
     public bool Process(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstr)
     {
+        _logger.LogCompilStart(ActivityLogLevel.Important, "SyntaxAnalyzer.Process", "script lines Num: " +listScriptLineTokens.Count.ToString());
         _listVar.Clear();
 
         // no token in the source code! -> error or warning?
@@ -44,16 +54,21 @@ public class SyntaxAnalyser
         // TODO: ->error, stop
 
         // process, loop on tokens 
-        bool res = ProcessLoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
+        bool res = LoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
 
         if (res)
+        {
+            _logger.LogCompilEnd(ActivityLogLevel.Important, "SyntaxAnalyzer.Process", "Instr count: " +listInstr.Count().ToString());
+
             // ok, no error
             return true;
+        }
 
+        _logger.LogCompilEndError(null, "SyntaxAnalyzer.Process", "Error count: " + execResult.ListError.Count().ToString());
         return false;
     }
 
-    public bool ProcessLoopOnTokens(ExecResult execResult, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstrToExec)
+    bool LoopOnTokens(ExecResult execResult, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstrToExec)
     {
         bool res;
         bool isToken = false;
@@ -71,8 +86,8 @@ public class SyntaxAnalyser
         ScriptToken currToken = null;
 
         // temporary save of instr
-        Stack<InstrBase> stackInstr = new Stack<InstrBase>();
-
+        //Stack<InstrBase> stackInstr = new Stack<InstrBase>();
+        CompilStackInstr stackInstr= new CompilStackInstr(_logger);
         while (true)
         {
             // goto the next token, if it exists
@@ -81,6 +96,10 @@ public class SyntaxAnalyser
             if (currTokenIndex >= currLineTokens.ListScriptToken.Count)
             {
                 //RaiseEvent("EndOfLineReached, LineIdx:" + currLineTokensIndex.ToString());
+                // TODO: Dump la stack!!
+                // encapsuler la stack dans un objet??  -> beaucoup de rework!!
+                //_logger.LogCompilOnGoing(ActivityLogLevel.Important, "SyntaxAnalyzer.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
+
 
                 // no more token in the current line tokens, process items saved in the stack
                 res = StackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
@@ -198,7 +217,7 @@ public class SyntaxAnalyser
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSpecialCases(ExecResult execResult, List<InstrObjectName> listVar, int currLineTokensIndex, Stack<InstrBase> stackInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
+    public static bool ProcessSpecialCases(ExecResult execResult, List<InstrObjectName> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 

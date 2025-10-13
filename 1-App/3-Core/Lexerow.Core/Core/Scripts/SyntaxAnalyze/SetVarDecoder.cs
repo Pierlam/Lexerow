@@ -22,12 +22,12 @@ internal class SetVarDecoder
 	///   Sheet[1].B.Cell=      TODO?
     /// </summary>
     /// <param name="execResult"></param>
-    /// <param name="stkInstr"></param>
+    /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
     /// <param name="listExecTok"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSetVarEqualChar(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkInstr, ScriptToken scriptToken, List<InstrBase> listExecTok, out bool isToken)
+    public static bool ProcessSetVarEqualChar(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listExecTok, out bool isToken)
     {
         isToken = false;
         bool res;
@@ -38,16 +38,16 @@ internal class SetVarDecoder
             return true;
 
         // the stack contains nothing, strange  =blabla
-        if(stkInstr.Count == 0)
+        if(stackInstr.Count == 0)
         {
             execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
             return false;
         }
 
         // is it var=  ?
-        if (stkInstr.Count == 1)
+        if (stackInstr.Count == 1)
         {
-            res= ProcessVarName(execResult, listVar, stkInstr, scriptToken, out isToken);
+            res= ProcessVarName(execResult, listVar, stackInstr, scriptToken, out isToken);
             if(!isToken)
             {
                 execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
@@ -58,10 +58,10 @@ internal class SetVarDecoder
         }
 
         // is it a SetVar instr or Comparison? just one instr -> SetVar: instr= 
-        if (stkInstr.Count > 1)
+        if (stackInstr.Count > 1)
         {
             // looking in the stack for Then instr or If. If not found search: ForEach Row
-            InstrBase instrResult= SyntaxAnalyserUtils.FindFirstFromTop(stkInstr, InstrType.If, InstrType.Then);
+            InstrBase instrResult= stackInstr.FindFirstFromTop(InstrType.If, InstrType.Then);
             if(instrResult != null && instrResult.InstrType== InstrType.If)
                 // close to an If instr, it's a comparison, not a SetVar
                 return true;
@@ -70,27 +70,27 @@ internal class SetVarDecoder
         isToken = true;
 
         // is it varName= ?
-        res = ProcessVarName(execResult, listVar, stkInstr, scriptToken, out isToken);
+        res = ProcessVarName(execResult, listVar, stackInstr, scriptToken, out isToken);
         if (!res) return false;
         if (isToken) return true;
 
         //--is the stack contains A.Cell expression?
-        res = SyntaxAnalyserUtils.ProcessInstrColCellFunc(execResult, stkInstr, scriptToken, out isToken);
+        res = SyntaxAnalyserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptToken, out isToken);
         if (!res) return false;
         if (isToken) 
         {
             // the Instr Col.Cell.Function is on the top the stack
-            InstrBase instrColCellFunc = stkInstr.Pop();
+            InstrBase instrColCellFunc = stackInstr.Pop();
             // now process the SetVar instr
             InstrSetVar instrSetVar = new InstrSetVar(instrColCellFunc.FirstScriptToken());
             instrSetVar.InstrLeft = instrColCellFunc;
             instrSetVar.ListScriptToken.Add(scriptToken);
 
-            stkInstr.Push(instrSetVar);
+            stackInstr.Push(instrSetVar);
             return true;
         }
 
-        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, stkInstr.Peek().FirstScriptToken());
+        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, stackInstr.Peek().FirstScriptToken());
         return false;
     }
 
@@ -103,7 +103,7 @@ internal class SetVarDecoder
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool ProcessVarName(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkInstr, ScriptToken scriptToken, out bool isToken)
+    static bool ProcessVarName(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 

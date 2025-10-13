@@ -1,5 +1,7 @@
-﻿using Lexerow.Core.Scripts.SyntaxAnalyze;
+﻿using FakeItEasy;
+using Lexerow.Core.Scripts.SyntaxAnalyze;
 using Lexerow.Core.System;
+using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
 using System;
@@ -42,8 +44,9 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
 
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
-        
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res= sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -92,7 +95,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -125,7 +129,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -157,7 +162,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -188,7 +194,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -220,7 +227,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -252,7 +260,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -281,7 +290,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -314,7 +324,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -349,7 +360,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
@@ -381,7 +393,8 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);

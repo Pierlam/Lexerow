@@ -20,7 +20,7 @@ internal class TokenIfThenDecoder
     /// <param name="listVar"></param>
     /// <param name="stkItems"></param>
     /// <returns></returns>
-    public static bool ProcessStackBeforeTokenSepEqualAfterTokenIf(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkInstr, ScriptToken scriptTokenSepComp)
+    public static bool ProcessStackBeforeTokenSepEqualAfterTokenIf(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptTokenSepComp)
     {
         if(stkInstr.Count== 0)
         {
@@ -59,7 +59,7 @@ internal class TokenIfThenDecoder
     /// <param name="scriptTokenSepComp"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessStackBeforeTokenThen(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkInstr, ScriptToken scriptToken, out bool isToken)
+    public static bool ProcessStackBeforeTokenThen(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 

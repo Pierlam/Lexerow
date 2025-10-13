@@ -1,5 +1,7 @@
-﻿using Lexerow.Core.Scripts.SyntaxAnalyze;
+﻿using FakeItEasy;
+using Lexerow.Core.Scripts.SyntaxAnalyze;
 using Lexerow.Core.System;
+using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
 using NPOI.SS.Formula.Functions;
@@ -60,8 +62,8 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         lineTok.AddTokenName(1, "End", "OnExcel");
         script.Add(lineTok);
 
-
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -165,7 +167,8 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         lineTok.AddTokenName(1, 1, "OnExcel");
         script.Add(lineTok);
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -272,7 +275,8 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         lineTok.AddTokenName(1, 1, "OnExcel");
         script.Add(lineTok);
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -389,7 +393,8 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         lineTok.AddTokenName(1, 34, "End");
         lineTok.AddTokenName(1, 40, "OnExcel");
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -500,7 +505,8 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         lineTok.AddTokenName(7, "End", "OnExcel");
         script.Add(lineTok);
 
-        SyntaxAnalyser sa = new SyntaxAnalyser();
+        var logger = A.Fake<IActivityLogger>();
+        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);

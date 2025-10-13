@@ -1,5 +1,7 @@
-﻿using Lexerow.Core.Scripts.LexicalAnalyse;
+﻿using FakeItEasy;
+using Lexerow.Core.Scripts.LexicalAnalyse;
 using Lexerow.Core.System;
+using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
 using NPOI.SS.Formula.Functions;
@@ -30,7 +32,8 @@ public class ScriptLexicalAnalyzerBasicTests
         ExecResult execResult = new ExecResult();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult , script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        var logger = A.Fake<IActivityLogger>();
+        LexicalAnalyzer.Process(logger, execResult , script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
 
         Assert.IsTrue(execResult.Result);
 
@@ -54,8 +57,10 @@ public class ScriptLexicalAnalyzerBasicTests
         Script script = new Script("name", "fileName");
         ExecResult execResult = new ExecResult();
 
+        var logger = A.Fake<IActivityLogger>();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(0, lt.Count);
@@ -72,8 +77,10 @@ public class ScriptLexicalAnalyzerBasicTests
 
         Script script = ScriptBuilder.Build("file=OpenExcel(\"data.xslx)");
 
+        var logger = A.Fake<IActivityLogger>();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
         Assert.IsFalse(execResult.Result);
 
         Assert.AreEqual(ErrorCode.LexAnalyzeFoundSgtringBadFormatted, execResult.ListError[0].ErrorCode);
@@ -89,8 +96,10 @@ public class ScriptLexicalAnalyzerBasicTests
         Script script = ScriptBuilder.Build("#comment");
         ExecResult execResult = new ExecResult();
 
+        var logger = A.Fake<IActivityLogger>();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(0, lt.Count);
@@ -108,8 +117,10 @@ public class ScriptLexicalAnalyzerBasicTests
         Script script = ScriptBuilder.Build("OnExcel \"file.xlsx\"");
         ExecResult execResult = new ExecResult();
 
+        var logger = A.Fake<IActivityLogger>();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(1, lt.Count);
@@ -134,8 +145,10 @@ public class ScriptLexicalAnalyzerBasicTests
 
         ExecResult execResult = new ExecResult();
 
+        var logger = A.Fake<IActivityLogger>();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
         Assert.IsTrue(execResult.Result);
 
         // only 1 line, remove the line containing the comment
@@ -160,8 +173,10 @@ public class ScriptLexicalAnalyzerBasicTests
 
         ExecResult execResult = new ExecResult();
 
+        var logger = A.Fake<IActivityLogger>();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
         Assert.IsTrue(execResult.Result);
 
         // only 1 line, remove the line containing the comment
@@ -185,8 +200,10 @@ public class ScriptLexicalAnalyzerBasicTests
         Script script = ScriptBuilder.Build("If A.Cell>10 Then A.Cell=10");
         ExecResult execResult = new ExecResult();
 
+        var logger = A.Fake<IActivityLogger>();
+
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(1, lt.Count);

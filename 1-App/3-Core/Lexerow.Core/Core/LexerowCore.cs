@@ -5,6 +5,7 @@ using Lexerow.Core.System.Compilator;
 using Lexerow.Core.System.Excel;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
+using Lexerow.Core.System.ActivityLog;
 
 namespace Lexerow.Core;
 
@@ -17,6 +18,8 @@ public class LexerowCore
 
     CoreData _coreData=new CoreData();
 
+    IActivityLogger _logger;
+
     ScriptLoader _scriptLoader;
 
     ScriptCompilator _scriptCompilator;
@@ -27,44 +30,24 @@ public class LexerowCore
     /// </summary>
     public LexerowCore()
     {
-        _excelProcessor= new ExcelProcessorNpoi();
+        _logger= new ActivityLogger();
+        _logger.ActivityLogEvent += _logger_ActivityLogEvent;
+
+        _excelProcessor = new ExcelProcessorNpoi();
 
         Exec = new Exec(_coreData, _excelProcessor);
 
         _scriptLoader= new ScriptLoader();
-        _scriptCompilator = new ScriptCompilator(_coreData);
+        _scriptCompilator = new ScriptCompilator(_logger, _coreData);
     }
 
-    /// <summary>
-    /// Build program by adding instructions.
-    /// Don't manage script/source code.
-    /// TODO: REMOVE IT?
-    /// </summary>
-    //public ProgBuilder ProgBuilder { get; private set; }
+
+    public event EventHandler<ActivityLogBase> ActivityLogEvent;
 
     /// <summary>
     /// Execute instructions.
     /// </summary>
     public Exec Exec { get; private set; }
-
-    //public ExecResult CompileProgram()
-    //{
-    //    return Exec.CompileProgram();
-    //}
-
-    /// <summary>
-    /// TODO: REMOVE IT?
-    /// </summary>
-    /// <returns></returns>
-    public ExecResult ExecuteProgram()
-    {
-        return Exec.ExecuteProgram();
-    }
-
-    //public ExecResult ExecuteProgram(string programName)
-    //{
-    //    return Exec.ExecuteProgram(programName);
-    //}
 
     /// <summary>
     /// Load a script from a text file and compile it.
@@ -74,13 +57,16 @@ public class LexerowCore
     /// <returns></returns>
     public ExecResult LoadScriptFromFile(string scriptName, string fileName)
     {
+        _logger.LogCompilStart(ActivityLogLevel.Important, "LoadScriptFromFile", scriptName);
+
         ExecResult execResult = new ExecResult();
 
         // check that the name is not already used by another program
         if (string.IsNullOrWhiteSpace(scriptName))
         {
             if (scriptName == null) scriptName = string.Empty;
-            execResult.AddError(new ExecResultError(ErrorCode.ProgramWrongName, scriptName));
+            var error= execResult.AddError(ErrorCode.ProgramWrongName, 0,0, scriptName);
+            _logger.LogCompilEndError(error, "LoadScriptFromFile", scriptName);
             return execResult;
         }
 
@@ -97,7 +83,7 @@ public class LexerowCore
             return execResult;
 
         // compile the script,  generate instructions
-        _scriptCompilator.CompileScript(execResult, script, out List<InstrBase> listInstr);
+        _scriptCompilator.CompileScript( execResult, script, out List<InstrBase> listInstr);
         if (!execResult.Result)
             return execResult;
 
@@ -125,14 +111,22 @@ public class LexerowCore
         throw new Exception("todo");
     }
 
-    Action<AppTrace> _appTraceEvent;
 
-    public Action<AppTrace> AppTraceEvent 
+    private void _logger_ActivityLogEvent(object? sender, ActivityLogBase e)
     {
-        get { return _appTraceEvent; } 
-        set { 
-            //ProgBuilder.AppTraceEvent = value;
-            Exec.AppTraceEvent = value;
-        }
+        ActivityLogEvent?.Invoke(sender, e);
     }
+
+
+
+    //Action<AppTrace> _appTraceEvent;
+
+    //public Action<AppTrace> AppTraceEvent 
+    //{
+    //    get { return _appTraceEvent; } 
+    //    set { 
+    //        //ProgBuilder.AppTraceEvent = value;
+    //        Exec.AppTraceEvent = value;
+    //    }
+    //}
 }

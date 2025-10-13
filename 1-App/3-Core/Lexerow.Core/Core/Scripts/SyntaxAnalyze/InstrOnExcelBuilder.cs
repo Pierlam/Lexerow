@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.Core.Scripts;
 using Lexerow.Core.System;
+using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ public class InstrOnExcelBuilder
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool OnExcelBuildOngoing(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
+    public static bool OnExcelBuildOngoing(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
         InstrOnExcel instrOnExcel;
@@ -226,7 +227,7 @@ public class InstrOnExcelBuilder
     /// <param name="stackInstr"></param>
     /// <param name="instrIfThenElse"></param>
     /// <returns></returns>
-    public static bool BuildIfThen(ExecResult execResult, Stack<InstrBase> stackInstr, InstrIfThenElse instrIfThenElse)
+    public static bool BuildIfThen(ExecResult execResult, CompilStackInstr stackInstr, InstrIfThenElse instrIfThenElse)
     {
         // the stack should contains the OnExcel instr
         if (stackInstr.Count != 1)

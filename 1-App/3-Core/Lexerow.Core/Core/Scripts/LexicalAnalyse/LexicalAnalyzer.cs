@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,10 @@ public class LexicalAnalyzer
     /// <param name="script"></param>
     /// <param name="listScriptLineTokens"></param>
     /// <returns></returns>
-    public static bool Process(ExecResult execResult, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexicalAnalyzerConfig lac)
+    public static bool Process(IActivityLogger logger, ExecResult execResult, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexicalAnalyzerConfig lac)
     {
+        logger.LogCompilStart(ActivityLogLevel.Important, "LexicalAnalyzer.Process", script.Name);
+
         StringParser stringParser = new StringParser();
 
         listScriptLineTokens = new List<ScriptLineTokens>();
@@ -33,7 +36,9 @@ public class LexicalAnalyzer
             {
                 if(lastTokenType== ScriptTokenType.WrongNumber)
                 {
-                    execResult.AddError(new ExecResultError(ErrorCode.LexAnalyzeFoundDoubleWrong, scriptLine.Line));
+                    var error= execResult.AddError(ErrorCode.LexAnalyzeFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
+                    //execResult.AddError(new ExecResultError(ErrorCode.LexAnalyzeFoundDoubleWrong, scriptLine.Line));
+                    logger.LogCompilEndError(error, "LexicalAnalyzer.Process", script.Name);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.StringBadFormed)
@@ -59,6 +64,8 @@ public class LexicalAnalyzer
             listScriptLineTokens.Add(scriptLineTokens);
 
         }
+
+        logger.LogCompilEnd(ActivityLogLevel.Important, "LexicalAnalyzer.Process", script.Name);
         return true;
     }
 

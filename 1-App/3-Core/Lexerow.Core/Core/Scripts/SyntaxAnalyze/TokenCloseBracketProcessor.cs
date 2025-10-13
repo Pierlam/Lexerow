@@ -27,12 +27,12 @@ internal class TokenCloseBracketProcessor
     /// </summary>
     /// <param name="execResult"></param>
     /// <param name="listVar"></param>
-    /// <param name="stkItems"></param>
+    /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
     /// <param name="listInstr"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool Do(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkItems, ScriptToken scriptToken, List<InstrBase> listInstr, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem)
+    public static bool Do(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstr, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem)
     {
         isListOfParams = false;
         isMathExpr = false;
@@ -47,18 +47,18 @@ internal class TokenCloseBracketProcessor
         // TODO:  -> error
 
         //--case 1.1: previous token is (  -> fct()
-        InstrBase item = stkItems.Peek();
-        if (item is InstrOpenBracket)
+        InstrBase instr = stackInstr.Peek();
+        if (instr is InstrOpenBracket)
         {
             // remove the openBracket from the stack
-            stkItems.Pop();
+            stackInstr.Pop();
 
             // no more item in the stack? case: ()
-            if (stkItems.Count == 0)
+            if (stackInstr.Count == 0)
                 return true;                    
 
             // read without remove it the item on the top of the stack
-            InstrBase instBeforeOpenBracket = stkItems.Peek();
+            InstrBase instBeforeOpenBracket = stackInstr.Peek();
 
             //-item before openBracket is an object name? exp: fct()
             if (instBeforeOpenBracket.IsFunctionCall)
@@ -84,18 +84,20 @@ internal class TokenCloseBracketProcessor
         while (true)
         {
             // get the last item from the stack
-            if (!stkItems.TryPop(out item))
+            if(stackInstr.Count == 0)
             {
                 // no more item in the stack
                 // TODO -> error
+                throw new InvalidOperationException("todo");
             }
+            instr= stackInstr.Pop();
 
             // the current stack item should be an item, a string, a number or an instruction
             //if (item.IsTokenVarName() || item.IsTokenExcelColName() || item.IsTokenExcelCellAddress() || item.IsTokenConstValue() || item.IsInstr())
-            if(item is InstrObjectName || item is InstrConstValue)
+            if(instr is InstrObjectName || instr is InstrConstValue)
             {
                 // save the item in the fct param list
-                listItem.Add(item);
+                listItem.Add(instr);
             }
             else
             {
@@ -104,14 +106,16 @@ internal class TokenCloseBracketProcessor
             }
 
             // get the last item from the stack
-            if (!stkItems.TryPop(out item))
+            if (stackInstr.Count == 0)
             {
                 // no more item in the stack
                 // TODO -> error
+                throw new InvalidOperationException("todo");
             }
+            instr = stackInstr.Pop();
 
             // the next can be the open bracket -> no more fct param
-            if (item is InstrOpenBracket)
+            if (instr is InstrOpenBracket)
             {
                 // stop the scan of fct parameters
                 //isToken = true;
@@ -119,7 +123,7 @@ internal class TokenCloseBracketProcessor
             }
 
             // the next one should be the comma sep 
-            if (item is InstrComma)
+            if (instr is InstrComma)
             {
                 // already a list  of params or type not yet defined so ok
                 if(!isMathExpr)
@@ -146,7 +150,7 @@ internal class TokenCloseBracketProcessor
         if(listItem.Count == 1)
         {
             // no item in the stack? exp (12)
-            if(stkItems.Count == 0)
+            if(stackInstr.Count == 0)
             {
                 // so it's a math expression
                 isMathExpr = true;
@@ -154,7 +158,7 @@ internal class TokenCloseBracketProcessor
             }
 
             // read the item from the stack
-            InstrBase instBeforeOpenBracket= stkItems.Peek();
+            InstrBase instBeforeOpenBracket= stackInstr.Peek();
 
             // the last item on the stack is an object name? exp: OpenExcel(f)
             if(instBeforeOpenBracket.IsFunctionCall)

@@ -41,11 +41,6 @@ public class ExecResult
     /// </summary>
     public ExecResultInsights Insights { get; private set; } = new ExecResultInsights();
 
-    public void AddError(ExecResultError error)
-    { 
-        this.ListError.Add(error);
-        Result = false;
-    }
 
     public void AddListError(List<ExecResultError> listError)
     {
@@ -53,6 +48,20 @@ public class ExecResult
 
         ListError.AddRange(listError);
         Result = false;
+    }
+
+    public void AddError(ExecResultError error)
+    {
+        this.ListError.Add(error);
+        Result = false;
+    }
+
+    public ExecResultError AddError(ErrorCode errorCode, int numLine, int colLine, string msg)
+    {
+        var execResultError = new ExecResultError(errorCode, numLine, 0, msg);
+        ListError.Add(execResultError);
+        Result = false;
+        return execResultError;
     }
 
     /// <summary>

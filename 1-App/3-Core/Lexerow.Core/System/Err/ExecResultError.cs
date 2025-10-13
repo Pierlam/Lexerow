@@ -13,8 +13,10 @@ public enum ExecResultErrorType
     ProgExecution
 }
 
+
 /// <summary>
-/// Execution result error.
+/// Execution (load, save, compilation or execution) result error.
+/// TODO: rename into ResultError??
 /// </summary>
 public class ExecResultError
 {

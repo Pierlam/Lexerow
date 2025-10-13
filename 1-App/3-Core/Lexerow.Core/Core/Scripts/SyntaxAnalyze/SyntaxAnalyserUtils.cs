@@ -19,28 +19,28 @@ internal class SyntaxAnalyserUtils
     /// the last token is on the top of stack: Cell or BgColor or FgColor.
     /// </summary>
     /// <param name="execResult"></param>
-    /// <param name="stkInstr"></param>
+    /// <param name="stackInstr"></param>
     /// <param name="isInstr"></param>
     /// <returns></returns>
-    public static bool ProcessInstrColCellFunc(ExecResult execResult, Stack<InstrBase> stkInstr, ScriptToken scriptToken, out bool isInstr)
+    public static bool ProcessInstrColCellFunc(ExecResult execResult, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isInstr)
     {
-        var lastInstr = stkInstr.Peek();
+        var lastInstr = stackInstr.Peek();
         bool res;
 
         //--is it Cell token?
         if (lastInstr.InstrType == InstrType.Cell)
         {
             isInstr = true;
-            lastInstr = stkInstr.Pop();
+            lastInstr = stackInstr.Pop();
 
             // still 2 saved instr are expected
-            if (stkInstr.Count < 2)
+            if (stackInstr.Count < 2)
             {
                 execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
                 return false;
             }
 
-            res= IsInstrColDot(execResult, stkInstr, out InstrObjectName instrObjectName);
+            res= IsInstrColDot(execResult, stackInstr, out InstrObjectName instrObjectName);
 
             // get the colNum based on the col name
             int colNum = ExcelUtils.ColumnNameToNumber(instrObjectName.ObjectName);
@@ -52,7 +52,7 @@ internal class SyntaxAnalyserUtils
 
             // ok create the Column address instr and push into the stack
             InstrColCellFunc instrColCellFunc = new InstrColCellFunc(instrObjectName.FirstScriptToken(), InstrColCellFuncType.Value, instrObjectName.ObjectName, colNum);
-            stkInstr.Push(instrColCellFunc);
+            stackInstr.Push(instrColCellFunc);
             return true;
         }
 
@@ -71,35 +71,6 @@ internal class SyntaxAnalyserUtils
         return true;
     }
 
-    /// <summary>
-    /// Looking for an instr in the stack, starting from the top.
-    /// </summary>
-    /// <param name="stkInstr"></param>
-    /// <param name="type"></param>
-    /// <returns></returns>
-    public static InstrBase FindFirstFromTop(Stack<InstrBase> stkInstr, InstrType type, InstrType type2)
-    {
-        foreach (var instr in stkInstr)
-        {
-            if(instr.InstrType == type)
-                return instr;
-            if (instr.InstrType == type2)
-                return instr;
-        }
-        return null;
-    }
-
-    /// <summary>
-    /// Get the inst just before the instr on top of the stack.
-    /// </summary>
-    /// <param name="stkInstr"></param>
-    /// <returns></returns>
-    public static InstrBase GetBeforeTop(Stack<InstrBase> stkInstr)
-    {
-        // need to ahve 2 isntr on the stack
-        if (stkInstr.Count < 2) return null;
-        return stkInstr.ElementAt(1);
-    }
 
     public static bool IsMathOperator(InstrBase instr)
     {
@@ -130,7 +101,7 @@ internal class SyntaxAnalyserUtils
         return false;
     }
 
-    static bool IsInstrColDot(ExecResult execResult, Stack<InstrBase> stkInstr, out InstrObjectName instrObjectName)
+    static bool IsInstrColDot(ExecResult execResult, CompilStackInstr stkInstr, out InstrObjectName instrObjectName)
     {
         instrObjectName = null;
 

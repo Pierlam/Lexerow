@@ -20,7 +20,7 @@ internal class FunctionCallParamsProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="listParams"></param>
     /// <returns></returns>
-    public static bool ProcessFunctionCallParams(ExecResult execResult, List<InstrObjectName> listVar, Stack<InstrBase> stkItems, ScriptToken scriptToken, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
+    public static bool ProcessFunctionCallParams(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkItems, ScriptToken scriptToken, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
     {
         // the stack is empty? 
         if (stkItems.Count == 0)

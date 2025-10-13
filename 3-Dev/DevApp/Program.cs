@@ -1,6 +1,7 @@
 ﻿using DevApp;
 using Lexerow.Core;
 using Lexerow.Core.System;
+using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Exec.Event;
 
 Console.WriteLine("==>Lexerow Dev:");
@@ -26,15 +27,18 @@ void EventOccured(InstrBaseExecEvent execEvent)
 }
 
 
-///
-//
-// OnExcel fileName
-//   OnEach Row
-//     If D.Cell > 50 Then D.Cell= 12
-//
-// file=OpenExcel(fileName)
-// OnExcelForEachRowIfThen(file, 0, D, >50, =12)
-//
+void Core_ActivityLogEvent(object? sender, ActivityLogBase e)
+{
+    Console.WriteLine("ActivityLogEvent!");
+}
+
+void TestCore()
+{
+    LexerowCore core = new LexerowCore();
+    core.ActivityLogEvent += Core_ActivityLogEvent;
+    core.LoadScriptFromFile("scriptName", "fileName");
+}
+
 
 
 ///
@@ -48,7 +52,7 @@ void EventOccured(InstrBaseExecEvent execEvent)
 
 //XXXXXXXXXXXXXXXXXXXX-MAIN:
 
-DevNpoi devNpoi = new DevNpoi();
+//DevNpoi devNpoi = new DevNpoi();
 
 //string fileName = @"Input\Test1.xlsx";
 //devNpoi.TestTypes(fileName);
@@ -61,7 +65,7 @@ DevNpoi devNpoi = new DevNpoi();
 
 //devNpoi.TestBlankNull();
 
-//Test1();
+TestCore();
 
 //Test2();
 

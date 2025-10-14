@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core;
+namespace Lexerow.Core.Core.Exec;
 
 /// <summary>
 /// Execute functions manager.

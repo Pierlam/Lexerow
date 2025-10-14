@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Scripts;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Spreadsheet;
@@ -10,9 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 
-public class SyntaxAnalyser
+/// <summary>
+/// Syntax Analyzer.
+/// received tokens from the Lexer and generate a program of instructions, ready to be executed.
+/// </summary>
+public class Parser
 {
     IActivityLogger _logger;
 
@@ -23,7 +26,7 @@ public class SyntaxAnalyser
     List<InstrObjectName> _listVar = new List<InstrObjectName>();
 
     
-    public SyntaxAnalyser(IActivityLogger activityLogger)
+    public Parser(IActivityLogger activityLogger)
     {
         _logger= activityLogger;
     }
@@ -145,7 +148,7 @@ public class SyntaxAnalyser
             if (isToken) continue;
 
             //--Is it comparison separator =, >, <, ...?
-            if(SyntaxAnalyserUtils.IsComparisonSeparator(currToken))
+            if(ParserUtils.IsComparisonSeparator(currToken))
             {
                 // process the content of the stack until the If instr
                 res= TokenIfThenDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(execResult, listVar, stackInstr, currToken);

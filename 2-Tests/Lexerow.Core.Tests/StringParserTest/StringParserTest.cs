@@ -1,4 +1,4 @@
-﻿using Lexerow.Core.Scripts.LexicalAnalyse;
+﻿using Lexerow.Core.ScriptCompile.LexicalAnalyze;
 using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;
@@ -14,11 +14,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneInt12Ok()
     {
-        LexicalAnalyzerConfig conf= new LexicalAnalyzerConfig();
+        LexerConfig conf= new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -29,11 +29,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneInt12SpcOk()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 ";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -44,11 +44,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneDouble_43dot95E10Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "43E10";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -60,11 +60,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneDouble_12dot45Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12.45";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -75,11 +75,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneDouble_dot789Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = ".789";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -90,11 +90,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneDouble_4dot95E10Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "4.95E10";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -105,11 +105,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneDouble_4dot95Eminus10Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "4.95E-10";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -120,11 +120,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneIntWrong()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12A";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         // return false -> error
         Assert.IsFalse(res);
@@ -134,11 +134,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneIntWrong_spc()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12A ";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         // return false -> error
         Assert.IsFalse(res);
@@ -150,11 +150,11 @@ public class StringParserTest
     [TestMethod]
     public void TestOneDoubleWrong()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12.3A";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         // return false -> error
         Assert.IsFalse(res);
@@ -166,11 +166,11 @@ public class StringParserTest
     [TestMethod]
     public void Test12_45_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 45";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -183,11 +183,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_Spc_12_45_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12 45";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -200,11 +200,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_Spc_12_45_Spc_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12 45 ";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -219,11 +219,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_12_minus_23_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12-23";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -240,11 +240,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_12_spc_minus_23_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 -23";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -261,11 +261,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_12_spc_minus_spc_23_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 - 23";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -282,11 +282,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_12_spc_plus_spc_minus_23_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 + -23";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(4, listScriptTokens.Count);
@@ -306,11 +306,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_if_a_greater_minus_12_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "a>-12";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(4, listScriptTokens.Count);
@@ -331,11 +331,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_A_dot_Spc_Cell_spc_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A.Cell ";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -351,11 +351,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_A_dot_Spc_Cell_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A.Cell";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -371,11 +371,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_A_dot_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A.";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -389,11 +389,11 @@ public class StringParserTest
     [TestMethod]
     public void Test_A_dot_spc_Ok()
     {
-        LexicalAnalyzerConfig conf = new LexicalAnalyzerConfig();
+        LexerConfig conf = new LexerConfig();
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A. ";
-        bool res = stringParser.Parse(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);

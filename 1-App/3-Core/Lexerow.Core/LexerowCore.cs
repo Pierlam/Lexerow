@@ -1,11 +1,13 @@
-﻿using Lexerow.Core.Scripts;
-using Lexerow.Core.ExcelLayer;
+﻿using Lexerow.Core.ExcelLayer;
 using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.System.Excel;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
 using Lexerow.Core.System.ActivityLog;
+using Lexerow.Core.ScriptCompile;
+using Lexerow.Core.ScriptLoad;
+using Lexerow.Core.Core.Exec;
 
 namespace Lexerow.Core;
 
@@ -22,7 +24,7 @@ public class LexerowCore
 
     ScriptLoader _scriptLoader;
 
-    ScriptCompilator _scriptCompilator;
+    ScriptCompiler _scriptCompilator;
 
 
     /// <summary>
@@ -38,16 +40,15 @@ public class LexerowCore
         Exec = new Exec(_coreData, _excelProcessor);
 
         _scriptLoader= new ScriptLoader();
-        _scriptCompilator = new ScriptCompilator(_logger, _coreData);
+        _scriptCompilator = new ScriptCompiler(_logger, _coreData);
     }
-
 
     public event EventHandler<ActivityLogBase> ActivityLogEvent;
 
     /// <summary>
-    /// Execute instructions.
+    /// Execute script program.
     /// </summary>
-    public Exec Exec { get; private set; }
+    Exec Exec { get; set; }
 
     /// <summary>
     /// Load a script from a text file and compile it.
@@ -65,7 +66,7 @@ public class LexerowCore
         if (string.IsNullOrWhiteSpace(scriptName))
         {
             if (scriptName == null) scriptName = string.Empty;
-            var error= execResult.AddError(ErrorCode.ProgramWrongName, 0,0, scriptName);
+            var error= execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
             _logger.LogCompilEndError(error, "LoadScriptFromFile", scriptName);
             return execResult;
         }
@@ -74,7 +75,7 @@ public class LexerowCore
         ProgramScript program = _coreData.GetProgramByName(scriptName);
         if (program != null)
         {
-            execResult.AddError(new ExecResultError(ErrorCode.ProgramNameAlreadyUsed, scriptName));
+            execResult.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
             return execResult;
         }
 
@@ -83,7 +84,7 @@ public class LexerowCore
             return execResult;
 
         // compile the script,  generate instructions
-        _scriptCompilator.CompileScript( execResult, script, out List<InstrBase> listInstr);
+        _scriptCompilator.CompileScript(execResult, script, out List<InstrBase> listInstr);
         if (!execResult.Result)
             return execResult;
 
@@ -108,6 +109,10 @@ public class LexerowCore
 
     public ExecResult ExecuteScript(string name)
     {
+        // find the saved program in memory, in CoreData.
+
+        // execute ProgramScript
+
         throw new Exception("todo");
     }
 

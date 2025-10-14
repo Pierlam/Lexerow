@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Scripts;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using Org.BouncyCastle.Utilities.Collections;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 internal class SetVarDecoder
 {
     /// <summary>
@@ -75,7 +74,7 @@ internal class SetVarDecoder
         if (isToken) return true;
 
         //--is the stack contains A.Cell expression?
-        res = SyntaxAnalyserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptToken, out isToken);
+        res = ParserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptToken, out isToken);
         if (!res) return false;
         if (isToken) 
         {

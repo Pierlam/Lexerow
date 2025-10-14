@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
+namespace Lexerow.Core.ScriptLoad;
 
 /// <summary>
 /// Script/source code loader, from a text file.

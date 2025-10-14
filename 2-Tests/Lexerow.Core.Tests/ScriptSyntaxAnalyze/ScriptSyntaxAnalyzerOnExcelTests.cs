@@ -1,5 +1,5 @@
 ﻿using FakeItEasy;
-using Lexerow.Core.Scripts.SyntaxAnalyze;
+using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
@@ -63,7 +63,7 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         script.Add(lineTok);
 
         var logger = A.Fake<IActivityLogger>();
-        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
+        Parser sa = new Parser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -168,7 +168,7 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         script.Add(lineTok);
 
         var logger = A.Fake<IActivityLogger>();
-        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
+        Parser sa = new Parser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -276,7 +276,7 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         script.Add(lineTok);
 
         var logger = A.Fake<IActivityLogger>();
-        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
+        Parser sa = new Parser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -394,7 +394,7 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         lineTok.AddTokenName(1, 40, "OnExcel");
 
         var logger = A.Fake<IActivityLogger>();
-        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
+        Parser sa = new Parser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
@@ -506,7 +506,7 @@ public class ScriptSyntaxAnalyzerOnExcelVeryShortTests
         script.Add(lineTok);
 
         var logger = A.Fake<IActivityLogger>();
-        SyntaxAnalyser sa = new SyntaxAnalyser(logger);
+        Parser sa = new Parser(logger);
 
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);

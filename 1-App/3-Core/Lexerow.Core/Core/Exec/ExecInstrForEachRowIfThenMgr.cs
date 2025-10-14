@@ -2,7 +2,7 @@
 using Lexerow.Core.System;
 using Lexerow.Core.System.Exec.Event;
 using Lexerow.Core.Utils;
-namespace Lexerow.Core;
+namespace Lexerow.Core.Core.Exec;
 
 /// <summary>
 /// Execute instruction: ForEachRow IfThen

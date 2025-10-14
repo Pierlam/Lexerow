@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Scripts;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using Org.BouncyCastle.Utilities.Collections;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 internal class TokenCloseBracketProcessor
 {
     /// <summary>
@@ -168,7 +167,7 @@ internal class TokenCloseBracketProcessor
             }
 
             // the item is an math operator, before the open bracket? exp: *(2)
-            if(SyntaxAnalyserUtils.IsMathOperator(instBeforeOpenBracket))
+            if(ParserUtils.IsMathOperator(instBeforeOpenBracket))
             {
                 isMathExpr = true;
                 return true;

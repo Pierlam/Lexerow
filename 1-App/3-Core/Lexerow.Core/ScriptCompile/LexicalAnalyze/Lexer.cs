@@ -7,8 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.LexicalAnalyse;
-public class LexicalAnalyzer
+namespace Lexerow.Core.ScriptCompile.LexicalAnalyze;
+
+/// <summary>
+/// script Lexical Analyzer.
+/// </summary>
+public class Lexer
 {
     /// <summary>
     /// Lexical analyze.
@@ -18,11 +22,11 @@ public class LexicalAnalyzer
     /// <param name="script"></param>
     /// <param name="listScriptLineTokens"></param>
     /// <returns></returns>
-    public static bool Process(IActivityLogger logger, ExecResult execResult, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexicalAnalyzerConfig lac)
+    public static bool Process(IActivityLogger logger, ExecResult execResult, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexerConfig lac)
     {
         logger.LogCompilStart(ActivityLogLevel.Important, "LexicalAnalyzer.Process", script.Name);
 
-        StringParser stringParser = new StringParser();
+        ScriptSplitter stringParser = new ScriptSplitter();
 
         listScriptLineTokens = new List<ScriptLineTokens>();
 
@@ -32,7 +36,7 @@ public class LexicalAnalyzer
             i++;
 
             // parse the line, split in tokens
-            if(!stringParser.Parse(i, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType))
+            if(!stringParser.Split(i, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType))
             {
                 if(lastTokenType== ScriptTokenType.WrongNumber)
                 {

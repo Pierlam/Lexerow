@@ -1,5 +1,5 @@
-﻿using Lexerow.Core.Scripts.LexicalAnalyse;
-using Lexerow.Core.Scripts.SyntaxAnalyze;
+﻿using Lexerow.Core.ScriptCompile.LexicalAnalyze;
+using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
@@ -10,23 +10,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
+namespace Lexerow.Core.ScriptCompile;
 
 /// <summary>
 /// Compile script coming from a texte file (or a string) into a list of instructions ready to execute.
 /// </summary>
-public class ScriptCompilator
+public class ScriptCompiler
 {
     IActivityLogger _logger;
     
     CoreData _coreData;
-    LexicalAnalyzerConfig lexicalAnalyzerConfig = new LexicalAnalyzerConfig();
+    LexerConfig lexicalAnalyzerConfig = new LexerConfig();
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="coreData"></param>
-    public ScriptCompilator(IActivityLogger activityLogger, CoreData coreData)
+    public ScriptCompiler(IActivityLogger activityLogger, CoreData coreData)
     {
         _logger = activityLogger;
         _coreData = coreData;
@@ -45,7 +45,7 @@ public class ScriptCompilator
         _logger.LogCompilStart(ActivityLogLevel.Important, "CompileScript", script.Name);
 
         // analyse the source code, line by line
-        if (!LexicalAnalyzer.Process(_logger, execResult, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
+        if (!Lexer.Process(_logger, execResult, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
         {
             listInstr = new List<InstrBase>();
             return execResult;
@@ -54,7 +54,7 @@ public class ScriptCompilator
         // re-arrange comparison separators, gather them, exp: >,= to >=  ...
         //ComparisonSepMgr.ReArrangeAllComparisonSep(listSourceCodeLineTokens);
 
-        SyntaxAnalyser syntaxAnalyser = new SyntaxAnalyser(_logger);
+        Parser syntaxAnalyser = new Parser(_logger);
         bool res= syntaxAnalyser.Process(execResult, listScriptLineTokens, out listInstr);
 
         // save the list of instructions build by the compilation stage

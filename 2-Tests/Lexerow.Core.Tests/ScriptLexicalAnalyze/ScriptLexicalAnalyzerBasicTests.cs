@@ -1,5 +1,5 @@
 ﻿using FakeItEasy;
-using Lexerow.Core.Scripts.LexicalAnalyse;
+using Lexerow.Core.ScriptCompile.LexicalAnalyze;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivityLog;
 using Lexerow.Core.System.Compilator;
@@ -33,7 +33,7 @@ public class ScriptLexicalAnalyzerBasicTests
 
         // analyse the source code, line by line
         var logger = A.Fake<IActivityLogger>();
-        LexicalAnalyzer.Process(logger, execResult , script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult , script, out List<ScriptLineTokens> lt, new LexerConfig());
 
         Assert.IsTrue(execResult.Result);
 
@@ -60,7 +60,7 @@ public class ScriptLexicalAnalyzerBasicTests
         var logger = A.Fake<IActivityLogger>();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(0, lt.Count);
@@ -80,7 +80,7 @@ public class ScriptLexicalAnalyzerBasicTests
         var logger = A.Fake<IActivityLogger>();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsFalse(execResult.Result);
 
         Assert.AreEqual(ErrorCode.LexAnalyzeFoundSgtringBadFormatted, execResult.ListError[0].ErrorCode);
@@ -99,7 +99,7 @@ public class ScriptLexicalAnalyzerBasicTests
         var logger = A.Fake<IActivityLogger>();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(0, lt.Count);
@@ -120,7 +120,7 @@ public class ScriptLexicalAnalyzerBasicTests
         var logger = A.Fake<IActivityLogger>();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(1, lt.Count);
@@ -148,7 +148,7 @@ public class ScriptLexicalAnalyzerBasicTests
         var logger = A.Fake<IActivityLogger>();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsTrue(execResult.Result);
 
         // only 1 line, remove the line containing the comment
@@ -176,7 +176,7 @@ public class ScriptLexicalAnalyzerBasicTests
         var logger = A.Fake<IActivityLogger>();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsTrue(execResult.Result);
 
         // only 1 line, remove the line containing the comment
@@ -203,7 +203,7 @@ public class ScriptLexicalAnalyzerBasicTests
         var logger = A.Fake<IActivityLogger>();
 
         // analyse the source code, line by line
-        LexicalAnalyzer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexicalAnalyzerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsTrue(execResult.Result);
 
         Assert.AreEqual(1, lt.Count);

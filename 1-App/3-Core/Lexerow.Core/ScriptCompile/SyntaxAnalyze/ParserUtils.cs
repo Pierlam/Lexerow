@@ -8,8 +8,8 @@ using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Core.Scripts;
-internal class SyntaxAnalyserUtils
+namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+internal class ParserUtils
 {
     /// <summary>
     /// Is it instr column Cell function?

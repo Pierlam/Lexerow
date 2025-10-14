@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Scripts;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using NPOI.XWPF.UserModel;
 using System;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 internal class TokenIfThenDecoder
 {
     /// <summary>
@@ -29,7 +28,7 @@ internal class TokenIfThenDecoder
         }
 
         //--is the stack contains A.Cell expression?
-        bool res = SyntaxAnalyserUtils.ProcessInstrColCellFunc(execResult, stkInstr, scriptTokenSepComp, out bool isInstr);
+        bool res = ParserUtils.ProcessInstrColCellFunc(execResult, stkInstr, scriptTokenSepComp, out bool isInstr);
         if (!res) return false;
         if (isInstr)
         {

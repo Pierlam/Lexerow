@@ -28,5 +28,4 @@ public class ScriptLoadAndCompileBasicTests
         Assert.IsTrue(execResult.Result);
     }
 
-    // load wrong script: file=OpenExcel()  -> filename is missing 
 }

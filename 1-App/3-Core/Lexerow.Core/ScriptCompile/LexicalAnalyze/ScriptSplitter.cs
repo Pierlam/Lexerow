@@ -7,8 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.LexicalAnalyse;
-public class StringParser
+namespace Lexerow.Core.ScriptCompile.LexicalAnalyze;
+public class ScriptSplitter
 {
     /// <summary>
     /// Parse a string source code, split it in items: separator, string, token.
@@ -20,7 +20,7 @@ public class StringParser
     /// <param name="commentTag"></param>
     /// <param name="tokens"></param>
     /// <returns></returns>
-    public bool Parse(int lineNum, string line, string separators, char stringSep, string commentTag, out List<ScriptToken> tokens, out ScriptTokenType lastTokenType)
+    public bool Split(int lineNum, string line, string separators, char stringSep, string commentTag, out List<ScriptToken> tokens, out ScriptTokenType lastTokenType)
     {
         lastTokenType = ScriptTokenType.Comment;
         tokens = new List<ScriptToken>();

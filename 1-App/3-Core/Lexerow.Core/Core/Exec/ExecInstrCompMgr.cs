@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static NPOI.HSSF.Util.HSSFColor;
 
-namespace Lexerow.Core;
+namespace Lexerow.Core.Core.Exec;
 public class ExecInstrCompMgr
 {
     /// <summary>

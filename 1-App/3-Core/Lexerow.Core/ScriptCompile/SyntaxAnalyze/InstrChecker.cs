@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 internal class InstrChecker
 {
     /// <summary>

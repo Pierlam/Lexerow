@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Lexerow.Core;
+namespace Lexerow.Core.Core.Exec;
 
 /// <summary>
 /// Execute instructions.

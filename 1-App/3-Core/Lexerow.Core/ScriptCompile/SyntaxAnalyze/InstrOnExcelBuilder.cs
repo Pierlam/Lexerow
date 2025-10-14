@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Scripts;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Scripts;
+namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 
 /// <summary>
 /// OnExcel instruction compilation builder.
@@ -83,7 +82,7 @@ public class InstrOnExcelBuilder
             if (instr.InstrType == InstrType.ConstValue)
             {
                 // should be a string
-                if(SyntaxAnalyserUtils.IsValueString((instr as InstrConstValue).ValueBase))
+                if(ParserUtils.IsValueString((instr as InstrConstValue).ValueBase))
                 {
                     instrOnExcel.ListFiles.Add(instr);
                     instrOnExcel.BuildStage= InstrOnExcelBuildStage.Files;

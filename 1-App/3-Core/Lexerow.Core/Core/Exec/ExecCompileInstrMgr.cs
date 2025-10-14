@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core;
+namespace Lexerow.Core.Core.Exec;
 
 public class ExecCompileInstrMgr
 {

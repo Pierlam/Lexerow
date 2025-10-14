@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System.Compilator;
-public class LexicalAnalyzerConfig
+public class LexerConfig
 {
     public string Separators = ".,;=()><+-/*!";
     

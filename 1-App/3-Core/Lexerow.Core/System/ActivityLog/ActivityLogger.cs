@@ -1,13 +1,12 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System;
-using Lexerow.Core.System.ActivityLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core;
+namespace Lexerow.Core.System.ActivityLog;
 
 /// <summary>
 /// activity logger for the Lexerow application, used in these stages/modules:

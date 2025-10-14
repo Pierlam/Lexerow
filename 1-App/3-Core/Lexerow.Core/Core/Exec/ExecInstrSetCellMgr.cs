@@ -12,7 +12,7 @@ using NPOI.XWPF.UserModel;
 using NPOI.XSSF.Streaming.Values;
 using static NPOI.HSSF.Util.HSSFColor;
 
-namespace Lexerow.Core;
+namespace Lexerow.Core.Core.Exec;
 
 /// <summary>
 /// Execute the instruction: Set Cell Value.

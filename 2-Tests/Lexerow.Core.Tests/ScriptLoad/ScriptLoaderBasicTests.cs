@@ -1,4 +1,4 @@
-﻿using Lexerow.Core.Scripts;
+﻿using Lexerow.Core.ScriptLoad;
 using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 using System;

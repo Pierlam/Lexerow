@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="DbAccess\" />
+    <Folder Include="ProgRun\" />
   </ItemGroup>
 
   <ItemGroup>

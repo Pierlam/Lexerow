@@ -1,43 +1,49 @@
-﻿using Lexerow.Core.System.Excel;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.Excel;
+using Lexerow.Core.Utils;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NPOI.SS.Formula.Functions;
-using Lexerow.Core.Utils;
-using NPOI.SS.UserModel;
-using NPOI.XWPF.UserModel;
-using NPOI.XSSF.Streaming.Values;
-using static NPOI.HSSF.Util.HSSFColor;
 
-namespace Lexerow.Core.Core.Exec;
-
-/// <summary>
-/// Execute the instruction: Set Cell Value.
-/// </summary>
-public class ExecInstrSetCellMgr
+namespace Lexerow.Core.ProgRun;
+public class InstrSetColCellFuncRunner
 {
-    /// <summary>
-    /// Execute the instr: Set cell value.
-    /// </summary>
-    /// <param name="excelProcessor"></param>
-    /// <param name="instr"></param>
-    /// <param name="excelFile"></param>
-    /// <returns></returns>
-    public static bool ExecSetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellVal instrSetCellVal, IExcelSheet sheet, int rowNum)
-    {
-        // get the cell
-        IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrSetCellVal.ColNum);
+    IActivityLogger _logger;
 
-        if(cell!=null) 
-            return ExecCellExists(execResult, excelProcessor, instrSetCellVal, sheet, rowNum, cell);
+    IExcelProcessor _excelProcessor;
+
+    public InstrSetColCellFuncRunner(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    {
+        _logger = activityLogger;
+        _excelProcessor = excelProcessor;
+    }
+
+    /// <summary>
+    /// A.Cell= 12
+    /// TODO: see ExecInstrSetCellMgr
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="instrColCellFunc"></param>
+    /// <param name="instrRight"></param>
+    /// <returns></returns>
+    public bool RunSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrConstValue instrConstValue)
+    {
+        _logger.LogRunStart(ActivityLogLevel.Info, "InstrSetColCellFuncRunner.Run", string.Empty);
+
+        // get the cell
+        IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum-1);
+
+        if (cell != null)
+            return ExecCellExists(execResult, _excelProcessor, excelSheet, rowNum, instrConstValue, cell);
 
         // create a new cell object
-        cell = excelProcessor.CreateCell(sheet, rowNum, instrSetCellVal.ColNum);
+        cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum-1);
 
-        return ApplySetCellValAndType(execResult, excelProcessor, sheet, cell, instrSetCellVal.Value);
+        return ApplySetCellValAndType(execResult, _excelProcessor, excelSheet, cell, instrConstValue.ValueBase);
     }
 
     /// <summary>
@@ -48,23 +54,23 @@ public class ExecInstrSetCellMgr
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public static bool ExecSetCellNull(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellNull instrSetCellNull, IExcelSheet sheet, int rowNum)
+    public static bool RunSetCellNull(ExecResult execResult, IExcelProcessor excelProcessor, InstrColCellFunc instrColCellFunc, IExcelSheet sheet, int rowNum)
     {
         // get the cell
-        IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrSetCellNull.ColNum);
+        IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum);
 
         if (cell == null)
             return true;
 
         // create a new cell object
-        excelProcessor.DeleteCell(sheet, rowNum, instrSetCellNull.ColNum);
+        excelProcessor.DeleteCell(sheet, rowNum, instrColCellFunc.ColNum);
         return true;
     }
 
-    public static bool ExecSetCellValueBlank(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellValueBlank instrSetCellBlank, IExcelSheet sheet, int rowNum)
+    public static bool RunSetCellValueBlank(ExecResult execResult, IExcelProcessor excelProcessor, InstrColCellFunc instrColCellFunc, IExcelSheet sheet, int rowNum)
     {
         // get the cell
-        IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrSetCellBlank.ColNum);
+        IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum);
 
         if (cell == null)
             return true;
@@ -74,23 +80,23 @@ public class ExecInstrSetCellMgr
         return true;
     }
 
-    public static bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, InstrSetCellVal instrSetCellVal, IExcelSheet sheet, int rowNum, IExcelCell cell)
+    bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, InstrConstValue instrSetCellVal, IExcelCell cell)
     {
         // get the cell value type
         CellRawValueType cellType = excelProcessor.GetCellValueType(sheet, cell);
 
         // does the setCellVal and cell value match?
-        bool res = ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrSetCellVal.Value);
+        bool res = ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrSetCellVal.ValueBase);
 
         // yes
         if (res)
-            return ApplySetCellVal(execResult, excelProcessor, sheet, cell, instrSetCellVal.Value);
+            return ApplySetCellVal(execResult, excelProcessor, sheet, cell, instrSetCellVal.ValueBase);
 
         // type mismatch:problem, the cell exists but the value type to set is different
-        return ApplySetCellValAndType(execResult, excelProcessor, sheet, cell, instrSetCellVal.Value);
+        return ApplySetCellValAndType(execResult, excelProcessor, sheet, cell, instrSetCellVal.ValueBase);
     }
 
-    static bool ApplySetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    bool ApplySetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
         if (value.ValueType == System.ValueType.Int)
         {
@@ -145,7 +151,7 @@ public class ExecInstrSetCellMgr
         return false;
     }
 
-    static bool ApplySetCellValAndType(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    bool ApplySetCellValAndType(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
         if (value.ValueType == System.ValueType.String)
         {

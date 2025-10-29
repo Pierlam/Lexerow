@@ -1,24 +1,18 @@
 ﻿using FakeItEasy;
 using Lexerow.Core.ScriptCompile.LexicalAnalyze;
 using Lexerow.Core.System;
-using Lexerow.Core.System.ActivityLog;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Lexerow.Core.Tests.ScriptLexicalAnalyze;
+namespace Lexerow.Core.Tests.ScriptLexer;
 
 
 /// <summary>
 /// Test script lexical analyzer.
 /// </summary>
 [TestClass]
-public class ScriptLexicalAnalyzerBasicTests
+public class ScriptLexerBasicTests
 {
     /// <summary>
     /// file=OpenExcel("data.xslx")
@@ -27,7 +21,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void TestBasic()
     {
-        Script script = ScriptBuilder.Build("#comment", "file=OpenExcel(\"data.xslx\")");
+        Script script = TestScriptBuilder.Build("#comment", "file=OpenExcel(\"data.xslx\")");
 
         ExecResult execResult = new ExecResult();
 
@@ -75,7 +69,7 @@ public class ScriptLexicalAnalyzerBasicTests
     {
         ExecResult execResult = new ExecResult();
 
-        Script script = ScriptBuilder.Build("file=OpenExcel(\"data.xslx)");
+        Script script = TestScriptBuilder.Build("file=OpenExcel(\"data.xslx)");
 
         var logger = A.Fake<IActivityLogger>();
 
@@ -93,7 +87,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void SourceScriptHasOnlyComment()
     {
-        Script script = ScriptBuilder.Build("#comment");
+        Script script = TestScriptBuilder.Build("#comment");
         ExecResult execResult = new ExecResult();
 
         var logger = A.Fake<IActivityLogger>();
@@ -114,7 +108,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void ParseOnExcelFilenameOk()
     {
-        Script script = ScriptBuilder.Build("OnExcel \"file.xlsx\"");
+        Script script = TestScriptBuilder.Build("OnExcel \"file.xlsx\"");
         ExecResult execResult = new ExecResult();
 
         var logger = A.Fake<IActivityLogger>();
@@ -141,7 +135,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void ParseForEachRowOk()
     {
-        Script script = ScriptBuilder.Build("  ForEach Row");
+        Script script = TestScriptBuilder.Build("  ForEach Row");
 
         ExecResult execResult = new ExecResult();
 
@@ -169,7 +163,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void ParseForEacRowCommentOk()
     {
-        Script script = ScriptBuilder.Build("  ForEach Row #comment");
+        Script script = TestScriptBuilder.Build("  ForEach Row #comment");
 
         ExecResult execResult = new ExecResult();
 
@@ -197,7 +191,7 @@ public class ScriptLexicalAnalyzerBasicTests
     [TestMethod]
     public void ParseIfACellGt10ThenACellEq10Ok()
     {
-        Script script = ScriptBuilder.Build("If A.Cell>10 Then A.Cell=10");
+        Script script = TestScriptBuilder.Build("If A.Cell>10 Then A.Cell=10");
         ExecResult execResult = new ExecResult();
 
         var logger = A.Fake<IActivityLogger>();

@@ -1,7 +1,7 @@
 ﻿using DevApp;
 using Lexerow.Core;
 using Lexerow.Core.System;
-using Lexerow.Core.System.ActivityLog;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Exec.Event;
 
 Console.WriteLine("==>Lexerow Dev:");
@@ -27,7 +27,7 @@ void EventOccured(InstrBaseExecEvent execEvent)
 }
 
 
-void Core_ActivityLogEvent(object? sender, ActivityLogBase e)
+void Core_ActivityLogEvent(object? sender, ActivityLog e)
 {
     Console.WriteLine("ActivityLogEvent!");
 }
@@ -39,7 +39,20 @@ void TestCore()
     core.LoadScriptFromFile("scriptName", "fileName");
 }
 
+void TestGetFiles()
+{
+    string fileName = @".\Input\*.xlsx";
+    string filepath=Path.GetDirectoryName(fileName);
+    string files=Path.GetFileName(fileName);
 
+    //string filepath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+    DirectoryInfo d = new DirectoryInfo(filepath);
+    foreach (var file in d.GetFiles(files))
+    {
+        Console.WriteLine($"{file.Name}");
+        //Directory.Move(file.FullName, filepath + "\\TextFiles\\" + file.Name);
+    }
+}
 
 ///
 /// If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
@@ -65,9 +78,11 @@ void TestCore()
 
 //devNpoi.TestBlankNull();
 
-TestCore();
+//TestCore();
 
 //Test2();
+
+TestGetFiles();
 
 
 Console.WriteLine("ends.");

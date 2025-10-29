@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.ActivityLog;
+namespace Lexerow.Core.System.ActivLog;
+
 public interface IActivityLogger
 {
-    event EventHandler<ActivityLogBase> ActivityLogEvent;
+    event EventHandler<ActivityLog> ActivityLogEvent;
 
     void LogCompilStart(ActivityLogLevel level, string operation, string msg);
 
@@ -22,8 +23,11 @@ public interface IActivityLogger
 
     void LogCompilEndError(ExecResultError error, string operation, string msg);
 
-    void LogExce(ActivityLogStage stage, string operation);
+    void LogRunStart(ActivityLogLevel level, string operation, string msg);
 
-    void LogLoad(ActivityLogStage stage, string operation);
+    void LogRunEnd(ActivityLogLevel level, string operation, string msg);
 
+    void LogRunOnGoing(ActivityLogLevel level, string operation, string msg);
+
+    void LogRunEndError(ExecResultError error, string operation, string msg);
 }

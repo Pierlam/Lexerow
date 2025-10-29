@@ -136,6 +136,7 @@ public enum ErrorCode
     ExcelCellTypeNotManaged,
 
     ExcelUnableOpenFile,
+    ExcelUnableCloseFile,
     ExcelUnableGetSheet,
 
     ExcelCellNotUnique,
@@ -206,6 +207,13 @@ public enum ErrorCode
     SyntaxAnalyzerReturnTypeWrong,
     SyntaxAnalyzerTokenIfExpected,
     SyntaxAnalyzerTokenThenExpected,
+
+    //--run program, instructions
+    RunInstrNotManaged,
+    RunInstrTypeStringExpected,
+    RunInstrVarNotFound,
+    RunInstrVarTypeNotExpected,
+    RunInstrMissing,
 
     FuncNotExists,
     FuncOneParamExpected,

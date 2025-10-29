@@ -6,6 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
+
+/// <summary>
+/// Instr ForEach. TO manage the token found in the script.
+/// </summary>
 public class InstrForEach : InstrBase
 {
     public InstrForEach(ScriptToken scriptToken) : base(scriptToken)
@@ -13,16 +17,12 @@ public class InstrForEach : InstrBase
         InstrType = InstrType.ForEach;
     }
 
-    // first row  -> here or OnSheet instr?
-     
-    // first col
-
 
     /// <summary>
     /// list of instr to execute. 
     /// If Then
     /// or direct instr to execute for each row.
     /// </summary>
-    public List<InstrBase> ListInstr { get; set; } = new List<InstrBase>();
+    //public List<InstrBase> ListInstr { get; set; } = new List<InstrBase>();
 
 }

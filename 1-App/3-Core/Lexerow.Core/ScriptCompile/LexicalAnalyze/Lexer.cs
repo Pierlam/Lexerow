@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.System;
-using Lexerow.Core.System.ActivityLog;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;

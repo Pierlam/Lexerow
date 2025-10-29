@@ -20,10 +20,13 @@ public class InstrIf:InstrBase
         ReturnType = InstrFunctionReturnType.ValueBool;
     }
 
-    public InstrBase Operand { get; set; } = null;
+    /// <summary>
+    /// instruction which return a bool value.
+    /// </summary>
+    public InstrBase InstrBase { get; set; } = null;
 
-    public InstrBase OperandLeft { get; set; } = null;
-    public InstrBase OperandRight { get; set; } = null;
-    public InstrSepComparison Operator { get; set; } = null;
-
+    /// <summary>
+    /// Result of the execution of the if instruction.
+    /// </summary>
+    public bool Result { get; set; } = false;
 }

@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.ActivityLog;
+namespace Lexerow.Core.System.ActivLog;
 
 
-public enum ActivityLogBaseType
+public enum ActivityLogType
 {
     Other,
     LoadScript,
     CompileScript,
-    ExecScript,
+    RunProg,
 }
 
 public enum ActivityLogLevel
@@ -38,9 +38,18 @@ public enum ActivityLogResult
     Warning
 }
 
-public abstract class ActivityLogBase
+public class ActivityLog
 {
-    public ActivityLogBaseType ActivityLogBaseType { get; set; }= ActivityLogBaseType.Other;    
+    public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string msg)
+    {
+        ActivityLogBaseType = ActivityLogType.CompileScript;
+        Level = level;
+        Stage = stage;
+        Operation = operation;
+        Msg = msg;
+    }
+
+    public ActivityLogType ActivityLogBaseType { get; set; }= ActivityLogType.Other;    
 
     public DateTime When { get; private set; }= DateTime.Now;
 
@@ -63,14 +72,3 @@ public abstract class ActivityLogBase
     public ExecResultError? Error { get; set; } = null;
 }
 
-public class ActivityLogCompileScript: ActivityLogBase
-{
-    public ActivityLogCompileScript(ActivityLogStage stage, ActivityLogLevel level, string operation, string msg)
-    {
-        ActivityLogBaseType = ActivityLogBaseType.CompileScript;
-        Level = level;
-        Stage = stage;
-        Operation = operation;
-        Msg = msg;
-    }
-}

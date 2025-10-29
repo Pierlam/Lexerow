@@ -29,10 +29,15 @@ public class InstrThen:InstrBase
 
     public bool HasInstrAfterInSameLine { get; set; } = false;
 
+    /// <summary>
+    /// Used in parse process.
+    /// </summary>
     public bool IsEndIfReached { get; set; } = false;
 
     /// <summary>
     /// list of instr to execute. 
     /// </summary>
     public List<InstrBase> ListInstr { get;set; }=new List<InstrBase>();
+
+    public int RunInstrNum { get; set; } = -1;
 }

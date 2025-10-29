@@ -28,4 +28,10 @@ public class InstrOpenExcel : InstrBase
     /// or an expression, exp: OpenExcel('MyFile'+ '.xlsx') TO_DEFINE
     /// </summary>
     public InstrBase Param { get; set; }
+
+    /// <summary>
+    /// The Opened Excel file object.
+    /// </summary>
+    //public IExcelFile? ExcelFile { get; set; } = null;
+
 }

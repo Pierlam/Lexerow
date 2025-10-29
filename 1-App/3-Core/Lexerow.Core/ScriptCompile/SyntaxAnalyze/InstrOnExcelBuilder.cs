@@ -246,7 +246,7 @@ public class InstrOnExcelBuilder
 
         // get the last OnSheet
         InstrOnSheet instrOnSheet = instrOnExcel.CurrOnSheet;
-        instrOnSheet.ListInstr.Add(instrIfThenElse);
+        instrOnSheet.ListInstrForEachRow.Add(instrIfThenElse);
 
         // go back to the stage ForEach Row  or on Ext instr to close the current ForEach Row
         instrOnExcel.BuildStage= InstrOnExcelBuildStage.RowNext;

@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.ScriptCompile.LexicalAnalyze;
 using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 using Lexerow.Core.System;
-using Lexerow.Core.System.ActivityLog;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Shared;
 using System;

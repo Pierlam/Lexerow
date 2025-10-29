@@ -114,10 +114,12 @@ internal class TokenIfThenDecoder
 
             // if operator is neither equal nor diff, type of operand can be int, double, NOT string
             // TODO: if one operand is <col>.Cell, all is good
+            InstrComparison instrComparison = new InstrComparison(list[2].FirstScriptToken());
+            instrComparison.OperandLeft = list[2];
+            instrComparison.OperandRight = list[0];
+            instrComparison.Operator = instrOperator;
 
-            instrIf.OperandLeft = list[2];
-            instrIf.OperandRight = list[0];
-            instrIf.Operator = instrOperator;
+            instrIf.InstrBase= instrComparison;
 
             // push the token Then on the stack
             stkInstr.Push(instrThen);
@@ -134,7 +136,7 @@ internal class TokenIfThenDecoder
                 return false;
             }
 
-            instrIf.Operand = list[0];
+            instrIf.InstrBase = list[0];
 
             // push the token Then on the stack
             stkInstr.Push(instrThen);
@@ -145,5 +147,4 @@ internal class TokenIfThenDecoder
         execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
         return false;
     }
-
 }

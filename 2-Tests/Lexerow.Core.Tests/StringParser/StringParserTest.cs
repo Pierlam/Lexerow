@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Tests.StringParserTest;
+namespace Lexerow.Core.Tests.StringParser;
 
 [TestClass]
-public class StringParserTest
+public class StringParser
 {
     [TestMethod]
     public void TestOneInt12Ok()

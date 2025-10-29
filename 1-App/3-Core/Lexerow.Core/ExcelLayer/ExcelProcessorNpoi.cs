@@ -10,6 +10,10 @@ using NPOI.SS.Formula.Functions;
 using NPOI.XWPF.UserModel;
 
 namespace Lexerow.Core.ExcelLayer;
+
+/// <summary>
+/// Excel processor, based on NPOI implementation.
+/// </summary>
 public class ExcelProcessorNpoi : IExcelProcessor
 {
     public bool Open(string fileName, out IExcelFile excelFile, out ExecResultError error)
@@ -37,13 +41,22 @@ public class ExcelProcessorNpoi : IExcelProcessor
             return false;
         }
     }
-    public bool Close(IExcelFile excelFile)
+    public bool Close(IExcelFile excelFile, out ExecResultError error)
     {
-        ExcelFileNpoi excelFileNpoi = excelFile as ExcelFileNpoi;
+        try
+        {
+            ExcelFileNpoi excelFileNpoi = excelFile as ExcelFileNpoi;
 
-        excelFileNpoi.Stream.Close();
-
-        return true;
+            excelFileNpoi.Stream.Close();
+            error = null;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            excelFile = null;
+            error = new ExecResultError(ErrorCode.ExcelUnableCloseFile, ex.Message);
+            return false;
+        }
     }
 
     public IExcelSheet GetSheetAt(IExcelFile excelFile, int index)
@@ -159,7 +172,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
 
     /// <summary>
     /// return the last row number.
-    /// base0
+    /// 0-based
     /// </summary>
     /// <param name="excelSheet"></param>
     /// <returns></returns>

@@ -20,7 +20,7 @@ public class ExcelFileSheetTest
     public int SheetNul {  get; set; }  
 }*/
 
-public class ExcelChecker
+public class TestExcelChecker
 {
     public static FileStream OpenExcel(string fileName)
     {

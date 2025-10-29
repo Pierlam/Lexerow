@@ -35,9 +35,11 @@ public enum InstrOnExcelBuildStage
 /// Main instruction model: OnExcel
 /// Exp:
 /// OnExcel "data.xlsx"
-///    OnSheet 0,1
+///    OnSheet 1,2
 ///      ForEach Row
-///      If A.Cell > 10 Then A.Cell= 10
+///        If A.Cell > 10 Then A.Cell= 10
+///      Next
+///  End OnExcel    
 /// </summary>
 public class InstrOnExcel : InstrBase
 {
@@ -59,7 +61,27 @@ public class InstrOnExcel : InstrBase
 
     public List<InstrOnSheet> ListSheets { get; private set; }= new List<InstrOnSheet>();
 
+    /// <summary>
+    /// Used by the parser to build the instr.
+    /// </summary>
     public InstrOnSheet CurrOnSheet { get; set; } = null;
+
+    ///// <summary>
+    ///// Init to -1 which is not started.
+    ///// Used in execution.
+    ///// </summary>
+    //public int FileToProcessNum { get; set; } = -1;
+
+    ///// <summary>
+    ///// Used in execution.
+    ///// </summary>
+    //public int SheetToProcessNum { get; set; } = -1;
+
+    ///// <summary>
+    ///// Used in execution.
+    ///// TODO: pb! ne stocker que les noms de fichiers , les ouvrir au denier momeont, un par un
+    ///// </summary>
+    //public List<InstrExcelFileObject> ListExcelFiles { get; set; } = new List<InstrExcelFileObject>();
 
     /// <summary>
     /// Create a new OnSheet instr, becomes the default one.

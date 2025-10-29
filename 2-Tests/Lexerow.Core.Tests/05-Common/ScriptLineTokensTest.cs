@@ -21,16 +21,30 @@ public class ScriptLineTokensTest : ScriptLineTokens
     }
 
     /// <summary>
-    /// OnExcel "\"data.xlsx\""
+    /// OnExcel "data.xlsx"
     /// </summary>
     /// <param name="numLine"></param>
     /// <param name="excelfile"></param>
     /// <returns></returns>
-    public static ScriptLineTokensTest CreateOnExcel(string excelfile)
+    public static ScriptLineTokensTest CreateOnExcelFileString(string excelfileString)
     {
         var lineTok = new ScriptLineTokensTest();
         lineTok.AddTokenName(1, 1, "OnExcel");
-        lineTok.AddTokenString(1, 9, "\"data.xlsx\"");
+        lineTok.AddTokenString(1, 9, excelfileString);
+        return lineTok;
+    }
+
+    /// <summary>
+    /// OnExcel file
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="excelfile"></param>
+    /// <returns></returns>
+    public static ScriptLineTokensTest CreateOnExcelFileName(string excelfileName)
+    {
+        var lineTok = new ScriptLineTokensTest();
+        lineTok.AddTokenName(1, 1, "OnExcel");
+        lineTok.AddTokenName(1, 9, excelfileName);
         return lineTok;
     }
 

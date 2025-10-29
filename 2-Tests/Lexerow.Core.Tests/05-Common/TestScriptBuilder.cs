@@ -11,7 +11,7 @@ namespace Lexerow.Core.Tests._05_Common;
 /// <summary>
 /// Source code/script builder.
 /// </summary>
-public class ScriptBuilder
+public class TestScriptBuilder
 {
     public static Script Build(string l1)
     {
@@ -28,6 +28,19 @@ public class ScriptBuilder
         sc.AddScriptLine(1, l1);
         sc.AddScriptLine(2, l2);
         return sc;
+    }
+
+    //-line #1
+    public static ScriptLineTokens BuildOpenExcel(string varName, string fileString)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, varName);
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "OpenExcel");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenString(1, 1, fileString);
+        line.AddTokenSeparator(1, 1, ")");
+        return line;
     }
 
     /// <summary>

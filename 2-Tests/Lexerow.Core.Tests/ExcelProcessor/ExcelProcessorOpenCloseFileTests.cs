@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.ExcelLayer;
 using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
+using Lexerow.Core.Tests.Common;
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Lexerow.Core.Tests.ExcelProcessor;
 /// IExcelProcessor, test Open and close excel file.
 /// </summary>
 [TestClass]
-public class ExcelProcessorOpenCloseFileTests
+public class ExcelProcessorOpenCloseFileTests : BaseTests
 {
     [TestMethod]
     public void BasicOpenExcelOk()
@@ -30,8 +31,9 @@ public class ExcelProcessorOpenCloseFileTests
         Assert.IsNotNull(excelFile);
         Assert.AreEqual(fileName, excelFile.FileName);
 
-        res = proc.Close(excelFile);
+        res = proc.Close(excelFile, out ExecResultError error);
         Assert.IsTrue(res);
+        Assert.IsNull(error);
     }
 
     [TestMethod]

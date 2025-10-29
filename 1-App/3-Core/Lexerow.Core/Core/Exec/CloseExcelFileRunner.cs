@@ -7,13 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.Core.Exec;
-public class ExecInstrCloseExcelFileMgr
+
+/// <summary>
+/// Keep it!!
+/// </summary>
+public class CloseExcelFileRunner
 {
-    public static bool Exec(IExcelProcessor excelProcessor, IExcelFile excelFile)
+    public static bool Exec(IExcelProcessor excelProcessor, IExcelFile excelFile, out ExecResultError error)
     {
         excelProcessor.Save(excelFile);
 
-        return excelProcessor.Close(excelFile);
+        return excelProcessor.Close(excelFile, out error);
     }
 
 }

@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.System;
-using Lexerow.Core.System.ActivityLog;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using Org.BouncyCastle.Utilities.Collections;
@@ -89,7 +89,6 @@ public class Parser
         ScriptToken currToken = null;
 
         // temporary save of instr
-        //Stack<InstrBase> stackInstr = new Stack<InstrBase>();
         CompilStackInstr stackInstr= new CompilStackInstr(_logger);
         while (true)
         {
@@ -98,11 +97,7 @@ public class Parser
 
             if (currTokenIndex >= currLineTokens.ListScriptToken.Count)
             {
-                //RaiseEvent("EndOfLineReached, LineIdx:" + currLineTokensIndex.ToString());
-                // TODO: Dump la stack!!
-                // encapsuler la stack dans un objet??  -> beaucoup de rework!!
-                //_logger.LogCompilOnGoing(ActivityLogLevel.Important, "SyntaxAnalyzer.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
-
+                _logger.LogCompilOnGoing(ActivityLogLevel.Important, "SyntaxAnalyzer.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
 
                 // no more token in the current line tokens, process items saved in the stack
                 res = StackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
@@ -125,10 +120,10 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("Then"))
-            {
-                int a = 12;
-            }
+            //if (currToken.Value.Equals("Then"))
+            //{
+            //    int a = 12;
+            //}
 
             //--is the token a comment?  dont manage it
             if (currToken.ScriptTokenType == ScriptTokenType.Comment)

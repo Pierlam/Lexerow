@@ -10,7 +10,7 @@ public interface IExcelProcessor
 {
     bool Open(string fileName, out IExcelFile excelFile, out ExecResultError coreError);
 
-    bool Close(IExcelFile excelFile);
+    bool Close(IExcelFile excelFile, out ExecResultError error);
 
     IExcelSheet GetSheetAt(IExcelFile excelFile, int index);
 

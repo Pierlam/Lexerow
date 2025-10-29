@@ -41,7 +41,8 @@ public enum InstrType
     SetCellNull,
     SetCellBlank,
 
-    SepComparison, 
+    SepComparison,
+    Comparison,
 
     CompOperator,
     CompCellVal,
@@ -64,7 +65,11 @@ public enum InstrType
     IfThenElse,
 
     EndIf,
-    EndOnExcel
+    EndOnExcel,
+
+    NextSheet,
+    ForEachRow,
+    NextRow,
 }
 
 public enum InstrFunctionReturnType

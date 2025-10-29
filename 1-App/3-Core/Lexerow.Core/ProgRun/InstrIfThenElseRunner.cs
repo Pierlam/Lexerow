@@ -1,0 +1,141 @@
+﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.Excel;
+using Lexerow.Core.System.ProgRun;
+using NPOI.SS.UserModel;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lexerow.Core.ProgRun;
+public class InstrIfThenElseRunner
+{
+    IActivityLogger _logger;
+
+    public InstrIfThenElseRunner(IActivityLogger activityLogger)
+    {
+        _logger = activityLogger;
+    }
+
+    public bool RunInstrIfThenElse(ExecResult execResult, ProgramRunnerContext ctx, List<ExecVar> listVar, InstrIfThenElse instrIfThenElse)
+    {
+        _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", string.Empty);
+
+        // manage execution of the then instr if if instr result is true
+        if (ctx.PrevInstrExecuted != null)
+        {
+            // instr if executed before?
+            InstrIf instrIf = ctx.PrevInstrExecuted as InstrIf;
+            if(instrIf!=null)
+            {
+                // execute then instr
+                //instrIfThenElse.State = InstrIfThenElseRunState.ThenInProgress;
+                ctx.StackInstr.Push(instrIfThenElse.InstrThen);
+                ctx.PrevInstrExecuted = null;
+                return true;
+            }
+
+            // instr then executed before?
+            InstrThen instrThen = ctx.PrevInstrExecuted as InstrThen;
+            if (instrThen != null) 
+            {
+                // remove the instr IfThenElse to go back to instr ForEachRow
+                //-Stack: IfThenElse, ForEachRow, NextRow, OnSheet, OnExcel
+                ctx.StackInstr.Pop();
+                ctx.PrevInstrExecuted = null;
+                return true;
+            }
+        }
+
+ 
+        // execute If part
+        //instrIfThenElse.State = InstrIfThenElseRunState.IfInProgress;
+        ctx.StackInstr.Push(instrIfThenElse.InstrIf);
+        return true;
+    }
+
+    /// <summary>
+    /// execute If part. 
+    /// 1/ Can be a comparison: If operandLeft operator operandRight
+    /// 2/ only one Operand:
+    ///   2.1/ bool var: If valExists
+    ///   2.2/ function call: If fct()
+    ///   2.3/ mat expr: (a+12) 
+    ///   
+    /// -Stack: InstrComparison, InstrIf, IfThenElse, ForEachRow, NextRow, OnSheet, OnExcel
+    ///
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="ctx"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instrIf"></param>
+    /// <returns></returns>
+    public bool RunInstrIf(ExecResult execResult, ProgramRunnerContext ctx, List<ExecVar> listVar, InstrIf instrIf)
+    {
+        _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", string.Empty);
+
+        //--if instr already executed?
+        if (ctx.PrevInstrExecuted != null)
+        {
+            //-is it a comparison instr?
+            var instrComparison= ctx.PrevInstrExecuted as InstrComparison;
+            if (instrComparison!=null)
+            {
+                instrIf.Result = instrComparison.Result;
+
+                // remove the if from the stack
+                ctx.StackInstr.Pop();
+
+                // if cond execution return true, so execute then instr
+                if(instrIf.Result)
+                {
+                    ctx.PrevInstrExecuted = instrIf;
+                    return true;
+                }
+
+                // remove the ifThenElse from the stack, go back to the ForEachRow
+                ctx.StackInstr.Pop();
+                ctx.PrevInstrExecuted = null;
+                return true;
+            }
+
+            //-is it a bool var?
+            // TODO:
+
+            //-is it a fct call?
+            // TODO:
+        }
+
+        //--case1: If operandLeft operator operandRight
+        if (instrIf.InstrBase.InstrType == InstrType.Comparison)
+        {
+            ctx.StackInstr.Push(instrIf.InstrBase);
+            return true;
+        }
+
+        //--case2: If Operand
+        // TODO:
+        return true;
+    }
+
+    public bool RunInstrThen(ExecResult execResult, ProgramRunnerContext ctx, List<ExecVar> listVar, InstrThen instrThen)
+    {
+        _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrThen", string.Empty);
+
+        instrThen.RunInstrNum++;
+        if (instrThen.RunInstrNum >= instrThen.ListInstr.Count)
+        {
+            // no more Then instr to execute
+            ctx.StackInstr.Pop();
+            ctx.PrevInstrExecuted = instrThen;
+            return true;
+        }
+
+        InstrBase instrBase = instrThen.ListInstr[instrThen.RunInstrNum];
+        ctx.StackInstr.Push(instrBase);        
+        return true;
+    }
+}

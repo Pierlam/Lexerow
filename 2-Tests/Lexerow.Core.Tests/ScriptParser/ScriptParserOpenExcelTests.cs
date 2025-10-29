@@ -1,7 +1,7 @@
 ﻿using FakeItEasy;
 using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
 using Lexerow.Core.System;
-using Lexerow.Core.System.ActivityLog;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
 using System;
@@ -10,46 +10,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Tests.ScriptSyntaxAnalyze;
+namespace Lexerow.Core.Tests.ScriptParser;
 
 
 /// <summary>
 /// Test script lexical analyzer on OpenExcel instr.
 /// </summary>
 [TestClass]
-public class ScriptSyntaxAnalyzerOpenExcelTests
+public class ScriptParserOpenExcelTests
 {
     /// <summary>
     /// file=OpenExcel("data.xslx")
+    ///
+    /// ----
     /// file; =; OpenExcel; (; "data.xlsx"; )
     /// 
+    /// ----
     /// The compilation return:
     ///  -SetVar:
-    ///      InstrRight: ObjectName: file
-    ///      InstrLeft:  OpenExcel, p="data.xlsx" 
+    ///      Instrleft:  ObjectName: file
+    ///      InstrRight: OpenExcel, p="data.xlsx" 
     /// </summary>
     [TestMethod]
     public void FileEqOpenExcelOk()
     {
-        ScriptLineTokens slt;
+        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        ScriptLineTokens line;
 
-        //-build one line of tokens
-        slt= new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "file");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenString(1, 1, "\"data.xlsx\"");
-        slt.AddTokenSeparator(1, 1, ")");
-
-        //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        //-line #1
+        line= TestScriptBuilder.BuildOpenExcel("file", "\"data.xlsx\"");
+        //line= new ScriptLineTokens();
+        //line.AddTokenName(1, 1, "file");
+        //line.AddTokenSeparator(1, 1, "=");
+        //line.AddTokenName(1, 1, "OpenExcel");
+        //line.AddTokenSeparator(1, 1, "(");
+        //line.AddTokenString(1, 1, "\"data.xlsx\"");
+        //line.AddTokenSeparator(1, 1, ")");
+        script.Add(line);
 
         var logger = A.Fake<IActivityLogger>();
         Parser sa = new Parser(logger);
 
         ExecResult execResult = new ExecResult();
-        bool res= sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        bool res= sa.Process(execResult, script, out List<InstrBase> listInstr);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listInstr.Count);
@@ -70,9 +73,95 @@ public class ScriptSyntaxAnalyzerOpenExcelTests
         // OpenExcel Param
         InstrConstValue instrConstValue = instrOpenExcel.Param as InstrConstValue;
         Assert.IsNotNull(instrConstValue);
-        Assert.AreEqual("\"data.xlsx\"", instrConstValue.RawValue);
-        Assert.AreEqual("\"data.xlsx\"", (instrConstValue.ValueBase as ValueString).Val);
+        Assert.AreEqual("data.xlsx", instrConstValue.RawValue);
+        Assert.AreEqual("data.xlsx", (instrConstValue.ValueBase as ValueString).Val);
     }
+
+    /// <summary>
+    /// name="data.xslx"
+    /// file=OpenExcel(name)
+    /// 
+    /// ----
+    /// name; =; "data.xlsx"
+    /// file; =; OpenExcel; (; name; )
+    /// 
+    /// ----
+    /// The compilation return:
+    ///  -SetVar:
+    ///      Instrleft:  ObjectName: name
+    ///      InstrRight: ConstValue: "data.xlsx" 
+    /// 
+    ///  -SetVar:
+    ///      Instrleft:  ObjectName: file
+    ///      InstrRight: OpenExcel, p="data.xlsx" 
+    /// </summary>
+    [TestMethod]
+    public void SetVarFileEqOpenExcelOk()
+    {
+        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        ScriptLineTokens line;
+
+        //-line #1
+        line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "name");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        script.Add(line);
+
+        //-build one line of tokens
+        line = new ScriptLineTokens();
+        line.AddTokenName(2, 1, "file");
+        line.AddTokenSeparator(2, 1, "=");
+        line.AddTokenName(2, 1, "OpenExcel");
+        line.AddTokenSeparator(2, 1, "(");
+        line.AddTokenName(2, 1, "name");
+        line.AddTokenSeparator(2, 1, ")");
+        script.Add(line);
+
+        var logger = A.Fake<IActivityLogger>();
+        Parser sa = new Parser(logger);
+
+        ExecResult execResult = new ExecResult();
+        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
+
+        Assert.IsTrue(res);
+        Assert.AreEqual(2, listInstr.Count);
+
+        //--SetVar #1
+        Assert.AreEqual(InstrType.SetVar, listInstr[0].InstrType);
+        InstrSetVar instrSetVar = listInstr[0] as InstrSetVar;
+
+        // InstrLeft: ObjectName
+        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        Assert.IsNotNull(instrObjectName);
+        Assert.AreEqual("name", instrObjectName.ObjectName);
+
+        // InstrRight: ConstValue
+        InstrConstValue instrConstValue = instrSetVar.InstrRight as InstrConstValue;
+        Assert.IsNotNull(instrConstValue);
+        Assert.AreEqual("data.xlsx", instrConstValue.RawValue);
+        Assert.AreEqual("data.xlsx", (instrConstValue.ValueBase as ValueString).Val);
+
+
+        //--SetVar #2
+        Assert.AreEqual(InstrType.SetVar, listInstr[1].InstrType);
+        instrSetVar = listInstr[1] as InstrSetVar;
+
+        // InstrLeft: ObjectName
+        instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        Assert.IsNotNull(instrObjectName);
+        Assert.AreEqual("file", instrObjectName.ObjectName);
+
+        // InstrRight: OpenExcel
+        var instrOpenExcel = instrSetVar.InstrRight as InstrOpenExcel;
+        Assert.IsNotNull(instrOpenExcel);
+
+        // OpenExcel Param -> object name
+        instrObjectName = instrOpenExcel.Param as InstrObjectName;
+        Assert.IsNotNull(instrObjectName);
+        Assert.AreEqual("name", instrObjectName.ObjectName);
+    }
+
 
     /// <summary>
     /// file=Qwerty()		

@@ -19,7 +19,18 @@ public class InstrExcelFileObject : InstrBase
         Filename = filename;
         ExcelFile= excelFile;
     }
+    public InstrExcelFileObject(ScriptToken scriptToken, string filename) : base(scriptToken)
+    {
+        InstrType = InstrType.ExcelFileObject;
+        Filename = filename;
+    }
+
 
     public string Filename { get; set; }
-    public IExcelFile ExcelFile { get; set; }   
+
+    /// <summary>
+    ///  the excel file object.
+    ///  Can be loaded at the last time, just before it will be used.
+    /// </summary>
+    public IExcelFile? ExcelFile { get; set; } = null;
 }

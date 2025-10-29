@@ -1,4 +1,4 @@
-﻿using Lexerow.Core.System.ActivityLog;
+﻿using Lexerow.Core.System.ActivLog;
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;

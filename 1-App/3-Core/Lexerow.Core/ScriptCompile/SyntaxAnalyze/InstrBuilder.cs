@@ -1,5 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
+using Lexerow.Core.Utils;
+using NPOI.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -166,7 +168,9 @@ public class InstrBuilder
         //--script token is a string
         if (scriptToken.ScriptTokenType == ScriptTokenType.String)
         {
-            instrBase = new InstrConstValue(scriptToken, scriptToken.Value);
+            // remove double quote
+            string val= StringUtils.RemoveStartEndDoubleQuote(scriptToken.Value);
+            instrBase = new InstrConstValue(scriptToken, val);
             return true;
         }
 

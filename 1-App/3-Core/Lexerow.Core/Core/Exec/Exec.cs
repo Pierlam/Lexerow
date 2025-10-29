@@ -17,6 +17,8 @@ namespace Lexerow.Core.Core.Exec;
 
 /// <summary>
 /// Execute instructions.
+/// 
+/// OBSO, TO-DELETE.
 /// </summary>
 public class Exec
 {
@@ -320,8 +322,8 @@ public class Exec
             stackInstr.Pop();
 
             //--it's a SetVar
-            ExecVar execVar = new ExecVar("instrSetVar.VarName-TODO:", ExecVarType.ExcelFile, instrExcelFileObject);
-            listExecVar.Add(execVar);
+            //ExecVar execVar = new ExecVar("instrSetVar.VarName-TODO:", ExecVarType.ExcelFile, instrExcelFileObject);
+            //listExecVar.Add(execVar);
             return true;
         }
 
@@ -429,22 +431,23 @@ public class Exec
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateStart());
 
         // get the file object by name
-        ExecVar execVar = listExecVar.FirstOrDefault(ev => ev.Name.Equals(instr.ExcelFileObjectName, StringComparison.InvariantCultureIgnoreCase));
-        if(execVar==null)
-        {
-            SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error));
-            execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
-            return false;
-        }
+        //ExecVar execVar = listExecVar.FirstOrDefault(ev => ev.Name.Equals(instr.ExcelFileObjectName, StringComparison.InvariantCultureIgnoreCase));
+        //if(execVar==null)
+        //{
+        //    SendAppTraceExec(AppTraceLevel.Error, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateFinished(execStart, InstrBaseExecEventResult.Error));
+        //    execResult.AddError(new ExecResultError(ErrorCode.ExcelFileObjectNameDoesNotExists, null));
+        //    return false;
+        //}
 
-        // check that the var value in an excel file object
-        if (execVar.ExecVarType!= ExecVarType.ExcelFile)
-        {
-            // TODO: erreur the type of the var is wrong            
-        }
+        //// check that the var value in an excel file object
+        //if (execVar.ExecVarType!= ExecVarType.ExcelFile)
+        //{
+        //    // TODO: erreur the type of the var is wrong            
+        //}
 
         // execute the instr on each cols, on each datarow
-        return ExecInstrForEachRowIfThenMgr.Exec(execResult, AppTraceEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
+        //return ExecInstrForEachRowIfThenMgr.Exec(execResult, AppTraceEvent, execStart, _excelProcessor,  execVar.Value as IExcelFile, instr);
+        return false;
     }
 
     /// <summary>
@@ -457,8 +460,8 @@ public class Exec
 
         foreach(ExecVar execVar in listExecVar)
         {
-            if(execVar.ExecVarType== ExecVarType.ExcelFile)
-                ExecInstrCloseExcelFileMgr.Exec(_excelProcessor, (execVar.Value as InstrExcelFileObject).ExcelFile);
+            //if(execVar.ExecVarType== ExecVarType.ExcelFile)
+            //    ExecInstrCloseExcelFileMgr.Exec(_excelProcessor, (execVar.Value as InstrExcelFileObject).ExcelFile, out ExecResultError error);
         }
     }
 

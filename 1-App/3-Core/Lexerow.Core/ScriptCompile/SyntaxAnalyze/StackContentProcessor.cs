@@ -54,6 +54,7 @@ internal class StackContentProcessor
             if (isToken) continue;
 
             //--is previous instr on stack ForEach?  
+            // TODO: never true, strange
             res = GatherForEachRow(execResult, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
@@ -164,7 +165,7 @@ internal class StackContentProcessor
         // remove the first/oldest item, it's SetVar
         stackInstr.Pop();
 
-        //--case a=12
+        //--case a=12, A.Cell=12
         InstrConstValue instrConstValue = instrBase as InstrConstValue;
         if (instrConstValue != null) 
         {
@@ -329,10 +330,12 @@ internal class StackContentProcessor
         if (instrBefTop == null)
             return true;
 
-        // the instr just before the topt is a then instr?
+        // the instr just before the top is a then instr?
         if (instrBefTop.InstrType != InstrType.ForEach)
             // not a then instr
             return true;
+
+        //XXX-TODO: never come here, strange
 
         isToken = true;
 
@@ -345,7 +348,7 @@ internal class StackContentProcessor
         // remove the next which then instr
         stackInstr.Pop();
 
-        instrForEach.ListInstr.Add(instrBase);
+        //instrForEach.ListInstr.Add(instrBase);
         return true;
 
     }

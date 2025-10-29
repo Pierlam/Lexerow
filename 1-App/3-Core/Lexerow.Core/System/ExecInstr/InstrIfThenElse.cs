@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
+//public enum InstrIfThenElseRunState
+//{
+//    None, IfInProgress, IfResultTrue, IfResultFalse, ThenInProgress, ThenAllExecuted,
+//    ElseInProgress, ElseAllExecuted
+//}
+
 /// <summary>
 /// If -comparison- Then InstrThen  Else InstrElse
 /// </summary>
@@ -30,4 +36,6 @@ public class InstrIfThenElse : InstrBase
 
     public InstrBase InstrElse { get; set; }
 
+    // TODO: remove
+    //public InstrIfThenElseRunState State { get; set; }= InstrIfThenElseRunState.None;
 }

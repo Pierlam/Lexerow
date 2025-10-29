@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lexerow.Core.System.Compilator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,20 @@ public class StringUtils
         // not a string
         isString = false;
         return true;
+    }
 
+    public static string RemoveStartEndDoubleQuote(string s)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return s;
+        string str=s.Trim();
+
+        if (str.StartsWith("\"", StringComparison.OrdinalIgnoreCase))
+            str=str.Substring(1);
+
+        if(str.EndsWith("\"", StringComparison.OrdinalIgnoreCase))
+            str=str.Substring(0, str.Length - 1);
+
+        return str;
     }
 
 }

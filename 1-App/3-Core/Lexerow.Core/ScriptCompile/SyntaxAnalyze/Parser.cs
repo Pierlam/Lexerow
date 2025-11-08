@@ -162,7 +162,7 @@ public class Parser
             if (isListOfParams)
             {
                 // process the fct call, check and set parameters, error saved
-                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(execResult, listVar, stackInstr, currToken, listInstrToExec, listItem);
+                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, execResult, listVar, stackInstr, currToken, listInstrToExec, listItem);
                 if (!res) break;
                 continue;
             }

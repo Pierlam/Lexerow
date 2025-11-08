@@ -39,5 +39,14 @@ public class InstrThen:InstrBase
     /// </summary>
     public List<InstrBase> ListInstr { get;set; }=new List<InstrBase>();
 
+    /// <summary>
+    /// then current instr to execute.
+    /// </summary>
     public int RunInstrNum { get; set; } = -1;
+
+
+    public void ClearRun()
+    {
+        RunInstrNum = -1;
+    }
 }

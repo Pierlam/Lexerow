@@ -29,7 +29,7 @@ public class Exec
 
     CoreData _coreData;
 
-    List<ExecVar> _listExecVar = new List<ExecVar>();
+    List<ProgRunVar> _listExecVar = new List<ProgRunVar>();
 
     DateTime _execStartCurrInstr;
 
@@ -181,7 +181,7 @@ public class Exec
     /// Need to compile instr before execute them.
     /// </summary>
     /// <returns></returns>
-    ExecResult ExecuteProgram(ProgramScript program, List<ExecVar> listExecVar)
+    ExecResult ExecuteProgram(ProgramScript program, List<ProgRunVar> listExecVar)
     {
         ExecResult execResult= new ExecResult();
 
@@ -250,7 +250,7 @@ public class Exec
                 continue;
             }
 
-            if (instr.InstrType == InstrType.OpenExcel)
+            if (instr.InstrType == InstrType.SelectFiles)
             {
                 // just push the instr on the stack
                 stackInstr.Push(instr);
@@ -296,7 +296,7 @@ public class Exec
     /// <param name="execResult"></param>
     /// <param name="stackInstr"></param>
     /// <returns></returns>
-    bool ExecStackedInstr(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar)
+    bool ExecStackedInstr(ExecResult execResult, Stack<InstrBase> stackInstr, List<ProgRunVar> listExecVar)
     {
         InstrBase instrTop= stackInstr.Peek();
 
@@ -345,7 +345,7 @@ public class Exec
     /// <param name="execResult"></param>
     /// <param name="stackInstr"></param>
     /// <returns></returns>
-    bool ExecCloseBracketReached(ExecResult execResult, Stack<InstrBase> stackInstr, List<ExecVar> listExecVar, DateTime execStart)
+    bool ExecCloseBracketReached(ExecResult execResult, Stack<InstrBase> stackInstr, List<ProgRunVar> listExecVar, DateTime execStart)
     {
         // the stack should contains 2 item at least
         if(stackInstr.Count < 2)
@@ -426,7 +426,7 @@ public class Exec
     /// <param name="instr"></param>
     /// <param name="listExecVar"></param>
     /// <returns></returns>
-    bool ExecInstrForEachRowIfThen(ExecResult execResult, InstrOnExcelForEachRowIfThen instr, List<ExecVar> listExecVar, DateTime execStart)
+    bool ExecInstrForEachRowIfThen(ExecResult execResult, InstrOnExcelForEachRowIfThen instr, List<ProgRunVar> listExecVar, DateTime execStart)
     {
         SendAppTraceExec(AppTraceLevel.Info, "ExecInstrForEachRowIfThen", InstrForEachRowIfThenExecEvent.CreateStart());
 
@@ -454,11 +454,11 @@ public class Exec
     /// Close all opened excel file, if its not done.
     /// </summary>
     /// <param name="listExecVar"></param>
-    void CloseAllOpenedExcelFile(List<ExecVar> listExecVar)
+    void CloseAllOpenedExcelFile(List<ProgRunVar> listExecVar)
     {
         // TODO: gestion erreur!!
 
-        foreach(ExecVar execVar in listExecVar)
+        foreach(ProgRunVar execVar in listExecVar)
         {
             //if(execVar.ExecVarType== ExecVarType.ExcelFile)
             //    ExecInstrCloseExcelFileMgr.Exec(_excelProcessor, (execVar.Value as InstrExcelFileObject).ExcelFile, out ExecResultError error);

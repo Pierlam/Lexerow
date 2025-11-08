@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
 using NPOI.SS.Formula.Functions;
 using System;
@@ -15,15 +16,15 @@ internal class FunctionCallParamsProcessor
     /// check that parameters match the function call.
     /// </summary>
     /// <param name="execResult"></param>
-    /// <param name="stkItems"></param>
+    /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="listParams"></param>
     /// <returns></returns>
-    public static bool ProcessFunctionCallParams(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkItems, ScriptToken scriptToken, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
+    public static bool ProcessFunctionCallParams(IActivityLogger logger, ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
     {
         // the stack is empty? 
-        if (stkItems.Count == 0)
+        if (stackInstr.Count == 0)
         {
             // function call name expected
             execResult.AddError(ErrorCode.SyntaxAnalyzerFctNameExpected, scriptToken);
@@ -32,10 +33,12 @@ internal class FunctionCallParamsProcessor
         }
 
         // read the last instr from the stack
-        InstrBase instrBase = stkItems.Peek();
+        InstrBase instrBase = stackInstr.Peek();
 
-        if (instrBase.InstrType == InstrType.OpenExcel)
-            return ProcessOpenExcel(execResult, listVar, instrBase as InstrOpenExcel, listInstrToExec, listParams);
+        logger.LogCompilStart(ActivityLogLevel.Important, "FunctionCallParamsProcessor.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
+
+        if (instrBase.InstrType == InstrType.SelectFiles)
+            return ProcessSelectFiles(logger, execResult, listVar, instrBase as InstrSelectFiles, listInstrToExec, listParams);
 
         // get the last instr from the stack
 
@@ -43,8 +46,9 @@ internal class FunctionCallParamsProcessor
 
     }
 
-    static bool ProcessOpenExcel(ExecResult execResult, List<InstrObjectName> listVar, InstrOpenExcel instr, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
+    static bool ProcessSelectFiles(IActivityLogger logger, ExecResult execResult, List<InstrObjectName> listVar, InstrSelectFiles instr, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
     {
+        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessSelectFiles", "Param count: " + instr.ListInstrParams.Count);
         // only one param expected, type should be string or an instr returning a string
         if (listParams.Count != 1)
         {
@@ -52,15 +56,15 @@ internal class FunctionCallParamsProcessor
             return false;
         }
 
-        //--is the param a string const value token?  exp: OpenExcel("MyFile.xlsx")
+        //--is the param a string const value token?  exp: SelectFiles("MyFile.xlsx")
         InstrConstValue instrConstValue = listParams[0] as InstrConstValue;
         if(instrConstValue!=null)
         {
             // the const value type should be a string 
             if (instrConstValue.ValueBase.ValueType == System.ValueType.String)
             {
-                // push the string param to the instr OpenExcel
-                instr.Param = instrConstValue;
+                // push the string param to the instr SelectFiles
+                instr.AddParamSelect(instrConstValue);
                 return true;
             }
 
@@ -69,7 +73,7 @@ internal class FunctionCallParamsProcessor
             return false;
         }
 
-        //--is the param a varName source code token?  exp: OpenExcel(fileName)
+        //--is the param a varName source code token?  exp: SelectFiles(fileName)
         InstrObjectName instrObjectName = listParams[0] as InstrObjectName;
         if (instrObjectName != null) 
         {
@@ -82,7 +86,7 @@ internal class FunctionCallParamsProcessor
             }
 
             // push the string param to the instr OpenExcel
-            instr.Param = instrObjectName;
+            instr.AddParamSelect(instrObjectName);
             return true;
         }
 

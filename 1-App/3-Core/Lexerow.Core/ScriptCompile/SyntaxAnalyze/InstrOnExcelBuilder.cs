@@ -84,7 +84,8 @@ public class InstrOnExcelBuilder
                 // should be a string
                 if(ParserUtils.IsValueString((instr as InstrConstValue).ValueBase))
                 {
-                    instrOnExcel.ListFiles.Add(instr);
+                    // save the string filename
+                    instrOnExcel.InstrFiles = instr;
                     instrOnExcel.BuildStage= InstrOnExcelBuildStage.Files;
                     return true;
                 }
@@ -95,7 +96,8 @@ public class InstrOnExcelBuilder
             // filename is a variable, should be defined before
             if(instr.InstrType== InstrType.ObjectName)
             {
-                instrOnExcel.ListFiles.Add(instr);
+                // save the string filename
+                instrOnExcel.InstrFiles = instr;
                 instrOnExcel.BuildStage = InstrOnExcelBuildStage.Files;
                 return true;
             }

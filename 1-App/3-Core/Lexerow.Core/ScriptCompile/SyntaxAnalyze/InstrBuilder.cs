@@ -23,77 +23,77 @@ public class InstrBuilder
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
         {
             // End
-            if (scriptToken.Value.Equals("End", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrEndName, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrEnd(scriptToken);
                 return true;
             }
 
-            // OpenExcel
-            if (scriptToken.Value.Equals("OpenExcel", StringComparison.InvariantCultureIgnoreCase))
+            // SelectFiles
+            if (scriptToken.Value.Equals(CoreInstr.InstrSelectFiles, StringComparison.InvariantCultureIgnoreCase))
             {
-                instrBase = new InstrOpenExcel(scriptToken);
+                instrBase = new InstrSelectFiles(scriptToken);
                 return true;
             }
 
             // OnExcel
-            if (scriptToken.Value.Equals("OnExcel", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrOnExcel, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrOnExcel(scriptToken);
                 return true;
             }
 
             // OnSheet
-            if (scriptToken.Value.Equals("OnSheet", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrOnSheet, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrOnSheet(scriptToken);
                 return true;
             }
 
             // ForEach
-            if (scriptToken.Value.Equals("ForEach", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrForEach, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrForEach(scriptToken);
                 return true;
             }
 
             // Row
-            if (scriptToken.Value.Equals("Row", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrRow, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrRow(scriptToken);
                 return true;
             }
 
             // Next
-            if (scriptToken.Value.Equals("Next", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrNext, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrNext(scriptToken);
                 return true;
             }
 
             // Col
-            if (scriptToken.Value.Equals("Col", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrCol, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrCol(scriptToken);
                 return true;
             }
 
             // Cell
-            if (scriptToken.Value.Equals("Cell", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrCell, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrCell(scriptToken);
                 return true;
             }
 
             // if
-            if (scriptToken.Value.Equals("if",StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrIf,StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrIf(scriptToken);
                 return true;
             }
 
             // then
-            if (scriptToken.Value.Equals("Then", StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrThen, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrThen(scriptToken);
                 return true;

@@ -31,12 +31,12 @@ public class TestScriptBuilder
     }
 
     //-line #1
-    public static ScriptLineTokens BuildOpenExcel(string varName, string fileString)
+    public static ScriptLineTokens BuildSelectFiles(string varName, string fileString)
     {
         var line = new ScriptLineTokens();
         line.AddTokenName(1, 1, varName);
         line.AddTokenSeparator(1, 1, "=");
-        line.AddTokenName(1, 1, "OpenExcel");
+        line.AddTokenName(1, 1, "SelectFiles");
         line.AddTokenSeparator(1, 1, "(");
         line.AddTokenString(1, 1, fileString);
         line.AddTokenSeparator(1, 1, ")");

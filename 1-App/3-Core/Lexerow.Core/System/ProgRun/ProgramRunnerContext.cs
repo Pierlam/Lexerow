@@ -11,7 +11,6 @@ public class ProgramRunnerContext
 
     public InstrBase PrevInstrExecuted { get; set;} = null;
 
-
     /// <summary>
     /// Init to -1 which is not started.
     /// Used in execution.
@@ -20,25 +19,23 @@ public class ProgramRunnerContext
     public int FileToProcessNum { get; set; } = -1;
 
     /// <summary>
-    /// The current excel file object.
+    /// The current excel file object to process.
     /// </summary>
     public InstrExcelFileObject ExcelFileObject { get; set; } = null;
 
     /// <summary>
-    /// Used in execution.
-    /// base0.
+    /// The current excel sheet to process.
     /// </summary>
-    //public int SheetToProcessNum { get; set; } = -1;
-
     public IExcelSheet? ExcelSheet { get; set; } = null;
 
+    /// <summary>
+    /// The current excel sheet row num to process.
+    /// </summary>
     public int RowNum { get; set; } = -1;
 
     /// <summary>
-    /// Final list of excel file.
-    /// Used in execution.
-    /// Excel file object can be loaded at the last time.
+    /// list of selected excel filename to process
     /// </summary>
-    public List<InstrExcelFileObject> ListExcelFileObject { get; set; } = new List<InstrExcelFileObject>();
+    public List<InstrSelectedFilename> ListSelectedFilename { get; private set; } = new List<InstrSelectedFilename>();
 
 }

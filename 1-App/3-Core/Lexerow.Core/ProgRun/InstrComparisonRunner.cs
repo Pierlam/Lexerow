@@ -36,7 +36,7 @@ public class InstrComparisonRunner
     /// <param name="listVar"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    public bool RunInstrComparison(ExecResult execResult, ProgramRunnerContext ctx, List<ExecVar> listVar, InstrComparison instrComparison)
+    public bool RunInstrComparison(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrComparison instrComparison)
     {
         _logger.LogRunStart(ActivityLogLevel.Info, "InstrComparisonRunner.RunInstrComparison", string.Empty);
         bool res;

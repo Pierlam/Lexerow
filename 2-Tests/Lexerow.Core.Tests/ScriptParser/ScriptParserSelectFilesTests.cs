@@ -14,38 +14,31 @@ namespace Lexerow.Core.Tests.ScriptParser;
 
 
 /// <summary>
-/// Test script lexical analyzer on OpenExcel instr.
+/// Test script lexical analyzer on SelectFiles instr.
 /// </summary>
 [TestClass]
-public class ScriptParserOpenExcelTests
+public class ScriptParserSelectFilesTests
 {
     /// <summary>
-    /// file=OpenExcel("data.xslx")
+    /// file=SelectFiles("data.xslx")
     ///
     /// ----
-    /// file; =; OpenExcel; (; "data.xlsx"; )
+    /// file; =; SelectFiles; (; "data.xlsx"; )
     /// 
     /// ----
     /// The compilation return:
     ///  -SetVar:
     ///      Instrleft:  ObjectName: file
-    ///      InstrRight: OpenExcel, p="data.xlsx" 
+    ///      InstrRight: SelectFiles, p="data.xlsx" 
     /// </summary>
     [TestMethod]
-    public void FileEqOpenExcelOk()
+    public void FileEqSelectFilesOk()
     {
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
         ScriptLineTokens line;
 
         //-line #1
-        line= TestScriptBuilder.BuildOpenExcel("file", "\"data.xlsx\"");
-        //line= new ScriptLineTokens();
-        //line.AddTokenName(1, 1, "file");
-        //line.AddTokenSeparator(1, 1, "=");
-        //line.AddTokenName(1, 1, "OpenExcel");
-        //line.AddTokenSeparator(1, 1, "(");
-        //line.AddTokenString(1, 1, "\"data.xlsx\"");
-        //line.AddTokenSeparator(1, 1, ")");
+        line= TestScriptBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
         script.Add(line);
 
         var logger = A.Fake<IActivityLogger>();
@@ -66,12 +59,13 @@ public class ScriptParserOpenExcelTests
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("file", instrObjectName.ObjectName);
 
-        // InstrRight: OpenExcel
-        InstrOpenExcel instrOpenExcel = instrSetVar.InstrRight as InstrOpenExcel;
+        // InstrRight: SelectFiles
+        InstrSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
 
         // OpenExcel Param
-        InstrConstValue instrConstValue = instrOpenExcel.Param as InstrConstValue;
+        Assert.AreEqual(1, instrOpenExcel.ListInstrParams.Count);
+        InstrConstValue instrConstValue = instrOpenExcel.ListInstrParams[0] as InstrConstValue;
         Assert.IsNotNull(instrConstValue);
         Assert.AreEqual("data.xlsx", instrConstValue.RawValue);
         Assert.AreEqual("data.xlsx", (instrConstValue.ValueBase as ValueString).Val);
@@ -79,11 +73,11 @@ public class ScriptParserOpenExcelTests
 
     /// <summary>
     /// name="data.xslx"
-    /// file=OpenExcel(name)
+    /// file=SelectFiles(name)
     /// 
     /// ----
     /// name; =; "data.xlsx"
-    /// file; =; OpenExcel; (; name; )
+    /// file; =; SelectFiles; (; name; )
     /// 
     /// ----
     /// The compilation return:
@@ -93,10 +87,10 @@ public class ScriptParserOpenExcelTests
     /// 
     ///  -SetVar:
     ///      Instrleft:  ObjectName: file
-    ///      InstrRight: OpenExcel, p="data.xlsx" 
+    ///      InstrRight: SelectFiles, p=name 
     /// </summary>
     [TestMethod]
-    public void SetVarFileEqOpenExcelOk()
+    public void SetVarFileEqSelectFilesOk()
     {
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
         ScriptLineTokens line;
@@ -112,7 +106,7 @@ public class ScriptParserOpenExcelTests
         line = new ScriptLineTokens();
         line.AddTokenName(2, 1, "file");
         line.AddTokenSeparator(2, 1, "=");
-        line.AddTokenName(2, 1, "OpenExcel");
+        line.AddTokenName(2, 1, "SelectFiles");
         line.AddTokenSeparator(2, 1, "(");
         line.AddTokenName(2, 1, "name");
         line.AddTokenSeparator(2, 1, ")");
@@ -152,12 +146,13 @@ public class ScriptParserOpenExcelTests
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("file", instrObjectName.ObjectName);
 
-        // InstrRight: OpenExcel
-        var instrOpenExcel = instrSetVar.InstrRight as InstrOpenExcel;
+        // InstrRight: SelectFiles
+        var instrOpenExcel = instrSetVar.InstrRight as InstrSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
 
         // OpenExcel Param -> object name
-        instrObjectName = instrOpenExcel.Param as InstrObjectName;
+        Assert.AreEqual(1, instrOpenExcel.ListInstrParams.Count);
+        instrObjectName = instrOpenExcel.ListInstrParams[0] as InstrObjectName;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("name", instrObjectName.ObjectName);
     }
@@ -198,11 +193,11 @@ public class ScriptParserOpenExcelTests
 
 
     /// <summary>
-    /// "john"=OpenExcel(..)    
+    /// "john"=SelectFiles(..)    
     /// error -> variable expected
     /// </summary>
     [TestMethod]
-    public void StrJohnEqOpenExcelWrong()
+    public void StrJohnEqSelectFilesWrong()
     {
         ScriptLineTokens slt;
 
@@ -210,7 +205,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenString(1, 1, "\"john\"");
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenString(1, 1, "\"data.xlsx\"");
         slt.AddTokenSeparator(1, 1, ")");
@@ -231,11 +226,11 @@ public class ScriptParserOpenExcelTests
     }
 
     /// <summary>
-    /// 12=OpenExcel(...)       
+    /// 12=SelectFiles(...)       
     /// error -> variable expected
     /// </summary>
     [TestMethod]
-    public void i12EqOpenExcelWrong()
+    public void i12EqSelectFilesWrong()
     {
         ScriptLineTokens slt;
 
@@ -243,7 +238,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenInteger(1, 1, 12);
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenString(1, 1, "\"data.xlsx\"");
         slt.AddTokenSeparator(1, 1, ")");
@@ -264,11 +259,11 @@ public class ScriptParserOpenExcelTests
     }
 
     /// <summary>
-    /// file = OpenExcel()   
+    /// file = SelectFiles()   
     /// error -> param is missing
     /// </summary>
     [TestMethod]
-    public void FileEqOpenExcelParamMissingWrong()
+    public void FileEqSelectFilesParamMissingWrong()
     {
         ScriptLineTokens slt;
 
@@ -276,7 +271,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenName(1, 1, "file");
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenSeparator(1, 1, ")");
 
@@ -296,11 +291,11 @@ public class ScriptParserOpenExcelTests
     }
 
     /// <summary>
-    /// file = OpenExcel(12)      
+    /// file = SelectFiles(12)      
     /// error -> param type is wrong
     /// </summary>
     [TestMethod]
-    public void FileEqOpenExcelParam12Wrong()
+    public void FileEqSelectFilesParam12Wrong()
     {
         ScriptLineTokens slt;
 
@@ -308,7 +303,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenName(1, 1, "file");
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenInteger(1, 1, 12);
         slt.AddTokenSeparator(1, 1, ")");
@@ -329,11 +324,11 @@ public class ScriptParserOpenExcelTests
     }
 
     /// <summary>
-    /// file = OpenExcel(f)      
+    /// file = SelectFiles(f)      
     /// error -> param f is not defined before
     /// </summary>
     [TestMethod]
-    public void FileEqOpenExcelParamvarFWrong()
+    public void FileEqSelectFilesParamvarFWrong()
     {
         ScriptLineTokens slt;
 
@@ -341,7 +336,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenName(1, 1, "file");
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenName(1, 1, "f");
         slt.AddTokenSeparator(1, 1, ")");
@@ -362,11 +357,11 @@ public class ScriptParserOpenExcelTests
     }
 
     /// <summary>
-    /// file=OpenExcel 
+    /// file=SelectFiles 
     /// error -> open-closed bracket missing (param is missing also)
     /// </summary>
     [TestMethod]
-    public void FileEqOpenExcelNoParamWrong()
+    public void FileEqSelectFilesNoParamWrong()
     {
         ScriptLineTokens slt;
 
@@ -374,7 +369,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenName(1, 1, "file");
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
 
         //-build source code lines of tokens
         List<ScriptLineTokens> lt = [slt];
@@ -392,12 +387,12 @@ public class ScriptParserOpenExcelTests
     }
 
     /// <summary>
-    /// then = OpenExcel("dd")   
+    /// then = SelectFiles("dd")   
     /// error -> nom variable non-authorisé, mot-clé réservé
 
     /// </summary>
     [TestMethod]
-    public void ThenEqOpenExcelWrong()
+    public void ThenEqSelectFilesWrong()
     {
         ScriptLineTokens slt;
 
@@ -405,7 +400,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenName(1, 1, "then");
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenString(1, 1, "\"data.xlsx\"");
         slt.AddTokenSeparator(1, 1, ")");
@@ -428,11 +423,11 @@ public class ScriptParserOpenExcelTests
 
 
     /// <summary>
-    /// file = OpenExcel("file.xlsx") load               
+    /// file = SelectFiles("file.xlsx") load               
     /// error -> Object name load not expected
     /// </summary>
     [TestMethod]
-    public void ThenEqOpenExcelLoadWrong()
+    public void ThenEqSelectFilesLoadWrong()
     {
         ScriptLineTokens slt;
 
@@ -440,7 +435,7 @@ public class ScriptParserOpenExcelTests
         slt = new ScriptLineTokens();
         slt.AddTokenName(1, 1, "file");
         slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenString(1, 1, "\"data.xlsx\"");
         slt.AddTokenSeparator(1, 1, ")");
@@ -463,18 +458,18 @@ public class ScriptParserOpenExcelTests
     }
 
     /// <summary>
-    /// OpenExcel("data.xlsx")  
+    /// SelectFiles("data.xlsx")  
     /// error -> fct result not used
 
     /// </summary>
     [TestMethod]
-    public void OpenExcelWrong()
+    public void SelectFilesWrong()
     {
         ScriptLineTokens slt;
 
         //-build one line of tokens
         slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "OpenExcel");
+        slt.AddTokenName(1, 1, "SelectFiles");
         slt.AddTokenSeparator(1, 1, "(");
         slt.AddTokenString(1, 1, "\"data.xlsx\"");
         slt.AddTokenSeparator(1, 1, ")");

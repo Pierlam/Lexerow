@@ -27,7 +27,7 @@ public enum InstrType
     Var,
     SetVar,
 
-    OpenExcel,
+    SelectFiles,
     CloseExcel,
 
     ExcelFuncCell,
@@ -90,6 +90,8 @@ public enum InstrFunctionReturnType
 
     ExcelCell,
     ExcelCells,
+
+    ListString
 }
 
 /// <summary>

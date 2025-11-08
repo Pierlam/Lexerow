@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
-public enum ExecVarType
+public enum ProgRunVarType
 {
     // string, int, double, ...
     BasicValue,
@@ -16,9 +16,9 @@ public enum ExecVarType
 
 }
 
-public class ExecVar
+public class ProgRunVar
 {
-    public ExecVar(InstrBase name, InstrBase value)
+    public ProgRunVar(InstrBase name, InstrBase value)
     {
         ObjectName = name;
         Value = value;

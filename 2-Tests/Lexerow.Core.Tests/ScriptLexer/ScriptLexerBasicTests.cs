@@ -15,13 +15,13 @@ namespace Lexerow.Core.Tests.ScriptLexer;
 public class ScriptLexerBasicTests
 {
     /// <summary>
-    /// file=OpenExcel("data.xslx")
-    /// file; = ; OpenExcel; (; "data.xlsx"; )
+    /// file=SelectFiles("data.xslx")
+    /// file; = ; SelectFiles; (; "data.xlsx"; )
     /// </summary>
     [TestMethod]
-    public void TestBasic()
+    public void SelectFilesOk()
     {
-        Script script = TestScriptBuilder.Build("#comment", "file=OpenExcel(\"data.xslx\")");
+        Script script = TestScriptBuilder.Build("#comment", "file=SelectFiles(\"data.xslx\")");
 
         ExecResult execResult = new ExecResult();
 
@@ -38,7 +38,7 @@ public class ScriptLexerBasicTests
         Assert.AreEqual(6, lt[0].ListScriptToken.Count);
         Assert.AreEqual("file", lt[0].ListScriptToken[0].Value);
         Assert.AreEqual("=", lt[0].ListScriptToken[1].Value);
-        Assert.AreEqual("OpenExcel", lt[0].ListScriptToken[2].Value);
+        Assert.AreEqual("SelectFiles", lt[0].ListScriptToken[2].Value);
         Assert.AreEqual("(", lt[0].ListScriptToken[3].Value);
         Assert.AreEqual("\"data.xslx\"", lt[0].ListScriptToken[4].Value);
         Assert.AreEqual(ScriptTokenType.String, lt[0].ListScriptToken[4].ScriptTokenType);
@@ -69,7 +69,7 @@ public class ScriptLexerBasicTests
     {
         ExecResult execResult = new ExecResult();
 
-        Script script = TestScriptBuilder.Build("file=OpenExcel(\"data.xslx)");
+        Script script = TestScriptBuilder.Build("file=SelectFiles(\"data.xslx)");
 
         var logger = A.Fake<IActivityLogger>();
 
@@ -161,7 +161,7 @@ public class ScriptLexerBasicTests
     /// The result: split tokens
     /// </summary>
     [TestMethod]
-    public void ParseForEacRowCommentOk()
+    public void ParseForEachRowCommentOk()
     {
         Script script = TestScriptBuilder.Build("  ForEach Row #comment");
 

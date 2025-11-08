@@ -20,12 +20,8 @@ public class ProgramRunner
 
     IExcelProcessor _excelProcessor;
 
-    ExecFunctionMgr _execFunctionMgr;
-
-    List<ExecVar> _listExecVar = new List<ExecVar>();
-
-    DateTime _execStartCurrInstr;
-
+    //List<ProgRunVar> _listExecVar = new List<ProgRunVar>();
+    ProgRunVarMgr _progRunVarMgr=new ProgRunVarMgr();
     InstrRunner _instrRunner;
 
 
@@ -55,7 +51,7 @@ public class ProgramRunner
         // execute instr, one by one        
         foreach (var instrBase in programScript.ListInstr)
         {
-            res = _instrRunner.ExecInstr(execResult, _listExecVar, instrBase);
+            res = _instrRunner.ExecInstr(execResult, _progRunVarMgr, instrBase);
             if (!res) return false;
         }
 
@@ -77,11 +73,11 @@ public class ProgramRunner
     /// Close all opened excel file, if its not done.
     /// </summary>
     /// <param name="listExecVar"></param>
-    bool CloseAllOpenedExcelFile(ExecResult execResult, List<ExecVar> listExecVar)
+    bool CloseAllOpenedExcelFile(ExecResult execResult, List<ProgRunVar> listExecVar)
     {
         _logger.LogRunStart(ActivityLogLevel.Info, "ProgRunner.CloseAllOpenedExcelFile", string.Empty);
         bool res = true;
-        foreach (ExecVar execVar in listExecVar)
+        foreach (ProgRunVar execVar in listExecVar)
         {
             InstrExcelFileObject instrExcelFileObject = execVar.Value as InstrExcelFileObject;
             if (instrExcelFileObject != null)

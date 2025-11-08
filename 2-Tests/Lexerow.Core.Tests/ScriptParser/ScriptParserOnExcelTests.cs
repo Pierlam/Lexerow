@@ -70,8 +70,8 @@ public class ScriptParserOnExcelVeryShortTests
         InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
-        Assert.AreEqual(1, instrOnExcel.ListFiles.Count);
-        InstrConstValue constExcelFileName = instrOnExcel.ListFiles[0] as InstrConstValue;
+        Assert.IsNotNull(instrOnExcel.InstrFiles);
+        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -134,7 +134,7 @@ public class ScriptParserOnExcelVeryShortTests
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
         //--file=OpenExcel("data.xlsx")
-        var line = TestScriptBuilder.BuildOpenExcel("file", "\"data.xlsx\"");
+        var line = TestScriptBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
         script.Add(line);
 
         //-build one line of tokens
@@ -177,7 +177,7 @@ public class ScriptParserOnExcelVeryShortTests
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("file", instrObjectName.ObjectName);
         // right:  InstrOpenExcel
-        InstrOpenExcel instrOpenExcel= instrSetVar.InstrRight as InstrOpenExcel;
+        InstrSelectFiles instrOpenExcel= instrSetVar.InstrRight as InstrSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
         // no need to test further
 
@@ -186,8 +186,8 @@ public class ScriptParserOnExcelVeryShortTests
         InstrOnExcel instrOnExcel = listInstr[1] as InstrOnExcel;
 
         // OnExcel.ListFiles: OnExcel file -> InstrObjectName
-        Assert.AreEqual(1, instrOnExcel.ListFiles.Count);
-        instrObjectName = instrOnExcel.ListFiles[0] as InstrObjectName;
+        Assert.IsNotNull(instrOnExcel.InstrFiles);
+        instrObjectName = instrOnExcel.InstrFiles as InstrObjectName;
         Assert.AreEqual("file", instrObjectName.ObjectName);
 
         // no need to test further
@@ -256,8 +256,8 @@ public class ScriptParserOnExcelVeryShortTests
         InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
-        Assert.AreEqual(1, instrOnExcel.ListFiles.Count);
-        InstrConstValue constExcelFileName = instrOnExcel.ListFiles[0] as InstrConstValue;
+        Assert.IsNotNull(instrOnExcel.InstrFiles);
+        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -365,8 +365,8 @@ public class ScriptParserOnExcelVeryShortTests
         InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
-        Assert.AreEqual(1, instrOnExcel.ListFiles.Count);
-        InstrConstValue constExcelFileName = instrOnExcel.ListFiles[0] as InstrConstValue;
+        Assert.IsNotNull(instrOnExcel.InstrFiles);
+        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -486,8 +486,8 @@ public class ScriptParserOnExcelVeryShortTests
         InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
-        Assert.AreEqual(1, instrOnExcel.ListFiles.Count);
-        InstrConstValue constExcelFileName = instrOnExcel.ListFiles[0] as InstrConstValue;
+        Assert.IsNotNull(instrOnExcel.InstrFiles);
+        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -599,8 +599,8 @@ public class ScriptParserOnExcelVeryShortTests
         InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
-        Assert.AreEqual(1, instrOnExcel.ListFiles.Count);
-        InstrConstValue constExcelFileName = instrOnExcel.ListFiles[0] as InstrConstValue;
+        Assert.IsNotNull(instrOnExcel.InstrFiles);
+        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet

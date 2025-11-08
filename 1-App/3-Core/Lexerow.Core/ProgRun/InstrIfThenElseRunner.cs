@@ -20,7 +20,7 @@ public class InstrIfThenElseRunner
         _logger = activityLogger;
     }
 
-    public bool RunInstrIfThenElse(ExecResult execResult, ProgramRunnerContext ctx, List<ExecVar> listVar, InstrIfThenElse instrIfThenElse)
+    public bool RunInstrIfThenElse(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrIfThenElse instrIfThenElse)
     {
         _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", string.Empty);
 
@@ -31,14 +31,15 @@ public class InstrIfThenElseRunner
             InstrIf instrIf = ctx.PrevInstrExecuted as InstrIf;
             if(instrIf!=null)
             {
+                _logger.LogRunEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", "Prev was If, push Then block instr");
                 // execute then instr
-                //instrIfThenElse.State = InstrIfThenElseRunState.ThenInProgress;
+                instrIfThenElse.InstrThen.ClearRun();
                 ctx.StackInstr.Push(instrIfThenElse.InstrThen);
                 ctx.PrevInstrExecuted = null;
                 return true;
             }
 
-            // instr then executed before?
+            // instr Then executed before?
             InstrThen instrThen = ctx.PrevInstrExecuted as InstrThen;
             if (instrThen != null) 
             {
@@ -49,11 +50,10 @@ public class InstrIfThenElseRunner
                 return true;
             }
         }
-
  
         // execute If part
-        //instrIfThenElse.State = InstrIfThenElseRunState.IfInProgress;
         ctx.StackInstr.Push(instrIfThenElse.InstrIf);
+        _logger.LogRunEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", "Push If instr");
         return true;
     }
 
@@ -73,7 +73,7 @@ public class InstrIfThenElseRunner
     /// <param name="listVar"></param>
     /// <param name="instrIf"></param>
     /// <returns></returns>
-    public bool RunInstrIf(ExecResult execResult, ProgramRunnerContext ctx, List<ExecVar> listVar, InstrIf instrIf)
+    public bool RunInstrIf(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrIf instrIf)
     {
         _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", string.Empty);
 
@@ -84,6 +84,7 @@ public class InstrIfThenElseRunner
             var instrComparison= ctx.PrevInstrExecuted as InstrComparison;
             if (instrComparison!=null)
             {
+                _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", "Prev was If comparison, result: " + instrIf.Result.ToString());
                 instrIf.Result = instrComparison.Result;
 
                 // remove the if from the stack
@@ -104,6 +105,7 @@ public class InstrIfThenElseRunner
 
             //-is it a bool var?
             // TODO:
+            throw new NotImplementedException("InstrIfThenElseRunner.RunInstrIf: Bool Var or fct call to implement");
 
             //-is it a fct call?
             // TODO:
@@ -113,15 +115,17 @@ public class InstrIfThenElseRunner
         if (instrIf.InstrBase.InstrType == InstrType.Comparison)
         {
             ctx.StackInstr.Push(instrIf.InstrBase);
+            _logger.LogRunEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", "Run If comparison");
             return true;
         }
 
         //--case2: If Operand
         // TODO:
+        throw new NotImplementedException("InstrIfThenElseRunner.RunInstrIf: case2: If Operand to implement");
         return true;
     }
 
-    public bool RunInstrThen(ExecResult execResult, ProgramRunnerContext ctx, List<ExecVar> listVar, InstrThen instrThen)
+    public bool RunInstrThen(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrThen instrThen)
     {
         _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrThen", string.Empty);
 

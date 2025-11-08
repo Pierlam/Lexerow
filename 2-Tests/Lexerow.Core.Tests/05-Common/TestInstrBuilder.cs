@@ -20,26 +20,27 @@ public class TestInstrBuilder
     /// <param name="fileNameString"></param>
     /// <param name="instrForEach"></param>
     /// <returns></returns>
-    public static InstrOnExcel CreateInstrOnExcelFileString(string fileNameString, InstrBase instrForEach)
+    public static InstrOnExcel CreateInstrOnExcelFileString(string fileNameString, InstrBase forEachRowInstr)
     {
         var token = CreateScriptTokenString(fileNameString);
         InstrOnExcel instrOnExcel= new InstrOnExcel(token);
 
         // OnExcel "data.xslx"
         InstrConstValue instrConstValue = BuildInstrConstValueString(fileNameString);
-        instrOnExcel.ListFiles.Add(instrConstValue);
+        //instrOnExcel.ListFiles.Add(instrConstValue);
+        instrOnExcel.InstrFiles= instrConstValue;
 
         // OnSheet
         var tokenSheet = CreateScriptTokenName("OnSheet");
         instrOnExcel.CreateOnSheet(tokenSheet,1);
 
         // ForEach Row instr
-        instrOnExcel.CurrOnSheet.ListInstrForEachRow.Add(instrForEach);
+        instrOnExcel.CurrOnSheet.ListInstrForEachRow.Add(forEachRowInstr);
         return instrOnExcel;
     }
 
     /// <summary>
-    /// file=OpenExcel("data.xlsx")
+    /// file=SelectFiles("data.xlsx")
     /// OnExcel file
     ///   ForEach Row
     ///     If..Then
@@ -49,37 +50,22 @@ public class TestInstrBuilder
     /// <param name="fileName"></param>
     /// <param name="instrForEach"></param>
     /// <returns></returns>
-    public static InstrOnExcel CreateInstrOnExcelFileName(string fileName, InstrForEach instrForEach)
+    public static InstrOnExcel CreateInstrOnExcelFileName(string fileName, InstrBase forEachRowInstr)
     {
         var token = CreateScriptTokenString(fileName);
         InstrOnExcel instrOnExcel = new InstrOnExcel(token);
 
-        // OnExcel file
+        // OnExcel file  (varname)
         InstrObjectName instrObjectName = BuildInstrObjectName(fileName);
-        //InstrConstValue instrConstValue = BuildInstrConstValueString(fileName);
-        instrOnExcel.ListFiles.Add(instrObjectName);
+        instrOnExcel.InstrFiles = instrObjectName;
 
         // OnSheet
         var tokenSheet = CreateScriptTokenName("OnSheet");
         instrOnExcel.CreateOnSheet(tokenSheet, 1);
 
         // ForEach Row instr
-        instrOnExcel.CurrOnSheet.ListInstrForEachRow.Add(instrForEach);
+        instrOnExcel.CurrOnSheet.ListInstrForEachRow.Add(forEachRowInstr);
         return instrOnExcel;
-    }
-
-    /// <summary>
-    /// ForEach Row
-    ///    Instr
-    /// </summary>
-    /// <param name="instrIfThenElse"></param>
-    /// <returns></returns>
-    public static InstrForEach CreateInstrForEach(InstrIfThenElse instrIfThenElse)
-    {
-        var token = CreateScriptTokenName("For");
-        InstrForEach instrForEach = new InstrForEach(token);
-        //instrForEach.ListInstr.Add(instrIfThenElse);
-        return instrForEach;
     }
 
     /// <summary>
@@ -223,40 +209,40 @@ public class TestInstrBuilder
     }
 
     /// <summary>
-    /// Exp: OpenExcel(name)
+    /// Exp: SelectExcel(name)
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrOpenExcel BuildInstrOpenExcelParamObjectName(string val)
+    public static InstrSelectFiles BuildInstrSelectExcelParamObjectName(string val)
     {
         // ObjectName
         var token = CreateScriptTokenName(val);
         var instrObjectName = new InstrObjectName(token);
 
         // OpenExcel
-        InstrOpenExcel instrOpenExcel = new InstrOpenExcel(instrObjectName.FirstScriptToken());
-        instrOpenExcel.Param = instrObjectName;
+        InstrSelectFiles instrOpenExcel = new InstrSelectFiles(instrObjectName.FirstScriptToken());
+        instrOpenExcel.AddParamSelect(instrObjectName);
         return instrOpenExcel;
     }
 
 
     /// <summary>
-    /// OpenExcel("data.xslx")
+    /// SelectExcel("data.xslx")
     /// The fileName param is a const value, type string.
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static InstrOpenExcel BuildInstrOpenExcelParamString(string fileName)
+    public static InstrSelectFiles BuildInstrSelectExcelParamString(string fileName)
     {
         InstrConstValue instrConstValue = BuildInstrConstValueString(fileName);
-        return BuildInstrOpenExcel(instrConstValue);
+        return BuildInstrSelectExcel(instrConstValue);
     }
 
-    public static InstrOpenExcel BuildInstrOpenExcel(InstrBase paramFileName)
+    public static InstrSelectFiles BuildInstrSelectExcel(InstrBase paramFileName)
     {
-        InstrOpenExcel instrOpenExcel = new InstrOpenExcel(paramFileName.FirstScriptToken());
-        instrOpenExcel.Param = paramFileName;
-        return instrOpenExcel;
+        InstrSelectFiles instrSelectFiles = new InstrSelectFiles(paramFileName.FirstScriptToken());
+        instrSelectFiles.AddParamSelect(paramFileName);
+        return instrSelectFiles;
     }
 
     /// <summary>

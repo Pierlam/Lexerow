@@ -214,6 +214,9 @@ public enum ErrorCode
     RunInstrVarNotFound,
     RunInstrVarTypeNotExpected,
     RunInstrMissing,
+    RunInstrAccessFileWrong,
+    RunInstrFilenameWrong,
+    RunInstrFilePathWrong,
 
     FuncNotExists,
     FuncOneParamExpected,

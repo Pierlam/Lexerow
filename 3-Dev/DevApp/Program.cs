@@ -41,9 +41,22 @@ void TestCore()
 
 void TestGetFiles()
 {
-    string fileName = @".\Input\*.xlsx";
-    string filepath=Path.GetDirectoryName(fileName);
-    string files=Path.GetFileName(fileName);
+    //string fileName = @".\Input\*.xlsx";
+
+    string fileName = @".\*.xlsx";
+    //string fileName = @".\Input\Test1.xlsx";
+    //string fileName = @".\Input\*.bla";
+    //string fileName = @".\Bla\*.xlsx";
+
+    string filepath =Path.GetDirectoryName(fileName);
+    string fullpath = Path.GetFullPath(fileName);
+    string files =Path.GetFileName(fileName);
+
+    if(!Path.Exists(filepath))
+    {
+        Console.WriteLine($"{fileName} does not exist.");
+        return;
+    }
 
     //string filepath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
     DirectoryInfo d = new DirectoryInfo(filepath);
@@ -85,5 +98,5 @@ void TestGetFiles()
 TestGetFiles();
 
 
-Console.WriteLine("ends.");
+Console.WriteLine("\n=> ends.");
 

@@ -52,12 +52,34 @@ public class InstrOnExcel : InstrBase
     /// Instruction compilation build stages.
     /// </summary>
     public InstrOnExcelBuildStage BuildStage { get; set; } = InstrOnExcelBuildStage.OnExcel;
-    
+
     /// <summary>
     /// General case on file to analyse.
     /// can be a string const value or a variable.
+    /// TO_DEL: replaced by instrBase.
     /// </summary>
-    public List<InstrBase> ListFiles { get; private set; } = new List<InstrBase>();
+    //public List<InstrBase> ListFiles { get; private set; } = new List<InstrBase>();
+
+    /// <summary>
+    /// instr, coming  from script.
+    /// Convert to the InstrSelectFiles during the execution.
+    /// can be: 
+    ///   1/ a string, exp: OnExcel "data.xlsx"
+    ///   2/ a varname (ObjectName), exp: OnExcel filename
+    ///      varname can be: 2.1/ a string, 2.2/ an InstrSelectFiles, 2.3/ or a varname (to a string or an InstrSelectFiles).
+    ///   3/ a function call (ObjectName), exp: OnExcel GetFiles()
+    ///   4/ an InstrSelectFiles, exp: OnExcel "f*.xlsx", +"c*.xlsx", -"file.xlsx"
+    ///   5/ an InstrSelectFiles, exp: OnExcel SelectFiles("f*.xlsx", +"c*.xlsx", -"file.xlsx")
+    /// </summary>
+    public InstrBase? InstrFiles { get; set; } = null;
+
+    /// <summary>
+    /// Used by the runner.
+    /// the file name (or var or instr selectFiles) is processed and converted to an instrSelectFiles,
+    /// specially the member ListFinalFilename, which the final list of files to process.
+    /// </summary>
+    public InstrSelectFiles InstrSelectFiles { get; set; } = null;
+
 
     public List<InstrOnSheet> ListSheets { get; private set; }= new List<InstrOnSheet>();
 

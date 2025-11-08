@@ -35,18 +35,16 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
     ///
     /// </summary>
     [TestMethod]
-    public void RunOpenExcelFileStringOk()
+    public void RunOnExcelFilenameStringOk()
     {
         Script script = new Script("scriptName", "fileName");
         List<InstrBase> listInstr = new List<InstrBase>();
 
+        //--OnExcel #1: 
         //--If A.Cell >10 Then A.Cell= 10
         InstrIfThenElse instrIfThenElse = TestInstrBuilder.CreateInstrIfThen("A", 1, ">", 10, "A", 1, 10);
 
-        //--ForEach Row
-        InstrForEach instrForEach= TestInstrBuilder.CreateInstrForEach(instrIfThenElse);
-
-        //--OnExcel "dataOnExcel1.xlsx"
+        //--OnExcel "dataOnExcel1.xlsx" ForEach Row IfThen Next
         InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileString(AddDblQuote(PathExcelFilesRun + "dataOnExcel1.xlsx"), instrIfThenElse);
         listInstr.Add(instrOnExcel);
 
@@ -76,8 +74,74 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
     }
 
     /// <summary>
+    /// OnExcel "dataOnExcelJokerA*.xlsx"
+	///   ForEach Row
+    ///     If A.Cell >10 Then A.Cell= 10
+    ///    Next
+    /// End OnExcel
+    ///
+    ///--excel content:
+    ///  age
+    ///   9    
+    ///  13  -> 10
+    ///
+    /// </summary>
+    [TestMethod]
+    public void RunOnExcelFilenameJokerStringOk()
+    {
+        Script script = new Script("scriptName", "fileName");
+        List<InstrBase> listInstr = new List<InstrBase>();
+
+        //--OnExcel #1: 
+        //--If A.Cell >10 Then A.Cell= 10
+        InstrIfThenElse instrIfThenElse = TestInstrBuilder.CreateInstrIfThen("A", 1, ">", 10, "A", 1, 10);
+
+        //--OnExcel "dataOnExcel1.xlsx" ForEach Row IfThen Next
+        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileString(AddDblQuote(PathExcelFilesRun + "dataOnExcelJokerA*.xlsx"), instrIfThenElse);
+        listInstr.Add(instrOnExcel);
+
+        //--create the compiled script -> the program
+        ProgramScript programScript = new ProgramScript(script, listInstr);
+
+        //--create the program runner
+        ActivityLogger logger = new ActivityLogger();
+        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
+        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ExecResult execResult = new ExecResult();
+        bool res = programRunner.Run(execResult, programScript);
+        Assert.IsTrue(res);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerA.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        // r1, c0: 9  -> not modified
+        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        Assert.IsTrue(res);
+
+        // r2, c0: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        Assert.IsTrue(res);
+
+        //--check the content of excel file
+        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerA2.xlsx");
+        Assert.IsNotNull(fileStream);
+        wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        // r1, c0: 9  -> not modified
+        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        Assert.IsTrue(res);
+
+        // r2, c0: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        Assert.IsTrue(res);
+
+    }
+
+    /// <summary>
     ///     
-    /// file=OpenExcel("dataOnExcel2.xlsx")
+    /// file= "dataOnExcel2.xlsx"
     /// OnExcel file
     ///   ForEach Row
     ///     If A.Cell >10 Then A.Cell= 10
@@ -85,33 +149,30 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
     /// End OnExcel    
     /// </summary>
     [TestMethod]
-    public void RunOpenExcelFileNameOk()
+    public void RunOpenExcelFileNameVarStringOk()
     {
         Script script = new Script("scriptName", "fileName");
         List<InstrBase> listInstr = new List<InstrBase>();
 
-        //--SetVar:   file= OpenExcel("data1.xslx")
-        //    InstrRight: ObjectName: file
-        //    InstrLeft:  OpenExcel, p="data.xlsx" 
+        //-->SetVar #1:   file= "data1.xslx"
+        //    InstrLeft:  ObjectName: file
+        //    InstrRight: OpenExcel, p="data.xlsx" 
 
-        //-instr left
+        // instr left
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
 
-        //-instr right
-        InstrOpenExcel instrOpenExcel = TestInstrBuilder.BuildInstrOpenExcelParamString(AddDblQuote(PathExcelFilesRun + "dataOnExcel2.xlsx"));
+        //instr right
+        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesRun + "dataOnExcel2.xlsx"));
 
-        //-Setvar
-        InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrOpenExcel);
+        InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrConstValue);
         listInstr.Add(instrSetVar);
 
+        //-->OnExcel #2: 
         //--If A.Cell >10 Then A.Cell= 10
         InstrIfThenElse instrIfThenElse = TestInstrBuilder.CreateInstrIfThen("A", 1, ">", 10, "A", 1, 10);
 
-        //--ForEach Row
-        InstrForEach instrForEach = TestInstrBuilder.CreateInstrForEach(instrIfThenElse);
-
-        //--OnExcel file
-        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileName("file", instrForEach);
+        //--OnExcel file ForEach Row IfThen Next
+        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileName("file", instrIfThenElse);
         listInstr.Add(instrOnExcel);
 
         //--create the compiled script -> the program
@@ -138,4 +199,140 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
         Assert.IsTrue(res);
     }
+
+    /// <summary>
+    ///     
+    /// file= "dataOnExcelJokerB.xlsx"
+    /// OnExcel file
+    ///   ForEach Row
+    ///     If A.Cell >10 Then A.Cell= 10
+    ///   Next
+    /// End OnExcel    
+    /// </summary>
+    [TestMethod]
+    public void RunOpenExcelFileNameVarStringJokerOk()
+    {
+        Script script = new Script("scriptName", "fileName");
+        List<InstrBase> listInstr = new List<InstrBase>();
+
+        //-->SetVar #1:   file= "data1.xslx"
+        //    InstrLeft:  ObjectName: file
+        //    InstrRight: OpenExcel, p="data.xlsx" 
+
+        // instr left
+        InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
+
+        //instr right
+        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesRun + "dataOnExcelJokerB*.xlsx"));
+
+        InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrConstValue);
+        listInstr.Add(instrSetVar);
+
+        //-->OnExcel #2: 
+        //--If A.Cell >10 Then A.Cell= 10
+        InstrIfThenElse instrIfThenElse = TestInstrBuilder.CreateInstrIfThen("A", 1, ">", 10, "A", 1, 10);
+
+        //--OnExcel file ForEach Row IfThen Next
+        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileName("file", instrIfThenElse);
+        listInstr.Add(instrOnExcel);
+
+        //--create the compiled script -> the program
+        ProgramScript programScript = new ProgramScript(script, listInstr);
+
+        //--create the program runner
+        ActivityLogger logger = new ActivityLogger();
+        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
+        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ExecResult execResult = new ExecResult();
+        bool res = programRunner.Run(execResult, programScript);
+        Assert.IsTrue(res);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerB.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        // r1, c0: 9  -> not modified
+        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        Assert.IsTrue(res);
+
+        // r2, c0: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        Assert.IsTrue(res);
+
+
+        //--check the content of excel file  B2
+        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerB2.xlsx");
+        Assert.IsNotNull(fileStream);
+        wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        // r1, c0: 9  -> not modified
+        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        Assert.IsTrue(res);
+
+        // r2, c0: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        Assert.IsTrue(res);
+    }
+
+    /// <summary>
+    /// file=SelectFiles("dataOnExcel3.xlsx")
+    /// OnExcel file
+    ///   ForEach Row
+    ///     If A.Cell >10 Then A.Cell= 10
+    ///   Next
+    /// End OnExcel    
+    /// </summary>
+    [TestMethod]
+    public void RunOpenExcelFileNameVarSelectFilesOk()
+    {
+        Script script = new Script("scriptName", "fileName");
+        List<InstrBase> listInstr = new List<InstrBase>();
+
+        //-->SetVar #1:   file= SelectFiles("dataOnExcel3.xslx")
+        //    InstrRight: ObjectName: file
+        //    InstrLeft:  OpenExcel, p="dataOnExcel3.xlsx" 
+
+        // instr left
+        InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
+
+        // instr right
+        InstrSelectFiles instrSelectFiles = TestInstrBuilder.BuildInstrSelectExcelParamString(AddDblQuote(PathExcelFilesRun + "dataOnExcel3.xlsx"));
+
+        InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrSelectFiles);
+        listInstr.Add(instrSetVar);
+
+        //-->OnExcel #2: 
+        //--If A.Cell >10 Then A.Cell= 10
+        InstrIfThenElse instrIfThenElse = TestInstrBuilder.CreateInstrIfThen("A", 1, ">", 10, "A", 1, 10);
+
+        //--OnExcel file ForEach Row IfThen Next
+        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileName("file", instrIfThenElse);
+        listInstr.Add(instrOnExcel);
+
+        //--create the compiled script -> the program
+        ProgramScript programScript = new ProgramScript(script, listInstr);
+
+        //--create the program runner
+        ActivityLogger logger = new ActivityLogger();
+        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
+        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ExecResult execResult = new ExecResult();
+        bool res = programRunner.Run(execResult, programScript);
+        Assert.IsTrue(res);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcel3.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        // r1, c0: 9  -> not modified
+        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        Assert.IsTrue(res);
+
+        // r2, c0: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        Assert.IsTrue(res);
+    }
+
 }

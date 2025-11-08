@@ -588,7 +588,7 @@ internal class StackContentProcessor
         // TODO:
 
         //--is it the fct InstrOpenExcel ?
-        InstrOpenExcel instrOpenExcel = instrBase as InstrOpenExcel;
+        InstrSelectFiles instrOpenExcel = instrBase as InstrSelectFiles;
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!

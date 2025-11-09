@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ProgRun;
+namespace Lexerow.Core.ProgExec;
 
 /// <summary>
 /// Instr SelectFiles runner.
@@ -22,13 +22,13 @@ namespace Lexerow.Core.ProgRun;
 /// 2/ with joker: SelectFiles("*.xlsx")  select several files.
 /// 3/ with var: SelectFiles(filename)  
 /// </summary>
-public class InstrSelectFilesRunner
+public class InstrSelectFilesExecutor
 {
     IActivityLogger _logger;
 
     IExcelProcessor _excelProcessor;
 
-    public InstrSelectFilesRunner(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrSelectFilesExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -46,9 +46,9 @@ public class InstrSelectFilesRunner
     /// <param name="listVar"></param>
     /// <param name="instrSelectFiles"></param>
     /// <returns></returns>
-    public bool Run(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles)
+    public bool Exec(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
 
         // a param (fct call or string concatenation) was processed before
         if(instrSelectFiles.CurrParamNum>-1 && ctx.PrevInstrExecuted!=null)
@@ -102,7 +102,7 @@ public class InstrSelectFilesRunner
         return true;
     }
 
-    bool DecodeParam(ExecResult execResult, ProgRunVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
+    bool DecodeParam(ExecResult execResult, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
     {
         InstrConstValue instrConstValue;
 
@@ -112,6 +112,7 @@ public class InstrSelectFilesRunner
         {
             if(!SelectFilesFromStringFilename(execResult, instrSelectFiles, instrConstValue, out List<string> listFilename))
                 return false;
+            return true;
         }
 
         //--2/param is a ObjectName ? exp: SelectFiles(fileName)
@@ -119,10 +120,10 @@ public class InstrSelectFilesRunner
         if (instrObjectName != null)
         {
             // get the var name, should be defined before, can be a var of var, exp: a=b so return the last var (b in the sample)
-            ProgRunVar execVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
+            ProgExecVar execVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
             if (execVar == null)
             {
-                execResult.AddError(ErrorCode.RunInstrVarNotFound, instrObjectName.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
                 return false;
             }
 
@@ -136,8 +137,9 @@ public class InstrSelectFilesRunner
             }
         }
 
-        execResult.AddError(ErrorCode.RunInstrNotManaged, param.FirstScriptToken());
-        return true;
+        // case not managed
+        execResult.AddError(ErrorCode.ExecInstrNotManaged, param.FirstScriptToken());
+        return false;
     }
 
     bool SelectFiles(ExecResult execResult, InstrBase instrBase, string filename, out List<string> listFilenameOut)
@@ -147,7 +149,7 @@ public class InstrSelectFilesRunner
         {
             if (string.IsNullOrEmpty(filename))
             {
-                execResult.AddError(ErrorCode.RunInstrFilenameWrong, instrBase.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecInstrFilenameWrong, instrBase.FirstScriptToken());
                 return false;
             }
 
@@ -160,7 +162,7 @@ public class InstrSelectFilesRunner
 
             if (!Path.Exists(filepath))
             {
-                execResult.AddError(ErrorCode.RunInstrFilePathWrong, instrBase.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecInstrFilePathWrong, instrBase.FirstScriptToken());
                 return false;
             }
 
@@ -175,7 +177,7 @@ public class InstrSelectFilesRunner
         }
         catch (Exception ex) 
         {
-            execResult.AddError(ErrorCode.RunInstrAccessFileWrong, instrBase.FirstScriptToken(),ex);
+            execResult.AddError(ErrorCode.ExecInstrAccessFileWrong, instrBase.FirstScriptToken(),ex);
             return false;
         }
     }
@@ -188,7 +190,7 @@ public class InstrSelectFilesRunner
         if (valueString == null)
         {
             listFilename = new List<string>();
-            execResult.AddError(ErrorCode.RunInstrTypeStringExpected, instrConstValue.FirstScriptToken());
+            execResult.AddError(ErrorCode.ExecInstrTypeStringExpected, instrConstValue.FirstScriptToken());
             return false;
         }
 

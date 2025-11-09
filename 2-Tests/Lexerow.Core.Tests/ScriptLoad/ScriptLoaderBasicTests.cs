@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptLoad;
 
+
+/// <summary>
+/// Test only the loader of scripts.
+/// </summary>
 [TestClass]
 public class ScriptLoaderBasicTests
 {
@@ -16,7 +20,7 @@ public class ScriptLoaderBasicTests
     /// load a script.
     /// Containes 2 lines.
     /// # basic script
-    /// file= OpenExcel("data.xslx")
+    /// file= SelectFiles("data.xslx")
     /// </summary>
     [TestMethod]
     public void LoadScript1Ok()
@@ -36,7 +40,7 @@ public class ScriptLoaderBasicTests
 
         // check line 2
         Assert.AreEqual(2, script.ScriptLines[1].NumLine);
-        Assert.AreEqual("file= OpenExcel(\"data.xslx\")", script.ScriptLines[1].Line);
+        Assert.AreEqual("file= SelectFiles(\"data.xslx\")", script.ScriptLines[1].Line);
 
     }
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System.ProgRun;
-public class ProgramRunnerContext
+public class ProgramExecContext
 {
     public Stack<InstrBase> StackInstr { get; private set; } = new Stack<InstrBase>();
 

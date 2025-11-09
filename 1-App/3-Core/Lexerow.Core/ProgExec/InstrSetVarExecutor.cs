@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ProgRun;
-public class InstrSetVarRunner
+namespace Lexerow.Core.ProgExec;
+public class InstrSetVarExecutor
 {
     IActivityLogger _logger;
-    InstrSetColCellFuncRunner _instrSetColCellFuncRunner;
+    InstrSetColCellFuncExecutor _instrSetColCellFuncRunner;
 
-    public InstrSetVarRunner(IActivityLogger logger, InstrSetColCellFuncRunner instrSetColCellFuncRunner)
+    public InstrSetVarExecutor(IActivityLogger logger, InstrSetColCellFuncExecutor instrSetColCellFuncRunner)
     {
         _logger = logger;
         _instrSetColCellFuncRunner= instrSetColCellFuncRunner;
@@ -37,15 +37,15 @@ public class InstrSetVarRunner
     /// <param name="listVar"></param>
     /// <param name="instr"></param>
     /// <returns></returns>
-    public bool Run(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrSetVar instr)
+    public bool Exec(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instr)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "InstrSetVarRunner.Run", "Token: " + instr.FirstScriptToken());
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetVarRunner.Run", "Token: " + instr.FirstScriptToken());
 
         //--case A.Cell= xxx ?
         InstrColCellFunc instrColCellFunc = instr.InstrLeft as InstrColCellFunc;
         if (instrColCellFunc != null)
         {
-            _logger.LogRunOnGoing(ActivityLogLevel.Info, "InstrSetVarRunner.Run", "Left is InstrColCellFunc: " + instr.FirstScriptToken());
+            _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrSetVarRunner.Run", "Left is InstrColCellFunc: " + instr.FirstScriptToken());
 
             // case A.cell=10 ?
             InstrConstValue instrConstValue1 = instr.InstrRight as InstrConstValue;
@@ -69,7 +69,7 @@ public class InstrSetVarRunner
             //--case A.Cell= Fct() ?
             // TODO:
 
-            execResult.AddError(ErrorCode.RunInstrNotManaged, "Instr Right: " + instr.InstrRight.FirstScriptToken());
+            execResult.AddError(ErrorCode.ExecInstrNotManaged, "Instr Right: " + instr.InstrRight.FirstScriptToken());
             return false;
         }
 
@@ -77,7 +77,7 @@ public class InstrSetVarRunner
         InstrObjectName instrObjectName = instr.InstrLeft as InstrObjectName;
         if(instrObjectName==null)
         {
-            execResult.AddError(ErrorCode.RunInstrVarTypeNotExpected, "Instr Left: " + instr.InstrLeft.FirstScriptToken());
+            execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, "Instr Left: " + instr.InstrLeft.FirstScriptToken());
             return false;
         }
 
@@ -118,15 +118,15 @@ public class InstrSetVarRunner
     }
 
 
-    bool CreateVar(ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrBase instrName, InstrBase instrtValue)
+    bool CreateVar(ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrBase instrName, InstrBase instrtValue)
     {
         // the var already defined ?
-        ProgRunVar execVar = progRunVarMgr.ListRunVar.FirstOrDefault(v => v.AreSame(instrName));
+        ProgExecVar execVar = progRunVarMgr.ListExecVar.FirstOrDefault(v => v.AreSame(instrName));
 
         if (execVar == null)
         {
             // create the var
-            execVar = new ProgRunVar(instrName, instrtValue);
+            execVar = new ProgExecVar(instrName, instrtValue);
             progRunVarMgr.Add(execVar);
         }
         else

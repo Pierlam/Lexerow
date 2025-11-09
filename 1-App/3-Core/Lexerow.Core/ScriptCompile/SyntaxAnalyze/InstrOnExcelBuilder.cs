@@ -58,7 +58,7 @@ public class InstrOnExcelBuilder
         if (instr.InstrType == InstrType.OnExcel && stkInstr.Count > 1)
         {
             // const value not a string, error
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instr.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -75,7 +75,7 @@ public class InstrOnExcelBuilder
 
         isToken = true;
 
-        //--case2: filename expected
+        //--case2: OnExcel next stage -> filename expected
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.OnExcel)
         {
             // filename expected. Type string const value or varname
@@ -90,7 +90,7 @@ public class InstrOnExcelBuilder
                     return true;
                 }
                 // const value not a string, error
-                execResult.AddError(ErrorCode.SyntaxAnalyzerConstStringValueExpected, instr.FirstScriptToken());
+                execResult.AddError(ErrorCode.ParserConstStringValueExpected, instr.FirstScriptToken());
                 return false;
             }
             // filename is a variable, should be defined before
@@ -102,11 +102,11 @@ public class InstrOnExcelBuilder
                 return true;
             }
             // const value not a string, error
-            execResult.AddError(ErrorCode.SyntaxAnalyzerConstStringValueExpected, instr.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserConstStringValueExpected, instr.FirstScriptToken());
             return false;
         }
 
-        //--case3: Files: next -> OnSheet/ForEach token expected
+        //--case3: Files: next stage -> OnSheet/ForEach token expected
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.Files)
         {
             if (instr.InstrType == InstrType.OnSheet)
@@ -116,6 +116,7 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
+            // ForEach token found
             if (instr.InstrType == InstrType.ForEach)
             {
                 // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
@@ -124,11 +125,20 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
-            execResult.AddError(ErrorCode.SyntaxAnalyzerOnSheetExpected, instr.FirstScriptToken());
+            // ForEachRow token found, same as found Row token. 
+            if (instr.InstrType == InstrType.ForEachRow)
+            {
+                // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
+                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
+                instrOnExcel.BuildStage = InstrOnExcelBuildStage.Row;
+                return true;
+            }
+
+            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
-        //--case4: OnSheet: next-> SheetNum/SheetName/ForEach/FirstRow
+        //--case4: OnSheet: next stage -> SheetNum/SheetName/ForEach/FirstRow
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.OnSheet)
         {
             if (instr.InstrType == InstrType.End)
@@ -157,11 +167,11 @@ public class InstrOnExcelBuilder
             // TODO:
 
             // error
-            execResult.AddError(ErrorCode.SyntaxAnalyzerOnSheetExpected, instr.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
-        //--case5: ForEach: next-> Row
+        //--case5: ForEach: next stage -> Row
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.ForEach)
         {
             if (instr.InstrType == InstrType.Row)
@@ -170,12 +180,12 @@ public class InstrOnExcelBuilder
                 // nothing more to do, just check the stage
                 return true;
             }
-            execResult.AddError(ErrorCode.SyntaxAnalyzerOnSheetExpected, instr.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
 
-        //--case6: Row: next-> If
+        //--case6: Row: next stage -> If
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.Row)
         {
             if (instr.InstrType == InstrType.If)
@@ -186,11 +196,11 @@ public class InstrOnExcelBuilder
                 stkInstr.Push(instr);
                 return true;
             }
-            execResult.AddError(ErrorCode.SyntaxAnalyzerOnSheetExpected, instr.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
-        //--case7: Next: -> End OnExcel
+        //--case7: Next: next stage -> End OnExcel
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.RowNext)
         {
             // next IfThen found in the ForEach Row instr
@@ -213,11 +223,11 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
-            execResult.AddError(ErrorCode.SyntaxAnalyzerOnSheetExpected, instr.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
 
         }
-        execResult.AddError(ErrorCode.SyntaxAnalyzerOnSheetExpected, instr.FirstScriptToken());
+        execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
         return false;
     }
 
@@ -233,7 +243,7 @@ public class InstrOnExcelBuilder
         // the stack should contains the OnExcel instr
         if (stackInstr.Count != 1)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instrIfThenElse.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, instrIfThenElse.FirstScriptToken());
             return false;
         }
 
@@ -242,7 +252,7 @@ public class InstrOnExcelBuilder
         //--case7: If: next -> got back to Row, to add maybe others IfThen
         if (instrOnExcel.BuildStage != InstrOnExcelBuildStage.If)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instrIfThenElse.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, instrIfThenElse.FirstScriptToken());
             return false;
         }
 

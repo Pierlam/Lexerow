@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.System;
 
 /// <summary>
+/// Process a data row. Execute all defined instructions.
+/// ForEach Row; IfThen...
 /// Used during execution.
 /// </summary>
-public class InstrNextRow : InstrBase
+public class InstrProcessRow : InstrBase
 {
-    public InstrNextRow(ScriptToken scriptToken, List<InstrBase> listInstrForEachRow) : base(scriptToken)
+    public InstrProcessRow(ScriptToken scriptToken, List<InstrBase> listInstrForEachRow) : base(scriptToken)
     {
-        InstrType = InstrType.NextRow;
+        InstrType = InstrType.ProcessRow;
         ListInstrForEachRow = listInstrForEachRow;
     }
 
@@ -24,5 +26,9 @@ public class InstrNextRow : InstrBase
     public int RowNum { get; set; } = -1;
 
     public int ColNum { get; set; } = -1;   
+
+    /// <summary>
+    /// List of Instructions to execute on each datarow.
+    /// </summary>
     public List<InstrBase> ListInstrForEachRow { get; set; }
 }

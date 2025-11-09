@@ -6,18 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
+
+/// <summary>
+/// Used to match special case in script: ForEachRow.
+/// Same as ForEach Row. 
+/// </summary>
 public class InstrForEachRow : InstrBase
 {
-    public InstrForEachRow(ScriptToken scriptToken, List<InstrBase> listInstr) : base(scriptToken)
+    public InstrForEachRow(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.ForEachRow;
-        ListInstr.AddRange(listInstr);
     }
-
-    public int InstrToProcessNum { get; set; } = -1;
-
-    /// <summary>
-    /// OnSheet/ForEach Row, list of instruction to execute.
-    /// </summary>
-    public List<InstrBase> ListInstr { get; set; } = new List<InstrBase>();
 }

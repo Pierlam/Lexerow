@@ -67,7 +67,7 @@ public class ActivityLogger:IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogRunStart(ActivityLogLevel level, string operation, string msg)
+    public void LogExecStart(ActivityLogLevel level, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.Start, level, operation, msg);
         log.ActivityLogBaseType = ActivityLogType.RunProg;
@@ -79,14 +79,14 @@ public class ActivityLogger:IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogRunEnd(ActivityLogLevel level, string operation, string msg)
+    public void LogExecEnd(ActivityLogLevel level, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.End, level, operation, msg);
         log.ActivityLogBaseType = ActivityLogType.RunProg;
         RaiseEvent(log);
     }
 
-    public void LogRunOnGoing(ActivityLogLevel level, string operation, string msg)
+    public void LogExecOnGoing(ActivityLogLevel level, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.OnGoing, level, operation, msg);
         log.ActivityLogBaseType = ActivityLogType.RunProg;
@@ -99,7 +99,7 @@ public class ActivityLogger:IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogRunEndError(ExecResultError error, string operation, string msg)
+    public void LogExecEndError(ExecResultError error, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Important, operation, msg);
         log.ActivityLogBaseType = ActivityLogType.RunProg;

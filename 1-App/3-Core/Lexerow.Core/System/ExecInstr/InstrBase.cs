@@ -56,6 +56,7 @@ public enum InstrType
     OnSheet,
     ForEach,
     Row,
+    ForEachRow,
     Col,
     Cell,
     Next,
@@ -67,9 +68,9 @@ public enum InstrType
     EndIf,
     EndOnExcel,
 
-    NextSheet,
-    ForEachRow,
-    NextRow,
+    ProcessSheets,
+    ProcessInstrForEachRow,
+    ProcessRow,
 }
 
 public enum InstrFunctionReturnType

@@ -9,14 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ProgRun;
-public class InstrSetColCellFuncRunner
+namespace Lexerow.Core.ProgExec;
+public class InstrSetColCellFuncExecutor
 {
     IActivityLogger _logger;
 
     IExcelProcessor _excelProcessor;
 
-    public InstrSetColCellFuncRunner(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrSetColCellFuncExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -32,7 +32,7 @@ public class InstrSetColCellFuncRunner
     /// <returns></returns>
     public bool RunSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrConstValue instrConstValue)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "InstrSetColCellFuncRunner.Run", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncRunner.Run", string.Empty);
 
         // get the cell
         IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum-1);

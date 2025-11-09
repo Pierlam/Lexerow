@@ -77,7 +77,7 @@ public class ScriptLexerBasicTests
         Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
         Assert.IsFalse(execResult.Result);
 
-        Assert.AreEqual(ErrorCode.LexAnalyzeFoundSgtringBadFormatted, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.LexerFoundSgtringBadFormatted, execResult.ListError[0].ErrorCode);
 
     }
 

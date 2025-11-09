@@ -23,7 +23,7 @@ internal class TokenIfThenDecoder
     {
         if(stkInstr.Count== 0)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptTokenSepComp);
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptTokenSepComp);
             return false;
         }
 
@@ -79,7 +79,7 @@ internal class TokenIfThenDecoder
         {
             if (stkInstr.Count==0)
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
+                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
             // is it the If Instr?
@@ -97,7 +97,7 @@ internal class TokenIfThenDecoder
         // nothing between If and then
         if (list.Count == 0)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
             return false;
         }
 
@@ -108,7 +108,7 @@ internal class TokenIfThenDecoder
             InstrSepComparison instrOperator = list[1] as InstrSepComparison;
             if(instrOperator==null)
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerSepComparatorExpected, list[1].FirstScriptToken());
+                execResult.AddError(ErrorCode.ParserSepComparatorExpected, list[1].FirstScriptToken());
                 return false;
             }
 
@@ -132,7 +132,7 @@ internal class TokenIfThenDecoder
             // check the return type, should be a bool value
             if (list[0].ReturnType != InstrFunctionReturnType.ValueBool)
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerReturnTypeWrong, scriptToken);
+                execResult.AddError(ErrorCode.ParserReturnTypeWrong, scriptToken);
                 return false;
             }
 
@@ -144,7 +144,7 @@ internal class TokenIfThenDecoder
         }
 
         // wrong instr count between If and Then
-        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
+        execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
         return false;
     }
 }

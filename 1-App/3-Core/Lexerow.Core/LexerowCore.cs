@@ -8,7 +8,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.ScriptCompile;
 using Lexerow.Core.ScriptLoad;
 using Lexerow.Core.Core.Exec;
-using Lexerow.Core.ProgRun;
+using Lexerow.Core.ProgExec;
 
 namespace Lexerow.Core;
 
@@ -27,7 +27,7 @@ public class LexerowCore
 
     ScriptCompiler _scriptCompiler;
 
-    ProgramRunner _programRunner;
+    ProgramExecutor _programRunner;
 
     /// <summary>
     /// Constructor.
@@ -42,10 +42,10 @@ public class LexerowCore
         _scriptLoader= new ScriptLoader();
         _scriptCompiler = new ScriptCompiler(_logger, _coreData);
 
-        _programRunner = new ProgramRunner(_logger, _excelProcessor);
+        _programRunner = new ProgramExecutor(_logger, _excelProcessor);
 
         // TODO: will be removed!
-        Exec = new Exec(_coreData, _excelProcessor);
+        //Exec = new Exec(_coreData, _excelProcessor);
 
     }
 
@@ -54,17 +54,33 @@ public class LexerowCore
     /// <summary>
     /// Execute script program.
     /// </summary>
-    Exec Exec { get; set; }
+    //Exec Exec { get; set; }
+
 
     /// <summary>
-    /// Load a script from a text file and compile it.
+    /// Load, compile and then execute a lines script.
     /// </summary>
-    /// <param name="progName"></param>
-    /// <param name="fileName"></param>
+    /// <param name="scriptName"></param>
+    /// <param name="filename"></param>
     /// <returns></returns>
-    public ExecResult LoadScriptFromFile(string scriptName, string fileName)
+    public ExecResult LoadExecLinesScript(string scriptName, List<string> scriptLines)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "LoadScriptFromFile", scriptName);
+        ExecResult execResult = LoadLinesScript(scriptName, scriptLines);
+        if(!execResult.Result)return execResult;
+
+        return ExecuteScript(scriptName);
+    }
+
+    /// <summary>
+    /// Load a script from lines (list of lines) and compile it.
+    /// If it's ok, the script is saved in memory, ready to be executed.
+    /// </summary>
+    /// <param name="scriptName"></param>
+    /// <param name="scriptLines"></param>
+    /// <returns></returns>
+    public ExecResult LoadLinesScript(string scriptName, List<string> scriptLines)
+    {
+        _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromLines", scriptName);
 
         ExecResult execResult = new ExecResult();
 
@@ -72,8 +88,8 @@ public class LexerowCore
         if (string.IsNullOrWhiteSpace(scriptName))
         {
             if (scriptName == null) scriptName = string.Empty;
-            var error= execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilEndError(error, "LoadScriptFromFile", scriptName);
+            var error = execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
+            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromLines", scriptName);
             return execResult;
         }
 
@@ -85,8 +101,7 @@ public class LexerowCore
             return execResult;
         }
 
-        _scriptLoader.LoadScriptFromFile(execResult, scriptName, fileName, out Script script);
-        if(!execResult.Result)
+        if(!_scriptLoader.LoadScriptFromLines(execResult, scriptName, scriptLines, out Script script))
             return execResult;
 
         // compile the script,  generate instructions
@@ -105,26 +120,30 @@ public class LexerowCore
         return execResult;
     }
 
-    public ExecResult LoadScriptFromLines(string scriptName, List<string> scriptLines)
-    {
-        // TODO:
-        return null;
-    }
-
-    //ExecResult LoadExecScriptFromFile(string name, string filename)
-
-    //ExecResult LoadExecScriptFromLines(string name, List<string> scriptLines)
-
-
     /// <summary>
-    /// Execute a script, should be compiled before.
+    /// Load, compile and then execute a text file script.
     /// </summary>
     /// <param name="scriptName"></param>
+    /// <param name="filename"></param>
     /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public ExecResult ExecuteScript(string scriptName)
+    public ExecResult LoadExecScript(string scriptName, string filename)
     {
-        _logger.LogRunStart(ActivityLogLevel.Important, "ExecuteScript", scriptName);
+        ExecResult execResult = LoadScript(scriptName, filename);
+        if (!execResult.Result) return execResult;
+
+        return ExecuteScript(scriptName);
+    }
+
+    /// <summary>
+    /// Load a script from a text file and compile it.
+    /// If it's ok, the script is saved in memory, ready to be executed.
+    /// </summary>
+    /// <param name="progName"></param>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    public ExecResult LoadScript(string scriptName, string fileName)
+    {
+        _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
 
         ExecResult execResult = new ExecResult();
 
@@ -132,9 +151,8 @@ public class LexerowCore
         if (string.IsNullOrWhiteSpace(scriptName))
         {
             if (scriptName == null) scriptName = string.Empty;
-            var error = execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
-            // TODO: pb de logger!!!
-            _logger.LogCompilEndError(error, "LoadScriptFromFile", scriptName);
+            var error= execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
+            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", scriptName);
             return execResult;
         }
 
@@ -146,8 +164,56 @@ public class LexerowCore
             return execResult;
         }
 
+        if(!_scriptLoader.LoadScriptFromFile(execResult, scriptName, fileName, out Script script))
+            return execResult;
+
+        // compile the script,  generate instructions
+        _scriptCompiler.CompileScript(execResult, script, out List<InstrBase> listInstr);
+        if (!execResult.Result)
+            return execResult;
+
+        // create the program
+        ProgramScript programInstr = new ProgramScript(script, listInstr);
+
+        // save it
+        _coreData.ListProgram.Add(programInstr);
+
+        _logger.LogCompilEnd(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
+
+        return execResult;
+    }
+    
+    /// <summary>
+    /// Execute a script, should be compiled before.
+    /// </summary>
+    /// <param name="scriptName"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public ExecResult ExecuteScript(string scriptName)
+    {
+        _logger.LogExecStart(ActivityLogLevel.Important, "LexerowCore.ExecuteScript", scriptName);
+
+        ExecResult execResult = new ExecResult();
+
+        // check that the name is not already used by another program
+        if (string.IsNullOrWhiteSpace(scriptName))
+        {
+            if (scriptName == null) scriptName = string.Empty;
+            var error = execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
+            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", scriptName);
+            return execResult;
+        }
+
+        // find the program script 
+        ProgramScript program = _coreData.GetProgramByName(scriptName);
+        if (program == null)
+        {
+            execResult.AddError(ErrorCode.ProgramNotFound, scriptName);
+            return execResult;
+        }
+
         // execute ProgramScript
-        _programRunner.Run(execResult, program);
+        _programRunner.Exec(execResult, program);
 
         return execResult;
     }

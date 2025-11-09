@@ -20,7 +20,7 @@ public enum InstrOnExcelBuildStage
     // waiting for the first instr after the token Row
     Row,
 
-    // first instr foudn, waiting for next instr or for the Next token
+    // first instr found, waiting for next instr or for the Next token
     RowNext,
     If,
 
@@ -54,13 +54,6 @@ public class InstrOnExcel : InstrBase
     public InstrOnExcelBuildStage BuildStage { get; set; } = InstrOnExcelBuildStage.OnExcel;
 
     /// <summary>
-    /// General case on file to analyse.
-    /// can be a string const value or a variable.
-    /// TO_DEL: replaced by instrBase.
-    /// </summary>
-    //public List<InstrBase> ListFiles { get; private set; } = new List<InstrBase>();
-
-    /// <summary>
     /// instr, coming  from script.
     /// Convert to the InstrSelectFiles during the execution.
     /// can be: 
@@ -87,23 +80,6 @@ public class InstrOnExcel : InstrBase
     /// Used by the parser to build the instr.
     /// </summary>
     public InstrOnSheet CurrOnSheet { get; set; } = null;
-
-    ///// <summary>
-    ///// Init to -1 which is not started.
-    ///// Used in execution.
-    ///// </summary>
-    //public int FileToProcessNum { get; set; } = -1;
-
-    ///// <summary>
-    ///// Used in execution.
-    ///// </summary>
-    //public int SheetToProcessNum { get; set; } = -1;
-
-    ///// <summary>
-    ///// Used in execution.
-    ///// TODO: pb! ne stocker que les noms de fichiers , les ouvrir au denier momeont, un par un
-    ///// </summary>
-    //public List<InstrExcelFileObject> ListExcelFiles { get; set; } = new List<InstrExcelFileObject>();
 
     /// <summary>
     /// Create a new OnSheet instr, becomes the default one.

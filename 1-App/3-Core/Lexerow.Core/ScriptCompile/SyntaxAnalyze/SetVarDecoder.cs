@@ -39,7 +39,7 @@ internal class SetVarDecoder
         // the stack contains nothing, strange  =blabla
         if(stackInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
             return false;
         }
 
@@ -49,7 +49,7 @@ internal class SetVarDecoder
             res= ProcessVarName(execResult, listVar, stackInstr, scriptToken, out isToken);
             if(!isToken)
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
+                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
 
@@ -89,7 +89,7 @@ internal class SetVarDecoder
             return true;
         }
 
-        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, stackInstr.Peek().FirstScriptToken());
+        execResult.AddError(ErrorCode.ParserTokenNotExpected, stackInstr.Peek().FirstScriptToken());
         return false;
     }
 

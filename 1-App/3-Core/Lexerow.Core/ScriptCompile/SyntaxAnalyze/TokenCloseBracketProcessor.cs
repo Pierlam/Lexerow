@@ -75,7 +75,7 @@ internal class TokenCloseBracketProcessor
             // TODO: error? to confirm
 
             // error, item before the open bracket is not expected
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
             return false;
         }
 
@@ -174,7 +174,7 @@ internal class TokenCloseBracketProcessor
             }
 
             // error, wrong object name
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
             return false;
         }
         return true;

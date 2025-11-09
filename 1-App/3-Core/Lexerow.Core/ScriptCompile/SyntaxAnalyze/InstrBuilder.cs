@@ -57,13 +57,20 @@ public class InstrBuilder
                 return true;
             }
 
+            // Special case: ForEachRow is allowed -> Row
+            if (scriptToken.Value.Equals(CoreInstr.InstrForEachRow, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrForEachRow(scriptToken);
+                return true;
+            }
+
             // Row
             if (scriptToken.Value.Equals(CoreInstr.InstrRow, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrRow(scriptToken);
                 return true;
             }
-
+            
             // Next
             if (scriptToken.Value.Equals(CoreInstr.InstrNext, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -160,7 +167,7 @@ public class InstrBuilder
                 return true;
             }
 
-            execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken.Value));
+            execResult.AddError(new ExecResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
             instrBase = null;
             return false;
         }
@@ -188,7 +195,7 @@ public class InstrBuilder
             return true;
         }
 
-        execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken.Value));
+        execResult.AddError(new ExecResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
         instrBase = null;
         return false;
     }

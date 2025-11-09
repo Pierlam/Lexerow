@@ -36,7 +36,7 @@ internal class ParserUtils
             // still 2 saved instr are expected
             if (stackInstr.Count < 2)
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, scriptToken);
+                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
 
@@ -46,7 +46,7 @@ internal class ParserUtils
             int colNum = ExcelUtils.ColumnNameToNumber(instrObjectName.ObjectName);
             if(colNum<1)
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerColNumWrong, instrObjectName.FirstScriptToken());
+                execResult.AddError(ErrorCode.ParserColNumWrong, instrObjectName.FirstScriptToken());
                 return false;
             }
 
@@ -110,7 +110,7 @@ internal class ParserUtils
         InstrDot instrDot = instrBaseDot as InstrDot;
         if (instrDot == null)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenDotExpected, instrBaseDot.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenDotExpected, instrBaseDot.FirstScriptToken());
             return false;
         }
 
@@ -119,7 +119,7 @@ internal class ParserUtils
         instrObjectName = instrBaseColAddr as InstrObjectName;
         if (instrObjectName == null)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerColAddressExpected, instrBaseDot.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserColAddressExpected, instrBaseDot.FirstScriptToken());
             return false;
         }
 

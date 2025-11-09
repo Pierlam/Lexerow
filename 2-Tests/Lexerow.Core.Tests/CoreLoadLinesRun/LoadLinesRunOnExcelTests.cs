@@ -1,0 +1,89 @@
+﻿using Lexerow.Core.System;
+using Lexerow.Core.Tests._20_Utils;
+using Lexerow.Core.Tests.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lexerow.Core.Tests.CoreLoadLinesRun;
+
+/// <summary>
+/// Test the script load, compile and run from the core.
+/// Focus on OnExcel instruction.
+/// Need to have input excel files ready.
+/// </summary>
+[TestClass]
+public class LoadLinesRunOnExcelTests : BaseTests
+{
+    [TestMethod]
+    public void OnExcelBasicOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel " + AddDblQuote(PathExcelFilesRun + "datLinesRunOnExcel1.xlsx"),
+            "  ForEach Row",
+            "    If A.Cell>10 Then A.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script and compile it
+        execResult = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+
+        execResult = core.ExecuteScript("script");
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "datLinesRunOnExcel1.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        // r1, c0: 9  -> not modified
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        Assert.IsTrue(res);
+
+        // r2, c0: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        Assert.IsTrue(res);
+    }
+
+    [TestMethod]
+    public void OnExcelBasic2Ok()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel " + AddDblQuote(PathExcelFilesRun + "datLinesRunOnExcel2.xlsx"),
+            "  ForEach Row",
+            "    If A.Cell>10 Then A.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script, compile it and execute it
+        execResult = core.LoadExecLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "datLinesRunOnExcel2.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        // r1, c0: 9  -> not modified
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        Assert.IsTrue(res);
+
+        // r2, c0: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        Assert.IsTrue(res);
+    }
+
+}

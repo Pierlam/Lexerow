@@ -29,7 +29,7 @@ internal class InstrChecker
             // need at least one parameter
             if (instrOpenExcel.ListInstrParams.Count == 0)
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerFctParamCountWrong, instrBase.FirstScriptToken());
+                execResult.AddError(ErrorCode.ParserFctParamCountWrong, instrBase.FirstScriptToken());
                 return false;
             }
             // isntr OpenExcel is ok

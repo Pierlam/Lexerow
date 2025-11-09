@@ -22,7 +22,7 @@ public class ExecFunctionMgr
 
     public Action<AppTrace> AppTraceEvent { get; set; }
 
-    public bool ExecFunction(ExecResult execResult, Stack<InstrBase> stackInstr, InstrBase instrBaseFunction, List<InstrBase> listFuncParams, List<ProgRunVar> listExecVar, DateTime execStart)
+    public bool ExecFunction(ExecResult execResult, Stack<InstrBase> stackInstr, InstrBase instrBaseFunction, List<InstrBase> listFuncParams, List<ProgExecVar> listExecVar, DateTime execStart)
     {
         //--is it OpenExcel?
         if (instrBaseFunction.InstrType == InstrType.SelectFiles)
@@ -30,7 +30,7 @@ public class ExecFunctionMgr
             // should have one parameter, a filename
             if (listFuncParams.Count != 1)
             {
-                execResult.AddError(new ExecResultError(ErrorCode.FuncOneParamExpected, InstrType.SelectFiles.ToString(), listFuncParams.Count.ToString()));
+                execResult.AddError(new ExecResultError(ErrorCode.ExecFuncOneParamExpected, InstrType.SelectFiles.ToString(), listFuncParams.Count.ToString()));
                 return false;
             }
             // check
@@ -51,7 +51,7 @@ public class ExecFunctionMgr
         }
 
         //--function not implemented or unknow
-        execResult.AddError(new ExecResultError(ErrorCode.FuncNotExists, instrBaseFunction.InstrType.ToString()));
+        execResult.AddError(new ExecResultError(ErrorCode.ExecFuncNotExists, instrBaseFunction.InstrType.ToString()));
         return false;
     }
 

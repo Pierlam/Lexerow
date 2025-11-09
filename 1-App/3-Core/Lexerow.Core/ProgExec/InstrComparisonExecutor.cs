@@ -10,14 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ProgRun;
-public class InstrComparisonRunner
+namespace Lexerow.Core.ProgExec;
+public class InstrComparisonExecutor
 {
     IActivityLogger _logger;
 
     IExcelProcessor _excelProcessor;
 
-    public InstrComparisonRunner(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrComparisonExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -36,9 +36,9 @@ public class InstrComparisonRunner
     /// <param name="listVar"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    public bool RunInstrComparison(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrComparison instrComparison)
+    public bool ExecInstrComparison(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrComparison instrComparison)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "InstrComparisonRunner.RunInstrComparison", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrComparisonRunner.RunInstrComparison", string.Empty);
         bool res;
 
         // is left instr A.Cell?

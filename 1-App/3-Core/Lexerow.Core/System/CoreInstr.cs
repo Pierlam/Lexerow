@@ -14,6 +14,10 @@ public class CoreInstr
     public const string InstrForEach = "ForEach";
 
     public const string InstrRow = "Row";
+
+    // special case
+    public const string InstrForEachRow = "ForEachRow";
+    
     public const string InstrNext = "Next";
 
     public const string InstrCol = "Col";

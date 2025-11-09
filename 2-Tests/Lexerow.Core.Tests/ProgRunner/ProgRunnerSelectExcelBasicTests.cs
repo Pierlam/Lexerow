@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.ProgRun;
+using Lexerow.Core.ProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
@@ -50,9 +50,9 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         //--create the program runner
         ActivityLogger logger= new ActivityLogger();
         ExcelProcessorNpoi excelProcessor= new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger,excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger,excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res=programRunner.Run(execResult, programScript);
+        bool res=programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
         // found one file
@@ -90,9 +90,9 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
 
         Assert.IsTrue(res);
         Assert.AreEqual(0, instrSelectFiles.ListSelectedFilename.Count);
@@ -143,9 +143,9 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
 
@@ -216,9 +216,9 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
 
@@ -258,11 +258,11 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
 
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.RunInstrVarNotFound, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ExecInstrVarNotFound, execResult.ListError[0].ErrorCode);
     }
 }

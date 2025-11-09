@@ -81,7 +81,7 @@ internal class StackContentProcessor
             if (isToken) continue;
 
             // case not managed, error or not yet implemented
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, null, sourceCodeLineIndex.ToString());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, null, sourceCodeLineIndex.ToString());
             return false;
         }
     }
@@ -194,7 +194,7 @@ internal class StackContentProcessor
 
                 return true;
             }
-            execResult.AddError(ErrorCode.SyntaxAnalyzerSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -204,7 +204,7 @@ internal class StackContentProcessor
             // check that the function return something to set to a var
             if (instrBase.ReturnType == InstrFunctionReturnType.Nothing) 
             {
-                execResult.AddError(ErrorCode.SyntaxAnalyzerSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+                execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;
             }
 
@@ -223,7 +223,7 @@ internal class StackContentProcessor
         }
 
         // other cases: unexpected so error
-        execResult.AddError(ErrorCode.SyntaxAnalyzerSetVarWrongRightPart, instrBase.FirstScriptToken());
+        execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken());
         return false;
     }
 
@@ -390,7 +390,7 @@ internal class StackContentProcessor
         InstrThen instrThen= instrBase as InstrThen;
         if(instrThen==null)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenThenExpected, instrBase.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
             return false;
         }
 
@@ -480,7 +480,7 @@ internal class StackContentProcessor
             return true;
         }
 
-        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenThenExpected, instrBase.FirstScriptToken());
+        execResult.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
         return false;
     }
 
@@ -522,7 +522,7 @@ internal class StackContentProcessor
         // the stack should contains the If instr
         if (stackInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenIfExpected, instrThen.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenIfExpected, instrThen.FirstScriptToken());
             return false;
         }
 
@@ -530,7 +530,7 @@ internal class StackContentProcessor
         InstrIf instrIf = stackInstr.Pop() as InstrIf;
         if (instrIf==null)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenIfExpected, instrThen.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenIfExpected, instrThen.FirstScriptToken());
             return false;
         }
 
@@ -542,7 +542,7 @@ internal class StackContentProcessor
         // the stack should contains the If instr
         if (stackInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenIfExpected, instrThen.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserTokenIfExpected, instrThen.FirstScriptToken());
             return false;
         }
 
@@ -580,7 +580,7 @@ internal class StackContentProcessor
         // it's a fct call, the stack should contains onyl one item
         if (stackInstr.Count != 1)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, null, sourceCodeLineIndex.ToString());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, null, sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -592,12 +592,12 @@ internal class StackContentProcessor
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!
-            execResult.AddError(ErrorCode.SyntaxAnalyzerFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            execResult.AddError(ErrorCode.ParserFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
         // other cases: unexpected -> error
-        execResult.AddError(ErrorCode.SyntaxAnalyzerTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+        execResult.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
         return false;
     }
 

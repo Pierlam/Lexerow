@@ -49,7 +49,7 @@ public class Parser
         if (listScriptLineTokens.Count == 0)
         {
             listInstr = null;
-            execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerNoToken));
+            execResult.AddError(new ExecResultError(ErrorCode.ParserTokenExpected));
             return false;
         }
 
@@ -133,7 +133,7 @@ public class Parser
             if (currToken.ScriptTokenType == ScriptTokenType.Undefined || currToken.ScriptTokenType == ScriptTokenType.StringBadFormed ||
                 currToken.ScriptTokenType == ScriptTokenType.WrongNumber)
             {
-                execResult.AddError(new ExecResultError(ErrorCode.SyntaxAnalyzerTokenNotExpected, currToken.Value));
+                execResult.AddError(ErrorCode.ParserTokenNotExpected, currToken.Value);
                 return false;
             }
 
@@ -191,12 +191,9 @@ public class Parser
             stackInstr.Push(instr);
         }
 
-        // finish the process
-        if (!execResult.Result)
-        {
-            // clear the list of instructions obtained
-            listInstrToExec.Clear();
-        }
+        // end of tokens parsing, check for errors
+        if (!CheckEndParsing(execResult, stackInstr, listInstrToExec))
+            return false;
 
         return execResult.Result;
     }
@@ -234,4 +231,40 @@ public class Parser
         return true;
     }
 
+    /// <summary>
+    /// End of tokens parsing, check for errors
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="listInstrToExec"></param>
+    /// <returns></returns>
+    static bool CheckEndParsing(ExecResult execResult, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
+    {
+        if(!execResult.Result)
+        {
+            // clear the list of instructions obtained
+            listInstrToExec.Clear();
+            return false;         
+        }
+
+        // nothing in the stack, ok!
+        if (stackInstr.Count == 0)
+            return true;
+
+        // the stack contains items, error have occured
+        InstrOnExcel instrOnExcel= stackInstr.Peek() as InstrOnExcel;
+        if (instrOnExcel != null)
+        {
+            if(instrOnExcel.BuildStage== InstrOnExcelBuildStage.OnSheet)
+            {
+                execResult.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken(),  "Maybe 'End OnExcel' is missing");
+                return false;
+            }
+            execResult.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken());
+            return false;
+        }
+
+        execResult.AddError(ErrorCode.ParserTokenExpected, stackInstr.Peek().FirstScriptToken());
+        return false;
+    }
 }

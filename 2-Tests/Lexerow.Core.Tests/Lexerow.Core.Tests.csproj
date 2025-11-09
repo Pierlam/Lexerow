@@ -52,6 +52,18 @@
     <None Update="10-Files\Greater50Set12.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="10-Files\Run\datLinesRunOnExcel2.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-Files\Run\datLinesRunOnExcel1.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-Files\Run\datLinesRunSelect2.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-Files\Run\datLinesRunSelect1.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="10-Files\Run\dataOnExcelJokerB2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

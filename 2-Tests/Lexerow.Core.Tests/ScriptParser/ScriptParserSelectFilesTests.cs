@@ -188,7 +188,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
 
 
@@ -222,7 +222,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -255,7 +255,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -287,7 +287,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerFctParamCountWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -320,7 +320,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerFctParamTypeWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserFctParamTypeWrong, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -353,7 +353,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerFctParamVarNotDefined, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserFctParamVarNotDefined, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -383,7 +383,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerFctParamCountWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -417,7 +417,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
         Assert.AreEqual("then", execResult.ListError[0].Param);
     }
 
@@ -454,7 +454,7 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
 
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -487,7 +487,7 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual(0, listInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
 
-        Assert.AreEqual(ErrorCode.SyntaxAnalyzerFctResultNotSet, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserFctResultNotSet, execResult.ListError[0].ErrorCode);
     }
 
     // file=

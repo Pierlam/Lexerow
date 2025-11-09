@@ -14,14 +14,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ProgRun;
-internal class InstrOnExcelRunner
+namespace Lexerow.Core.ProgExec;
+internal class InstrOnExcelExecutor
 {
     IActivityLogger _logger;
 
     IExcelProcessor _excelProcessor;
 
-    public InstrOnExcelRunner(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrOnExcelExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -39,9 +39,9 @@ internal class InstrOnExcelRunner
     /// <param name="listVar"></param>
     /// <param name="instrOnExcel"></param>
     /// <returns></returns>
-    public bool RunInstrOnExcel(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrOnExcel instrOnExcel)
+    public bool ExecInstrOnExcel(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "ProgRunner.RunInstrOnExcel", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
         bool res;
 
         // check the init, several cases to manage
@@ -78,22 +78,24 @@ internal class InstrOnExcelRunner
         if (!OpenExcelFile(execResult, ctx.ExcelFileObject))
             return false;
 
-        // process sheets
-        InstrNextSheet instrNextSheet = new InstrNextSheet(instrOnExcel.FirstScriptToken(), instrOnExcel.ListSheets);
-        ctx.StackInstr.Push(instrNextSheet);
+        // process all sheets, one by one
+        InstrProcessSheets instrProcessSheets = new InstrProcessSheets(instrOnExcel.FirstScriptToken(), instrOnExcel.ListSheets);
+        ctx.StackInstr.Push(instrProcessSheets);
         return true;
     }
 
     /// <summary>
-    /// after OnExcel, comes here, manage sheets to process.
+    /// after OnExcel, comes here, process all sheets, one by one.
     /// </summary>
     /// <param name="execResult"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrNextSheet"></param>
     /// <returns></returns>
-    public bool RunInstrNextSheet(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrNextSheet instrNextSheet)
+    public bool ExecInstrProcessSheets(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
     {
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessSheets", string.Empty);
+
         // move to next sheet num
         instrNextSheet.SheetNum++;
 
@@ -119,9 +121,9 @@ internal class InstrOnExcelRunner
     /// <param name="listVar"></param>
     /// <param name="instrOnSheet"></param>
     /// <returns></returns>
-    public bool RunInstrOnSheet(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrOnSheet instrOnSheet)
+    public bool ExecInstrOnSheet(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "ProgRunner.RunInstrOnSheet", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", string.Empty);
         bool res;
 
         // start of the sheet processing?
@@ -130,13 +132,15 @@ internal class InstrOnExcelRunner
             // get the sheet from excel
             ctx.ExcelSheet = _excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum-1);
             
-            InstrNextRow instrNextRow = new InstrNextRow(instrOnSheet.FirstScriptToken(), instrOnSheet.ListInstrForEachRow);
+            // process datarow of the current sheet
+            InstrProcessRow instrProcessRow = new InstrProcessRow(instrOnSheet.FirstScriptToken(), instrOnSheet.ListInstrForEachRow);
+
             // translate in base0 from human readable base1
-            instrNextRow.RowNum= instrOnSheet.FirstRowNum-1;
-            instrNextRow.ColNum= instrOnSheet.FirstColNum-1;
+            instrProcessRow.RowNum= instrOnSheet.FirstRowNum-1;
+            instrProcessRow.ColNum= instrOnSheet.FirstColNum-1;
 
             // set to the first datarow
-            ctx.StackInstr.Push(instrNextRow);
+            ctx.StackInstr.Push(instrProcessRow);
             return true;
         }
 
@@ -146,54 +150,56 @@ internal class InstrOnExcelRunner
     }
 
     /// <summary>
-    /// proceed next datarow.
-    ///  -Stack: NextRow, OnSheet, OnExcel
+    /// process the current datarow.
+    ///     Execute all defined instructions (ForEach Row ListInstr).
+    ///  -Stack: ProcessRow, OnSheet, OnExcel
     ///  Next: ForEachRow.
     /// </summary>
     /// <param name="execResult"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
-    /// <param name="instrNewRow"></param>
+    /// <param name="instrProcessRow"></param>
     /// <returns></returns>
-    public bool RunInstrNextRow(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrNextRow instrNewRow)
+    public bool ExecInstrProcessRow(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessRow instrProcessRow)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "ProgRunner.RunInstrNextRow", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessRow", string.Empty);
 
         // next data row exists?
         int lastRowNum= _excelProcessor.GetLastRowNum(ctx.ExcelSheet);
-        if(instrNewRow.RowNum > lastRowNum)
+        if(instrProcessRow.RowNum > lastRowNum)
         {
             // no more datarow to process, go back to OnSheet instr
             ctx.StackInstr.Pop();
-            _logger.LogRunEnd(ActivityLogLevel.Info, "ProgRunner.RunInstrNextRow", "No More row");
+            _logger.LogExecEnd(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessRow", "No More row");
             return true;
         }
 
-        ctx.RowNum = instrNewRow.RowNum;
+        ctx.RowNum = instrProcessRow.RowNum;
         // prepare the next one
-        instrNewRow.RowNum++;
+        instrProcessRow.RowNum++;
 
-        InstrForEachRow instrForEachRow = new InstrForEachRow(instrNewRow.FirstScriptToken(), instrNewRow.ListInstrForEachRow);
+        // next: process all defined instructions on the current row
+        InstrProcessInstrForEachRow instrForEachRow = new InstrProcessInstrForEachRow(instrProcessRow.FirstScriptToken(), instrProcessRow.ListInstrForEachRow);
 
         ctx.StackInstr.Push(instrForEachRow);
 
-        _logger.LogRunEnd(ActivityLogLevel.Info, "ProgRunner.RunInstrNextRow", "NextRowNum: " + instrNewRow.RowNum);
+        _logger.LogExecEnd(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowNum);
         return true;
     }
 
 
     /// <summary>
     /// Execute next instr defined in the ForEach/Next instr block.
-    ///  -Stack: ForEachRow, NextRow, OnSheet, OnExcel
+    ///  -Stack: ProcessInstrForEachRow, ProcessRow, OnSheet, OnExcel
     /// </summary>
     /// <param name="execResult"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrForEachRow"></param>
     /// <returns></returns>
-    public bool RunInstrForEachRow(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrForEachRow instrForEachRow)
+    public bool ExecProcessInstrForEachRow(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessInstrForEachRow instrForEachRow)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "ProgRunner.RunInstrForEachRow", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecProcessInstrForEachRow", string.Empty);
 
         // execute next instr in ForEach Row
         instrForEachRow.InstrToProcessNum++;
@@ -203,18 +209,18 @@ internal class InstrOnExcelRunner
         {
             // no more instr to execute in OnSheet/ForEachRow
             ctx.StackInstr.Pop();
-            _logger.LogRunEnd(ActivityLogLevel.Info, "ProgRunner.RunInstrForEachRow", "No More Instr");
+            _logger.LogExecEnd(ActivityLogLevel.Info, "InstrOnExcelExecutor.RunInstrForEachRow", "No More Instr");
             return true;
         }
 
         // get the next instr to execute
         InstrBase instrBase = instrForEachRow.ListInstr[instrForEachRow.InstrToProcessNum];
         ctx.StackInstr.Push(instrBase);
-        _logger.LogRunEnd(ActivityLogLevel.Info, "ProgRunner.RunInstrForEachRow", "InstrToProcessNum: " + instrForEachRow.InstrToProcessNum);
+        _logger.LogExecEnd(ActivityLogLevel.Info, "InstrOnExcelExecutor.RunInstrForEachRow", "InstrToProcessNum: " + instrForEachRow.InstrToProcessNum);
         return true;
     }
 
-    bool CheckInitOnExcel(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
+    bool CheckInitOnExcel(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
 
@@ -238,7 +244,7 @@ internal class InstrOnExcelRunner
         //--init-0, all cases checked
         if(instrOnExcel.InstrSelectFiles==null)
         {
-            execResult.AddError(ErrorCode.RunInstrNotManaged, instrOnExcel.FirstScriptToken());
+            execResult.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.FirstScriptToken());
             return false;
         }
 
@@ -259,7 +265,7 @@ internal class InstrOnExcelRunner
     /// <param name="instrOnExcel"></param>
     /// <param name="exitStack"></param>
     /// <returns></returns>
-    bool IsOnExcelInitFilenameString(ExecResult execResult, ProgramRunnerContext ctx, InstrOnExcel instrOnExcel, out bool exitStack)
+    bool IsOnExcelInitFilenameString(ExecResult execResult, ProgramExecContext ctx, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
         if (ctx.PrevInstrExecuted != null) return true;
@@ -271,7 +277,7 @@ internal class InstrOnExcelRunner
         if (instrConstValue.ValueBase.ValueType != System.ValueType.String) 
         {
             // value should be string, a filename
-            execResult.AddError(ErrorCode.RunInstrVarTypeNotExpected, instrConstValue.FirstScriptToken());
+            execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrConstValue.FirstScriptToken());
             return false;
         }
 
@@ -297,7 +303,7 @@ internal class InstrOnExcelRunner
     /// <param name="instrOnExcel"></param>
     /// <param name="exitStack"></param>
     /// <returns></returns>
-    bool IsOnExcelInitFilenameVar(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
+    bool IsOnExcelInitFilenameVar(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
         if (ctx.PrevInstrExecuted != null) return true;
@@ -307,11 +313,11 @@ internal class InstrOnExcelRunner
         if (instrObjectName == null) return true;
 
         // get the final value of the var
-        ProgRunVar progRunVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
+        ProgExecVar progRunVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
         if(progRunVar == null)
         {
             // var name not found, not defined before in the script
-            execResult.AddError(ErrorCode.RunInstrVarNotFound, instrOnExcel.InstrFiles.FirstScriptToken());
+            execResult.AddError(ErrorCode.ExecInstrVarNotFound, instrOnExcel.InstrFiles.FirstScriptToken());
             return false;
         }
 
@@ -322,7 +328,7 @@ internal class InstrOnExcelRunner
             if (instrConstValue.ValueBase.ValueType != System.ValueType.String)
             {
                 // value should be string, a filename
-                execResult.AddError(ErrorCode.RunInstrVarTypeNotExpected, instrConstValue.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrConstValue.FirstScriptToken());
                 return false;
             }
 

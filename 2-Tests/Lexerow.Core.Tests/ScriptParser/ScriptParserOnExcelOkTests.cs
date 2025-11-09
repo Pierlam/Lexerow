@@ -9,15 +9,14 @@ namespace Lexerow.Core.Tests.ScriptParser;
 
 /// <summary>
 /// Test script lexical analyzer on OnExcel instr.
-/// Very short version.
 /// Neither OnSheet, nor FirstRow.
 /// One IfThen in ForEachRow.
 /// </summary>
 [TestClass]
-public class ScriptParserOnExcelVeryShortTests
+public class ScriptParserOnExcelOkTests
 {
     /// <summary>
-    /// Compile:, OnExcel, very short version
+    /// Compile: OnExcel, very short version
     /// Result: one instruction OnExcel
     /// Implicite: sheet=0, FirstRow=1
     /// 
@@ -65,6 +64,7 @@ public class ScriptParserOnExcelVeryShortTests
         Assert.IsTrue(res);
         Assert.AreEqual(1, listInstr.Count);
 
+        //--check result
         // OnExcel
         Assert.AreEqual(InstrType.OnExcel, listInstr[0].InstrType);
         InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;

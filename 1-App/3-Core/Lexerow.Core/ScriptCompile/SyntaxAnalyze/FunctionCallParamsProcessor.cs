@@ -27,7 +27,7 @@ internal class FunctionCallParamsProcessor
         if (stackInstr.Count == 0)
         {
             // function call name expected
-            execResult.AddError(ErrorCode.SyntaxAnalyzerFctNameExpected, scriptToken);
+            execResult.AddError(ErrorCode.ParserFctNameExpected, scriptToken);
 
             return false;
         }
@@ -52,7 +52,7 @@ internal class FunctionCallParamsProcessor
         // only one param expected, type should be string or an instr returning a string
         if (listParams.Count != 1)
         {
-            execResult.AddError(ErrorCode.SyntaxAnalyzerFctParamCountWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            execResult.AddError(ErrorCode.ParserFctParamCountWrong, instr.ListScriptToken[0], listParams.Count.ToString());
             return false;
         }
 
@@ -69,7 +69,7 @@ internal class FunctionCallParamsProcessor
             }
 
             // not a string, error
-            execResult.AddError(ErrorCode.SyntaxAnalyzerFctParamTypeWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            execResult.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams.Count.ToString());
             return false;
         }
 
@@ -81,7 +81,7 @@ internal class FunctionCallParamsProcessor
             if(listVar.FirstOrDefault(x => x.ObjectName.Equals(instrObjectName.ObjectName, StringComparison.InvariantCultureIgnoreCase))==null)
             {
                 // not a string, error
-                execResult.AddError(ErrorCode.SyntaxAnalyzerFctParamVarNotDefined, instr.ListScriptToken[0], listParams.Count.ToString());
+                execResult.AddError(ErrorCode.ParserFctParamVarNotDefined, instr.ListScriptToken[0], listParams.Count.ToString());
                 return false;
             }
 
@@ -91,7 +91,7 @@ internal class FunctionCallParamsProcessor
         }
 
 
-        execResult.AddError(ErrorCode.SyntaxAnalyzerFctParamTypeWrong, instr.ListScriptToken[0], listParams[0].GetType().ToString());
+        execResult.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams[0].GetType().ToString());
         return false;
     }
 }

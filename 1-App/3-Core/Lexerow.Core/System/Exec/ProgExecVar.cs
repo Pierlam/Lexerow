@@ -16,9 +16,9 @@ public enum ProgRunVarType
 
 }
 
-public class ProgRunVar
+public class ProgExecVar
 {
-    public ProgRunVar(InstrBase name, InstrBase value)
+    public ProgExecVar(InstrBase name, InstrBase value)
     {
         ObjectName = name;
         Value = value;

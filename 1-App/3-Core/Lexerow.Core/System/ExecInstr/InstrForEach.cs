@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.System;
 
 /// <summary>
-/// Instr ForEach. TO manage the token found in the script.
+/// Instr ForEach. To manage the token found in the script.
+/// Used by the parser.
 /// </summary>
 public class InstrForEach : InstrBase
 {
@@ -16,13 +17,4 @@ public class InstrForEach : InstrBase
     {
         InstrType = InstrType.ForEach;
     }
-
-
-    /// <summary>
-    /// list of instr to execute. 
-    /// If Then
-    /// or direct instr to execute for each row.
-    /// </summary>
-    //public List<InstrBase> ListInstr { get; set; } = new List<InstrBase>();
-
 }

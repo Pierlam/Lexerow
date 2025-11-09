@@ -6,11 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-public class InstrNextSheet : InstrBase
+
+/// <summary>
+/// After instr OnExcel, process all sheets.
+/// Used during execution.
+/// </summary>
+public class InstrProcessSheets : InstrBase
 {
-    public InstrNextSheet(ScriptToken scriptToken, List<InstrOnSheet> listSheet) : base(scriptToken)
+    public InstrProcessSheets(ScriptToken scriptToken, List<InstrOnSheet> listSheet) : base(scriptToken)
     {
-        InstrType = InstrType.NextSheet;
+        InstrType = InstrType.ProcessSheets;
         ListSheet= listSheet;
     }
 

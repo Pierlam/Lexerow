@@ -10,19 +10,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ProgRun;
-public class InstrIfThenElseRunner
+namespace Lexerow.Core.ProgExec;
+public class InstrIfThenElseExecutor
 {
     IActivityLogger _logger;
 
-    public InstrIfThenElseRunner(IActivityLogger activityLogger)
+    public InstrIfThenElseExecutor(IActivityLogger activityLogger)
     {
         _logger = activityLogger;
     }
 
-    public bool RunInstrIfThenElse(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrIfThenElse instrIfThenElse)
+    public bool ExecInstrIfThenElse(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIfThenElse instrIfThenElse)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", string.Empty);
 
         // manage execution of the then instr if if instr result is true
         if (ctx.PrevInstrExecuted != null)
@@ -31,7 +31,7 @@ public class InstrIfThenElseRunner
             InstrIf instrIf = ctx.PrevInstrExecuted as InstrIf;
             if(instrIf!=null)
             {
-                _logger.LogRunEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", "Prev was If, push Then block instr");
+                _logger.LogExecEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", "Prev was If, push Then block instr");
                 // execute then instr
                 instrIfThenElse.InstrThen.ClearRun();
                 ctx.StackInstr.Push(instrIfThenElse.InstrThen);
@@ -53,7 +53,7 @@ public class InstrIfThenElseRunner
  
         // execute If part
         ctx.StackInstr.Push(instrIfThenElse.InstrIf);
-        _logger.LogRunEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", "Push If instr");
+        _logger.LogExecEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", "Push If instr");
         return true;
     }
 
@@ -73,9 +73,9 @@ public class InstrIfThenElseRunner
     /// <param name="listVar"></param>
     /// <param name="instrIf"></param>
     /// <returns></returns>
-    public bool RunInstrIf(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrIf instrIf)
+    public bool ExecInstrIf(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIf instrIf)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", string.Empty);
 
         //--if instr already executed?
         if (ctx.PrevInstrExecuted != null)
@@ -84,7 +84,7 @@ public class InstrIfThenElseRunner
             var instrComparison= ctx.PrevInstrExecuted as InstrComparison;
             if (instrComparison!=null)
             {
-                _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", "Prev was If comparison, result: " + instrIf.Result.ToString());
+                _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", "Prev was If comparison, result: " + instrIf.Result.ToString());
                 instrIf.Result = instrComparison.Result;
 
                 // remove the if from the stack
@@ -115,7 +115,7 @@ public class InstrIfThenElseRunner
         if (instrIf.InstrBase.InstrType == InstrType.Comparison)
         {
             ctx.StackInstr.Push(instrIf.InstrBase);
-            _logger.LogRunEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", "Run If comparison");
+            _logger.LogExecEnd(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", "Run If comparison");
             return true;
         }
 
@@ -125,9 +125,9 @@ public class InstrIfThenElseRunner
         return true;
     }
 
-    public bool RunInstrThen(ExecResult execResult, ProgramRunnerContext ctx, ProgRunVarMgr progRunVarMgr, InstrThen instrThen)
+    public bool ExecInstrThen(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrThen instrThen)
     {
-        _logger.LogRunStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrThen", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrThen", string.Empty);
 
         instrThen.RunInstrNum++;
         if (instrThen.RunInstrNum >= instrThen.ListInstr.Count)

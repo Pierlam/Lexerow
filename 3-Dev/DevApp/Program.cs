@@ -36,7 +36,7 @@ void TestCore()
 {
     LexerowCore core = new LexerowCore();
     core.ActivityLogEvent += Core_ActivityLogEvent;
-    core.LoadScriptFromFile("scriptName", "fileName");
+    core.LoadScript("scriptName", "fileName");
 }
 
 void TestGetFiles()

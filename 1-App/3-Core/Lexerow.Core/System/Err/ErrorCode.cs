@@ -177,49 +177,50 @@ public enum ErrorCode
     ProgramNotFound,
     NoCurrentProgramExist,
 
-
+    LoadScriptLinesNull,
+    LoadScriptLinesEmpty,
     LoadScriptFileException,
     LoadScriptFileEmpty,
 
     //--lexical analyzer error codes
-    LexAnalyzeFoundDoubleWrong,
-    LexAnalyzeFoundSgtringBadFormatted,
-    LexAnalyzeFoundCharUndefined,
+    LexerFoundDoubleWrong,
+    LexerFoundSgtringBadFormatted,
+    LexerFoundCharUndefined,
 
     //--syntax analyzer error codes
-    SyntaxAnalyzerNoToken,
-    SyntaxAnalyzerTokenNotExpected,
-    
-    SyntaxAnalyzerFctNameExpected,
-    //SyntaxAnalyzerFctNameNotDefined,
-    SyntaxAnalyzerFctParamCountWrong,
-    SyntaxAnalyzerFctParamTypeWrong,
-    SyntaxAnalyzerFctParamVarNotDefined,
-    SyntaxAnalyzerSetVarWrongRightPart,
-    SyntaxAnalyzerFctResultNotSet,
-    SyntaxAnalyzerConstStringValueExpected,
+    ParserTokenNotExpected,
+    ParserTokenExpected,
 
-    SyntaxAnalyzerOnSheetExpected,
-    SyntaxAnalyzerTokenDotExpected,
-    SyntaxAnalyzerColAddressExpected,
-    SyntaxAnalyzerColNumWrong,
-    SyntaxAnalyzerSepComparatorExpected,
-    SyntaxAnalyzerReturnTypeWrong,
-    SyntaxAnalyzerTokenIfExpected,
-    SyntaxAnalyzerTokenThenExpected,
+    ParserFctNameExpected,
+    ParserFctParamCountWrong,
+    ParserFctParamTypeWrong,
+    ParserFctParamVarNotDefined,
+    ParserSetVarWrongRightPart,
+    ParserFctResultNotSet,
+    ParserConstStringValueExpected,
+
+    ParserOnSheetExpected,
+    ParserTokenDotExpected,
+    ParserColAddressExpected,
+    ParserColNumWrong,
+    ParserSepComparatorExpected,
+    ParserReturnTypeWrong,
+    ParserTokenIfExpected,
+    ParserTokenThenExpected,
 
     //--run program, instructions
-    RunInstrNotManaged,
-    RunInstrTypeStringExpected,
-    RunInstrVarNotFound,
-    RunInstrVarTypeNotExpected,
-    RunInstrMissing,
-    RunInstrAccessFileWrong,
-    RunInstrFilenameWrong,
-    RunInstrFilePathWrong,
+    ExecInstrNotManaged,
+    ExecInstrTypeStringExpected,
+    ExecInstrVarNotFound,
+    ExecInstrVarTypeNotExpected,
+    ExecInstrMissing,
+    ExecInstrAccessFileWrong,
+    ExecInstrFilenameWrong,
+    ExecInstrFilePathWrong,
 
-    FuncNotExists,
-    FuncOneParamExpected,
+    ExecFuncNotExists,
+
+    ExecFuncOneParamExpected,
 
     InstrNotExpected,
     IntMustBePositive

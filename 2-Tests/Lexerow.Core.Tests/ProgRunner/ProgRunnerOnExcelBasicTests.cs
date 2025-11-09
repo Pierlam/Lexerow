@@ -1,6 +1,6 @@
 ﻿using FakeItEasy;
 using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.ProgRun;
+using Lexerow.Core.ProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
@@ -54,9 +54,9 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -106,9 +106,9 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -181,9 +181,9 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -242,9 +242,9 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -316,9 +316,9 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramRunner programRunner = new ProgramRunner(logger, excelProcessor);
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res = programRunner.Run(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
         //--check the content of excel file

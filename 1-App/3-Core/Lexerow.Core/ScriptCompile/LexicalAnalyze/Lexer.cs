@@ -40,19 +40,19 @@ public class Lexer
             {
                 if(lastTokenType== ScriptTokenType.WrongNumber)
                 {
-                    var error= execResult.AddError(ErrorCode.LexAnalyzeFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
+                    var error= execResult.AddError(ErrorCode.LexerFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
                     //execResult.AddError(new ExecResultError(ErrorCode.LexAnalyzeFoundDoubleWrong, scriptLine.Line));
                     logger.LogCompilEndError(error, "LexicalAnalyzer.Process", script.Name);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.StringBadFormed)
                 {
-                    execResult.AddError(new ExecResultError(ErrorCode.LexAnalyzeFoundSgtringBadFormatted, scriptLine.Line));
+                    execResult.AddError(new ExecResultError(ErrorCode.LexerFoundSgtringBadFormatted, scriptLine.Line));
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.Undefined)
                 {
-                    execResult.AddError(new ExecResultError(ErrorCode.LexAnalyzeFoundCharUndefined, scriptLine.Line));
+                    execResult.AddError(new ExecResultError(ErrorCode.LexerFoundCharUndefined, scriptLine.Line));
                     return false;
                 }
             }

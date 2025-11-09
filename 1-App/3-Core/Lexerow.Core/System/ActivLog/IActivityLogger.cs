@@ -23,11 +23,11 @@ public interface IActivityLogger
 
     void LogCompilEndError(ExecResultError error, string operation, string msg);
 
-    void LogRunStart(ActivityLogLevel level, string operation, string msg);
+    void LogExecStart(ActivityLogLevel level, string operation, string msg);
 
-    void LogRunEnd(ActivityLogLevel level, string operation, string msg);
+    void LogExecEnd(ActivityLogLevel level, string operation, string msg);
 
-    void LogRunOnGoing(ActivityLogLevel level, string operation, string msg);
+    void LogExecOnGoing(ActivityLogLevel level, string operation, string msg);
 
-    void LogRunEndError(ExecResultError error, string operation, string msg);
+    void LogExecEndError(ExecResultError error, string operation, string msg);
 }

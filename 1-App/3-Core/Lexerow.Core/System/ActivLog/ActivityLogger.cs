@@ -70,7 +70,7 @@ public class ActivityLogger:IActivityLogger
     public void LogExecStart(ActivityLogLevel level, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.Start, level, operation, msg);
-        log.ActivityLogBaseType = ActivityLogType.RunProg;
+        log.ActivityLogBaseType = ActivityLogType.ExecProg;
         RaiseEvent(log);
     }
 
@@ -82,14 +82,14 @@ public class ActivityLogger:IActivityLogger
     public void LogExecEnd(ActivityLogLevel level, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.End, level, operation, msg);
-        log.ActivityLogBaseType = ActivityLogType.RunProg;
+        log.ActivityLogBaseType = ActivityLogType.ExecProg;
         RaiseEvent(log);
     }
 
     public void LogExecOnGoing(ActivityLogLevel level, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.OnGoing, level, operation, msg);
-        log.ActivityLogBaseType = ActivityLogType.RunProg;
+        log.ActivityLogBaseType = ActivityLogType.ExecProg;
         RaiseEvent(log);
     }
 
@@ -102,7 +102,7 @@ public class ActivityLogger:IActivityLogger
     public void LogExecEndError(ExecResultError error, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Important, operation, msg);
-        log.ActivityLogBaseType = ActivityLogType.RunProg;
+        log.ActivityLogBaseType = ActivityLogType.ExecProg;
         log.Error = error;
         log.Result = ActivityLogResult.Error;
         RaiseEvent(log);

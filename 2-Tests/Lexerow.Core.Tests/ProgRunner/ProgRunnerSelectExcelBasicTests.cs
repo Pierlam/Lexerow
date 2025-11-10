@@ -38,7 +38,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
 
         //-instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.BuildInstrSelectExcelParamString(AddDblQuote(PathExcelFilesRun + "data1.xlsx"));
+        InstrSelectFiles instrSelectFiles = TestInstrBuilder.BuildInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "data1.xlsx"));
 
         //-Setvar
         InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrSelectFiles);
@@ -116,7 +116,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("name");
 
         //-instr right
-        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesRun + "dataName.xlsx"));
+        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));
 
         //-Setvar
         InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrConstValue);
@@ -176,7 +176,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("f");
 
         //-instr right
-        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesRun + "dataName.xlsx"));
+        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));
 
         //-Setvar
         InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrConstValue);

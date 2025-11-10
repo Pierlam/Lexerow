@@ -45,7 +45,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         InstrIfThenElse instrIfThenElse = TestInstrBuilder.CreateInstrIfThen("A", 1, ">", 10, "A", 1, 10);
 
         //--OnExcel "dataOnExcel1.xlsx" ForEach Row IfThen Next
-        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileString(AddDblQuote(PathExcelFilesRun + "dataOnExcel1.xlsx"), instrIfThenElse);
+        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileString(AddDblQuote(PathExcelFilesExec + "dataOnExcel1.xlsx"), instrIfThenElse);
         listInstr.Add(instrOnExcel);
 
         //--create the compiled script -> the program
@@ -60,7 +60,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream= TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcel1.xlsx");
+        var fileStream= TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcel1.xlsx");
         Assert.IsNotNull(fileStream);
         var wb= TestExcelChecker.GetWorkbook(fileStream);
 
@@ -97,7 +97,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         InstrIfThenElse instrIfThenElse = TestInstrBuilder.CreateInstrIfThen("A", 1, ">", 10, "A", 1, 10);
 
         //--OnExcel "dataOnExcel1.xlsx" ForEach Row IfThen Next
-        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileString(AddDblQuote(PathExcelFilesRun + "dataOnExcelJokerA*.xlsx"), instrIfThenElse);
+        InstrOnExcel instrOnExcel = TestInstrBuilder.CreateInstrOnExcelFileString(AddDblQuote(PathExcelFilesExec + "dataOnExcelJokerA*.xlsx"), instrIfThenElse);
         listInstr.Add(instrOnExcel);
 
         //--create the compiled script -> the program
@@ -112,7 +112,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerA.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerA.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
@@ -125,7 +125,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerA2.xlsx");
+        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerA2.xlsx");
         Assert.IsNotNull(fileStream);
         wb = TestExcelChecker.GetWorkbook(fileStream);
 
@@ -162,7 +162,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
 
         //instr right
-        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesRun + "dataOnExcel2.xlsx"));
+        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcel2.xlsx"));
 
         InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrConstValue);
         listInstr.Add(instrSetVar);
@@ -187,7 +187,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcel2.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcel2.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
@@ -223,7 +223,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
 
         //instr right
-        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesRun + "dataOnExcelJokerB*.xlsx"));
+        InstrConstValue instrConstValue = TestInstrBuilder.BuildInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcelJokerB*.xlsx"));
 
         InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrConstValue);
         listInstr.Add(instrSetVar);
@@ -248,7 +248,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerB.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerB.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
@@ -262,7 +262,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
 
 
         //--check the content of excel file  B2
-        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcelJokerB2.xlsx");
+        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerB2.xlsx");
         Assert.IsNotNull(fileStream);
         wb = TestExcelChecker.GetWorkbook(fileStream);
 
@@ -297,7 +297,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
 
         // instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.BuildInstrSelectExcelParamString(AddDblQuote(PathExcelFilesRun + "dataOnExcel3.xlsx"));
+        InstrSelectFiles instrSelectFiles = TestInstrBuilder.BuildInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "dataOnExcel3.xlsx"));
 
         InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrSelectFiles);
         listInstr.Add(instrSetVar);
@@ -322,7 +322,7 @@ public class ProgRunnerOnExcelBasicTests : BaseTests
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "dataOnExcel3.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcel3.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 

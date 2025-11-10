@@ -12,7 +12,7 @@ public enum ActivityLogType
     Other,
     LoadScript,
     CompileScript,
-    RunProg,
+    ExecProg,
 }
 
 public enum ActivityLogLevel

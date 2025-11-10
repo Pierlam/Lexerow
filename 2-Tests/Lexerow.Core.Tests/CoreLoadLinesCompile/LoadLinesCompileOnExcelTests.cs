@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Tests.CoreLoadLinesCompile;
 
 /// <summary>
-/// Test the script load and compile from the core.
+/// Test the script load from lines and compile from the core.
 /// Focus on OnExcel instruction.
 /// No need to have input excel file. Check the script content/structure itself.
 /// </summary>

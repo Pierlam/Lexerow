@@ -11,6 +11,11 @@ namespace Lexerow.Core.ScriptCompile.LexicalAnalyze;
 public class ScriptSplitter
 {
     /// <summary>
+    /// decimal separator. exp: 10.34
+    /// </summary>
+    public char DecimalSep = '.';
+
+    /// <summary>
     /// Parse a string source code, split it in items: separator, string, token.
     /// remove each comment.
     /// </summary>
@@ -53,6 +58,7 @@ public class ScriptSplitter
             if (ProcessString(line, i, stringSep, out iOut, out token))
             {
                 lastTokenType = ScriptTokenType.String;
+                token.LineNum = lineNum;
                 tokens.Add(token);
                 i = iOut;
 
@@ -74,8 +80,9 @@ public class ScriptSplitter
             }
 
             //--is is a number?, integer or double, should be before separators extraction! because of decimal separator
-            if (ProcessNumber(separators, line, i, out iOut, out token))
+            if (ProcessNumber(separators, DecimalSep, line, i, out iOut, out token))
             {
+                token.LineNum = lineNum;
                 tokens.Add(token);
                 i = iOut;
 
@@ -91,6 +98,7 @@ public class ScriptSplitter
             //--is is a char separator?
             if (ProcessSeparator(separators, line, i, out iOut, out token))
             {
+                token.LineNum = lineNum;
                 tokens.Add(token);
                 i = iOut;
                 lastTokenType = ScriptTokenType.Separator;
@@ -101,12 +109,7 @@ public class ScriptSplitter
             //--is it a name? variable, constant, object, function  or method
             if (ProcessName(line, i, out iOut, out token))
             {
-                // is it an excel column name?
-                //ProcessExcelColName(token);
-
-                //--is an Excel cell address?
-                //ProcessExcelCellAddress(token);
-
+                token.LineNum = lineNum;
                 tokens.Add(token);
                 lastTokenType = ScriptTokenType.Name;
                 i = iOut;
@@ -131,6 +134,7 @@ public class ScriptSplitter
 
     /// <summary>
     /// Move cursor on each space char found.
+    /// can be: space, \n, \t, \r.
     /// </summary>
     /// <param name="line"></param>
     /// <param name="i"></param>
@@ -144,7 +148,7 @@ public class ScriptSplitter
         {
             if (i >= line.Length) return spaceFound;
 
-            //if (line[i] != ' ') return spaceFound;
+            // space or special char (\n,\r, \t,...) found?
             if(!IsSpaceCharExt(line[i]))return spaceFound;
 
             spaceFound = true;
@@ -205,14 +209,14 @@ public class ScriptSplitter
 
     /// <summary>
     /// find numbers: integer and double. exp: 12  12.34
-    /// Decimal separator is: .
+    /// Decimal separator is the dot: .
     /// </summary>
     /// <param name="line"></param>
     /// <param name="i"></param>
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessNumber(string separators, string line, int i, out int iOut, out ScriptToken token)
+    bool ProcessNumber(string separators, char decimalSep, string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -242,7 +246,7 @@ public class ScriptSplitter
             }
 
             // is it the decimal separator?
-            if (c == '.')
+            if (c == decimalSep)
             {
                 if (token == null)
                 {
@@ -410,11 +414,17 @@ public class ScriptSplitter
         }
     }
 
+    /// <summary>
+    /// Is the char a pure separator char like space?
+    /// </summary>
+    /// <param name="c"></param>
+    /// <returns></returns>
     bool IsSpaceCharExt(char c)
     {
         if (c == ' ') return true;
         if (c == '\r') return true;
         if (c == '\n') return true;
+        if (c == '\t') return true;
         return false;
     }
 }

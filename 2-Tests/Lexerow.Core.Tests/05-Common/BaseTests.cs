@@ -9,8 +9,7 @@ public abstract class BaseTests
 {
     public string PathExcelFilesCompil = @"..\..\..\10-Files\";
 
- //   public string PathExcelFilesRun = @"..\..\..\10-Files\Run\";
-    public string PathExcelFilesRun = @".\10-Files\Run\";
+    public string PathExcelFilesExec = @".\10-Files\Run\";
 
     public string PathScriptFiles = @"..\..\..\15-Scripts\";
 

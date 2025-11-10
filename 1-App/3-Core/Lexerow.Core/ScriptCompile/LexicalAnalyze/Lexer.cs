@@ -24,7 +24,7 @@ public class Lexer
     /// <returns></returns>
     public static bool Process(IActivityLogger logger, ExecResult execResult, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexerConfig lac)
     {
-        logger.LogCompilStart(ActivityLogLevel.Important, "LexicalAnalyzer.Process", script.Name);
+        logger.LogCompilStart(ActivityLogLevel.Important, "Lexer.Process", script.Name);
 
         ScriptSplitter stringParser = new ScriptSplitter();
 
@@ -41,8 +41,7 @@ public class Lexer
                 if(lastTokenType== ScriptTokenType.WrongNumber)
                 {
                     var error= execResult.AddError(ErrorCode.LexerFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
-                    //execResult.AddError(new ExecResultError(ErrorCode.LexAnalyzeFoundDoubleWrong, scriptLine.Line));
-                    logger.LogCompilEndError(error, "LexicalAnalyzer.Process", script.Name);
+                    logger.LogCompilEndError(error, "Lexer.Process", script.Name);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.StringBadFormed)
@@ -69,7 +68,7 @@ public class Lexer
 
         }
 
-        logger.LogCompilEnd(ActivityLogLevel.Important, "LexicalAnalyzer.Process", script.Name);
+        logger.LogCompilEnd(ActivityLogLevel.Important, "Lexer.Process", script.Name);
         return true;
     }
 

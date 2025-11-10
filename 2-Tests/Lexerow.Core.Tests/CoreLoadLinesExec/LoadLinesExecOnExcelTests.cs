@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Tests.CoreLoadLinesRun;
 
 /// <summary>
-/// Test the script load, compile and run from the core.
+/// Test the script load from lines, compile and execute from the core.
 /// Focus on OnExcel instruction.
 /// Need to have input excel files ready.
 /// </summary>
 [TestClass]
-public class LoadLinesRunOnExcelTests : BaseTests
+public class LoadLinesExecOnExcelTests : BaseTests
 {
     [TestMethod]
     public void OnExcelBasicOk()
@@ -25,7 +25,7 @@ public class LoadLinesRunOnExcelTests : BaseTests
 
         // create a basic script
         List<string> lines = [
-            "OnExcel " + AddDblQuote(PathExcelFilesRun + "datLinesRunOnExcel1.xlsx"),
+            "OnExcel " + AddDblQuote(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx"),
             "  ForEach Row",
             "    If A.Cell>10 Then A.Cell=10",
             "  Next",
@@ -40,7 +40,7 @@ public class LoadLinesRunOnExcelTests : BaseTests
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "datLinesRunOnExcel1.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
@@ -61,7 +61,7 @@ public class LoadLinesRunOnExcelTests : BaseTests
 
         // create a basic script
         List<string> lines = [
-            "OnExcel " + AddDblQuote(PathExcelFilesRun + "datLinesRunOnExcel2.xlsx"),
+            "OnExcel " + AddDblQuote(PathExcelFilesExec + "datLinesRunOnExcel2.xlsx"),
             "  ForEach Row",
             "    If A.Cell>10 Then A.Cell=10",
             "  Next",
@@ -73,7 +73,7 @@ public class LoadLinesRunOnExcelTests : BaseTests
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesRun + "datLinesRunOnExcel2.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel2.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 

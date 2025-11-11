@@ -56,6 +56,14 @@ public class ExecResult
         Result = false;
     }
 
+    public ExecResultError AddError(ErrorCode errorCode, Exception exception, string msg)
+    {
+        var execResultError = new ExecResultError(errorCode, 0, 0, exception, msg);
+        ListError.Add(execResultError);
+        Result = false;
+        return execResultError;
+    }
+
     public ExecResultError AddError(ErrorCode errorCode, string msg)
     {
         var execResultError = new ExecResultError(errorCode, 0, 0, msg);

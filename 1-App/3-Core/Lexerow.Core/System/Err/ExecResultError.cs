@@ -6,13 +6,6 @@ using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
-public enum ExecResultErrorType
-{
-    NotSet,
-    ScriptCompilation,
-    ProgExecution
-}
-
 
 /// <summary>
 /// Execution (load, save, compilation or execution) result error.
@@ -42,42 +35,33 @@ public class ExecResultError
         Param = param;
     }
 
-    public ExecResultError(ErrorCode errorCode)
-    {
-        DateTimeCreation = DateTime.UtcNow;
-        ErrorCode = errorCode;       
-    }
-
     public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, string param)
     {
         DateTimeCreation = DateTime.UtcNow;
-        ErrorType = ExecResultErrorType.ScriptCompilation;
         ErrorCode = errorCode;
         Param = param;
-        LineNum = LineNum;
-        ColNum = ColNum;
+        LineNum = lineNum;
+        ColNum = colNum;
     }
 
     public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, string param, string param2)
     {
         DateTimeCreation = DateTime.UtcNow;
-        ErrorType = ExecResultErrorType.ScriptCompilation;
         ErrorCode = errorCode;
         Param = param;
         Param2 =param2;
-        LineNum = LineNum;
-        ColNum = ColNum;
+        LineNum = lineNum;
+        ColNum = colNum;
     }
 
     public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, Exception exception, string param)
     {
         DateTimeCreation = DateTime.UtcNow;
-        ErrorType = ExecResultErrorType.ScriptCompilation;
         ErrorCode = errorCode;
         Exception= exception;
         Param = param;
-        LineNum = LineNum;
-        ColNum = ColNum;
+        LineNum = lineNum;
+        ColNum = colNum;
     }
 
 
@@ -85,12 +69,6 @@ public class ExecResultError
     /// When the error was created.
     /// </summary>
     public DateTime DateTimeCreation { get; private set; }
-
-    /// <summary>
-    /// Type of the error: BuildInstr, ExecInstr, CompileScript
-    /// and more: License config.
-    /// </summary>
-    public ExecResultErrorType ErrorType { get; set; }= ExecResultErrorType.NotSet;
 
     /// <summary>
     /// The code of the error.

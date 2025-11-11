@@ -81,7 +81,7 @@ internal class StackContentProcessor
             if (isToken) continue;
 
             // case not managed, error or not yet implemented
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, null, sourceCodeLineIndex.ToString());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
             return false;
         }
     }
@@ -580,7 +580,7 @@ internal class StackContentProcessor
         // it's a fct call, the stack should contains onyl one item
         if (stackInstr.Count != 1)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, null, sourceCodeLineIndex.ToString());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
             return false;
         }
 

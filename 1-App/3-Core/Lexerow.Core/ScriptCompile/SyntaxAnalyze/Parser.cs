@@ -49,7 +49,7 @@ public class Parser
         if (listScriptLineTokens.Count == 0)
         {
             listInstr = null;
-            execResult.AddError(new ExecResultError(ErrorCode.ParserTokenExpected));
+            execResult.AddError(ErrorCode.ParserTokenExpected,string.Empty);
             return false;
         }
 

@@ -53,11 +53,8 @@ internal class InstrOnExcelExecutor
         // save and close the current excel file
         if (ctx.ExcelFileObject != null) 
         {
-            if(!CloseExcelFileRunner.Exec(_excelProcessor, ctx.ExcelFileObject.ExcelFile, out var error))
-            {
-                execResult.AddError(error);
+            if(!CloseExcelFileRunner.Exec(execResult, _excelProcessor, ctx.ExcelFileObject.ExcelFile))
                 return false;
-            }
         }
 
         // next file to process now
@@ -280,7 +277,6 @@ internal class InstrOnExcelExecutor
             execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrConstValue.FirstScriptToken());
             return false;
         }
-
 
         // create an adhoc SelectFiles instr
         instrOnExcel.InstrSelectFiles = new InstrSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());

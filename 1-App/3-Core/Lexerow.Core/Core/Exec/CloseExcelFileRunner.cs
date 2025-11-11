@@ -13,11 +13,16 @@ namespace Lexerow.Core.Core.Exec;
 /// </summary>
 public class CloseExcelFileRunner
 {
-    public static bool Exec(IExcelProcessor excelProcessor, IExcelFile excelFile, out ExecResultError error)
+    public static bool Exec(ExecResult execResult, IExcelProcessor excelProcessor, IExcelFile excelFile)
     {
         excelProcessor.Save(excelFile);
 
-        return excelProcessor.Close(excelFile, out error);
+        if (!excelProcessor.Close(excelFile, out var error))
+        {
+            execResult.ListError.Add(error);
+            return false;
+        }
+        return true;
     }
 
 }

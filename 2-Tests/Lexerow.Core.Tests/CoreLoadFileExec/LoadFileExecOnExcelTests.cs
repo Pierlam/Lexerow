@@ -42,4 +42,22 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
 
     }
+
+    /// <summary>
+    /// The path of the excel file is wrong.
+    /// OnExcel instr.
+    /// </summary>
+    [TestMethod]
+    public void OnExcelBasicPathWrong()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "execOnExcel1Err.lxrw";
+
+        // load the script, compile it and then execute it
+        execResult = core.LoadExecScript("script", scriptfile);
+        Assert.IsFalse(execResult.Result);
+        Assert.AreEqual(ErrorCode.ExecInstrFilePathWrong, execResult.ListError[0].ErrorCode);
+    }
+
 }

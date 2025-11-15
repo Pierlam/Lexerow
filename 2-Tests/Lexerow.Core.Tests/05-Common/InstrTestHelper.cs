@@ -6,7 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests._05_Common;
-public class TestBuilder
+
+/// <summary>
+/// Instruction test helper.
+/// </summary>
+public class InstrTestHelper
 {
     public static void TestInstrColCellFuncValue(string stage, InstrBase instrBase, string colName, int colNum)
     {

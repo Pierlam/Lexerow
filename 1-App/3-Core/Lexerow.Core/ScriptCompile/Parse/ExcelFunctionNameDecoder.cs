@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.Parse;
 public class ExcelFunctionNameDecoder
 {
     public static bool Do(string excelFuncName, out InstrBase excelFunc)

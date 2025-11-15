@@ -8,7 +8,7 @@ using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.Parse;
 internal class ParserUtils
 {
     /// <summary>

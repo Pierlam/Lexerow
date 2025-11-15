@@ -1,5 +1,5 @@
-﻿using Lexerow.Core.ScriptCompile.LexicalAnalyze;
-using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+﻿using Lexerow.Core.ScriptCompile.lex;
+using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;

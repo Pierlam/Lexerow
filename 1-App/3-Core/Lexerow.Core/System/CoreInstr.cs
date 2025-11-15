@@ -26,4 +26,8 @@ public class CoreInstr
     public const string InstrIf = "If";
     public const string InstrThen = "Then";
     public const string InstrElse = "Else";
+
+    public const string InstrBlank = "Blank";
+    public const string InstrNull = "Null";
+
 }

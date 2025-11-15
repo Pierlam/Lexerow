@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.Parse;
 
 /// <summary>
 /// OnExcel instruction compilation builder.

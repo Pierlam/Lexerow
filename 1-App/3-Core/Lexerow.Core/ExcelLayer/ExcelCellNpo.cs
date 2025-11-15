@@ -45,10 +45,13 @@ public class ExcelCellNpoi : IExcelCell
 
     public string GetRawValueString()
     {
-        if (Cell.CellType != CellType.String) return string.Empty;
+        if (Cell.CellType == CellType.String) 
+            return Cell.StringCellValue;
 
-        return Cell.StringCellValue;
+        if (Cell.CellType == CellType.Numeric)
+            return Cell.NumericCellValue.ToString();
 
+        return string.Empty;
     }
 
 }

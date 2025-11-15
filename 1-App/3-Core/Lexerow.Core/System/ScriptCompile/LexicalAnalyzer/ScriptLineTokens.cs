@@ -13,7 +13,6 @@ namespace Lexerow.Core.System.Compilator;
 public class ScriptLineTokens
 {
     public int Numline { get; set; } = 0;
-    //public ?? srcCode, 
 
     /// <summary>
     /// The original source code line.

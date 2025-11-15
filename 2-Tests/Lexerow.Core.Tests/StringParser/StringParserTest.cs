@@ -1,4 +1,4 @@
-﻿using Lexerow.Core.ScriptCompile.LexicalAnalyze;
+﻿using Lexerow.Core.ScriptCompile.lex;
 using Lexerow.Core.System.Compilator;
 using System;
 using System.Collections.Generic;

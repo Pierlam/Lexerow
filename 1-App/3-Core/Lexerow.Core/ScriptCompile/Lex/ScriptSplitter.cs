@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ScriptCompile.LexicalAnalyze;
+namespace Lexerow.Core.ScriptCompile.lex;
 public class ScriptSplitter
 {
     /// <summary>

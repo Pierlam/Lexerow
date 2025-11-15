@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ScriptCompile.LexicalAnalyze;
+namespace Lexerow.Core.ScriptCompile.lex;
 
 /// <summary>
 /// script Lexical Analyzer.

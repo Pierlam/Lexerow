@@ -68,6 +68,10 @@ public enum InstrType
     EndIf,
     EndOnExcel,
 
+    InstrBlank,
+    InstrNull,
+
+
     ProcessSheets,
     ProcessInstrForEachRow,
     ProcessRow,

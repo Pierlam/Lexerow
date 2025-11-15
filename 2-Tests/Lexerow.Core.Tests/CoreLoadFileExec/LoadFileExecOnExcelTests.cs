@@ -29,16 +29,16 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datScriptOnExcel1.xlsx");
+        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datScriptOnExcel1.xlsx");
         Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        var wb = ExcelTestChecker.GetWorkbook(fileStream);
 
         // r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 0, 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 0, 10);
         Assert.IsTrue(res);
 
     }

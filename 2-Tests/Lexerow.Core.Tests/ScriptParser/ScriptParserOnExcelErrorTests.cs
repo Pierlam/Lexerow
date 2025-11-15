@@ -1,5 +1,5 @@
 ﻿using FakeItEasy;
-using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
@@ -46,7 +46,7 @@ public class ScriptParserOnExcelErrorTests
         script.Add(lineTok);
 
         // If A.Cell >10 Then A.Cell=10
-        TestScriptBuilder.BuidIfACellEq10ThenSetACell(3, script);
+        TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, script);
 
         // Next
         lineTok = new ScriptLineTokensTest();

@@ -1,13 +1,13 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 
-namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.Parse;
 
 /// <summary>
 /// Process the content of the stack.
 /// Script End line reached.
 /// </summary>
-internal class StackContentProcessor
+internal class ParserStackContentProcessor
 {
     /// <summary>
     /// no more token in the current line tokens, process items saved in the stack.
@@ -68,11 +68,6 @@ internal class StackContentProcessor
             res = GatherEnd(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
-
-            //--is on top of the satck instr on Stack is Then?
-            //res = ProcessThen(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
-            //if (!res) return false;
-            //if (isToken) continue;
 
             //--is it a fct call, exp: fct()
             res = ProcessFctCall(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
@@ -196,6 +191,32 @@ internal class StackContentProcessor
             }
             execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
+        }
+
+        //--case x=blank
+        InstrBlank instrBlank = instrBase as InstrBlank;
+        if(instrBlank!=null)
+        {
+            instrSetVar.InstrRight = instrBase;
+            if (stackInstr.Count == 0)
+                // instr SetVar not included in a Then instr or ForEachRow
+                listInstrToExec.Add(instrSetVar);
+            else
+                stackInstr.Push(instrSetVar);
+            return true;
+        }
+
+        //--case x=null
+        InstrNull instrNull = instrBase as InstrNull;
+        if (instrNull != null)
+        {
+            instrSetVar.InstrRight = instrBase;
+            if (stackInstr.Count == 0)
+                // instr SetVar not included in a Then instr or ForEachRow
+                listInstrToExec.Add(instrSetVar);
+            else
+                stackInstr.Push(instrSetVar);
+            return true;
         }
 
         //--case a=Fct(), apply the setVar
@@ -344,11 +365,8 @@ internal class StackContentProcessor
         // extract the top instr
         InstrBase instrBase = stackInstr.Pop();
 
-
         // remove the next which then instr
         stackInstr.Pop();
-
-        //instrForEach.ListInstr.Add(instrBase);
         return true;
 
     }
@@ -404,8 +422,10 @@ internal class StackContentProcessor
 
         // check that there at leat one instr in the then part
         if (instrThen.ListInstr.Count == 0)
-            // todo: manage it better!
-            throw new Exception("No instr in Then!");
+        {
+            execResult.AddError(ErrorCode.ParserThenPartIsEmpty, instrBase.FirstScriptToken());
+            return false;
+        }
 
         // create instr IfThen based on instr If and Then
         InstrIfThenElse instrIfThenElse = new InstrIfThenElse(instrIf.FirstScriptToken());
@@ -484,75 +504,6 @@ internal class StackContentProcessor
         return false;
     }
 
-    /// <summary>
-    /// is the last instr on the stack is Then?
-    /// Stack IN: OnExcel, If, Then
-    /// </summary>
-    /// <param name="execResult"></param>
-    /// <param name="stkItems"></param>
-    /// <param name="sourceCodeLineIndex"></param>
-    /// <param name="listInstrToExec"></param>
-    /// <param name="isToken"></param>
-    /// <returns></returns>
-    static bool ProcessThen(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
-    {
-        isToken = false;
-
-        // stack is empty, bye
-        if (stackInstr.Count == 0) return true;
-
-        // the instr on the top of the stack is Then?
-        InstrThen instrThen = stackInstr.Peek() as InstrThen;
-        if(instrThen==null) 
-            // not the Then instr, bye
-            return true;
-
-        // yes the instr If-Then expect to have the EndIf instr?
-        //if (instrThen.IsEndIfInstrExpected) 
-        //    return true;
-
-        // check that there at leat one instr in the then part
-        if (instrThen.ListInstr.Count == 0)
-            // todo: manage it better!
-            throw new Exception("No instr in Then!");
-
-        // remove the instr Then from the stack
-        stackInstr.Pop();
-
-        // the stack should contains the If instr
-        if (stackInstr.Count == 0)
-        {
-            execResult.AddError(ErrorCode.ParserTokenIfExpected, instrThen.FirstScriptToken());
-            return false;
-        }
-
-        // the previous one should be the instr if
-        InstrIf instrIf = stackInstr.Pop() as InstrIf;
-        if (instrIf==null)
-        {
-            execResult.AddError(ErrorCode.ParserTokenIfExpected, instrThen.FirstScriptToken());
-            return false;
-        }
-
-        // create instr IfThen based on instr If and Then
-        InstrIfThenElse instrIfThenElse = new InstrIfThenElse(instrIf.FirstScriptToken());
-        instrIfThenElse.InstrIf = instrIf;
-        instrIfThenElse.InstrThen = instrThen;
-
-        // the stack should contains the If instr
-        if (stackInstr.Count == 0)
-        {
-            execResult.AddError(ErrorCode.ParserTokenIfExpected, instrThen.FirstScriptToken());
-            return false;
-        }
-
-        // OnExcel instr, add IfThen instr to the current OnSheet/ForEachRow        
-        bool res= InstrOnExcelBuilder.BuildIfThen(execResult, stackInstr, instrIfThenElse);
-        if (!res) return false;
-
-        isToken = true;
-        return true;
-    }
 
     /// <summary>
     /// is it a fct call, without setVar, exp: fct()

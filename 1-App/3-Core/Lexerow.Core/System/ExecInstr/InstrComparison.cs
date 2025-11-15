@@ -24,7 +24,7 @@ public class InstrComparison : InstrBase
     public InstrSepComparison Operator { get; set; } = null;
 
     /// <summary>
-    /// Result of the comparison.
+    /// Execution, Result of the comparison.
     /// </summary>
     public bool Result { get; set; } = false;
 }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.Parse;
 public class InstrBuilder
 {
     /// <summary>
@@ -106,6 +106,20 @@ public class InstrBuilder
                 return true;
             }
 
+            // blank
+            if (scriptToken.Value.Equals(CoreInstr.InstrBlank, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrBlank(scriptToken);
+                return true;
+            }
+
+
+            // null
+            if (scriptToken.Value.Equals(CoreInstr.InstrNull, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrNull(scriptToken);
+                return true;
+            }
             // ExcelCol, exp: A
             // TODO:
 

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+namespace Lexerow.Core.ScriptCompile.Parse;
 
 /// <summary>
 /// Syntax Analyzer.
@@ -100,7 +100,7 @@ public class Parser
                 _logger.LogCompilOnGoing(ActivityLogLevel.Important, "SyntaxAnalyzer.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
 
                 // no more token in the current line tokens, process items saved in the stack
-                res = StackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
+                res = ParserStackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
                 if (!res) break;
 
                 // no more token in the current line tokens, go to the next one
@@ -146,13 +146,13 @@ public class Parser
             if(ParserUtils.IsComparisonSeparator(currToken))
             {
                 // process the content of the stack until the If instr
-                res= TokenIfThenDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(execResult, listVar, stackInstr, currToken);
+                res= IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(execResult, listVar, stackInstr, currToken);
                 if (!res) break;
                 continue;
             }
 
-            //--Is if the Then token?
-            res = TokenIfThenDecoder.ProcessStackBeforeTokenThen(execResult, listVar, stackInstr, currToken, out isToken);
+            //--Is it the Then token?
+            res = IfPartDecoder.ProcessStackBeforeTokenThen(execResult, listVar, stackInstr, currToken, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -219,7 +219,7 @@ public class Parser
         if (instr.InstrType == InstrType.Next)
         {
             // special case? Next inline: ..Then A.Cell= 12 Next   or  ..Then fct() Next
-            bool res = StackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
+            bool res = ParserStackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
             if (!res) return false;
 
             // now process the token Next of the OnExcel instr

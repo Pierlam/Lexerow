@@ -1,5 +1,5 @@
 ﻿using FakeItEasy;
-using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
@@ -38,7 +38,7 @@ public class ScriptParserSelectFilesTests
         ScriptLineTokens line;
 
         //-line #1
-        line= TestScriptBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
+        line= TestTokensBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
         script.Add(line);
 
         var logger = A.Fake<IActivityLogger>();

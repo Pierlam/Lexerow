@@ -188,6 +188,7 @@ public enum ErrorCode
     LexerFoundCharUndefined,
 
     //--syntax analyzer error codes
+    ParserCaseNotManaged,
     ParserTokenNotExpected,
     ParserTokenExpected,
 
@@ -204,9 +205,11 @@ public enum ErrorCode
     ParserColAddressExpected,
     ParserColNumWrong,
     ParserSepComparatorExpected,
+    ParserSepComparatorWrong,
     ParserReturnTypeWrong,
     ParserTokenIfExpected,
     ParserTokenThenExpected,
+    ParserThenPartIsEmpty,
 
     //--run program, instructions
     ExecInstrNotManaged,

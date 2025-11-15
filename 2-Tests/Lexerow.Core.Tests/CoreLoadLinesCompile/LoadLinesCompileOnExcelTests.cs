@@ -36,6 +36,66 @@ public class LoadLinesCompileOnExcelTests
     }
 
     [TestMethod]
+    public void IfACellEqualStringOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel \"mydata.xlsx\"",
+            "  ForEach Row",
+            "    If A.Cell=\"hello\" Then A.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script and compile it
+        execResult = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+    }
+
+    [TestMethod]
+    public void IfACellEqualStringThenACellEqualStringOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel \"mydata.xlsx\"",
+            "  ForEach Row",
+            "    If A.Cell=\"hello\" Then A.Cell=\"bonjour\"",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script and compile it
+        execResult = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+    }
+
+    [TestMethod]
+    public void IfACellGreaterBCellStringOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel \"mydata.xlsx\"",
+            "  ForEach Row",
+            "    If A.Cell>B.Cell Then C.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script and compile it
+        execResult = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+    }
+
+    [TestMethod]
     public void TwoIfThenOk()
     {
         ExecResult execResult;

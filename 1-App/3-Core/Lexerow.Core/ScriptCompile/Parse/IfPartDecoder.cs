@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
+using NPOI.SS.Formula.Functions;
 using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
@@ -59,11 +60,11 @@ internal class IfPartDecoder
     /// </summary>
     /// <param name="execResult"></param>
     /// <param name="listVar"></param>
-    /// <param name="stkInstr"></param>
+    /// <param name="stackInstr"></param>
     /// <param name="scriptTokenSepComp"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessStackBeforeTokenThen(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
+    public static bool ProcessStackBeforeTokenThen(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
@@ -72,33 +73,14 @@ internal class IfPartDecoder
             return true;
 
         isToken = true;
+        InstrThen instrThen = new InstrThen(scriptToken);
 
-        InstrThen instrThen = new InstrThen(scriptToken); 
+        //--case operandLeft operator B.Cell Then ? exp: If A.Cell>B.Cell
+        bool res = ParserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptToken, out bool isInstr);
+        if (!res) return false;
 
-        // to save instr between If and Then, in the reverse direction
-        List<InstrBase> listInstr = new List<InstrBase>();
-
-        InstrIf instrIf = null;
-
-        // extract instr from the stack and put them into a list
-        while(true)
-        {
-            if (stkInstr.Count==0)
-            {
-                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
-                return false;
-            }
-            // is it the If Instr?
-            InstrBase instr = stkInstr.Peek();
-            if (instr.InstrType == InstrType.If)
-            {
-                instrIf = instr as InstrIf;
-                break;
-            }
-
-            instr =stkInstr.Pop();
-            listInstr.Add(instr);
-        }
+        if (!MoveInstrToListUntilReachIf(execResult, stackInstr, scriptToken, out InstrIf instrIf,  out List<InstrBase> listInstr))
+            return false;
 
         // nothing between If and then
         if (listInstr.Count == 0)
@@ -107,7 +89,8 @@ internal class IfPartDecoder
             return false;
         }
 
-        // 3 instr between If and Then -> If leftOperand operator rightOperand Then
+
+        //--3 instr between If and Then -> If leftOperand operator rightOperand Then
         if (listInstr.Count==3)
         {
             // build the 3 items comparison instructions: operandLeft operator operandRight
@@ -120,11 +103,11 @@ internal class IfPartDecoder
             instrIf.InstrBase= instrComparison;
 
             // push the token Then on the stack
-            stkInstr.Push(instrThen);
+            stackInstr.Push(instrThen);
             return true;
         }
 
-        // 1 instr between If and Then -> If instr Then
+        //--1 instr between If and Then -> If instr Then
         if (listInstr.Count == 1)
         {
             // check the return type, should be a bool value
@@ -137,7 +120,7 @@ internal class IfPartDecoder
             instrIf.InstrBase = listInstr[0];
 
             // push the token Then on the stack
-            stkInstr.Push(instrThen);
+            stackInstr.Push(instrThen);
             return true;
         }
 
@@ -196,4 +179,42 @@ internal class IfPartDecoder
         return true;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="scriptToken"></param>
+    /// <param name="instrIf"></param>
+    /// <param name="listInstr"></param>
+    /// <returns></returns>
+    static bool MoveInstrToListUntilReachIf(ExecResult execResult, CompilStackInstr stackInstr, ScriptToken scriptToken, out InstrIf instrIf, out List<InstrBase> listInstr)
+    {
+
+        // to save instr between If and Then, in the reverse direction
+        listInstr = new List<InstrBase>();
+
+        instrIf = null;
+
+        // extract instr from the stack and put them into a list
+        while (true)
+        {
+            if (stackInstr.Count == 0)
+            {
+                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                return false;
+            }
+            // is it the If Instr?
+            InstrBase instr = stackInstr.Peek();
+            if (instr.InstrType == InstrType.If)
+            {
+                instrIf = instr as InstrIf;
+                break;
+            }
+
+            instr = stackInstr.Pop();
+            listInstr.Add(instr);
+        }
+        return true;
+    }
 }

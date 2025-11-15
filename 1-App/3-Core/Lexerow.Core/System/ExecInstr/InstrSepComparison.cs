@@ -33,4 +33,40 @@ public class InstrSepComparison : InstrBase
     }
 
     public SepComparisonOperator Operator { get; set; }= SepComparisonOperator.Undefined;
+
+
+    public InstrSepComparison Revert()
+    {
+        InstrSepComparison instrSepComparison = new InstrSepComparison(this.FirstScriptToken());
+
+        // < becomes >
+        if (Operator == SepComparisonOperator.LessThan) 
+        {
+            instrSepComparison.Operator= SepComparisonOperator.GreaterThan;
+            return instrSepComparison;
+        }
+
+        // > becomes <
+        if (Operator == SepComparisonOperator.GreaterThan)
+        {
+            instrSepComparison.Operator = SepComparisonOperator.LessThan;
+            return instrSepComparison;
+        }
+
+        // = becomes =<
+        if (Operator == SepComparisonOperator.GreaterEqualThan)
+        {
+            instrSepComparison.Operator = SepComparisonOperator.LessEqualThan;
+            return instrSepComparison;
+        }
+
+        // =< becomes >=
+        if (Operator == SepComparisonOperator.LessEqualThan)
+        {
+            instrSepComparison.Operator = SepComparisonOperator.GreaterEqualThan;
+            return instrSepComparison;
+        }
+        // equals and different doesnt change
+        return instrSepComparison;
+    }
 }

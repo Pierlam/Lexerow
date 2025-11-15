@@ -43,6 +43,40 @@ public class LoadFileExecOnExcelTests : BaseTests
 
     }
 
+    [TestMethod]
+    public void IfACellGreaterBCellOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "IfACellGreaterBCell.lxrw";
+
+        // load the script, compile it and then execute it
+        execResult = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "IfACellGreaterBCell2.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+
+        // C2: row1, col2: 10
+        bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 2, 10);
+        Assert.IsTrue(res);
+
+        // C3: row2, col2: 27
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 2, 27);
+        Assert.IsTrue(res);
+
+        // C4: row3, col2: 10
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 3, 2, 10);
+        Assert.IsTrue(res);
+
+        // C5: row4, col2: 10
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 4, 2, 10);
+        Assert.IsTrue(res);
+
+    }
+
     /// <summary>
     /// The path of the excel file is wrong.
     /// OnExcel instr.

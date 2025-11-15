@@ -86,4 +86,45 @@ public class LoadLinesExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
     }
 
+    [TestMethod]
+    public void IfACellGreateBCellOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel " + AddDblQuote(PathExcelFilesExec + "datLinesIfACellGreaterBCell2.xlsx"),
+            "  ForEach Row",
+            "    If A.Cell>B.Cell Then C.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script, compile it and execute it
+        execResult = core.LoadExecLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datLinesIfACellGreaterBCell2.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+
+        // C2: row1, col2: 10
+        bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 2, 10);
+        Assert.IsTrue(res);
+
+        // C3: row2, col2: 27
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 2,27);
+        Assert.IsTrue(res);
+
+        // C4: row3, col2: 10
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 3, 2, 10);
+        Assert.IsTrue(res);
+
+        // C5: row4, col2: 10
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 4, 2, 10);
+        Assert.IsTrue(res);
+    }
+
 }

@@ -71,7 +71,7 @@ internal class TokenCloseBracketProcessor
                 return true;
             }
 
-            //-item before openBracket is an math operator? exp: +()
+            //-item before openBracket is a math operator? exp: +()
             // TODO: error? to confirm
 
             // error, item before the open bracket is not expected

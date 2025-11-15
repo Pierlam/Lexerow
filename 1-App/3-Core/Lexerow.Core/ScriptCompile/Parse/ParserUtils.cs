@@ -24,6 +24,9 @@ internal class ParserUtils
     /// <returns></returns>
     public static bool ProcessInstrColCellFunc(ExecResult execResult, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isInstr)
     {
+        isInstr = false;
+        if (stackInstr.Count == 0) return true;
+
         var lastInstr = stackInstr.Peek();
         bool res;
 

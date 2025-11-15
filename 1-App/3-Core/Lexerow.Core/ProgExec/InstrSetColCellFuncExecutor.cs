@@ -30,7 +30,7 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instrColCellFunc"></param>
     /// <param name="instrRight"></param>
     /// <returns></returns>
-    public bool RunSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrConstValue instrConstValue)
+    public bool ExecSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrConstValue instrConstValue)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncRunner.Run", string.Empty);
 
@@ -54,29 +54,29 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public static bool RunSetCellNull(ExecResult execResult, IExcelProcessor excelProcessor, InstrColCellFunc instrColCellFunc, IExcelSheet sheet, int rowNum)
+    public bool ExecSetCellNull(ExecResult execResult, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum);
+        IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum-1);
 
         if (cell == null)
             return true;
 
         // create a new cell object
-        excelProcessor.DeleteCell(sheet, rowNum, instrColCellFunc.ColNum);
+        _excelProcessor.DeleteCell(sheet, rowNum, instrColCellFunc.ColNum-1);
         return true;
     }
 
-    public static bool RunSetCellValueBlank(ExecResult execResult, IExcelProcessor excelProcessor, InstrColCellFunc instrColCellFunc, IExcelSheet sheet, int rowNum)
+    public bool ExecSetCellBlank(ExecResult execResult, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        IExcelCell cell = excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum);
+        IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
 
         if (cell == null)
             return true;
 
         // create a new cell object
-        excelProcessor.SetCellValueBlank(cell);
+        _excelProcessor.SetCellValueBlank(cell);
         return true;
     }
 

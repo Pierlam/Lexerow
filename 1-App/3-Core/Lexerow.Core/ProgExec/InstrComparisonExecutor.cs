@@ -57,10 +57,17 @@ public class InstrComparisonExecutor
             return true;
         }
 
+        InstrConstValue instrConstValueLeft= instrComparison.OperandLeft as InstrConstValue;
+        InstrColCellFunc instrColCellFuncRight= instrComparison.OperandRight as InstrColCellFunc;
 
         //--10<A.Cell
+        if (instrConstValueLeft != null && instrConstValueRight != null) 
+        {
+            // revert the operator,exp: < becomes >
+        }
 
         //--A.Cell>B.Cell
+
 
         //--A.Cell=blank  or A.Cell<>blank
         InstrBlank instrBlankRight= instrComparison.OperandRight as InstrBlank;
@@ -75,10 +82,19 @@ public class InstrComparisonExecutor
         }
 
         //--A.Cell=null  or A.Cell<>null
+        InstrNull instrNullRight = instrComparison.OperandRight as InstrNull;
+        if (instrColCellFuncLeft != null && instrBlankRight != null)
+        {
+            if (!CompareColCellNull(execResult, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
+                return false;
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
 
-        // error, not managed!
-
-        return true;
+        execResult.AddError(ErrorCode.ExecInstrNotManaged, instrComparison.OperandLeft.FirstScriptToken());
+        return false;
     }
 
     /// <summary>
@@ -117,6 +133,18 @@ public class InstrComparisonExecutor
 
     }
 
+    /// <summary>
+    /// resultComp is true if the cell is blank (no value but can have a formating)
+    /// or is the cell is null.
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelSheet"></param>
+    /// <param name="rowNum"></param>
+    /// <param name="instrColCellFunc"></param>
+    /// <param name="compOperator"></param>
+    /// <param name="resultComp"></param>
+    /// <returns></returns>
     static bool CompareColCellBlank(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrSepComparison compOperator, out bool resultComp)
     {
         resultComp = false;
@@ -133,6 +161,33 @@ public class InstrComparisonExecutor
         if (val == string.Empty)
             resultComp = true;
 
+        return true;
+    }
+
+    /// <summary>
+    /// resultComp is true if the cell is null.
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelSheet"></param>
+    /// <param name="rowNum"></param>
+    /// <param name="instrColCellFunc"></param>
+    /// <param name="compOperator"></param>
+    /// <param name="resultComp"></param>
+    /// <returns></returns>
+    static bool CompareColCellNull(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrSepComparison compOperator, out bool resultComp)
+    {
+        resultComp = false;
+
+        var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
+        if (cell == null)
+        {
+            resultComp = true;
+            return true;
+        }
+
+        // the cell exists, so it's not null
+        resultComp = false;
         return true;
     }
 

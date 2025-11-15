@@ -93,6 +93,10 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
         // A2: r1, c0: blank  -> modified
         bool res = ExcelTestChecker.CheckCellValueBlank(wb, 0, 1, 0);
         Assert.IsTrue(res);
+
+        // A4: r3, c0: blank  -> modified
+        res = ExcelTestChecker.CheckCellValueBlank(wb, 0, 3, 0);
+        Assert.IsTrue(res);
     }
 
 }

@@ -1,12 +1,7 @@
 ﻿using Lexerow.Core.ExcelLayer;
 using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Lexerow.Core.Tests.Common;
 
 namespace Lexerow.Core.Tests.ExcelProcessor;
 
@@ -14,15 +9,15 @@ namespace Lexerow.Core.Tests.ExcelProcessor;
 /// IExcelProcessor, test Open and close excel file.
 /// </summary>
 [TestClass]
-public class ExcelProcessorOpenCloseFileTests
+public class ExcelProcessorOpenCloseFileTests : BaseTests
 {
     [TestMethod]
     public void BasicOpenExcelOk()
     {
-        // injecter la lib NPOI
+        // Use the lib NPOI
         IExcelProcessor proc = new ExcelProcessorNpoi();
 
-        string fileName = @"..\..\..\10-Files\TestOpenClose.xlsx";
+        string fileName = PathExcelFilesExec + "OpenClose.xlsx";
 
         bool res = proc.Open(fileName, out IExcelFile excelFile, out ExecResultError coreError);
         Assert.IsTrue(res);
@@ -30,8 +25,9 @@ public class ExcelProcessorOpenCloseFileTests
         Assert.IsNotNull(excelFile);
         Assert.AreEqual(fileName, excelFile.FileName);
 
-        res = proc.Close(excelFile);
+        res = proc.Close(excelFile, out ExecResultError error);
         Assert.IsTrue(res);
+        Assert.IsNull(error);
     }
 
     [TestMethod]

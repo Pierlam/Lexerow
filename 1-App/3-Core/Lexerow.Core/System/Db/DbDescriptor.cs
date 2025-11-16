@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lexerow.Core.System;
 
-namespace Lexerow.Core.System;
 /// <summary>
 /// Application database descriptor.
 /// !!The structure can't be changed!!
-/// To be able to read all old versions of repository data. 
+/// To be able to read all old versions of repository data.
 /// </summary>
 public class DbDescriptor
 {

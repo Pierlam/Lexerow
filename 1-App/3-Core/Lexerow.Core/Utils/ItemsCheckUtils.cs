@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.Utils;
+﻿namespace Lexerow.Core.Utils;
 
 public class ItemsCheckUtils
 {
@@ -33,12 +27,12 @@ public class ItemsCheckUtils
     {
         int idx = 0;
         foreach (string item in listItems)
-        {           
-            if(string.IsNullOrWhiteSpace(item)) return false;
+        {
+            if (string.IsNullOrWhiteSpace(item)) return false;
             int idxInner = 0;
             foreach (string i in listItems)
             {
-                if (idx!= idxInner && item.Equals(i, StringComparison.InvariantCultureIgnoreCase)) return false;
+                if (idx != idxInner && item.Equals(i, StringComparison.InvariantCultureIgnoreCase)) return false;
                 idxInner++;
             }
 

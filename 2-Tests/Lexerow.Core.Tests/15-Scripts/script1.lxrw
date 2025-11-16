@@ -1,0 +1,2 @@
+﻿# basic script
+file= SelectFiles("data.xslx")

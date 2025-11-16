@@ -1,15 +1,12 @@
 ﻿using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Utils;
+
 public class ExcelExtendedUtils : ExcelUtils
 {
     /// <summary>
     /// Does the cell type match the If-Comparison cell.Value type?
+    /// used for: If A.Cell=10
     /// </summary>
     /// <param name="cellType"></param>
     /// <param name="instr"></param>
@@ -43,4 +40,36 @@ public class ExcelExtendedUtils : ExcelUtils
         return false;
     }
 
+    /// <summary>
+    /// Does the cell type match the If-Comparison cell.Value type?
+    /// used for: If A.Cell=B.Cell
+    /// </summary>
+    /// <param name="cellType"></param>
+    /// <param name="instr"></param>
+    /// <returns></returns>
+    public static bool MatchCellTypeAndIfComparison(CellRawValueType cellType, CellRawValueType cellTypeB)
+    {
+        if (cellType == CellRawValueType.String && cellTypeB == CellRawValueType.String)
+            return true;
+
+        if (cellType == CellRawValueType.Numeric && cellTypeB == CellRawValueType.Numeric)
+            return true;
+
+        if (cellType == CellRawValueType.DateOnly && cellTypeB == CellRawValueType.DateOnly)
+            return true;
+
+        if (cellType == CellRawValueType.DateTime && cellTypeB == CellRawValueType.DateTime)
+            return true;
+
+        if (cellType == CellRawValueType.TimeOnly && cellTypeB == CellRawValueType.TimeOnly)
+            return true;
+
+        // specific cases
+        if (cellType == CellRawValueType.DateTime && cellTypeB == CellRawValueType.DateOnly)
+            return true;
+        if (cellType == CellRawValueType.DateOnly && cellTypeB == CellRawValueType.DateTime)
+            return true;
+
+        return false;
+    }
 }

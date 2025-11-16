@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lexerow.Core.System;
 
-namespace Lexerow.Core.System;
 /// <summary>
 /// manage only basic type.
 /// no dateTime, will be in a string.
@@ -29,7 +24,6 @@ public enum ValueType
 
     ListOfInt,
     ListOfDouble,
-
 }
 
 public abstract class ValueBase
@@ -66,7 +60,6 @@ public class ValueString : ValueBase
 
 //    public string Val { get; set; }
 //}
-
 
 public class ValueInt : ValueBase
 {
@@ -134,7 +127,7 @@ public class ValueDateOnly : ValueBase
 
     public double ToDouble()
     {
-        DateTime val= Val.ToDateTime(TimeOnly.MinValue);
+        DateTime val = Val.ToDateTime(TimeOnly.MinValue);
 
         return val.ToOADate();
     }
@@ -147,17 +140,17 @@ public class ValueTimeOnly : ValueBase
         ValueType = ValueType.TimeOnly;
         Val = val;
     }
+
     public TimeOnly Val { get; set; }
 
     public double ToDouble()
     {
         // set the hour, minute, second and millisecond
-        DateTime dtVal = new DateTime(2025,1,1, Val.Hour,Val.Minute,Val.Second,Val.Millisecond);
+        DateTime dtVal = new DateTime(2025, 1, 1, Val.Hour, Val.Minute, Val.Second, Val.Millisecond);
 
-        double res =dtVal.ToOADate();
-        return res = res- Math.Truncate(res);
+        double res = dtVal.ToOADate();
+        return res = res - Math.Truncate(res);
     }
-
 }
 
 public class ValueListOfString : ValueBase
@@ -166,6 +159,7 @@ public class ValueListOfString : ValueBase
     {
         ValueType = ValueType.ListOfString;
     }
+
     public ValueListOfString(List<string> listVal)
     {
         ValueType = ValueType.ListOfString;
@@ -185,6 +179,7 @@ public class ValueListOfInt : ValueBase
 
     public List<int> ListVal { get; private set; } = new List<int>();
 }
+
 public class ValueListOfDouble : ValueBase
 {
     public ValueListOfDouble(List<double> listVal)
@@ -195,4 +190,3 @@ public class ValueListOfDouble : ValueBase
 
     public List<double> ListVal { get; private set; } = new List<double>();
 }
-

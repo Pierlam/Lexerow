@@ -1,12 +1,8 @@
 ﻿using Lexerow.Core.System;
 using NPOI.SS.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ExcelLayer;
+
 public class ExcelSheetNpoi : IExcelSheet
 {
     public ExcelSheetNpoi(IExcelFile excelFileParent, int index, ISheet sheet)
@@ -15,7 +11,6 @@ public class ExcelSheetNpoi : IExcelSheet
         Index = index;
 
         Sheet = sheet;
-
     }
 
     public IExcelFile ExcelFileParent { get; }
@@ -23,6 +18,6 @@ public class ExcelSheetNpoi : IExcelSheet
 
     public ISheet Sheet { get; }
 
-    public string Name { get { return Sheet.SheetName; } }
-
+    public string Name
+    { get { return Sheet.SheetName; } }
 }

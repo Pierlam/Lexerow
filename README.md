@@ -26,80 +26,91 @@ So to put the value 0 in each empty cell in column B, Lexerow will help you to d
     <img src="0-Docs/Readmemd/datarow_cells_set_zero_2025-04-13.jpg" alt="Cells have now values">
 </p>
 
+## The solution, in 2 stages
 
-## How it works
+-1/ Create a script to fix cell values in the Excel datatable.
 
-To proceed datarow as explained, Lexerow provide the main function which is: "OnExcel ForEachRow If-Then".
+-2/ Execute the script in a C# program.
+ 
 
-To understand how it works here is the pseudo code:
+## The Script to fix values
+
+To process datarow of the excel file as explained, Lexerow provide a powerful instruction which is: OnExcel ForEachRow If/Then.
+
+Let's consider the excel file to fix blank values is "MyFile.xlsx"
+
+Create a basic script and save it "MyScript.lxrw"
 
 ```
-# open the excel file to process
-file=OpenExcel("MyFile.xlsx")
-
 # process datarow of the Excel, one by one
-OnExcel file
-  OnSheet 0,0
-    ForEach Row
-	  If B.Cell=null Then B.Cell= 0
-    End
+OnExcel "MyFile.xlsx"
+    ForEachRow
+	  If B.Cell=null Then B.Cell=0
+    Next
+End OnExcel	
 ```
 
-## How to implement using C# 
+This a very basic script, but of course it's possible to create more complex script to manage different cases.
+
+## A C# program to execute the script
 
 Create a program in C# and use the Lexerow library in this way:
 
 ```
+// create the core engine
 LexerowCore core = new LexerowCore();
-string fileName = "MyFile.xlsx";
-   
-// file= OpenExcel("MyExcelFile.xlsx")
-core.Builder.CreateInstrOpenExcel("file", fileName);
-   
-// Comparison: B.Cell=null  (B -> index 1)
-InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1);
 
-// Set: B.Cell= 0
-InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 0);
-
-// If B.Cell=null Then B.Cell= 0
-InstrIfColThen instrIfColThen;
-core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
-
-// OnExcel ForEach Row IfColThen, sheetNum=0, firstRow=1 below the header
-core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-
-// execute the instructions -> empty cells in col B will be remplaced by the value 0
-core.Exec.Execute();
+// load and execute the script   
+core.LoadExecScript("MyScript", MyScript.lxrw);   
 ```
+
+This is the minimum C# program you have to write.
 
 # Package available on Nuget
 
 Lexerow library is packaged as a nuget ready to use:
 
-https://www.nuget.org/packages/Lexerow#versions-body-tab
+https://www.nuget.org/packages/Lexerow
 
 # Project Wiki
 
-It is possible to check many cell type in If instruction: IsNull, Int, Double, DateTime, DateOnly and also TimeOnly.
+It's possible to check many cases in If instruction.
 
 ```
-If A.Cell = 12
+If A.Cell=12
+If A.Cell>8.55
+If A.Cell<>"Hello"
+If A.Cell=blank
+If A.Cell=null
 ```
 
-You can put one or more Set Cell Value instruction in the Then part. 
-Many type to set are available: Int, Double, DateTime, DateOnly and also TimeOnly.
+In Then part, you can set a value to a cell.
+Type of value can be: int, double, string.
 
-It is also possible to remove the cell by setting null. 
-Another option is to set Blank to a cell value, in this case the style of cell (BgColor, FgColor, Border,..) will remain.
+To clear the cell value, you have to put blank. 
+The formating of the cell will remain: background color and border.
+
+To remove completly a cell, to have to set it to null.
+ 
 
 ```
-A.Cell= 13
-A.Cell= "Hello"
-A.Cell= 12/04/2025
-A.Cell= null
-A.Cell= blank
+Then A.Cell=13
+Then A.Cell=25.89
+Then A.Cell="Hello"
+Then A.Cell=blank
+Then A.Cell= null
 ```
+
+Several instructions in Then part is also possible, example:
+
+```
+Then 
+	A.Cell=13
+    B.Cell=25.89
+	C.Cell=blank
+End If
+```
+
 
 You can find more information on how use all available functions on the library here:
 

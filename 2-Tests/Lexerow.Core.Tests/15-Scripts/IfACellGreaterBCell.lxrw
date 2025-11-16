@@ -1,0 +1,7 @@
+﻿# compare 2 cells values
+
+OnExcel ".\10-ExcelFiles\IfACellGreaterBCell2.xlsx"
+	ForEachRow
+		If A.Cell>B.Cell Then C.Cell=10
+	Next
+End OnExcel

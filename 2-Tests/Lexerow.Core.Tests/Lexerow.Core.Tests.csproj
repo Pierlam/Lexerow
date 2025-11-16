@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="8.3.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="MSTest" Version="3.8.3" />
   </ItemGroup>
@@ -21,67 +22,108 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="10-Files\ForIfCellIsNullSetDate.xlsx">
+    <None Update="10-ExcelFiles\onExcelManyThen.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\OnExcelIfInStringItemsErrAreNumber.xlsx">
+    <None Update="10-ExcelFiles\OpenClose.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\OnExcelIfInStringItemsOk.xlsx">
+    <None Update="10-ExcelFiles\onExcelManyIf.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfThenDateTimeOnDateOnly.xlsx">
+    <None Update="10-ExcelFiles\datLinesIfACellGreaterBCell2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfThenDateOnlyOnDateTime.xlsx">
+    <None Update="10-ExcelFiles\IfACellGreaterDouble.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfThenSetBlankBasic.xlsx">
+    <None Update="10-ExcelFiles\IfACellEqString.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfTimeOnlyBasic.xlsx">
+    <None Update="10-ExcelFiles\IfACellGreaterBCell2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfDateTimeBasic.xlsx">
+    <None Update="10-ExcelFiles\datLinesIfACellGreaterBCell.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfDateOnlyBasic.xlsx">
+    <None Update="10-ExcelFiles\datLinesThenACellBlankOk.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Greater50Set12.xlsx">
+    <None Update="10-ExcelFiles\datLinesACellEqualBlankOk.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\TestForEachRowIfAndThen.xlsx">
+    <None Update="10-ExcelFiles\datScriptOnExcel1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Test2ForEachRowIfThen.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunOnExcel2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\TestForEachRow2IfThen.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunOnExcel1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Test2OpenClose.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunSelect2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfCellIsNullSetNA.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunSelect1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\ForIfThenSetNullBasic.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcelJokerB2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\TestOpenClose.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcelJokerB.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Exec\ExecInstrForEachRowIfAndThenTests.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Compilation\" />
+    <None Update="10-ExcelFiles\dataOnExcelJokerA2.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\dataOnExcelJokerA.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\dataOnExcel3.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\dataOnExcel2.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\dataOnExcel1.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\dataName.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\data1.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelManyThen.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelManyIf.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\IfACellGreaterDouble.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\IfACellEqString.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\execOnExcel1Err.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\loadOnExcel1.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\execOnExcel1.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\IfACellGreaterBCell.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\script1.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\scriptEmpty.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

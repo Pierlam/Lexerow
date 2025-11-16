@@ -1,0 +1,10 @@
+﻿
+OnExcel ".\10-ExcelFiles\onExcelManyThen.xlsx"
+	ForEachRow
+		If A.Cell <= 10 Then 
+			A.Cell=12.3
+			B.Cell=Blank
+			C.Cell="Y"
+		End If
+	Next
+End OnExcel

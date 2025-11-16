@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System;
-
+﻿namespace Lexerow.Core.System;
 
 /// <summary>
 /// Execution (load, save, compilation or execution) result error.
@@ -15,7 +8,7 @@ public class ExecResultError
 {
     public ExecResultError(ErrorCode errorCode, string param)
     {
-        DateTimeCreation=DateTime.UtcNow;
+        DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
         Param = param;
     }
@@ -49,7 +42,7 @@ public class ExecResultError
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
         Param = param;
-        Param2 =param2;
+        Param2 = param2;
         LineNum = lineNum;
         ColNum = colNum;
     }
@@ -58,12 +51,11 @@ public class ExecResultError
     {
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
-        Exception= exception;
+        Exception = exception;
         Param = param;
         LineNum = lineNum;
         ColNum = colNum;
     }
-
 
     /// <summary>
     /// When the error was created.
@@ -79,11 +71,11 @@ public class ExecResultError
     public int ColNum { get; set; } = 0;
 
     public Exception? Exception { get; set; } = null;
-    
+
     /// <summary>
     /// Parameter 1 of the error.
     /// </summary>
-    public string Param { get; set; }=string.Empty;
+    public string Param { get; set; } = string.Empty;
 
     /// <summary>
     /// Parameter 2 of the error.

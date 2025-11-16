@@ -1,13 +1,8 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.lex;
+
 public class ScriptSplitter
 {
     /// <summary>
@@ -63,7 +58,7 @@ public class ScriptSplitter
                 i = iOut;
 
                 // manage case: StringBadFormated, end tag not found
-                if (token.ScriptTokenType == ScriptTokenType.StringBadFormed) 
+                if (token.ScriptTokenType == ScriptTokenType.StringBadFormed)
                 {
                     lastTokenType = ScriptTokenType.StringBadFormed;
                     return false;
@@ -139,7 +134,7 @@ public class ScriptSplitter
     /// <param name="line"></param>
     /// <param name="i"></param>
     /// <param name="iOut"></param>
-    bool ProcessSpaceChars(string line, int i, out int iOut)
+    private bool ProcessSpaceChars(string line, int i, out int iOut)
     {
         bool spaceFound = false;
 
@@ -149,7 +144,7 @@ public class ScriptSplitter
             if (i >= line.Length) return spaceFound;
 
             // space or special char (\n,\r, \t,...) found?
-            if(!IsSpaceCharExt(line[i]))return spaceFound;
+            if (!IsSpaceCharExt(line[i])) return spaceFound;
 
             spaceFound = true;
             i++;
@@ -157,7 +152,7 @@ public class ScriptSplitter
         }
     }
 
-    bool ProcessString(string line, int i, char stringSep, out int iOut, out ScriptToken item)
+    private bool ProcessString(string line, int i, char stringSep, out int iOut, out ScriptToken item)
     {
         iOut = i;
         item = null;
@@ -199,7 +194,7 @@ public class ScriptSplitter
         }
     }
 
-    bool ProcessComment(string line, int i, string commentTag)
+    private bool ProcessComment(string line, int i, string commentTag)
     {
         if (line.Substring(i).StartsWith(commentTag, StringComparison.OrdinalIgnoreCase))
             return true;
@@ -217,7 +212,7 @@ public class ScriptSplitter
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessNumber(string separators, char decimalSep, string line, int i, out int iOut, out ScriptToken token)
+    private bool ProcessNumber(string separators, char decimalSep, string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -252,7 +247,7 @@ public class ScriptSplitter
                 if (token == null)
                 {
                     // the next char should exists and should be a digit
-                    if (i+1 < line.Length) 
+                    if (i + 1 < line.Length)
                     {
                         // next char must be a digit
                         if (char.IsDigit(line[i + 1]))
@@ -281,7 +276,7 @@ public class ScriptSplitter
             if (c == 'e' || c == 'E')
             {
                 // the token should exists
-                if (token != null) 
+                if (token != null)
                 {
                     // sure it's a double
                     token.ScriptTokenType = ScriptTokenType.Double;
@@ -294,14 +289,14 @@ public class ScriptSplitter
             }
 
             // special case: minus char, exp 23E-10
-            if(c=='-')
+            if (c == '-')
             {
-                if(token != null)
+                if (token != null)
                 {
                     // previous char should exists and should be: E
-                    if(token.Value.Length > 0)
+                    if (token.Value.Length > 0)
                     {
-                        if(token.Value.Last() == 'E' || token.Value.Last() == 'e')
+                        if (token.Value.Last() == 'E' || token.Value.Last() == 'e')
                         {
                             token.Value += c.ToString();
                             i++;
@@ -317,11 +312,11 @@ public class ScriptSplitter
         }
 
         // no integer or double found, bye
-        if (token==null)
+        if (token == null)
             return false;
 
         // the next char must be a separator or there is no more char
-        if(iOut < line.Length)
+        if (iOut < line.Length)
         {
             // there is a next char, should be a space separator
             if (!IsSpaceCharExt(line[i]) && !separators.Contains(line[i]))
@@ -334,12 +329,12 @@ public class ScriptSplitter
         }
 
         // check the number, convert it
-        if(token.ScriptTokenType == ScriptTokenType.Double)
+        if (token.ScriptTokenType == ScriptTokenType.Double)
         {
             if (double.TryParse(token.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double d))
                 token.ValueDouble = d;
             else
-                token.ScriptTokenType= ScriptTokenType.WrongNumber;
+                token.ScriptTokenType = ScriptTokenType.WrongNumber;
             return true;
         }
 
@@ -357,7 +352,7 @@ public class ScriptSplitter
     }
 
     /// <summary>
-    /// is the current char a separator?  .=,;+- 
+    /// is the current char a separator?  .=,;+-
     /// Manage special cases: >=, <=, <>
     /// </summary>
     /// <param name="separators"></param>
@@ -366,7 +361,7 @@ public class ScriptSplitter
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessSeparator(string separators, string line, int i, out int iOut, out ScriptToken token)
+    private bool ProcessSeparator(string separators, string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -390,21 +385,21 @@ public class ScriptSplitter
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="line"></param>
     /// <param name="i"></param>
     /// <param name="token"></param>
     /// <param name="iOut"></param>
     /// <returns></returns>
-    bool ProcessLessGreaterEqualSeparator(string line, int i, ScriptToken token, out int iOut)
+    private bool ProcessLessGreaterEqualSeparator(string line, int i, ScriptToken token, out int iOut)
     {
         iOut = i;
         // no more char to process
         if (i > line.Length) return true;
 
         // >=
-        if(token.Value==">" && line[i]=='=')
+        if (token.Value == ">" && line[i] == '=')
         {
             token.Value = ">=";
             iOut = i + 1;
@@ -438,7 +433,7 @@ public class ScriptSplitter
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    bool ProcessName(string line, int i, out int iOut, out ScriptToken token)
+    private bool ProcessName(string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
@@ -475,7 +470,7 @@ public class ScriptSplitter
     /// </summary>
     /// <param name="c"></param>
     /// <returns></returns>
-    bool IsSpaceCharExt(char c)
+    private bool IsSpaceCharExt(char c)
     {
         if (c == ' ') return true;
         if (c == '\r') return true;

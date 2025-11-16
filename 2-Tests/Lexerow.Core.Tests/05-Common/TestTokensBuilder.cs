@@ -9,7 +9,7 @@ public class TestTokensBuilder
 {
     public static Script Build(string l1)
     {
-        Script sc= new Script("name", "filename");
+        Script sc = new Script("name", "filename");
 
         sc.AddScriptLine(1, l1);
         return sc;
@@ -43,7 +43,7 @@ public class TestTokensBuilder
     /// </summary>
     /// <param name="script"></param>
     /// <returns></returns>
-    public static ScriptLineTokens BuidIfColCellEqualIntThenSetColCellInt(int numLine,List<ScriptLineTokens> script)
+    public static ScriptLineTokens BuidIfColCellEqualIntThenSetColCellInt(int numLine, List<ScriptLineTokens> script)
     {
         var line = new ScriptLineTokens();
         line = BuidIfColCellCompIntThenSetColCellInt(numLine, line, "A", ">", 10, "A", 10);
@@ -51,15 +51,13 @@ public class TestTokensBuilder
         return line;
     }
 
-
-
     /// <summary>
     /// Build this script line:
     ///   If A.Cell >10 Then A.Cell=10
     /// </summary>
     /// <param name="script"></param>
     /// <returns></returns>
-    public static ScriptLineTokens BuidIfColCellCompIntThenSetColCellInt(int numLine, List<ScriptLineTokens> script,string colNameIf, string compIf, int valIf, string colNameThen, int valThen)
+    public static ScriptLineTokens BuidIfColCellCompIntThenSetColCellInt(int numLine, List<ScriptLineTokens> script, string colNameIf, string compIf, int valIf, string colNameThen, int valThen)
     {
         var line = new ScriptLineTokens();
         line = BuidIfColCellCompIntThenSetColCellInt(numLine, line, colNameIf, compIf, valIf, colNameThen, valThen);
@@ -115,9 +113,9 @@ public class TestTokensBuilder
     public static ScriptLineTokens BuidIfColCellCompIntThenSetColCellInt(int numLine, ScriptLineTokens line, string colNameIf, string compIf, int valIf, string colNameThen, int valThen)
     {
         line.AddTokenName(numLine, 1, "If");
-        BuidColCellOperInt(numLine,line, colNameIf, compIf, valIf);
+        BuidColCellOperInt(numLine, line, colNameIf, compIf, valIf);
         line.AddTokenName(numLine, 1, "Then");
-        BuidColCellEqualInt(numLine ,line, colNameThen, valThen);
+        BuidColCellEqualInt(numLine, line, colNameThen, valThen);
         return line;
     }
 
@@ -176,5 +174,4 @@ public class TestTokensBuilder
         line.AddTokenName(numLine, 1, valstr);
         return line;
     }
-
 }

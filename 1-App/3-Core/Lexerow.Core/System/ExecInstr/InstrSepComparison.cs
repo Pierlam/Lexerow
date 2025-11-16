@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -24,25 +19,24 @@ public class InstrSepComparison : InstrBase
     {
         InstrType = InstrType.SepComparison;
 
-        if(scriptToken.Value=="=") Operator= SepComparisonOperator.Equal;
+        if (scriptToken.Value == "=") Operator = SepComparisonOperator.Equal;
         if (scriptToken.Value == "<>") Operator = SepComparisonOperator.Different;
         if (scriptToken.Value == ">") Operator = SepComparisonOperator.GreaterThan;
         if (scriptToken.Value == "<") Operator = SepComparisonOperator.LessThan;
         if (scriptToken.Value == ">=") Operator = SepComparisonOperator.GreaterEqualThan;
-        if (scriptToken.Value == "<=") Operator = SepComparisonOperator.LessEqualThan;        
+        if (scriptToken.Value == "<=") Operator = SepComparisonOperator.LessEqualThan;
     }
 
-    public SepComparisonOperator Operator { get; set; }= SepComparisonOperator.Undefined;
-
+    public SepComparisonOperator Operator { get; set; } = SepComparisonOperator.Undefined;
 
     public InstrSepComparison Revert()
     {
         InstrSepComparison instrSepComparison = new InstrSepComparison(this.FirstScriptToken());
 
         // < becomes >
-        if (Operator == SepComparisonOperator.LessThan) 
+        if (Operator == SepComparisonOperator.LessThan)
         {
-            instrSepComparison.Operator= SepComparisonOperator.GreaterThan;
+            instrSepComparison.Operator = SepComparisonOperator.GreaterThan;
             return instrSepComparison;
         }
 

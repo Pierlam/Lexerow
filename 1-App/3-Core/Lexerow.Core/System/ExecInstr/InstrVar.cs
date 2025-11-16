@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -11,12 +6,12 @@ namespace Lexerow.Core.System;
 /// Represent a variable name present in the source code
 /// exp: a=12
 /// sheet.Cell(A,3)=a
-/// 
+///
 /// TODO: InstrObjectName exists!!
 /// </summary>
 public class InstrVar : InstrBase
 {
-    public InstrVar(ScriptToken scriptToken, string varName):base(scriptToken)
+    public InstrVar(ScriptToken scriptToken, string varName) : base(scriptToken)
     {
         InstrType = InstrType.Var;
         VarName = varName;

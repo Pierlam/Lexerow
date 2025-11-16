@@ -1,14 +1,7 @@
 ﻿using Lexerow.Core.System;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
-using Org.BouncyCastle.Utilities.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
+
 internal class InstrChecker
 {
     /// <summary>
@@ -24,7 +17,7 @@ internal class InstrChecker
 
         //--is it OpenExcel?
         InstrSelectFiles instrOpenExcel = instrBase as InstrSelectFiles;
-        if (instrOpenExcel != null) 
+        if (instrOpenExcel != null)
         {
             // need at least one parameter
             if (instrOpenExcel.ListInstrParams.Count == 0)
@@ -36,8 +29,7 @@ internal class InstrChecker
             return true;
         }
 
-        //--fct not managed 
+        //--fct not managed
         throw new NotImplementedException(instrBase.ToString());
     }
-
 }

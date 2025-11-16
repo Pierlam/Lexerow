@@ -8,7 +8,7 @@ public class StringUtils
     /// <summary>
     /// file -> not a string.
     /// "file.xlsx"  -> it's a string.
-    /// 
+    ///
     /// "file.xlsx  -> error, wrong.
     /// </summary>
     /// <param name="str"></param>
@@ -32,15 +32,14 @@ public class StringUtils
     public static string RemoveStartEndDoubleQuote(string s)
     {
         if (string.IsNullOrWhiteSpace(s)) return s;
-        string str=s.Trim();
+        string str = s.Trim();
 
         if (str.StartsWith("\"", StringComparison.OrdinalIgnoreCase))
-            str=str.Substring(1);
+            str = str.Substring(1);
 
-        if(str.EndsWith("\"", StringComparison.OrdinalIgnoreCase))
-            str=str.Substring(0, str.Length - 1);
+        if (str.EndsWith("\"", StringComparison.OrdinalIgnoreCase))
+            str = str.Substring(0, str.Length - 1);
 
         return str;
     }
-
 }

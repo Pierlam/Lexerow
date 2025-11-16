@@ -1,10 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesRun;
 
@@ -50,5 +45,4 @@ public class LoadLinesExecSelectFilesTests : BaseTests
         execResult = core.LoadExecLinesScript("script", lines);
         Assert.IsTrue(execResult.Result);
     }
-
 }

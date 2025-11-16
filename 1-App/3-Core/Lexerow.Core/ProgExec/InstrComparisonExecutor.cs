@@ -4,11 +4,12 @@ using Lexerow.Core.System.Excel;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ProgExec;
+
 public class InstrComparisonExecutor
 {
-    IActivityLogger _logger;
+    private IActivityLogger _logger;
 
-    IExcelProcessor _excelProcessor;
+    private IExcelProcessor _excelProcessor;
 
     public InstrComparisonExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
@@ -35,25 +36,25 @@ public class InstrComparisonExecutor
         bool res;
 
         InstrColCellFunc instrColCellFuncLeft = instrComparison.OperandLeft as InstrColCellFunc;
-        InstrConstValue instrConstValueRight= instrComparison.OperandRight as InstrConstValue;
+        InstrConstValue instrConstValueRight = instrComparison.OperandRight as InstrConstValue;
 
         //--A.Cell>10
         if (instrColCellFuncLeft != null && instrConstValueRight != null)
         {
-            if (!Compare(execResult, _excelProcessor, ctx.ExcelFileObject.Filename,  ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrConstValueRight, out bool resultComp))
+            if (!Compare(execResult, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrConstValueRight, out bool resultComp))
                 return false;
 
-            instrComparison.Result= resultComp;
+            instrComparison.Result = resultComp;
             ctx.PrevInstrExecuted = instrComparison;
             ctx.StackInstr.Pop();
             return true;
         }
 
-        InstrConstValue instrConstValueLeft= instrComparison.OperandLeft as InstrConstValue;
-        InstrColCellFunc instrColCellFuncRight= instrComparison.OperandRight as InstrColCellFunc;
+        InstrConstValue instrConstValueLeft = instrComparison.OperandLeft as InstrConstValue;
+        InstrColCellFunc instrColCellFuncRight = instrComparison.OperandRight as InstrColCellFunc;
 
         //--10<A.Cell
-        if (instrConstValueLeft != null && instrColCellFuncRight != null) 
+        if (instrConstValueLeft != null && instrColCellFuncRight != null)
         {
             // revert the operator,exp: < becomes >
             InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
@@ -67,7 +68,7 @@ public class InstrComparisonExecutor
         }
 
         //--A.Cell>B.Cell
-        if(instrColCellFuncLeft != null && instrColCellFuncRight !=null)
+        if (instrColCellFuncLeft != null && instrColCellFuncRight != null)
         {
             if (!Compare(execResult, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrColCellFuncRight, out bool resultComp))
                 return false;
@@ -78,12 +79,11 @@ public class InstrComparisonExecutor
             return true;
         }
 
-
         //--A.Cell=blank  or A.Cell<>blank
-        InstrBlank instrBlankRight= instrComparison.OperandRight as InstrBlank;
-        if(instrColCellFuncLeft != null && instrBlankRight != null)
+        InstrBlank instrBlankRight = instrComparison.OperandRight as InstrBlank;
+        if (instrColCellFuncLeft != null && instrBlankRight != null)
         {
-            if(!CompareColCellBlank(execResult, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
+            if (!CompareColCellBlank(execResult, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
                 return false;
             instrComparison.Result = resultComp;
             ctx.PrevInstrExecuted = instrComparison;
@@ -120,19 +120,19 @@ public class InstrComparisonExecutor
     /// <param name="resultComp"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName,IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrConstValue instrConstValueRight, out bool resultComp)
+    private bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrConstValue instrConstValueRight, out bool resultComp)
     {
         resultComp = false;
 
-        var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncLeft.ColNum-1);
+        var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncLeft.ColNum - 1);
 
-        // get the cell value type            
+        // get the cell value type
         CellRawValueType cellType = excelProcessor.GetCellValueType(excelSheet, cell);
 
         // does the cell type match the If-Comparison cell.Value type?
         if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrConstValueRight.ValueBase))
         {
-            // is there an warning already existing? 
+            // is there an warning already existing?
             execResult.AddWarning(ErrorCode.IfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellType);
             // just a warning stop here but return true
             return true;
@@ -140,7 +140,6 @@ public class InstrComparisonExecutor
 
         // execute the If part: comparison condition
         return CompareValues(execResult, excelProcessor, cell, compOperator, instrConstValueRight.ValueBase, out resultComp);
-
     }
 
     /// <summary>
@@ -156,24 +155,24 @@ public class InstrComparisonExecutor
     /// <param name="resultComp"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrColCellFunc instrColCellFuncRight, out bool resultComp)
+    private bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrColCellFunc instrColCellFuncRight, out bool resultComp)
     {
         resultComp = false;
 
         var cellLeft = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncLeft.ColNum - 1);
 
-        // get the cell value type            
+        // get the cell value type
         CellRawValueType cellTypeLeft = excelProcessor.GetCellValueType(excelSheet, cellLeft);
 
         var cellRight = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncRight.ColNum - 1);
 
-        // get the cell value type            
+        // get the cell value type
         CellRawValueType cellTypeRight = excelProcessor.GetCellValueType(excelSheet, cellRight);
 
         // does the cell type match the If-Comparison cell.Value type?
         if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellTypeLeft, cellTypeRight))
         {
-            // is there an warning already existing? 
+            // is there an warning already existing?
             execResult.AddWarning(ErrorCode.IfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellTypeLeft);
             // just a warning stop here but return true
             return true;
@@ -181,7 +180,6 @@ public class InstrComparisonExecutor
 
         // execute the If part: comparison condition
         return CompareValues(execResult, excelProcessor, cellLeft, cellTypeLeft, compOperator, cellRight, cellTypeRight, out resultComp);
-
     }
 
     /// <summary>
@@ -196,19 +194,19 @@ public class InstrComparisonExecutor
     /// <param name="compOperator"></param>
     /// <param name="resultComp"></param>
     /// <returns></returns>
-    static bool CompareColCellBlank(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrSepComparison compOperator, out bool resultComp)
+    private static bool CompareColCellBlank(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrSepComparison compOperator, out bool resultComp)
     {
         resultComp = false;
 
         var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-        if (cell == null) 
-        { 
+        if (cell == null)
+        {
             resultComp = true;
             return true;
         }
 
         // the cell exists but has no value
-        string val=cell.GetRawValueString();
+        string val = cell.GetRawValueString();
         if (val == string.Empty)
             resultComp = true;
 
@@ -226,7 +224,7 @@ public class InstrComparisonExecutor
     /// <param name="compOperator"></param>
     /// <param name="resultComp"></param>
     /// <returns></returns>
-    static bool CompareColCellNull(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrSepComparison compOperator, out bool resultComp)
+    private static bool CompareColCellNull(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrSepComparison compOperator, out bool resultComp)
     {
         resultComp = false;
 
@@ -245,7 +243,7 @@ public class InstrComparisonExecutor
     /// <summary>
     /// Execute the comparison condition.
     /// Type of cell value and instr comparison should match.
-    /// 
+    ///
     /// If -condition- Then
     /// A.Cell>10
     /// </summary>
@@ -311,7 +309,7 @@ public class InstrComparisonExecutor
     /// <summary>
     /// Execute the comparison condition.
     /// Type of cell value and instr comparison should match.
-    /// 
+    ///
     /// If -condition- Then
     /// A.Cell>B.Cell
     /// </summary>
@@ -323,7 +321,7 @@ public class InstrComparisonExecutor
     /// <returns></returns>
     public static bool CompareValues(ExecResult execResult, IExcelProcessor excelProcessor, IExcelCell excelCellLeft, CellRawValueType cellTypeLeft, InstrSepComparison compOperator, IExcelCell excelCellRight, CellRawValueType cellTypeRight, out bool compResult)
     {
-        if (cellTypeLeft== CellRawValueType.Numeric)
+        if (cellTypeLeft == CellRawValueType.Numeric)
         {
             double dblValLeft = excelCellLeft.GetRawValueNumeric();
             double dblValRight = excelCellRight.GetRawValueNumeric();
@@ -403,8 +401,6 @@ public class InstrComparisonExecutor
         return true;
     }
 
-
-
     /// <summary>
     /// A.Cell In [ "y", "yes", "ok"]
     /// in string items.
@@ -440,7 +436,7 @@ public class InstrComparisonExecutor
     /// <param name="cellValue"></param>
     /// <param name="valueComp"></param>
     /// <returns></returns>
-    static bool CompareNumeric(double cellValue, InstrSepComparison instrComp, double valueComp)
+    private static bool CompareNumeric(double cellValue, InstrSepComparison instrComp, double valueComp)
     {
         if (instrComp.Operator == SepComparisonOperator.Equal)
             return cellValue == valueComp;
@@ -460,7 +456,7 @@ public class InstrComparisonExecutor
         return false;
     }
 
-    static bool CompareDateTime(DateTime cellValue, InstrSepComparison instrComp, DateTime valueComp)
+    private static bool CompareDateTime(DateTime cellValue, InstrSepComparison instrComp, DateTime valueComp)
     {
         if (instrComp.Operator == SepComparisonOperator.Equal)
             return cellValue == valueComp;
@@ -480,8 +476,7 @@ public class InstrComparisonExecutor
         return false;
     }
 
-
-    static bool CompareTimeOnly(TimeOnly cellValue, InstrSepComparison instrComp,  TimeOnly valueComp)
+    private static bool CompareTimeOnly(TimeOnly cellValue, InstrSepComparison instrComp, TimeOnly valueComp)
     {
         if (instrComp.Operator == SepComparisonOperator.Equal)
             return cellValue == valueComp;
@@ -501,7 +496,7 @@ public class InstrComparisonExecutor
         return false;
     }
 
-    static bool CompareString(string cellValue, InstrSepComparison instrComp, string valueComp)
+    private static bool CompareString(string cellValue, InstrSepComparison instrComp, string valueComp)
     {
         if (instrComp.Operator == SepComparisonOperator.Equal)
             return cellValue == valueComp;
@@ -509,9 +504,6 @@ public class InstrComparisonExecutor
         if (instrComp.Operator == SepComparisonOperator.Different)
             return cellValue != valueComp;
 
-
         return false;
     }
-
-
 }

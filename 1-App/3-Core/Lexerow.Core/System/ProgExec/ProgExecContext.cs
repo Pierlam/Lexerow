@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System;
+﻿namespace Lexerow.Core.System;
 
 /// <summary>
 /// Program execution context.
@@ -14,7 +8,7 @@ public class ProgExecContext
 {
     public Stack<InstrBase> StackInstr { get; private set; } = new Stack<InstrBase>();
 
-    public InstrBase PrevInstrExecuted { get; set;} = null;
+    public InstrBase PrevInstrExecuted { get; set; } = null;
 
     /// <summary>
     /// Init to -1 which is not started.
@@ -42,5 +36,4 @@ public class ProgExecContext
     /// list of selected excel filename to process
     /// </summary>
     public List<InstrSelectedFilename> ListSelectedFilename { get; private set; } = new List<InstrSelectedFilename>();
-
 }

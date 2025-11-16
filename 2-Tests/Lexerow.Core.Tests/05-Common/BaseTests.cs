@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lexerow.Core.Tests.Common;
 
-namespace Lexerow.Core.Tests.Common;
 public abstract class BaseTests
 {
     /// <summary>

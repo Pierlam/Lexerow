@@ -1,13 +1,9 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesExec;
+
 /// <summary>
 /// Test the script load from lines, compile and execute from the core.
 /// Focus on OnExcel, If A.Cell=blank / null instruction.
@@ -98,5 +94,4 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
         res = ExcelTestChecker.CheckCellValueBlank(wb, 0, 3, 0);
         Assert.IsTrue(res);
     }
-
 }

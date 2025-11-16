@@ -1,14 +1,7 @@
-﻿using NPOI.HPSF;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System;
+﻿namespace Lexerow.Core.System;
 
 /// <summary>
-///  Execution  result warning. 
+///  Execution  result warning.
 ///  exp: IfCondTypeMismatch, excelFile=file, SheetNum=0, col=A, type=Number, Counter=12
 /// </summary>
 public class ExecResultWarning
@@ -32,7 +25,6 @@ public class ExecResultWarning
         SheetNum = sheetNum;
         ColNum = colNum;
         CellValueType = cellValueType;
-
     }
 
     /// <summary>
@@ -52,12 +44,12 @@ public class ExecResultWarning
     public ErrorCode ErrorCode { get; set; }
 
     public string FileName { get; set; } = string.Empty;
-    
+
     public int SheetNum { get; set; }
-    
+
     public int ColNum { get; set; }
-    
-    public CellRawValueType CellValueType { get; set; }= CellRawValueType.Unknow;
+
+    public CellRawValueType CellValueType { get; set; } = CellRawValueType.Unknow;
 
     public int Counter { get; set; } = 1;
 
@@ -76,5 +68,4 @@ public class ExecResultWarning
         Counter++;
         return Counter;
     }
-
 }

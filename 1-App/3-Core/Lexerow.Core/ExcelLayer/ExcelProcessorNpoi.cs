@@ -1,13 +1,6 @@
-﻿using Lexerow.Core.System.Excel;
-using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lexerow.Core.System;
+using Lexerow.Core.System.Excel;
 using NPOI.SS.UserModel;
-using NPOI.SS.Formula.Functions;
-using NPOI.XWPF.UserModel;
 
 namespace Lexerow.Core.ExcelLayer;
 
@@ -18,7 +11,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
 {
     public bool Open(string fileName, out IExcelFile excelFile, out ExecResultError error)
     {
-        if (!File.Exists(fileName)) 
+        if (!File.Exists(fileName))
         {
             excelFile = null;
             error = new ExecResultError(ErrorCode.FileNotFound, fileName);
@@ -34,13 +27,14 @@ public class ExcelProcessorNpoi : IExcelProcessor
             error = null;
             return true;
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             excelFile = null;
-            error= new ExecResultError(ErrorCode.ExcelUnableOpenFile, ex.Message);
+            error = new ExecResultError(ErrorCode.ExcelUnableOpenFile, ex.Message);
             return false;
         }
     }
+
     public bool Close(IExcelFile excelFile, out ExecResultError error)
     {
         try
@@ -75,7 +69,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
     public IExcelRow GetRowAt(IExcelSheet excelSheet, int rowNum)
     {
         ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
-        var row= excelSheetNpoi.Sheet.GetRow(rowNum);
+        var row = excelSheetNpoi.Sheet.GetRow(rowNum);
         if (row == null) return null;
 
         ExcelRowNpoi excelRowNpoi = new ExcelRowNpoi(row);
@@ -94,9 +88,9 @@ public class ExcelProcessorNpoi : IExcelProcessor
     {
         ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
 
-        var row= excelSheetNpoi.Sheet.GetRow(rowNum);
+        var row = excelSheetNpoi.Sheet.GetRow(rowNum);
         if (row == null) return null;
-        var cell= row.GetCell(colNum);
+        var cell = row.GetCell(colNum);
         if (cell == null) return null;
 
         ExcelCellNpoi excelCellNpoi = new ExcelCellNpoi(cell);
@@ -112,10 +106,9 @@ public class ExcelProcessorNpoi : IExcelProcessor
     {
         ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
 
-        //heet.FirstRowNum + 1); i <= sheet.LastRowNum; 
+        //heet.FirstRowNum + 1); i <= sheet.LastRowNum;
         int rn = excelSheetNpoi.Sheet.FirstRowNum;
     }
-
 
     /// <summary>
     /// Return the raw cell value type.
@@ -126,14 +119,14 @@ public class ExcelProcessorNpoi : IExcelProcessor
     /// <returns></returns>
     public CellRawValueType GetCellValueType(IExcelSheet excelSheet, IExcelCell excelCell)
     {
-        ExcelSheetNpoi excelSheetNpoi=  excelSheet as ExcelSheetNpoi;
-        ExcelCellNpoi excelCellNpoi= excelCell as ExcelCellNpoi;
+        ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
+        ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
 
         if (excelCellNpoi.Cell.CellType == CellType.Blank)
             return CellRawValueType.Blank;
 
         // type string
-        if (excelCellNpoi.Cell.CellType== CellType.String)
+        if (excelCellNpoi.Cell.CellType == CellType.String)
             return CellRawValueType.String;
 
         if (excelCellNpoi.Cell.CellType == CellType.Numeric)
@@ -145,13 +138,13 @@ public class ExcelProcessorNpoi : IExcelProcessor
 
             // contains a date ?
             bool hasDate = false;
-            if(format.Contains("yy") || format.Contains("?/?"))
-                hasDate=true;
+            if (format.Contains("yy") || format.Contains("?/?"))
+                hasDate = true;
 
             // contains a time ?
             bool hasTime = false;
             if (format.Contains("h") || format.Contains("ss"))
-                hasTime=true;
+                hasTime = true;
 
             if (hasDate && hasTime)
                 return CellRawValueType.DateTime;
@@ -168,7 +161,6 @@ public class ExcelProcessorNpoi : IExcelProcessor
 
         return CellRawValueType.Unknow;
     }
-
 
     /// <summary>
     /// return the last row number.
@@ -197,7 +189,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
         if (row == null) return null;
 
         var cell = row.CreateCell(colNum);
-        IExcelCell excelCell= new ExcelCellNpoi(cell);
+        IExcelCell excelCell = new ExcelCellNpoi(cell);
         return excelCell;
     }
 
@@ -215,7 +207,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
         var row = excelSheetNpoi.Sheet.GetRow(rowNum);
         if (row == null) return false;
 
-        var cell= row.CreateCell(colNum);
+        var cell = row.CreateCell(colNum);
         cell.SetCellValue(value);
         return true;
     }
@@ -269,7 +261,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
     // set the new value to the cell
     public bool SetCellValue(IExcelCell excelCell, double value)
     {
-        ExcelCellNpoi excelCellNpoi= excelCell as ExcelCellNpoi;
+        ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
 
         excelCellNpoi.Cell.SetCellValue(value);
         return true;
@@ -291,7 +283,6 @@ public class ExcelProcessorNpoi : IExcelProcessor
         excelCellNpoi.Cell.CellStyle.DataFormat = 0;
         excelCellNpoi.Cell.SetCellValue(value);
         return true;
-
     }
 
     public bool SetCellValueInt(IExcelCell excelCell, int value)
@@ -302,7 +293,6 @@ public class ExcelProcessorNpoi : IExcelProcessor
         excelCellNpoi.Cell.CellStyle.DataFormat = 1;
         excelCellNpoi.Cell.SetCellValue(value);
         return true;
-
     }
 
     public bool SetCellValueDouble(IExcelCell excelCell, double value)
@@ -313,7 +303,6 @@ public class ExcelProcessorNpoi : IExcelProcessor
         excelCellNpoi.Cell.CellStyle.DataFormat = 2;
         excelCellNpoi.Cell.SetCellValue(value);
         return true;
-
     }
 
     public bool SetCellValueDateOnly(IExcelCell excelCell, ValueDateOnly value)
@@ -357,12 +346,11 @@ public class ExcelProcessorNpoi : IExcelProcessor
     {
         ExcelFileNpoi excelFileNpoi = excelFile as ExcelFileNpoi;
 
-        using var writeStream = new FileStream(excelFileNpoi.FileName, FileMode.Create, FileAccess.Write);            
+        using var writeStream = new FileStream(excelFileNpoi.FileName, FileMode.Create, FileAccess.Write);
         excelFileNpoi.XssWorkbook.Write(writeStream);
 
         // TODO:
         excelFileNpoi.XssWorkbook.Close();
-        return false; 
-    }  
-
+        return false;
+    }
 }

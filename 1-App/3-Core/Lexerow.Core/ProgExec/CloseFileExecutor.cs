@@ -1,12 +1,8 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
+
 internal class CloseFileExecutor
 {
     public static bool Exec(ExecResult execResult, IExcelProcessor excelProcessor, IExcelFile excelFile)
@@ -20,5 +16,4 @@ internal class CloseFileExecutor
         }
         return true;
     }
-
 }

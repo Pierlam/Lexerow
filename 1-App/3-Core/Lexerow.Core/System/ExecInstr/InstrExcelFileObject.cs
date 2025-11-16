@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -13,18 +8,18 @@ namespace Lexerow.Core.System;
 /// </summary>
 public class InstrExcelFileObject : InstrBase
 {
-    public InstrExcelFileObject(ScriptToken scriptToken, string filename, IExcelFile excelFile):base(scriptToken)
+    public InstrExcelFileObject(ScriptToken scriptToken, string filename, IExcelFile excelFile) : base(scriptToken)
     {
         InstrType = InstrType.ExcelFileObject;
         Filename = filename;
-        ExcelFile= excelFile;
+        ExcelFile = excelFile;
     }
+
     public InstrExcelFileObject(ScriptToken scriptToken, string filename) : base(scriptToken)
     {
         InstrType = InstrType.ExcelFileObject;
         Filename = filename;
     }
-
 
     public string Filename { get; set; }
 

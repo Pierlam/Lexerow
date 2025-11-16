@@ -1,15 +1,9 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using Org.BouncyCastle.Utilities.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
+
 internal class SetVarDecoder
 {
     /// <summary>
@@ -33,12 +27,12 @@ internal class SetVarDecoder
         bool res;
 
         // is the script token the equal char?
-        if (!scriptToken.Value.Equals("=",StringComparison.InvariantCultureIgnoreCase))
+        if (!scriptToken.Value.Equals("=", StringComparison.InvariantCultureIgnoreCase))
             // not the equal char, bye without error
             return true;
 
         // the stack contains nothing, strange  =blabla
-        if(stackInstr.Count == 0)
+        if (stackInstr.Count == 0)
         {
             execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
             return false;
@@ -47,8 +41,8 @@ internal class SetVarDecoder
         // is it var=  ?
         if (stackInstr.Count == 1)
         {
-            res= ProcessVarName(execResult, listVar, stackInstr, scriptToken, out isToken);
-            if(!isToken)
+            res = ProcessVarName(execResult, listVar, stackInstr, scriptToken, out isToken);
+            if (!isToken)
             {
                 execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
@@ -57,12 +51,12 @@ internal class SetVarDecoder
             return true;
         }
 
-        // is it a SetVar instr or Comparison? just one instr -> SetVar: instr= 
+        // is it a SetVar instr or Comparison? just one instr -> SetVar: instr=
         if (stackInstr.Count > 1)
         {
             // looking in the stack for Then instr or If. If not found search: ForEach Row
-            InstrBase instrResult= stackInstr.FindFirstFromTop(InstrType.If, InstrType.Then);
-            if(instrResult != null && instrResult.InstrType== InstrType.If)
+            InstrBase instrResult = stackInstr.FindFirstFromTop(InstrType.If, InstrType.Then);
+            if (instrResult != null && instrResult.InstrType == InstrType.If)
                 // close to an If instr, it's a comparison, not a SetVar
                 return true;
         }
@@ -77,7 +71,7 @@ internal class SetVarDecoder
         //--is the stack contains A.Cell expression?
         res = ParserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptToken, out isToken);
         if (!res) return false;
-        if (isToken) 
+        if (isToken)
         {
             // the Instr Col.Cell.Function is on the top the stack
             InstrBase instrColCellFunc = stackInstr.Pop();
@@ -103,7 +97,7 @@ internal class SetVarDecoder
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    static bool ProcessVarName(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
+    private static bool ProcessVarName(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
@@ -128,5 +122,4 @@ internal class SetVarDecoder
 
         return true;
     }
-
 }

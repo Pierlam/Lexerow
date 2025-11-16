@@ -2,11 +2,6 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.lex;
 
@@ -37,11 +32,11 @@ public class Lexer
             i++;
 
             // parse the line, split in tokens
-            if(!stringParser.Split(i, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType))
+            if (!stringParser.Split(i, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType))
             {
-                if(lastTokenType== ScriptTokenType.WrongNumber)
+                if (lastTokenType == ScriptTokenType.WrongNumber)
                 {
-                    var error= execResult.AddError(ErrorCode.LexerFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
+                    var error = execResult.AddError(ErrorCode.LexerFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
                     logger.LogCompilEndError(error, "Lexer.Process", script.Name);
                     return false;
                 }
@@ -66,11 +61,9 @@ public class Lexer
             scriptLineTokens.Numline = i;
             scriptLineTokens.ListScriptToken.AddRange(listScriptTokens);
             listScriptLineTokens.Add(scriptLineTokens);
-
         }
 
         logger.LogCompilEnd(ActivityLogLevel.Important, "Lexer.Process", script.Name);
         return true;
     }
-
 }

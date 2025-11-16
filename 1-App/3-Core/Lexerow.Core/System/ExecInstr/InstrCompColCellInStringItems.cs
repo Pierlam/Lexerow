@@ -1,10 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -17,7 +11,7 @@ namespace Lexerow.Core.System;
 /// </summary>
 public class InstrCompColCellInStringItems : InstrRetBoolBase
 {
-    public InstrCompColCellInStringItems(ScriptToken scriptToken, int colNum, bool inOrNotIn, bool caseSensitive, List<string> listItems):base(scriptToken)
+    public InstrCompColCellInStringItems(ScriptToken scriptToken, int colNum, bool inOrNotIn, bool caseSensitive, List<string> listItems) : base(scriptToken)
     {
         ColNum = colNum;
         InOrNotIn = inOrNotIn;

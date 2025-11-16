@@ -1,13 +1,9 @@
 ﻿using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Utils;
+
 public class ExcelExtendedUtils : ExcelUtils
-{    
+{
     /// <summary>
     /// Does the cell type match the If-Comparison cell.Value type?
     /// used for: If A.Cell=10
@@ -53,10 +49,10 @@ public class ExcelExtendedUtils : ExcelUtils
     /// <returns></returns>
     public static bool MatchCellTypeAndIfComparison(CellRawValueType cellType, CellRawValueType cellTypeB)
     {
-        if (cellType == CellRawValueType.String && cellTypeB== CellRawValueType.String)
+        if (cellType == CellRawValueType.String && cellTypeB == CellRawValueType.String)
             return true;
 
-        if (cellType == CellRawValueType.Numeric && cellTypeB== CellRawValueType.Numeric)
+        if (cellType == CellRawValueType.Numeric && cellTypeB == CellRawValueType.Numeric)
             return true;
 
         if (cellType == CellRawValueType.DateOnly && cellTypeB == CellRawValueType.DateOnly)
@@ -76,5 +72,4 @@ public class ExcelExtendedUtils : ExcelUtils
 
         return false;
     }
-
 }

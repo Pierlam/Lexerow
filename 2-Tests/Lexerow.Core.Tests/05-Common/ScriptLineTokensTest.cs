@@ -1,14 +1,9 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests._05_Common;
+
 public class ScriptLineTokensTest : ScriptLineTokens
 {
-
     public void AddTokenName(int numLine, string value)
     {
         AddToken(numLine, 1, ScriptTokenType.Name, value);
@@ -17,7 +12,7 @@ public class ScriptLineTokensTest : ScriptLineTokens
     public void AddTokenName(int numLine, string value, string value2)
     {
         AddToken(numLine, 1, ScriptTokenType.Name, value);
-        AddToken(numLine, value.Length+2, ScriptTokenType.Name, value2);
+        AddToken(numLine, value.Length + 2, ScriptTokenType.Name, value2);
     }
 
     /// <summary>
@@ -47,5 +42,4 @@ public class ScriptLineTokensTest : ScriptLineTokens
         lineTok.AddTokenName(1, 9, excelfileName);
         return lineTok;
     }
-
 }

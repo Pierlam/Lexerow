@@ -1,24 +1,17 @@
 ﻿using Lexerow.Core.Utils;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests._20_Utils;
 
 /*
 public class ExcelFileSheetTest
 {
-    public string FileName {  get; set; }  
+    public string FileName {  get; set; }
 
     public XSSFWorkbook Workbook { get; set; }
 
-    public int SheetNul {  get; set; }  
+    public int SheetNul {  get; set; }
 }*/
 
 public class ExcelTestChecker
@@ -35,7 +28,7 @@ public class ExcelTestChecker
         return new XSSFWorkbook(stream);
     }
 
-    public static void  CloseExcel(FileStream stream)
+    public static void CloseExcel(FileStream stream)
     {
         stream.Close();
     }
@@ -52,9 +45,9 @@ public class ExcelTestChecker
 
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, double expectedValue)
     {
-        if(!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
             return false;
-        return CheckCellValue(workbook,sheetNum,rowIndex-1,colIndex-1, expectedValue);
+        return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, expectedValue);
     }
 
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, double expectedValue)
@@ -62,14 +55,14 @@ public class ExcelTestChecker
         var sheet = workbook.GetSheetAt(sheetNum);
         var row = sheet.GetRow(rowNum);
         var cell = row.GetCell(colNum);
-        if (cell==null)return false;
+        if (cell == null) return false;
 
         if (cell.CellType != CellType.Numeric) return false;
         if (cell.NumericCellValue == null) return false;
 
         double val = cell.NumericCellValue;
 
-        return expectedValue== val;
+        return expectedValue == val;
     }
 
     /// <summary>
@@ -93,7 +86,7 @@ public class ExcelTestChecker
         var row = sheet.GetRow(rowNum);
         var cell = row.GetCell(colNum);
         if (cell == null) return false;
-        if (cell.CellType != CellType.String)  return false;
+        if (cell.CellType != CellType.String) return false;
 
         string val = cell.StringCellValue;
 
@@ -140,7 +133,7 @@ public class ExcelTestChecker
         if (cell.CellType != CellType.Numeric) return false;
 
         double val = cell.NumericCellValue;
-        TimeOnly foundVal= DateTimeUtils.ToTimeOnly(val);
+        TimeOnly foundVal = DateTimeUtils.ToTimeOnly(val);
 
         return foundVal == expectedValue;
     }
@@ -160,7 +153,7 @@ public class ExcelTestChecker
     {
         if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
             return false;
-        return CheckCellValueBlank(workbook, sheetNum, rowIndex-1, colIndex - 1);
+        return CheckCellValueBlank(workbook, sheetNum, rowIndex - 1, colIndex - 1);
     }
 
     public static bool CheckCellValueBlank(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum)
@@ -170,12 +163,10 @@ public class ExcelTestChecker
         var cell = row.GetCell(colNum);
         if (cell == null) return false;
 
-        if (cell.CellType == CellType.Blank) 
+        if (cell.CellType == CellType.Blank)
             // ok
             return true;
 
-
         return false;
     }
-
 }

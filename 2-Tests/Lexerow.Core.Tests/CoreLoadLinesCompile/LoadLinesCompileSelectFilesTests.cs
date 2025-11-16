@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesCompile;
 
@@ -39,7 +34,7 @@ public class LoadLinesCompileSelectFilesTests
 
         // create a basic script
         List<string> lines = [
-            "# blabla", 
+            "# blabla",
             "file=SelectFiles(\"mydata.xlsx\")"
             ];
 
@@ -66,5 +61,4 @@ public class LoadLinesCompileSelectFilesTests
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
         Assert.AreEqual("SelectXXX", execResult.ListError[0].Param);
     }
-
 }

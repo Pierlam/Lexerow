@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System.ScriptDef;
+﻿namespace Lexerow.Core.System.ScriptDef;
 
 /// <summary>
 /// obtained by the parser, first stage: lexical analyse.

@@ -2,19 +2,14 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.Utils;
-using NPOI.SS.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
+
 public class InstrSetColCellFuncExecutor
 {
-    IActivityLogger _logger;
+    private IActivityLogger _logger;
 
-    IExcelProcessor _excelProcessor;
+    private IExcelProcessor _excelProcessor;
 
     public InstrSetColCellFuncExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
@@ -35,20 +30,20 @@ public class InstrSetColCellFuncExecutor
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
         // get the cell
-        IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum-1);
+        IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
         if (cell != null)
             return ExecCellExists(execResult, _excelProcessor, excelSheet, rowNum, instrConstValue, cell);
 
         // create a new cell object
-        cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum-1);
+        cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
         return ApplySetCellValAndType(execResult, _excelProcessor, excelSheet, cell, instrConstValue.ValueBase);
     }
 
     /// <summary>
     /// Execute the instr: Set cell null.
-    /// remove the cell from the sheet. 
+    /// remove the cell from the sheet.
     /// </summary>
     /// <param name="excelProcessor"></param>
     /// <param name="instr"></param>
@@ -57,13 +52,13 @@ public class InstrSetColCellFuncExecutor
     public bool ExecSetCellNull(ExecResult execResult, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum-1);
+        IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
 
         if (cell == null)
             return true;
 
         // create a new cell object
-        _excelProcessor.DeleteCell(sheet, rowNum, instrColCellFunc.ColNum-1);
+        _excelProcessor.DeleteCell(sheet, rowNum, instrColCellFunc.ColNum - 1);
         return true;
     }
 
@@ -80,7 +75,7 @@ public class InstrSetColCellFuncExecutor
         return true;
     }
 
-    bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, InstrConstValue instrSetCellVal, IExcelCell cell)
+    private bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, InstrConstValue instrSetCellVal, IExcelCell cell)
     {
         // get the cell value type
         CellRawValueType cellType = excelProcessor.GetCellValueType(sheet, cell);
@@ -96,7 +91,7 @@ public class InstrSetColCellFuncExecutor
         return ApplySetCellValAndType(execResult, excelProcessor, sheet, cell, instrSetCellVal.ValueBase);
     }
 
-    bool ApplySetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    private bool ApplySetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
         if (value.ValueType == System.ValueType.Int)
         {
@@ -151,7 +146,7 @@ public class InstrSetColCellFuncExecutor
         return false;
     }
 
-    bool ApplySetCellValAndType(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    private bool ApplySetCellValAndType(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
         if (value.ValueType == System.ValueType.String)
         {
@@ -193,5 +188,4 @@ public class InstrSetColCellFuncExecutor
         execResult.AddError(ErrorCode.ExcelCellTypeNotManaged, value.ValueType.ToString());
         return false;
     }
-
 }

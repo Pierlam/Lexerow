@@ -1,11 +1,4 @@
-﻿using NPOI.OpenXmlFormats.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System;
+﻿namespace Lexerow.Core.System;
 
 public enum ProgRunVarType
 {
@@ -13,7 +6,6 @@ public enum ProgRunVarType
     BasicValue,
 
     ExcelFile
-
 }
 
 public class ProgExecVar
@@ -39,8 +31,8 @@ public class ProgExecVar
 
     public bool NameEquals(string name)
     {
-        InstrObjectName instrObjectName= ObjectName as InstrObjectName;
-        if (instrObjectName != null) 
+        InstrObjectName instrObjectName = ObjectName as InstrObjectName;
+        if (instrObjectName != null)
         {
             if (instrObjectName.ObjectName.Equals(name, StringComparison.InvariantCultureIgnoreCase)) return true;
         }
@@ -50,7 +42,7 @@ public class ProgExecVar
     public string GetValueString()
     {
         InstrConstValue instrConstValue = Value as InstrConstValue;
-        if(instrConstValue!=null)
+        if (instrConstValue != null)
             return instrConstValue.RawValue;
 
         return string.Empty;
@@ -58,16 +50,16 @@ public class ProgExecVar
 
     public bool AreSame(InstrBase instr)
     {
-        if(ObjectName.InstrType!= instr.InstrType) return false;
+        if (ObjectName.InstrType != instr.InstrType) return false;
 
         //--possible??
-        if(ObjectName.InstrType== InstrType.ConstValue)
+        if (ObjectName.InstrType == InstrType.ConstValue)
         {
             string name = (ObjectName as InstrConstValue).RawValue;
-            string name2= (instr as InstrConstValue).RawValue;
-            if (name.Equals(name2))return true;
+            string name2 = (instr as InstrConstValue).RawValue;
+            if (name.Equals(name2)) return true;
 
-            return false;            
+            return false;
         }
 
         //--manage var name, exp: file

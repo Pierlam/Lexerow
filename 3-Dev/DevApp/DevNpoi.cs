@@ -1,22 +1,12 @@
-﻿using Lexerow.Core.ExcelLayer;
-using NPOI.OpenXmlFormats.Wordprocessing;
-using NPOI.SS.Formula.Functions;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.Model;
-using NPOI.XSSF.Streaming.Values;
+﻿using NPOI.XSSF.Model;
 using NPOI.XSSF.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevApp;
 
 /// <summary>
-/// 
+///
 /// cell -> CellStyle.DataFormat
-/// 
+///
 /// https://poi.apache.org/apidocs/dev/org/apache/poi/ss/usermodel/BuiltinFormats.html
 /// </summary>
 public class DevNpoi
@@ -55,7 +45,6 @@ public class DevNpoi
         workbook.Write(writeStream);
         workbook.Close();
         stream.Close();
-
     }
 
     /// <summary>
@@ -73,8 +62,8 @@ public class DevNpoi
 
         var sheet = workbook.GetSheetAt(0);
 
-        StylesTable stylesTable=  workbook.GetStylesSource();
-        for (int i = 0; i <stylesTable.NumCellStyles; i++)
+        StylesTable stylesTable = workbook.GetStylesSource();
+        for (int i = 0; i < stylesTable.NumCellStyles; i++)
         {
             var style = stylesTable.GetStyleAt(i);
             // à chaque style est associé un DataFormat
@@ -82,9 +71,9 @@ public class DevNpoi
 
         // tables des data format
         // 165: "#,##0.00\\ \"€\""
-        var numberFormats =stylesTable.GetNumberFormats();
+        var numberFormats = stylesTable.GetNumberFormats();
 
-        // force currency sur dollar 
+        // force currency sur dollar
         var styleCurrency = workbook.CreateCellStyle();
         // USD:  "[$$-409]#,##0.00"
         styleCurrency.DataFormat = sheet.Workbook.CreateDataFormat().GetFormat("[$$-409]#,##0.00");
@@ -216,7 +205,6 @@ public class DevNpoi
         // {30/12/1899 11:20:45}
         dt = DateTime.FromOADate(valDouble);
 
-
         //--B5 dateTime	4/10/23 11:34:56
         row = sheet.GetRow(4);
         cell = row.GetCell(1);
@@ -233,6 +221,5 @@ public class DevNpoi
         workbook.Write(writeStream);
         workbook.Close();
         stream.Close();
-
     }
 }

@@ -1,12 +1,7 @@
-﻿using DevApp;
-using Lexerow.Core;
-using Lexerow.Core.System;
+﻿using Lexerow.Core;
 using Lexerow.Core.System.ActivLog;
 
 Console.WriteLine("==>Lexerow Dev:");
-
-
-
 
 void Core_ActivityLogEvent(object? sender, ActivityLog e)
 {
@@ -29,11 +24,11 @@ void TestGetFiles()
     //string fileName = @".\Input\*.bla";
     //string fileName = @".\Bla\*.xlsx";
 
-    string filepath =Path.GetDirectoryName(fileName);
+    string filepath = Path.GetDirectoryName(fileName);
     string fullpath = Path.GetFullPath(fileName);
-    string files =Path.GetFileName(fileName);
+    string files = Path.GetFileName(fileName);
 
-    if(!Path.Exists(filepath))
+    if (!Path.Exists(filepath))
     {
         Console.WriteLine($"{fileName} does not exist.");
         return;
@@ -51,7 +46,7 @@ void TestGetFiles()
 ///
 /// If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
 /// by default, it is case sensitive.
-/// 
+///
 /// Case insensitive:
 /// If A.Cell In [ "y", "yes", "ok" ] /I Then A.Cell= "X"
 ///  In /CI -> In case Insensitive
@@ -83,6 +78,4 @@ if (a <= 10) { }
 
 TestGetFiles();
 
-
 Console.WriteLine("\n=> ends.");
-

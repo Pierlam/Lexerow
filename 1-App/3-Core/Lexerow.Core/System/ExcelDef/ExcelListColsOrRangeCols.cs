@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lexerow.Core.System;
 
-namespace Lexerow.Core.System;
 /// <summary>
 /// List of Excel columns or range of columns.
 /// </summary>
@@ -29,7 +24,7 @@ public class ExcelListColsOrRangeCols
                     return true;
 
                 if (colIndex < excelCol.ColumnInt)
-                    // the defined col is greater 
+                    // the defined col is greater
                     return false;
             }
 
@@ -41,7 +36,7 @@ public class ExcelListColsOrRangeCols
                     return true;
 
                 if (colIndex < excelRangeCols.ColumnStartInt)
-                    // the defined col is greater 
+                    // the defined col is greater
                     return false;
             }
         }

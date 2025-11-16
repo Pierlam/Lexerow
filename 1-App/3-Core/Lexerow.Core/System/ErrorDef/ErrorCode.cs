@@ -1,4 +1,5 @@
 ﻿namespace Lexerow.Core.System;
+
 public enum ErrorType
 {
     Repository,
@@ -164,7 +165,6 @@ public enum ErrorCode
     ThenConditionInstrNotAllowed,
     IfCondTypeMismatch,
 
-
     ItemsShouldBeNotNullAndUnique,
 
     UnableCreateInstrNotInStageBuild,
@@ -184,11 +184,13 @@ public enum ErrorCode
 
     //--lexical analyzer error codes
     LexerFoundDoubleWrong,
+
     LexerFoundSgtringBadFormatted,
     LexerFoundCharUndefined,
 
     //--syntax analyzer error codes
     ParserCaseNotManaged,
+
     ParserTokenNotExpected,
     ParserTokenExpected,
 
@@ -213,6 +215,7 @@ public enum ErrorCode
 
     //--run program, instructions
     ExecInstrNotManaged,
+
     ExecInstrTypeStringExpected,
     ExecInstrVarNotFound,
     ExecInstrVarTypeNotExpected,

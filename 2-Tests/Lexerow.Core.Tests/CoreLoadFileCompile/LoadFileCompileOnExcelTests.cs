@@ -1,12 +1,5 @@
 ﻿using Lexerow.Core.System;
-using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.CoreLoadFileCompile;
 

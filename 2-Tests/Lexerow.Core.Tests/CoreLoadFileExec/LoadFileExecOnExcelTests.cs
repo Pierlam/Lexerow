@@ -1,12 +1,6 @@
-﻿using FakeItEasy;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.CoreLoadFileExec;
 
@@ -47,7 +41,6 @@ public class LoadFileExecOnExcelTests : BaseTests
         // r2, c0: 10 -> modified!
         res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 0, 10);
         Assert.IsTrue(res);
-
     }
 
     [TestMethod]
@@ -132,7 +125,6 @@ public class LoadFileExecOnExcelTests : BaseTests
         // A4: row3, col0: 13
         res = ExcelTestChecker.CheckCellValue(wb, 0, "A4", 13.1);
         Assert.IsTrue(res);
-
     }
 
     [TestMethod]
@@ -158,7 +150,6 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
         res = ExcelTestChecker.CheckCellValue(wb, 0, "C2", 10);
         Assert.IsTrue(res);
-
 
         //--line3: A = 34, B = blank, C = 13
         res = ExcelTestChecker.CheckCellValue(wb, 0, "A3", 34);
@@ -193,11 +184,10 @@ public class LoadFileExecOnExcelTests : BaseTests
         res = ExcelTestChecker.CheckCellValue(wb, 0, "C2", "Y");
         Assert.IsTrue(res);
 
-
         //--line3: A=34, B=hello, C=567
         res = ExcelTestChecker.CheckCellValue(wb, 0, "A3", 34);
         Assert.IsTrue(res);
-        res = ExcelTestChecker.CheckCellValue(wb, 0, "B3","hello");
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "B3", "hello");
         Assert.IsTrue(res);
         res = ExcelTestChecker.CheckCellValue(wb, 0, "C3", 567);
         Assert.IsTrue(res);
@@ -219,5 +209,4 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsFalse(execResult.Result);
         Assert.AreEqual(ErrorCode.ExecInstrFilePathWrong, execResult.ListError[0].ErrorCode);
     }
-
 }

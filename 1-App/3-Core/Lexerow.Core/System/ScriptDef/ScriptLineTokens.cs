@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System.ScriptDef;
+﻿namespace Lexerow.Core.System.ScriptDef;
 
 /// <summary>
 /// a script line tokens.
@@ -37,13 +31,14 @@ public class ScriptLineTokens
 
     public void AddTokenInteger(int numLine, int numCol, int value)
     {
-        var st= AddToken(numLine, numCol, ScriptTokenType.Integer, value.ToString());
+        var st = AddToken(numLine, numCol, ScriptTokenType.Integer, value.ToString());
         st.ValueInt = value;
     }
+
     public void AddTokenDouble(int numLine, int numCol, double value)
     {
-        var st=AddToken(numLine, numCol, ScriptTokenType.Double, value.ToString());
-        st.ValueDouble = value;    
+        var st = AddToken(numLine, numCol, ScriptTokenType.Double, value.ToString());
+        st.ValueDouble = value;
     }
 
     public void AddTokenSeparator(int numLine, int numCol, string value)
@@ -63,5 +58,4 @@ public class ScriptLineTokens
         ListScriptToken.Add(st);
         return st;
     }
-
 }

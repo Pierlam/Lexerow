@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lexerow.Core.System.GenDef;
 
-namespace Lexerow.Core.System.GenDef;
 public class CoreInstr
 {
     public const string InstrEndName = "End";
@@ -17,7 +12,7 @@ public class CoreInstr
 
     // special case
     public const string InstrForEachRow = "ForEachRow";
-    
+
     public const string InstrNext = "Next";
 
     public const string InstrCol = "Col";
@@ -29,5 +24,4 @@ public class CoreInstr
 
     public const string InstrBlank = "Blank";
     public const string InstrNull = "Null";
-
 }

@@ -1,18 +1,10 @@
-﻿using Lexerow.Core.System;
-using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System.ActivLog;
+﻿namespace Lexerow.Core.System.ActivLog;
 
 /// <summary>
 /// activity logger for the Lexerow application, used in these stages/modules:
 /// load, save files, script compilation and script execution.
 /// </summary>
-public class ActivityLogger:IActivityLogger
+public class ActivityLogger : IActivityLogger
 {
     public event EventHandler<ActivityLog> ActivityLogEvent;
 
@@ -24,7 +16,7 @@ public class ActivityLogger:IActivityLogger
     public void LogCompilStart(ActivityLogLevel level, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.Start, level, operation, msg);
-        log.ActivityLogBaseType= ActivityLogType.CompileScript;
+        log.ActivityLogBaseType = ActivityLogType.CompileScript;
         RaiseEvent(log);
     }
 
@@ -58,7 +50,7 @@ public class ActivityLogger:IActivityLogger
         ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Important, operation, msg);
         log.ActivityLogBaseType = ActivityLogType.CompileScript;
         log.Error = error;
-        log.Result=ActivityLogResult.Error;
+        log.Result = ActivityLogResult.Error;
         RaiseEvent(log);
     }
 
@@ -108,7 +100,7 @@ public class ActivityLogger:IActivityLogger
         RaiseEvent(log);
     }
 
-    void RaiseEvent(ActivityLog log)
+    private void RaiseEvent(ActivityLog log)
     {
         ActivityLogEvent?.Invoke(this, log);
     }

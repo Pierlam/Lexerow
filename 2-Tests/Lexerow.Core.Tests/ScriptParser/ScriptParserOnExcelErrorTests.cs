@@ -4,13 +4,9 @@ using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptParser;
+
 /// <summary>
 /// Test script lexical analyzer on OnExcel instr having error.
 /// Neither OnSheet, nor FirstRow.
@@ -23,11 +19,11 @@ public class ScriptParserOnExcelErrorTests
     /// Compile: OnExcel, very short version
     /// Result: one instruction OnExcel
     /// Implicite: sheet=0, FirstRow=1
-    /// 
+    ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
     ///     If A.Cell >10 Then A.Cell=10
-    ///   Next 
+    ///   Next
     ///         -> End OnExcel is missing ! -> error
     /// </summary>
     [TestMethod]
@@ -68,6 +64,5 @@ public class ScriptParserOnExcelErrorTests
         Assert.IsFalse(res);
         Assert.AreEqual(ErrorCode.ParserTokenExpected, execResult.ListError[0].ErrorCode);
         Assert.AreEqual("OnExcel", execResult.ListError[0].Param);
-
     }
 }

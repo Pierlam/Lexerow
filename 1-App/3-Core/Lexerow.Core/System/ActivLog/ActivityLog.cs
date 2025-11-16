@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System.ActivLog;
-
+﻿namespace Lexerow.Core.System.ActivLog;
 
 public enum ActivityLogType
 {
@@ -17,8 +10,9 @@ public enum ActivityLogType
 
 public enum ActivityLogLevel
 {
-    // error log are important 
+    // error log are important
     Important,
+
     Info,
     Detail
 }
@@ -49,18 +43,18 @@ public class ActivityLog
         Msg = msg;
     }
 
-    public ActivityLogType ActivityLogBaseType { get; set; }= ActivityLogType.Other;    
+    public ActivityLogType ActivityLogBaseType { get; set; } = ActivityLogType.Other;
 
-    public DateTime When { get; private set; }= DateTime.Now;
+    public DateTime When { get; private set; } = DateTime.Now;
 
     public ActivityLogStage Stage { get; set; } = ActivityLogStage.StartEnd;
 
-    public ActivityLogLevel Level { get;set; }= ActivityLogLevel.Info;
+    public ActivityLogLevel Level { get; set; } = ActivityLogLevel.Info;
 
     /// <summary>
     /// name of the operation/action.
     /// </summary>
-    public string Operation { get; set; }=string.Empty;
+    public string Operation { get; set; } = string.Empty;
 
     public string Msg { get; set; } = string.Empty;
 
@@ -71,4 +65,3 @@ public class ActivityLog
 
     public ExecResultError? Error { get; set; } = null;
 }
-

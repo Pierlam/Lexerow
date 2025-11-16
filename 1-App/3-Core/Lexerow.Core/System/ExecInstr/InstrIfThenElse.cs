@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -18,13 +13,13 @@ namespace Lexerow.Core.System;
 /// </summary>
 public class InstrIfThenElse : InstrBase
 {
-    public InstrIfThenElse(ScriptToken scriptToken):base(scriptToken)
+    public InstrIfThenElse(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.IfThenElse;
     }
 
     /// <summary>
-    /// If -comparison- 
+    /// If -comparison-
     /// can be a comparison or an fct call, should return a bool.
     /// </summary>
     public InstrIf InstrIf { get; set; }

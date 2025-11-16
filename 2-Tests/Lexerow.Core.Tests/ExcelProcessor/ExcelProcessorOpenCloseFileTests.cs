@@ -2,12 +2,6 @@
 using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.Tests.Common;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ExcelProcessor;
 
@@ -20,7 +14,7 @@ public class ExcelProcessorOpenCloseFileTests : BaseTests
     [TestMethod]
     public void BasicOpenExcelOk()
     {
-        // injecter la lib NPOI
+        // Use the lib NPOI
         IExcelProcessor proc = new ExcelProcessorNpoi();
 
         string fileName = PathExcelFilesExec + "OpenClose.xlsx";

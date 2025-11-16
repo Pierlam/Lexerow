@@ -1,11 +1,7 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests._05_Common;
+
 internal class TestTokens2ScriptBuilder
 {
     /// <summary>
@@ -20,9 +16,9 @@ internal class TestTokens2ScriptBuilder
 
         foreach (var lineTokens in scriptTokens)
         {
-            string line=string.Empty;
+            string line = string.Empty;
 
-            foreach(var token in lineTokens.ListScriptToken)
+            foreach (var token in lineTokens.ListScriptToken)
             {
                 line += token.ToString() + " ";
             }

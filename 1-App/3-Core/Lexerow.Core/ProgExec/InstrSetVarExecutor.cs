@@ -11,13 +11,13 @@ using Lexerow.Core.System.ActivLog;
 /// </summary>
 public class InstrSetVarExecutor
 {
-    IActivityLogger _logger;
-    InstrSetColCellFuncExecutor _instrSetColCellFuncRunner;
+    private IActivityLogger _logger;
+    private InstrSetColCellFuncExecutor _instrSetColCellFuncRunner;
 
     public InstrSetVarExecutor(IActivityLogger logger, InstrSetColCellFuncExecutor instrSetColCellFuncRunner)
     {
         _logger = logger;
-        _instrSetColCellFuncRunner= instrSetColCellFuncRunner;
+        _instrSetColCellFuncRunner = instrSetColCellFuncRunner;
     }
 
     /// <summary>
@@ -28,8 +28,8 @@ public class InstrSetVarExecutor
     /// a=b
     /// file=SelectFiles(..)
     /// in these cases, create a var name and set the value.
-    /// 
-    /// special case: A.Cell=xx  
+    ///
+    /// special case: A.Cell=xx
     ///   Not really a set var instruction.
     ///   >Just set the value to the excel cell, doesn't create a var.
     /// </summary>
@@ -49,7 +49,7 @@ public class InstrSetVarExecutor
 
         // the left part should be an objectName (varname), exp: a=xx
         InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
-        if(instrObjectName==null)
+        if (instrObjectName == null)
         {
             execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, "Instr Left: " + instrSetVar.InstrLeft.FirstScriptToken());
             return false;
@@ -67,7 +67,7 @@ public class InstrSetVarExecutor
 
         //--case a=b, the right instr is a a var too
         instrObjectName = instrSetVar.InstrRight as InstrObjectName;
-        if (instrObjectName != null) 
+        if (instrObjectName != null)
         {
             // get or create the var, set the value
             CreateVar(ctx, progRunVarMgr, instrSetVar.InstrLeft, instrObjectName);
@@ -92,7 +92,7 @@ public class InstrSetVarExecutor
     }
 
     /// <summary>
-    /// Execute instr SetVar, left part format is: A.Cell 
+    /// Execute instr SetVar, left part format is: A.Cell
     /// A.Cell= 12, "hello", blank, null
     /// a.Cell=var
     /// A.Cell=B.Cell
@@ -103,7 +103,7 @@ public class InstrSetVarExecutor
     /// <param name="instrSetVar"></param>
     /// <param name="instrColCellFunc"></param>
     /// <returns></returns>
-    bool ExecSetToColCellFunc(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar, InstrColCellFunc instrColCellFunc)
+    private bool ExecSetToColCellFunc(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar, InstrColCellFunc instrColCellFunc)
     {
         _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrSetVarExecutor.ExecSetToColCellFunc", "Left is InstrColCellFunc: " + instrSetVar.FirstScriptToken());
 
@@ -124,7 +124,7 @@ public class InstrSetVarExecutor
         InstrBlank instrBlank = instrSetVar.InstrRight as InstrBlank;
         if (instrBlank != null)
         {
-            if (!_instrSetColCellFuncRunner.ExecSetCellBlank(execResult,  ctx.ExcelSheet, ctx.RowNum, instrColCellFunc))
+            if (!_instrSetColCellFuncRunner.ExecSetCellBlank(execResult, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc))
                 return false;
             ctx.StackInstr.Pop();
             return true;
@@ -140,7 +140,6 @@ public class InstrSetVarExecutor
             return true;
         }
 
-
         //--case A.Cell= Fct() ?
         // TODO:
 
@@ -148,7 +147,7 @@ public class InstrSetVarExecutor
         return false;
     }
 
-    bool CreateVar(ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrBase instrName, InstrBase instrtValue)
+    private bool CreateVar(ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrBase instrName, InstrBase instrtValue)
     {
         // the var already defined ?
         ProgExecVar execVar = progRunVarMgr.ListExecVar.FirstOrDefault(v => v.AreSame(instrName));
@@ -164,5 +163,4 @@ public class InstrSetVarExecutor
 
         return true;
     }
-
 }

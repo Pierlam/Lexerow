@@ -2,12 +2,6 @@
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 internal class ParserUtils
@@ -15,7 +9,7 @@ internal class ParserUtils
     /// <summary>
     /// Is it instr column Cell function?
     /// exp: A.Cell, A.Cell.BgColor, VB.Cell.FgColor,...
-    /// 
+    ///
     /// The stack should contains items in reverse order.
     /// the last token is on the top of stack: Cell or BgColor or FgColor.
     /// </summary>
@@ -44,11 +38,11 @@ internal class ParserUtils
                 return false;
             }
 
-            res= IsInstrColDot(execResult, stackInstr, out InstrObjectName instrObjectName);
+            res = IsInstrColDot(execResult, stackInstr, out InstrObjectName instrObjectName);
 
             // get the colNum based on the col name
             int colNum = ExcelUtils.ColumnNameToNumber(instrObjectName.ObjectName);
-            if(colNum<1)
+            if (colNum < 1)
             {
                 execResult.AddError(ErrorCode.ParserColNumWrong, instrObjectName.FirstScriptToken());
                 return false;
@@ -60,12 +54,11 @@ internal class ParserUtils
             return true;
         }
 
-
         //--is it BgColor token?
         //if (lastInstr.InstrType == InstrType.BgColor)
         //{
         //    // TODO:
-        //}            
+        //}
 
         //--is it FgColor token?
         // TODO:
@@ -74,7 +67,6 @@ internal class ParserUtils
         isInstr = false;
         return true;
     }
-
 
     public static bool IsMathOperator(InstrBase instr)
     {
@@ -99,8 +91,8 @@ internal class ParserUtils
 
     public static bool IsValueString(ValueBase value)
     {
-        if(value == null) return false;
-        if(value.ValueType== System.ValueType.String) return true;
+        if (value == null) return false;
+        if (value.ValueType == System.ValueType.String) return true;
 
         return false;
     }
@@ -129,5 +121,4 @@ internal class ParserUtils
 
         return true;
     }
-
 }

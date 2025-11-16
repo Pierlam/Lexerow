@@ -1,6 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Excel;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ProgExec;
@@ -8,14 +7,14 @@ namespace Lexerow.Core.ProgExec;
 /// <summary>
 /// Instr SelectFiles runner.
 /// Select files regarding parameters.
-/// exp: 
+/// exp:
 /// 1/ basic case: SelectFiles("data.xlsx")  select one file.
 /// 2/ with joker: SelectFiles("*.xlsx")  select several files.
-/// 3/ with var: SelectFiles(filename)  
+/// 3/ with var: SelectFiles(filename)
 /// </summary>
 public class InstrSelectFilesExecutor
 {
-    IActivityLogger _logger;
+    private IActivityLogger _logger;
 
     public InstrSelectFilesExecutor(IActivityLogger activityLogger)
     {
@@ -39,7 +38,7 @@ public class InstrSelectFilesExecutor
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
 
         // a param (fct call or string concatenation) was processed before
-        if(instrSelectFiles.CurrParamNum>-1 && ctx.PrevInstrExecuted!=null)
+        if (instrSelectFiles.CurrParamNum > -1 && ctx.PrevInstrExecuted != null)
         {
             // save the decoded param
             instrSelectFiles.RunTmpListFinalInstrParams.Add(ctx.PrevInstrExecuted);
@@ -47,7 +46,7 @@ public class InstrSelectFilesExecutor
         }
 
         //--manage->save const value (string) and varname, if a fctcall or string concatenation is found, push it on the stack and process it
-        while(true)
+        while (true)
         {
             instrSelectFiles.CurrParamNum++;
 
@@ -61,7 +60,7 @@ public class InstrSelectFilesExecutor
             InstrSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[instrSelectFiles.CurrParamNum];
 
             // is it a const value (string) or varname?
-            if(param.InstrType== InstrType.ConstValue || param.InstrType== InstrType.ObjectName)
+            if (param.InstrType == InstrType.ConstValue || param.InstrType == InstrType.ObjectName)
             {
                 instrSelectFiles.RunTmpListFinalInstrParams.Add(param);
                 continue;
@@ -73,7 +72,7 @@ public class InstrSelectFilesExecutor
         }
 
         //--list of params have been all decoded, contains only constValue or varname
-        for(int i=0; i <instrSelectFiles.RunTmpListFinalInstrParams.Count; i++)
+        for (int i = 0; i < instrSelectFiles.RunTmpListFinalInstrParams.Count; i++)
         {
             // get the current param and selector
             InstrBase param = instrSelectFiles.ListInstrParams[i];
@@ -90,7 +89,7 @@ public class InstrSelectFilesExecutor
         return true;
     }
 
-    bool DecodeParam(ExecResult execResult, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
+    private bool DecodeParam(ExecResult execResult, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
     {
         InstrConstValue instrConstValue;
 
@@ -98,7 +97,7 @@ public class InstrSelectFilesExecutor
         instrConstValue = param as InstrConstValue;
         if (instrConstValue != null)
         {
-            if(!SelectFilesFromStringFilename(execResult, instrSelectFiles, instrConstValue, out List<string> listFilename))
+            if (!SelectFilesFromStringFilename(execResult, instrSelectFiles, instrConstValue, out List<string> listFilename))
                 return false;
             return true;
         }
@@ -130,7 +129,7 @@ public class InstrSelectFilesExecutor
         return false;
     }
 
-    bool SelectFiles(ExecResult execResult, InstrBase instrBase, string filename, out List<string> listFilenameOut)
+    private bool SelectFiles(ExecResult execResult, InstrBase instrBase, string filename, out List<string> listFilenameOut)
     {
         listFilenameOut = new List<string>();
         try
@@ -163,15 +162,14 @@ public class InstrSelectFilesExecutor
 
             return true;
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
-            execResult.AddError(ErrorCode.ExecInstrAccessFileWrong, instrBase.FirstScriptToken(),ex);
+            execResult.AddError(ErrorCode.ExecInstrAccessFileWrong, instrBase.FirstScriptToken(), ex);
             return false;
         }
     }
 
-
-    bool SelectFilesFromStringFilename(ExecResult execResult, InstrSelectFiles instrSelectFiles,  InstrConstValue instrConstValue, out List<string> listFilename)
+    private bool SelectFilesFromStringFilename(ExecResult execResult, InstrSelectFiles instrSelectFiles, InstrConstValue instrConstValue, out List<string> listFilename)
     {
         // should be a string
         ValueString valueString = instrConstValue.ValueBase as ValueString;

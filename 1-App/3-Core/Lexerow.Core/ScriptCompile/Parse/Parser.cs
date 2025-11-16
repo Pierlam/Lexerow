@@ -2,13 +2,6 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using Org.BouncyCastle.Utilities.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -18,24 +11,23 @@ namespace Lexerow.Core.ScriptCompile.Parse;
 /// </summary>
 public class Parser
 {
-    IActivityLogger _logger;
+    private IActivityLogger _logger;
 
     /// <summary>
     /// list of defined variables.
     /// A variable can be created and set several times.
     /// </summary>
-    List<InstrObjectName> _listVar = new List<InstrObjectName>();
+    private List<InstrObjectName> _listVar = new List<InstrObjectName>();
 
-    
     public Parser(IActivityLogger activityLogger)
     {
-        _logger= activityLogger;
+        _logger = activityLogger;
     }
 
     /// <summary>
     /// process a script, create instructions to execute.
     /// Analyse source code tokens line by line.
-    /// 
+    ///
     /// Comparison sep are re-arranged, exp:<,=  to <=
     /// </summary>
     /// <param name="listSourceCodeLineTokens"></param>
@@ -43,26 +35,26 @@ public class Parser
     /// <returns></returns>
     public bool Process(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstr)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "Parser.Process", "script lines Num: " +listScriptLineTokens.Count.ToString());
+        _logger.LogCompilStart(ActivityLogLevel.Important, "Parser.Process", "script lines Num: " + listScriptLineTokens.Count.ToString());
         _listVar.Clear();
 
         // no token in the source code! -> error or warning?
         if (listScriptLineTokens.Count == 0)
         {
             listInstr = null;
-            execResult.AddError(ErrorCode.ParserTokenExpected,string.Empty);
+            execResult.AddError(ErrorCode.ParserTokenExpected, string.Empty);
             return false;
         }
 
         // check for wrong tokens: stringWrong and DoubleWrong
         // TODO: ->error, stop
 
-        // process, loop on tokens 
+        // process, loop on tokens
         bool res = LoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
 
         if (res)
         {
-            _logger.LogCompilEnd(ActivityLogLevel.Important, "Parser.Process", "Instr count: " +listInstr.Count().ToString());
+            _logger.LogCompilEnd(ActivityLogLevel.Important, "Parser.Process", "Instr count: " + listInstr.Count().ToString());
 
             // ok, no error
             return true;
@@ -72,7 +64,7 @@ public class Parser
         return false;
     }
 
-    bool LoopOnTokens(ExecResult execResult, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstrToExec)
+    private bool LoopOnTokens(ExecResult execResult, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstrToExec)
     {
         bool res;
         bool isToken = false;
@@ -90,7 +82,7 @@ public class Parser
         ScriptToken currToken = null;
 
         // temporary save of instr
-        CompilStackInstr stackInstr= new CompilStackInstr(_logger);
+        CompilStackInstr stackInstr = new CompilStackInstr(_logger);
         while (true)
         {
             // goto the next token, if it exists
@@ -144,10 +136,10 @@ public class Parser
             if (isToken) continue;
 
             //--Is it comparison separator =, >, <, ...?
-            if(ParserUtils.IsComparisonSeparator(currToken))
+            if (ParserUtils.IsComparisonSeparator(currToken))
             {
                 // process the content of the stack until the If instr
-                res= IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(execResult, listVar, stackInstr, currToken);
+                res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(execResult, listVar, stackInstr, currToken);
                 if (!res) break;
                 continue;
             }
@@ -184,7 +176,7 @@ public class Parser
             if (isToken) continue;
 
             // process special cases: all token of OnExcel instr inline for exp
-            res= ProcessSpecialCases(execResult, listVar, currLineTokensIndex, stackInstr, instr, listInstrToExec, out isToken);
+            res = ProcessSpecialCases(execResult, listVar, currLineTokensIndex, stackInstr, instr, listInstrToExec, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -239,13 +231,13 @@ public class Parser
     /// <param name="stackInstr"></param>
     /// <param name="listInstrToExec"></param>
     /// <returns></returns>
-    static bool CheckEndParsing(ExecResult execResult, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
+    private static bool CheckEndParsing(ExecResult execResult, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
     {
-        if(!execResult.Result)
+        if (!execResult.Result)
         {
             // clear the list of instructions obtained
             listInstrToExec.Clear();
-            return false;         
+            return false;
         }
 
         // nothing in the stack, ok!
@@ -253,12 +245,12 @@ public class Parser
             return true;
 
         // the stack contains items, error have occured
-        InstrOnExcel instrOnExcel= stackInstr.Peek() as InstrOnExcel;
+        InstrOnExcel instrOnExcel = stackInstr.Peek() as InstrOnExcel;
         if (instrOnExcel != null)
         {
-            if(instrOnExcel.BuildStage== InstrOnExcelBuildStage.OnSheet)
+            if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.OnSheet)
             {
-                execResult.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken(),  "Maybe 'End OnExcel' is missing");
+                execResult.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken(), "Maybe 'End OnExcel' is missing");
                 return false;
             }
             execResult.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken());

@@ -1,10 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ScriptCompile;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -30,7 +25,7 @@ public class InstrOnExcelBuilder
         InstrOnExcel instrOnExcel;
 
         //--case1: current instr is OnExcel and the stack is empty -> start of OnExcel instr
-        if (instr.InstrType == InstrType.OnExcel && stkInstr.Count==0)
+        if (instr.InstrType == InstrType.OnExcel && stkInstr.Count == 0)
         {
             stkInstr.Push(instr);
             isToken = true;
@@ -62,7 +57,6 @@ public class InstrOnExcelBuilder
             return false;
         }
 
-
         // the stack is empty
         if (stkInstr.Count == 0)
             return true;
@@ -71,7 +65,6 @@ public class InstrOnExcelBuilder
         instrOnExcel = stkInstr.Peek() as InstrOnExcel;
         if (instrOnExcel == null)
             return true;
-
 
         isToken = true;
 
@@ -82,11 +75,11 @@ public class InstrOnExcelBuilder
             if (instr.InstrType == InstrType.ConstValue)
             {
                 // should be a string
-                if(ParserUtils.IsValueString((instr as InstrConstValue).ValueBase))
+                if (ParserUtils.IsValueString((instr as InstrConstValue).ValueBase))
                 {
                     // save the string filename
                     instrOnExcel.InstrFiles = instr;
-                    instrOnExcel.BuildStage= InstrOnExcelBuildStage.Files;
+                    instrOnExcel.BuildStage = InstrOnExcelBuildStage.Files;
                     return true;
                 }
                 // const value not a string, error
@@ -94,7 +87,7 @@ public class InstrOnExcelBuilder
                 return false;
             }
             // filename is a variable, should be defined before
-            if(instr.InstrType== InstrType.ObjectName)
+            if (instr.InstrType == InstrType.ObjectName)
             {
                 // save the string filename
                 instrOnExcel.InstrFiles = instr;
@@ -120,12 +113,12 @@ public class InstrOnExcelBuilder
             if (instr.InstrType == InstrType.ForEach)
             {
                 // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
-                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(),1);
+                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
                 instrOnExcel.BuildStage = InstrOnExcelBuildStage.ForEach;
                 return true;
             }
 
-            // ForEachRow token found, same as found Row token. 
+            // ForEachRow token found, same as found Row token.
             if (instr.InstrType == InstrType.ForEachRow)
             {
                 // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
@@ -184,7 +177,6 @@ public class InstrOnExcelBuilder
             return false;
         }
 
-
         //--case6: Row: next stage -> If
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.Row)
         {
@@ -225,7 +217,6 @@ public class InstrOnExcelBuilder
 
             execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
-
         }
         execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
         return false;
@@ -247,7 +238,7 @@ public class InstrOnExcelBuilder
             return false;
         }
 
-        InstrOnExcel instrOnExcel = stackInstr.Peek()  as InstrOnExcel;
+        InstrOnExcel instrOnExcel = stackInstr.Peek() as InstrOnExcel;
 
         //--case7: If: next -> got back to Row, to add maybe others IfThen
         if (instrOnExcel.BuildStage != InstrOnExcelBuildStage.If)
@@ -261,9 +252,8 @@ public class InstrOnExcelBuilder
         instrOnSheet.ListInstrForEachRow.Add(instrIfThenElse);
 
         // go back to the stage ForEach Row  or on Ext instr to close the current ForEach Row
-        instrOnExcel.BuildStage= InstrOnExcelBuildStage.RowNext;
+        instrOnExcel.BuildStage = InstrOnExcelBuildStage.RowNext;
 
         return true;
     }
-
 }

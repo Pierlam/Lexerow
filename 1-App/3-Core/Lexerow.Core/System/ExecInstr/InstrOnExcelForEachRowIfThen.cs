@@ -1,12 +1,6 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
-
 
 /// <summary>
 /// One If Col Then instruction.
@@ -28,7 +22,6 @@ public class InstrIfColThen : InstrBase
     /// only InstrSetCellVal is allowed.
     /// </summary>
     public List<InstrBase> ListInstrThen { get; set; } = new List<InstrBase>();
-
 }
 
 /// <summary>
@@ -44,19 +37,19 @@ public class InstrOnExcelForEachRowIfThen : InstrBase
     /// <param name="firstDataRowNum"></param>
     /// <param name="instrIf"></param>
     /// <param name="listInstrThen"></param>
-    public InstrOnExcelForEachRowIfThen(ScriptToken scriptToken, string excelFileObjectName, int sheetNum, int firstDataRowNum, List<InstrIfColThen> listInstrIfColThen):base(scriptToken)
-    { 
+    public InstrOnExcelForEachRowIfThen(ScriptToken scriptToken, string excelFileObjectName, int sheetNum, int firstDataRowNum, List<InstrIfColThen> listInstrIfColThen) : base(scriptToken)
+    {
         InstrType = InstrType.ForEachRowIfThen;
         ExcelFileObjectName = excelFileObjectName;
         SheetNum = sheetNum;
-        FirstDataRowNum= firstDataRowNum;
+        FirstDataRowNum = firstDataRowNum;
         ListInstrIfColThen.AddRange(listInstrIfColThen);
     }
 
     /// <summary>
     /// exp: file
     /// </summary>
-    public string ExcelFileObjectName { get; set; } 
+    public string ExcelFileObjectName { get; set; }
 
     /// <summary>
     /// Excel sheet number.
@@ -76,5 +69,4 @@ public class InstrOnExcelForEachRowIfThen : InstrBase
     /// InstrIfColThen
     /// </summary>
     public List<InstrIfColThen> ListInstrIfColThen { get; private set; } = new List<InstrIfColThen>();
-
 }

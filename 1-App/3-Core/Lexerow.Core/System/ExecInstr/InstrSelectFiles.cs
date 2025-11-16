@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -36,7 +31,6 @@ public class InstrSelectedFilename
     /// With the full path.
     /// </summary>
     public string Filename { get; set; }
-
 }
 
 /// <summary>
@@ -45,7 +39,7 @@ public class InstrSelectedFilename
 /// </summary>
 public class InstrSelectFiles : InstrBase
 {
-    public InstrSelectFiles(ScriptToken scriptToken):base(scriptToken)
+    public InstrSelectFiles(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.SelectFiles;
         IsFunctionCall = true;
@@ -58,12 +52,12 @@ public class InstrSelectFiles : InstrBase
     /// exp: "data.xlsx", "file.xlsx", "*.xlsx", filename
     /// constValue/string or varname, or fctcall or string concatenation expression.
     /// </summary>
-    public List<InstrBase> ListInstrParams { get; private set; }=new List<InstrBase>();
+    public List<InstrBase> ListInstrParams { get; private set; } = new List<InstrBase>();
 
     /// <summary>
     /// list of FileSelector (+ or -), exactly one for each parameter. The first one is always +/Select
     /// </summary>
-    public List<InstrSelectFilesSelector> ListFilesSelectors { get; private set; } =new List<InstrSelectFilesSelector>();
+    public List<InstrSelectFilesSelector> ListFilesSelectors { get; private set; } = new List<InstrSelectFilesSelector>();
 
     /// <summary>
     /// used to execute the instruction.
@@ -82,13 +76,14 @@ public class InstrSelectFiles : InstrBase
     /// List of final filename obtained after decoding parameters of the function SelectFiles.
     /// exp: *.xlsx can match several files.
     /// </summary>
-    public List<InstrSelectedFilename> ListSelectedFilename { get; private set; }= new List<InstrSelectedFilename>();
+    public List<InstrSelectedFilename> ListSelectedFilename { get; private set; } = new List<InstrSelectedFilename>();
 
     public void AddParamSelect(InstrBase param)
     {
         ListInstrParams.Add(param);
         ListFilesSelectors.Add(InstrSelectFilesSelector.Select);
     }
+
     public void AddParamUnSelect(InstrBase param)
     {
         ListInstrParams.Add(param);

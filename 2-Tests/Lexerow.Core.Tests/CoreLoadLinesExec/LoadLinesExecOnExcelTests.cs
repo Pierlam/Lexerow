@@ -1,11 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesRun;
 
@@ -115,7 +110,7 @@ public class LoadLinesExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
 
         // C3: row2, col2: 27
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 2,27);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 2, 27);
         Assert.IsTrue(res);
 
         // C4: row3, col2: 10

@@ -10,19 +10,19 @@ namespace Lexerow.Core.ProgExec;
 /// </summary>
 public class ProgramExecutor
 {
-    IActivityLogger _logger;
+    private IActivityLogger _logger;
 
-    IExcelProcessor _excelProcessor;
+    private IExcelProcessor _excelProcessor;
 
-    ProgExecVarMgr _progRunVarMgr=new ProgExecVarMgr();
-    InstrExecutor _instrExecutor;
+    private ProgExecVarMgr _progRunVarMgr = new ProgExecVarMgr();
+    private InstrExecutor _instrExecutor;
 
     public ProgramExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
 
-        _instrExecutor= new InstrExecutor(activityLogger, _excelProcessor);
+        _instrExecutor = new InstrExecutor(activityLogger, _excelProcessor);
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class ProgramExecutor
 
         // convert program instr to instr to execute
 
-        // execute instr, one by one        
+        // execute instr, one by one
         foreach (var instrBase in programScript.ListInstr)
         {
             res = _instrExecutor.ExecInstr(execResult, _progRunVarMgr, instrBase);

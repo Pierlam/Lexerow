@@ -1,14 +1,8 @@
 ﻿using Lexerow.Core.ScriptLoad;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptLoad;
-
 
 /// <summary>
 /// Test only the loader of scripts.
@@ -41,7 +35,6 @@ public class ScriptLoaderBasicTests
         // check line 2
         Assert.AreEqual(2, script.ScriptLines[1].NumLine);
         Assert.AreEqual("file= SelectFiles(\"data.xslx\")", script.ScriptLines[1].Line);
-
     }
 
     /// <summary>
@@ -59,7 +52,6 @@ public class ScriptLoaderBasicTests
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.LoadScriptFileEmpty, execResult.ListError[0].ErrorCode);
         Assert.AreEqual(0, script.ScriptLines.Count);
-
     }
 
     /// <summary>
@@ -77,5 +69,4 @@ public class ScriptLoaderBasicTests
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.FileNotFound, execResult.ListError[0].ErrorCode);
     }
-
 }

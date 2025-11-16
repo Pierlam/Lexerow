@@ -2,14 +2,9 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
+
 internal class FunctionCallParamsProcessor
 {
     /// <summary>
@@ -24,7 +19,7 @@ internal class FunctionCallParamsProcessor
     /// <returns></returns>
     public static bool ProcessFunctionCallParams(IActivityLogger logger, ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
     {
-        // the stack is empty? 
+        // the stack is empty?
         if (stackInstr.Count == 0)
         {
             // function call name expected
@@ -44,10 +39,9 @@ internal class FunctionCallParamsProcessor
         // get the last instr from the stack
 
         throw new NotImplementedException("not yet implemented, InstrType:" + instrBase.InstrType.ToString());
-
     }
 
-    static bool ProcessSelectFiles(IActivityLogger logger, ExecResult execResult, List<InstrObjectName> listVar, InstrSelectFiles instr, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
+    private static bool ProcessSelectFiles(IActivityLogger logger, ExecResult execResult, List<InstrObjectName> listVar, InstrSelectFiles instr, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
     {
         logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessSelectFiles", "Param count: " + instr.ListInstrParams.Count);
         // only one param expected, type should be string or an instr returning a string
@@ -59,9 +53,9 @@ internal class FunctionCallParamsProcessor
 
         //--is the param a string const value token?  exp: SelectFiles("MyFile.xlsx")
         InstrConstValue instrConstValue = listParams[0] as InstrConstValue;
-        if(instrConstValue!=null)
+        if (instrConstValue != null)
         {
-            // the const value type should be a string 
+            // the const value type should be a string
             if (instrConstValue.ValueBase.ValueType == System.ValueType.String)
             {
                 // push the string param to the instr SelectFiles
@@ -76,10 +70,10 @@ internal class FunctionCallParamsProcessor
 
         //--is the param a varName source code token?  exp: SelectFiles(fileName)
         InstrObjectName instrObjectName = listParams[0] as InstrObjectName;
-        if (instrObjectName != null) 
+        if (instrObjectName != null)
         {
             // check that the var is defined
-            if(listVar.FirstOrDefault(x => x.ObjectName.Equals(instrObjectName.ObjectName, StringComparison.InvariantCultureIgnoreCase))==null)
+            if (listVar.FirstOrDefault(x => x.ObjectName.Equals(instrObjectName.ObjectName, StringComparison.InvariantCultureIgnoreCase)) == null)
             {
                 // not a string, error
                 execResult.AddError(ErrorCode.ParserFctParamVarNotDefined, instr.ListScriptToken[0], listParams.Count.ToString());
@@ -90,7 +84,6 @@ internal class FunctionCallParamsProcessor
             instr.AddParamSelect(instrObjectName);
             return true;
         }
-
 
         execResult.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams[0].GetType().ToString());
         return false;

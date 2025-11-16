@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests._05_Common;
 
@@ -29,6 +24,5 @@ public class InstrTestHelper
         Assert.IsNotNull(instrConstValue);
         Assert.AreEqual(val.ToString(), instrConstValue.RawValue);
         Assert.AreEqual(val, (instrConstValue.ValueBase as ValueInt).Val);
-
     }
 }

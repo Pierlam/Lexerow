@@ -4,12 +4,6 @@ using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using NPOI.OpenXmlFormats.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile;
 
@@ -18,10 +12,10 @@ namespace Lexerow.Core.ScriptCompile;
 /// </summary>
 public class ScriptCompiler
 {
-    IActivityLogger _logger;
-    
-    CoreData _coreData;
-    LexerConfig lexicalAnalyzerConfig = new LexerConfig();
+    private IActivityLogger _logger;
+
+    private CoreData _coreData;
+    private LexerConfig lexicalAnalyzerConfig = new LexerConfig();
 
     /// <summary>
     /// Constructor
@@ -56,18 +50,16 @@ public class ScriptCompiler
         //ComparisonSepMgr.ReArrangeAllComparisonSep(listSourceCodeLineTokens);
 
         Parser parser = new Parser(_logger);
-        bool res= parser.Process(execResult, listScriptLineTokens, out listInstr);
+        bool res = parser.Process(execResult, listScriptLineTokens, out listInstr);
 
         // save the list of instructions build by the compilation stage
         // TODO:
 
-        if(res) 
+        if (res)
             _logger.LogCompilEnd(ActivityLogLevel.Important, "CompileScript", script.Name);
         else
             _logger.LogCompilEndError(execResult.ListError[0], "CompileScript", script.Name);
 
-
         return execResult;
     }
-
 }

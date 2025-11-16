@@ -17,12 +17,12 @@ public class ScriptParserOnExcelIfBlankNullTests
 {
     /// <summary>
     /// Implicite: sheet=0, FirstRow=1
-    /// 
+    ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
     ///     If A.Cell=blank Then A.Cell=10
-    ///   Next 
-    /// End OnExcel  
+    ///   Next
+    /// End OnExcel
     /// </summary>
     [TestMethod]
     public void OnExcelIfACellEqualBlankOk()
@@ -40,7 +40,7 @@ public class ScriptParserOnExcelIfBlankNullTests
         script.Add(line);
 
         // If A.Cell=blank Then A.Cell=12
-        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, script, "A","=","Blank","A",12);
+        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, script, "A", "=", "Blank", "A", 12);
 
         // Next
         line = new ScriptLineTokensTest();
@@ -98,14 +98,13 @@ public class ScriptParserOnExcelIfBlankNullTests
         Assert.IsNotNull(instrSepComparison);
         Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
-        // check If-Operand Left -> If A.Cell  
+        // check If-Operand Left -> If A.Cell
         InstrTestHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
 
         // check If-Operand Right  -> Blank
         InstrBlank instrBlank = instrComparison.OperandRight as InstrBlank;
         Assert.IsNotNull(instrBlank);
         //TestBuilder.TestInstrKeyword("If-OperandRight", instrComparison.OperandRight, 10);
-
 
         // check Then, SetVar -> Left:InstrColCellFunc, Right InstrConstValue: 12
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -120,12 +119,12 @@ public class ScriptParserOnExcelIfBlankNullTests
 
     /// <summary>
     /// Implicite: sheet=0, FirstRow=1
-    /// 
+    ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
     ///     If A.Cell>blank Then A.Cell=10
-    ///   Next 
-    /// End OnExcel  
+    ///   Next
+    /// End OnExcel
     /// </summary>
     [TestMethod]
     public void OnExcelIfACellGreaterBlankError()
@@ -174,4 +173,3 @@ public class ScriptParserOnExcelIfBlankNullTests
     // a=12
     // If a=blank  -> error
 }
-

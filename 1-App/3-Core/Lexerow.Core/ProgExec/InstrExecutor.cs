@@ -9,19 +9,19 @@ namespace Lexerow.Core.ProgExec;
 /// </summary>
 public class InstrExecutor
 {
-    IActivityLogger _logger;
+    private IActivityLogger _logger;
 
-    InstrSelectFilesExecutor _instrSelectFilesExecutor;
+    private InstrSelectFilesExecutor _instrSelectFilesExecutor;
 
-    InstrOnExcelExecutor _instrOnExcelExecutor;
+    private InstrOnExcelExecutor _instrOnExcelExecutor;
 
-    InstrIfThenElseExecutor _instrIfThenElseExecutor;
+    private InstrIfThenElseExecutor _instrIfThenElseExecutor;
 
-    InstrComparisonExecutor _instrComparisonExecutor;
+    private InstrComparisonExecutor _instrComparisonExecutor;
 
-    InstrSetColCellFuncExecutor _instrSetColCellFuncExecutor;
+    private InstrSetColCellFuncExecutor _instrSetColCellFuncExecutor;
 
-    InstrSetVarExecutor _instrSetVarExecutor;
+    private InstrSetVarExecutor _instrSetVarExecutor;
 
     public InstrExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
@@ -29,13 +29,13 @@ public class InstrExecutor
         _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger);
         _instrOnExcelExecutor = new InstrOnExcelExecutor(_logger, excelProcessor);
         _instrIfThenElseExecutor = new InstrIfThenElseExecutor(_logger);
-        _instrComparisonExecutor= new InstrComparisonExecutor(_logger, excelProcessor);
+        _instrComparisonExecutor = new InstrComparisonExecutor(_logger, excelProcessor);
         _instrSetColCellFuncExecutor = new InstrSetColCellFuncExecutor(_logger, excelProcessor);
-        _instrSetVarExecutor =new InstrSetVarExecutor(_logger, _instrSetColCellFuncExecutor);
+        _instrSetVarExecutor = new InstrSetVarExecutor(_logger, _instrSetColCellFuncExecutor);
     }
 
     /// <summary>
-    /// Execute instruction and dependent instructions, until the stack becomes empty. 
+    /// Execute instruction and dependent instructions, until the stack becomes empty.
     /// InstrRunner
     /// </summary>
     /// <param name="execResult"></param>
@@ -144,6 +144,4 @@ public class InstrExecutor
             return false;
         }
     }
-
-
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.System.ScriptCompile;
+﻿namespace Lexerow.Core.System.ScriptCompile;
 
 /// <summary>
 /// Lexer configuration.
@@ -13,9 +7,8 @@ namespace Lexerow.Core.System.ScriptCompile;
 public class LexerConfig
 {
     public string Separators = ".,;=()><+-/*!";
-    
+
     public char StringSep = '\"';
 
     public string CommentTag = "#";
-
 }

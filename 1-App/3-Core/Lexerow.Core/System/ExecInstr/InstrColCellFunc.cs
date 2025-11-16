@@ -1,10 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using NPOI.OpenXmlFormats.Dml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -24,7 +18,7 @@ public class InstrColCellFunc : InstrBase
     public InstrColCellFunc(ScriptToken scriptToken, InstrColCellFuncType type, string colName, int colNum) : base(scriptToken)
     {
         InstrType = InstrType.ColCellFunc;
-        InstrColCellFuncType= InstrColCellFuncType.Value;
+        InstrColCellFuncType = InstrColCellFuncType.Value;
         ColName = colName;
         ColNum = colNum;
     }
@@ -36,10 +30,9 @@ public class InstrColCellFunc : InstrBase
     /// </summary>
     public string ColName { get; set; }
 
-
     /// <summary>
     /// Exp: 1 for A
     /// 2 for B,...
     /// </summary>
-    public int ColNum { get; set; } 
+    public int ColNum { get; set; }
 }

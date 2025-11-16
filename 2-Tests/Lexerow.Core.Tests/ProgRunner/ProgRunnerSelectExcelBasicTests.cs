@@ -5,11 +5,6 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Tests.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ProgRunner;
 
@@ -18,10 +13,10 @@ namespace Lexerow.Core.Tests.ProgRunner;
 /// Test program runner.
 /// </summary>
 [TestClass]
-public class ProgRunnerSelectExcelBasicTests: BaseTests
+public class ProgRunnerSelectExcelBasicTests : BaseTests
 {
     /// <summary>
-    /// file= SelectFiles("data1.xslx")  
+    /// file= SelectFiles("data1.xslx")
     /// Goal: scan files, build the final list of files.
     /// </summary>
     [TestMethod]
@@ -32,7 +27,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
 
         //--SetVar #1:   file= OpenExcel("data1.xslx")
         //    InstrLeft:  ObjectName: file
-        //    InstrRight: OpenExcel, p="data.xlsx" 
+        //    InstrRight: OpenExcel, p="data.xlsx"
 
         //-instr left
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
@@ -48,15 +43,15 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         ProgramScript programScript = new ProgramScript(script, listInstr);
 
         //--create the program runner
-        ActivityLogger logger= new ActivityLogger();
-        ExcelProcessorNpoi excelProcessor= new ExcelProcessorNpoi();
-        ProgramExecutor programRunner = new ProgramExecutor(logger,excelProcessor);
+        ActivityLogger logger = new ActivityLogger();
+        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
+        ProgramExecutor programRunner = new ProgramExecutor(logger, excelProcessor);
         ExecResult execResult = new ExecResult();
-        bool res=programRunner.Exec(execResult, programScript);
+        bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
         // found one file
-        Assert.AreEqual(1,instrSelectFiles.ListSelectedFilename.Count);
+        Assert.AreEqual(1, instrSelectFiles.ListSelectedFilename.Count);
         Assert.AreEqual((instrSelectFiles.ListInstrParams[0] as InstrConstValue).RawValue, (instrSelectFiles.ListSelectedFilename[0].InstrBase as InstrConstValue).RawValue);
         Assert.IsNotNull(1, instrSelectFiles.ListSelectedFilename[0].Filename);
     }
@@ -72,7 +67,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
 
         //--SetVar #1:
         //      InstrLeft:   ObjectName: file
-        //      InstrRight:  OpenExcel, p="data.xlsx" 
+        //      InstrRight:  OpenExcel, p="data.xlsx"
 
         //-instr left
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
@@ -110,7 +105,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
 
         //--SetVar #1:
         //      InstrLeft:   ObjectName: name
-        //      InstrRight:  ConstValue: "data.xlsx" 
+        //      InstrRight:  ConstValue: "data.xlsx"
 
         //-instr left
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("name");
@@ -122,10 +117,9 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         InstrSetVar instrSetVar = TestInstrBuilder.BuildInstrSetVar(instrObjectName, instrConstValue);
         listInstr.Add(instrSetVar);
 
-
         //--SetVar #2:
         //      InstrLeft:  ObjectName: file
-        //      InstRight:  SelectFiles, p=name 
+        //      InstRight:  SelectFiles, p=name
 
         //-instr left
         instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
@@ -147,7 +141,6 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         ExecResult execResult = new ExecResult();
         bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
-
 
         // found one file: "....\dataName.xlsx"
         Assert.AreEqual(1, instrSelectFiles.ListSelectedFilename.Count);
@@ -170,7 +163,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
 
         //--SetVar #1:
         //      InstrLeft:   ObjectName: f
-        //      InstrRight:  ConstValue: "data.xlsx" 
+        //      InstrRight:  ConstValue: "data.xlsx"
 
         //-instr left
         InstrObjectName instrObjectName = TestInstrBuilder.BuildInstrObjectName("f");
@@ -184,7 +177,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
 
         //--SetVar #2: name=f
         //      InstrLeft:   ObjectName: f
-        //      InstrRight:  ObjectName: name 
+        //      InstrRight:  ObjectName: name
 
         //-instr left
         instrObjectName = TestInstrBuilder.BuildInstrObjectName("name");
@@ -198,7 +191,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
 
         //--SetVar #3:
         //      InstrLeft:   ObjectName: file
-        //      InstrRight:  SelectFiles, p=name 
+        //      InstrRight:  SelectFiles, p=name
 
         //-instr left
         instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");
@@ -221,7 +214,6 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
         bool res = programRunner.Exec(execResult, programScript);
         Assert.IsTrue(res);
 
-
         // found one file: "....\dataName.xlsx"
         Assert.AreEqual(1, instrSelectFiles.ListSelectedFilename.Count);
         Assert.IsNotNull(1, instrSelectFiles.ListSelectedFilename[0].Filename);
@@ -240,7 +232,7 @@ public class ProgRunnerSelectExcelBasicTests: BaseTests
 
         //  -SetVar:
         //      InstrRight: ObjectName: file
-        //      InstrLeft:  SelectFiles, p=name 
+        //      InstrLeft:  SelectFiles, p=name
 
         //-instr left
         var instrObjectName = TestInstrBuilder.BuildInstrObjectName("file");

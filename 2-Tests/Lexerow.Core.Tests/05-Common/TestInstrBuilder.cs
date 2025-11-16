@@ -1,13 +1,9 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests._05_Common;
+
 public class TestInstrBuilder
 {
     /// <summary>
@@ -15,7 +11,7 @@ public class TestInstrBuilder
     ///   ForEach Row
     ///     If..Then
     ///   Next
-    /// End OnExcel  
+    /// End OnExcel
     /// </summary>
     /// <param name="fileNameString"></param>
     /// <param name="instrForEach"></param>
@@ -23,16 +19,16 @@ public class TestInstrBuilder
     public static InstrOnExcel CreateInstrOnExcelFileString(string fileNameString, InstrBase forEachRowInstr)
     {
         var token = CreateScriptTokenString(fileNameString);
-        InstrOnExcel instrOnExcel= new InstrOnExcel(token);
+        InstrOnExcel instrOnExcel = new InstrOnExcel(token);
 
         // OnExcel "data.xslx"
         InstrConstValue instrConstValue = BuildInstrConstValueString(fileNameString);
         //instrOnExcel.ListFiles.Add(instrConstValue);
-        instrOnExcel.InstrFiles= instrConstValue;
+        instrOnExcel.InstrFiles = instrConstValue;
 
         // OnSheet
         var tokenSheet = CreateScriptTokenName("OnSheet");
-        instrOnExcel.CreateOnSheet(tokenSheet,1);
+        instrOnExcel.CreateOnSheet(tokenSheet, 1);
 
         // ForEach Row instr
         instrOnExcel.CurrOnSheet.ListInstrForEachRow.Add(forEachRowInstr);
@@ -45,7 +41,7 @@ public class TestInstrBuilder
     ///   ForEach Row
     ///     If..Then
     ///   Next
-    /// End OnExcel  
+    /// End OnExcel
     /// </summary>
     /// <param name="fileName"></param>
     /// <param name="instrForEach"></param>
@@ -90,13 +86,13 @@ public class TestInstrBuilder
         // IfThen
         var tokenIf = CreateScriptTokenName("If");
         InstrIfThenElse instrIfThenElse = new InstrIfThenElse(tokenIf);
-        instrIfThenElse.InstrIf= instrIf;
+        instrIfThenElse.InstrIf = instrIf;
         instrIfThenElse.InstrThen = instrThen;
         return instrIfThenElse;
     }
 
     /// <summary>
-    /// If A.Cell>10 
+    /// If A.Cell>10
     /// </summary>
     /// <param name="colNameIf"></param>
     /// <param name="colNumIf"></param>
@@ -109,7 +105,7 @@ public class TestInstrBuilder
         InstrIf instrIf = new InstrIf(tokenIf);
         var tokenColNameIf = CreateScriptTokenName("If");
         InstrComparison instrComparison = new InstrComparison(tokenColNameIf);
-        
+
         // A.Cell
         InstrColCellFunc instrColCellFuncIf = CreateInstrColCellFuncValue(colNameIf, colNumIf);
         instrComparison.OperandLeft = instrColCellFuncIf;
@@ -153,7 +149,7 @@ public class TestInstrBuilder
 
         var tokenSetVar = CreateScriptTokenName("setVar");
         InstrSetVar instrSetVar = new InstrSetVar(tokenSetVar);
-        instrSetVar.InstrLeft= instrColCellFunc;
+        instrSetVar.InstrLeft = instrColCellFunc;
         // 10
         instrSetVar.InstrRight = BuildInstrConstValueInt(val);
 
@@ -169,7 +165,7 @@ public class TestInstrBuilder
     /// <returns></returns>
     public static InstrObjectName BuildInstrObjectName(string val)
     {
-        var script= CreateScriptTokenName(val);
+        var script = CreateScriptTokenName(val);
         return new InstrObjectName(script);
     }
 
@@ -183,11 +179,11 @@ public class TestInstrBuilder
     {
         // token
         var token = CreateScriptTokenString(val);
-        var str= StringUtils.RemoveStartEndDoubleQuote(val);
+        var str = StringUtils.RemoveStartEndDoubleQuote(val);
 
         // InstrConstValue
-        InstrConstValue instrConstValue= new InstrConstValue(token, str);
-        instrConstValue.ValueBase= new ValueString(val);
+        InstrConstValue instrConstValue = new InstrConstValue(token, str);
+        instrConstValue.ValueBase = new ValueString(val);
         return instrConstValue;
     }
 
@@ -225,7 +221,6 @@ public class TestInstrBuilder
         return instrOpenExcel;
     }
 
-
     /// <summary>
     /// SelectExcel("data.xslx")
     /// The fileName param is a const value, type string.
@@ -260,7 +255,6 @@ public class TestInstrBuilder
         instrSetVar.InstrRight = instrRight;
         return instrSetVar;
     }
-
 
     public static string BuildString(string s)
     {
@@ -298,7 +292,7 @@ public class TestInstrBuilder
     }
 
     /// <summary>
-    /// Create token separator: 
+    /// Create token separator:
     ///  =, <>, =>, =<
     /// </summary>
     /// <param name="sep"></param>
@@ -319,6 +313,7 @@ public class TestInstrBuilder
         token.ValueInt = val;
         return token;
     }
+
     public static ScriptToken CreateScriptTokenDouble(double val)
     {
         var token = new ScriptToken();
@@ -327,5 +322,4 @@ public class TestInstrBuilder
         token.ValueDouble = val;
         return token;
     }
-
 }

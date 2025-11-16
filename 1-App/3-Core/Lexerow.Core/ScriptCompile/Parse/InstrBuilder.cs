@@ -2,14 +2,9 @@
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
-using NPOI.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
+
 public class InstrBuilder
 {
     /// <summary>
@@ -71,7 +66,7 @@ public class InstrBuilder
                 instrBase = new InstrRow(scriptToken);
                 return true;
             }
-            
+
             // Next
             if (scriptToken.Value.Equals(CoreInstr.InstrNext, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -94,7 +89,7 @@ public class InstrBuilder
             }
 
             // if
-            if (scriptToken.Value.Equals(CoreInstr.InstrIf,StringComparison.InvariantCultureIgnoreCase))
+            if (scriptToken.Value.Equals(CoreInstr.InstrIf, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrIf(scriptToken);
                 return true;
@@ -114,7 +109,6 @@ public class InstrBuilder
                 return true;
             }
 
-
             // null
             if (scriptToken.Value.Equals(CoreInstr.InstrNull, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -124,11 +118,10 @@ public class InstrBuilder
             // ExcelCol, exp: A
             // TODO:
 
-
             // ExcelCellAddress, exp: A1
             // TODO:
 
-            // if it is not a known keyword, it's an object name, can be: a variable or a user defined function 
+            // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
             instrBase = new InstrObjectName(scriptToken);
             return true;
         }
@@ -143,7 +136,7 @@ public class InstrBuilder
             }
             if (scriptToken.Value.Equals(")", StringComparison.InvariantCultureIgnoreCase))
             {
-                // TODO: needed? 
+                // TODO: needed?
                 //instrBase = new InstrCloseBrace(scriptToken);
                 instrBase = null;
                 return true;
@@ -191,7 +184,7 @@ public class InstrBuilder
         if (scriptToken.ScriptTokenType == ScriptTokenType.String)
         {
             // remove double quote
-            string val= StringUtils.RemoveStartEndDoubleQuote(scriptToken.Value);
+            string val = StringUtils.RemoveStartEndDoubleQuote(scriptToken.Value);
             instrBase = new InstrConstValue(scriptToken, val);
             return true;
         }
@@ -220,5 +213,4 @@ public class InstrBuilder
         if (string.IsNullOrWhiteSpace(scriptToken.Value)) return null;
         return new InstrSepComparison(scriptToken);
     }
-
 }

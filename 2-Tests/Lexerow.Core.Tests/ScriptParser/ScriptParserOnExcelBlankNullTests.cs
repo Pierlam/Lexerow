@@ -4,11 +4,6 @@ using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptParser;
 
@@ -22,12 +17,12 @@ public class ScriptParserOnExcelBlankNullTests
 {
     /// <summary>
     /// Implicite: sheet=0, FirstRow=1
-    /// 
+    ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
     ///     If A.Cell=blank Then A.Cell=10
-    ///   Next 
-    /// End OnExcel  
+    ///   Next
+    /// End OnExcel
     /// </summary>
     [TestMethod]
     public void OnExcelIfACellEqualBlankOk()
@@ -45,7 +40,7 @@ public class ScriptParserOnExcelBlankNullTests
         script.Add(line);
 
         // If A.Cell=blank Then A.Cell=12
-        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, script, "A","=","Blank","A",12);
+        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, script, "A", "=", "Blank", "A", 12);
 
         // Next
         line = new ScriptLineTokensTest();
@@ -103,14 +98,13 @@ public class ScriptParserOnExcelBlankNullTests
         Assert.IsNotNull(instrSepComparison);
         Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
-        // check If-Operand Left -> If A.Cell  
+        // check If-Operand Left -> If A.Cell
         InstrTestHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
 
         // check If-Operand Right  -> Blank
         InstrBlank instrBlank = instrComparison.OperandRight as InstrBlank;
         Assert.IsNotNull(instrBlank);
         //TestBuilder.TestInstrKeyword("If-OperandRight", instrComparison.OperandRight, 10);
-
 
         // check Then, SetVar -> Left:InstrColCellFunc, Right InstrConstValue: 12
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -125,12 +119,12 @@ public class ScriptParserOnExcelBlankNullTests
 
     /// <summary>
     /// Implicite: sheet=0, FirstRow=1
-    /// 
+    ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
     ///     If A.Cell>blank Then A.Cell=10
-    ///   Next 
-    /// End OnExcel  
+    ///   Next
+    /// End OnExcel
     /// </summary>
     [TestMethod]
     public void OnExcelIfACellGreaterBlankError()
@@ -178,12 +172,12 @@ public class ScriptParserOnExcelBlankNullTests
 
     /// <summary>
     /// Default: sheet=0, FirstRow=1
-    /// 
+    ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
     ///     If A.Cell=9 Then A.Cell=Blank
-    ///   Next 
-    /// End OnExcel  
+    ///   Next
+    /// End OnExcel
     /// </summary>
     [TestMethod]
     public void OnExcelThenACellEqBlankOk()
@@ -259,14 +253,13 @@ public class ScriptParserOnExcelBlankNullTests
         Assert.IsNotNull(instrSepComparison);
         Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
-        // check If-Operand Left -> If A.Cell  
+        // check If-Operand Left -> If A.Cell
         InstrTestHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
 
         // check If-Operand Right
         InstrTestHelper.TestInstrConstValue("If-OperandRight", instrComparison.OperandRight, 9);
 
-
-        // check Then, SetVar 
+        // check Then, SetVar
         Assert.IsNotNull(instrIfThenElse.InstrThen);
         Assert.AreEqual(1, instrIfThenElse.InstrThen.ListInstr.Count);
 
@@ -280,12 +273,12 @@ public class ScriptParserOnExcelBlankNullTests
 
     /// <summary>
     /// Default: sheet=0, FirstRow=1
-    /// 
+    ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
     ///     If A.Cell=9 Then A.Cell=Null
-    ///   Next 
-    /// End OnExcel  
+    ///   Next
+    /// End OnExcel
     /// </summary>
     [TestMethod]
     public void OnExcelThenACellEqNullOk()
@@ -361,14 +354,13 @@ public class ScriptParserOnExcelBlankNullTests
         Assert.IsNotNull(instrSepComparison);
         Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
-        // check If-Operand Left -> If A.Cell  
+        // check If-Operand Left -> If A.Cell
         InstrTestHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
 
         // check If-Operand Right
         InstrTestHelper.TestInstrConstValue("If-OperandRight", instrComparison.OperandRight, 9);
 
-
-        // check Then, SetVar 
+        // check Then, SetVar
         Assert.IsNotNull(instrIfThenElse.InstrThen);
         Assert.AreEqual(1, instrIfThenElse.InstrThen.ListInstr.Count);
 
@@ -383,4 +375,3 @@ public class ScriptParserOnExcelBlankNullTests
     // a=12
     // If a=blank  -> error
 }
-

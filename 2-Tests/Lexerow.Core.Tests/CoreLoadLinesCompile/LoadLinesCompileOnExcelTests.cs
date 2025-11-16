@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesCompile;
 
@@ -218,7 +213,6 @@ public class LoadLinesCompileOnExcelTests
         execResult = core.LoadLinesScript("script", lines);
         Assert.IsFalse(execResult.Result);
     }
-
 
     // test script with error: EndOnExcel in one word, ...
 }

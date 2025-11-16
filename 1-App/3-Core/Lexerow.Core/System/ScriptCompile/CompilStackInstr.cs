@@ -1,10 +1,4 @@
 ﻿using Lexerow.Core.System.ActivLog;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System.ScriptCompile;
 
@@ -14,14 +8,15 @@ namespace Lexerow.Core.System.ScriptCompile;
 /// </summary>
 public class CompilStackInstr
 {
-    IActivityLogger _logger;
+    private IActivityLogger _logger;
 
     public CompilStackInstr(IActivityLogger logger)
     {
         _logger = logger;
     }
 
-    public int Count {  get { return StackInstr.Count; } }
+    public int Count
+    { get { return StackInstr.Count; } }
 
     public InstrBase Peek()
     {
@@ -34,11 +29,12 @@ public class CompilStackInstr
     {
         try
         {
-            var instr= StackInstr.Pop();
+            var instr = StackInstr.Pop();
             _logger.LogCompilOnGoing(ActivityLogLevel.Detail, "CompilStackInstr.Pop", instr.ToString());
             return instr;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             _logger.LogCompilEndError(null, "CompilStackInstr.Pop", e.ToString());
             throw e;
         }
@@ -91,10 +87,8 @@ public class CompilStackInstr
         return dump;
     }
 
-
     /// <summary>
     /// the stack onf isntr, is private.
     /// </summary>
-    Stack<InstrBase> StackInstr { get; set; } = new Stack<InstrBase>();
-
+    private Stack<InstrBase> StackInstr { get; set; } = new Stack<InstrBase>();
 }

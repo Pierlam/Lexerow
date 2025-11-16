@@ -1,10 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.Xml;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -22,6 +16,7 @@ public enum InstrOnExcelBuildStage
 
     // first instr found, waiting for next instr or for the Next token
     RowNext,
+
     If,
 
     // token end of the instr: End OnExcel
@@ -39,7 +34,7 @@ public enum InstrOnExcelBuildStage
 ///      ForEach Row
 ///        If A.Cell > 10 Then A.Cell= 10
 ///      Next
-///  End OnExcel    
+///  End OnExcel
 /// </summary>
 public class InstrOnExcel : InstrBase
 {
@@ -56,7 +51,7 @@ public class InstrOnExcel : InstrBase
     /// <summary>
     /// instr, coming  from script.
     /// Convert to the InstrSelectFiles during the execution.
-    /// can be: 
+    /// can be:
     ///   1/ a string, exp: OnExcel "data.xlsx"
     ///   2/ a varname (ObjectName), exp: OnExcel filename
     ///      varname can be: 2.1/ a string, 2.2/ an InstrSelectFiles, 2.3/ or a varname (to a string or an InstrSelectFiles).
@@ -73,8 +68,7 @@ public class InstrOnExcel : InstrBase
     /// </summary>
     public InstrSelectFiles InstrSelectFiles { get; set; } = null;
 
-
-    public List<InstrOnSheet> ListSheets { get; private set; }= new List<InstrOnSheet>();
+    public List<InstrOnSheet> ListSheets { get; private set; } = new List<InstrOnSheet>();
 
     /// <summary>
     /// Used by the parser to build the instr.
@@ -91,6 +85,6 @@ public class InstrOnExcel : InstrBase
         InstrOnSheet instrOnSheet = new InstrOnSheet(scriptToken);
         instrOnSheet.SheetNum = sheetNum;
         ListSheets.Add(instrOnSheet);
-        CurrOnSheet= instrOnSheet;
+        CurrOnSheet = instrOnSheet;
     }
 }

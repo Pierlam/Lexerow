@@ -1,11 +1,6 @@
 ﻿using Lexerow.Core.ScriptCompile.lex;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.StringParser;
 
@@ -15,7 +10,7 @@ public class StringParser
     [TestMethod]
     public void TestOneInt12Ok()
     {
-        LexerConfig conf= new LexerConfig();
+        LexerConfig conf = new LexerConfig();
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12";
@@ -56,7 +51,6 @@ public class StringParser
         Assert.AreEqual(ScriptTokenType.Double, listScriptTokens[0].ScriptTokenType);
         Assert.AreEqual(43E10, listScriptTokens[0].ValueDouble);
     }
-
 
     [TestMethod]
     public void TestOneDouble_12dot45Ok()
@@ -132,6 +126,7 @@ public class StringParser
         Assert.AreEqual(1, listScriptTokens.Count);
         Assert.AreEqual(ScriptTokenType.WrongNumber, listScriptTokens[0].ScriptTokenType);
     }
+
     [TestMethod]
     public void TestOneIntWrong_spc()
     {
@@ -146,7 +141,6 @@ public class StringParser
         Assert.AreEqual(1, listScriptTokens.Count);
         Assert.AreEqual(ScriptTokenType.WrongNumber, listScriptTokens[0].ScriptTokenType);
     }
-
 
     [TestMethod]
     public void TestOneDoubleWrong()
@@ -214,7 +208,6 @@ public class StringParser
         Assert.AreEqual(ScriptTokenType.Integer, listScriptTokens[1].ScriptTokenType);
         Assert.AreEqual(45, listScriptTokens[1].ValueInt);
     }
-
 
     // 12 - 23   -> 3 tok
     [TestMethod]
@@ -403,5 +396,4 @@ public class StringParser
         Assert.AreEqual(ScriptTokenType.Separator, listScriptTokens[1].ScriptTokenType);
         Assert.AreEqual(".", listScriptTokens[1].Value);
     }
-
 }

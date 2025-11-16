@@ -1,12 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ScriptDef;
-using NPOI.HPSF;
-using NPOI.SS.Formula.Eval;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptLoad;
 
@@ -68,14 +61,14 @@ public class ScriptLoader
             return false;
         }
 
-        if(!LoadScript(scriptName, fileName, out script, out Exception exception))
+        if (!LoadScript(scriptName, fileName, out script, out Exception exception))
         {
             execResult.AddError(ErrorCode.LoadScriptFileException, exception, fileName);
             return false;
         }
 
         // contains one line at least
-        if (script.ScriptLines.Count == 0) 
+        if (script.ScriptLines.Count == 0)
         {
             execResult.AddError(ErrorCode.LoadScriptFileEmpty, exception, fileName);
             return false;
@@ -84,9 +77,9 @@ public class ScriptLoader
         return true;
     }
 
-    bool LoadScript(string scriptName, string fileName, out Script script, out Exception exception)
+    private bool LoadScript(string scriptName, string fileName, out Script script, out Exception exception)
     {
-        script= new Script(scriptName, fileName);
+        script = new Script(scriptName, fileName);
         exception = null;
 
         int numLine = 1;
@@ -116,5 +109,4 @@ public class ScriptLoader
             return false;
         }
     }
-
 }

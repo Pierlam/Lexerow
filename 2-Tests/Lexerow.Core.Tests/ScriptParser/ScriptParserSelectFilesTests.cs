@@ -4,14 +4,8 @@ using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptParser;
-
 
 /// <summary>
 /// Test script lexical analyzer on SelectFiles instr.
@@ -24,12 +18,12 @@ public class ScriptParserSelectFilesTests
     ///
     /// ----
     /// file; =; SelectFiles; (; "data.xlsx"; )
-    /// 
+    ///
     /// ----
     /// The compilation return:
     ///  -SetVar:
     ///      Instrleft:  ObjectName: file
-    ///      InstrRight: SelectFiles, p="data.xlsx" 
+    ///      InstrRight: SelectFiles, p="data.xlsx"
     /// </summary>
     [TestMethod]
     public void FileEqSelectFilesOk()
@@ -38,14 +32,14 @@ public class ScriptParserSelectFilesTests
         ScriptLineTokens line;
 
         //-line #1
-        line= TestTokensBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
+        line = TestTokensBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
         script.Add(line);
 
         var logger = A.Fake<IActivityLogger>();
         Parser sa = new Parser(logger);
 
         ExecResult execResult = new ExecResult();
-        bool res= sa.Process(execResult, script, out List<InstrBase> listInstr);
+        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listInstr.Count);
@@ -74,20 +68,20 @@ public class ScriptParserSelectFilesTests
     /// <summary>
     /// name="data.xslx"
     /// file=SelectFiles(name)
-    /// 
+    ///
     /// ----
     /// name; =; "data.xlsx"
     /// file; =; SelectFiles; (; name; )
-    /// 
+    ///
     /// ----
     /// The compilation return:
     ///  -SetVar:
     ///      Instrleft:  ObjectName: name
-    ///      InstrRight: ConstValue: "data.xlsx" 
-    /// 
+    ///      InstrRight: ConstValue: "data.xlsx"
+    ///
     ///  -SetVar:
     ///      Instrleft:  ObjectName: file
-    ///      InstrRight: SelectFiles, p=name 
+    ///      InstrRight: SelectFiles, p=name
     /// </summary>
     [TestMethod]
     public void SetVarFileEqSelectFilesOk()
@@ -136,7 +130,6 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual("data.xlsx", instrConstValue.RawValue);
         Assert.AreEqual("data.xlsx", (instrConstValue.ValueBase as ValueString).Val);
 
-
         //--SetVar #2
         Assert.AreEqual(InstrType.SetVar, listInstr[1].InstrType);
         instrSetVar = listInstr[1] as InstrSetVar;
@@ -157,9 +150,8 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual("name", instrObjectName.ObjectName);
     }
 
-
     /// <summary>
-    /// file=Qwerty()		
+    /// file=Qwerty()
     /// Error, Wrong/Not expected function name.
     /// </summary>
     [TestMethod]
@@ -191,9 +183,8 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
 
-
     /// <summary>
-    /// "john"=SelectFiles(..)    
+    /// "john"=SelectFiles(..)
     /// error -> variable expected
     /// </summary>
     [TestMethod]
@@ -226,7 +217,7 @@ public class ScriptParserSelectFilesTests
     }
 
     /// <summary>
-    /// 12=SelectFiles(...)       
+    /// 12=SelectFiles(...)
     /// error -> variable expected
     /// </summary>
     [TestMethod]
@@ -259,7 +250,7 @@ public class ScriptParserSelectFilesTests
     }
 
     /// <summary>
-    /// file = SelectFiles()   
+    /// file = SelectFiles()
     /// error -> param is missing
     /// </summary>
     [TestMethod]
@@ -291,7 +282,7 @@ public class ScriptParserSelectFilesTests
     }
 
     /// <summary>
-    /// file = SelectFiles(12)      
+    /// file = SelectFiles(12)
     /// error -> param type is wrong
     /// </summary>
     [TestMethod]
@@ -324,7 +315,7 @@ public class ScriptParserSelectFilesTests
     }
 
     /// <summary>
-    /// file = SelectFiles(f)      
+    /// file = SelectFiles(f)
     /// error -> param f is not defined before
     /// </summary>
     [TestMethod]
@@ -357,7 +348,7 @@ public class ScriptParserSelectFilesTests
     }
 
     /// <summary>
-    /// file=SelectFiles 
+    /// file=SelectFiles
     /// error -> open-closed bracket missing (param is missing also)
     /// </summary>
     [TestMethod]
@@ -387,7 +378,7 @@ public class ScriptParserSelectFilesTests
     }
 
     /// <summary>
-    /// then = SelectFiles("dd")   
+    /// then = SelectFiles("dd")
     /// error -> nom variable non-authorisé, mot-clé réservé
 
     /// </summary>
@@ -421,9 +412,8 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual("then", execResult.ListError[0].Param);
     }
 
-
     /// <summary>
-    /// file = SelectFiles("file.xlsx") load               
+    /// file = SelectFiles("file.xlsx") load
     /// error -> Object name load not expected
     /// </summary>
     [TestMethod]
@@ -458,7 +448,7 @@ public class ScriptParserSelectFilesTests
     }
 
     /// <summary>
-    /// SelectFiles("data.xlsx")  
+    /// SelectFiles("data.xlsx")
     /// error -> fct result not used
 
     /// </summary>

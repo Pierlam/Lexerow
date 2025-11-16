@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Utils;
 
@@ -55,7 +50,7 @@ public class ExcelUtils
             listRangeCols.ListRangeCols.Add(col);
         }
 
-        // check the content, columns should ordered 
+        // check the content, columns should ordered
         if (!CheckExcelListRangeColsIsOrdered(listRangeCols))
             return false;
 
@@ -75,7 +70,6 @@ public class ExcelUtils
         int colStartIdx = ColumnNameToNumber(arrItems[0]);
         if (colStartIdx < 0) return false;
 
-
         // decode the col end
         int colEndIdx = ColumnNameToNumber(arrItems[1]);
         if (colEndIdx < 0) return false;
@@ -83,16 +77,15 @@ public class ExcelUtils
         // save the range
         excelRangeCols = new ExcelRangeCols(arrItems[0], colStartIdx, arrItems[1], colEndIdx);
         return true;
-
     }
 
     /// <summary>
     /// Convert an Excel column name (letter) to a number.
-    /// 
+    ///
     /// Return the value of the column in base1.
     /// return -1 if an the string is wrong.
     /// return -2 if the col value is out of range.
-    /// 
+    ///
     /// 'A' the expected result will be 1
     /// 'AH' = 34
     /// 'XFD' = 16384
@@ -128,8 +121,8 @@ public class ExcelUtils
 
     /// <summary>
     /// return the column name (letter) and the column index.
-    /// 
-    /// exp: 
+    ///
+    /// exp:
     /// B6 -> return B,2
     /// AB3 -> return AB, 28
     /// </summary>
@@ -164,7 +157,6 @@ public class ExcelUtils
             sum += (int)(colName[i] - 'A' + 1);
         }
         colIndex = sum;
-
 
         // get the row index
         string rowStr = colRowName.Remove(0, colName.Length);
@@ -252,7 +244,6 @@ public class ExcelUtils
 
         foreach (var colsBase in listRangeCells.ListRangeCols)
         {
-
             // its a Col
             ExcelCol excelCol = colsBase as ExcelCol;
             if (excelCol != null)
@@ -281,5 +272,4 @@ public class ExcelUtils
 
         return true;
     }
-
 }

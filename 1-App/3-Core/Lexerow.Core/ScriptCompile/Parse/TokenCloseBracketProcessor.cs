@@ -1,24 +1,18 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using Org.BouncyCastle.Utilities.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
+
 internal class TokenCloseBracketProcessor
 {
     /// <summary>
     /// Is the script token the close bracket char?
-    /// 
-    /// 2 main cases: 
+    ///
+    /// 2 main cases:
     /// 1/ it's a list of params pushed to a function call.
-    /// 2/ It's a calculation expression. 
-    /// 
+    /// 2/ It's a calculation expression.
+    ///
     /// case1.1:  fct()
     /// case1.2:  fct(p1)
     /// others: fct(p1, p2)  fcvt(p1, p2, p3,...)
@@ -55,7 +49,7 @@ internal class TokenCloseBracketProcessor
 
             // no more item in the stack? case: ()
             if (stackInstr.Count == 0)
-                return true;                    
+                return true;
 
             // read without remove it the item on the top of the stack
             InstrBase instBeforeOpenBracket = stackInstr.Peek();
@@ -84,17 +78,17 @@ internal class TokenCloseBracketProcessor
         while (true)
         {
             // get the last item from the stack
-            if(stackInstr.Count == 0)
+            if (stackInstr.Count == 0)
             {
                 // no more item in the stack
                 // TODO -> error
                 throw new InvalidOperationException("todo");
             }
-            instr= stackInstr.Pop();
+            instr = stackInstr.Pop();
 
             // the current stack item should be an item, a string, a number or an instruction
             //if (item.IsTokenVarName() || item.IsTokenExcelColName() || item.IsTokenExcelCellAddress() || item.IsTokenConstValue() || item.IsInstr())
-            if(instr is InstrObjectName || instr is InstrConstValue)
+            if (instr is InstrObjectName || instr is InstrConstValue)
             {
                 // save the item in the fct param list
                 listItem.Add(instr);
@@ -122,11 +116,11 @@ internal class TokenCloseBracketProcessor
                 break;
             }
 
-            // the next one should be the comma sep 
+            // the next one should be the comma sep
             if (instr is InstrComma)
             {
                 // already a list  of params or type not yet defined so ok
-                if(!isMathExpr)
+                if (!isMathExpr)
                     isListOfParams |= true;
                 continue;
             }
@@ -147,28 +141,28 @@ internal class TokenCloseBracketProcessor
         }
 
         // only one item found between open-Closed brackets
-        if(listItem.Count == 1)
+        if (listItem.Count == 1)
         {
             // no item in the stack? exp (12)
-            if(stackInstr.Count == 0)
+            if (stackInstr.Count == 0)
             {
                 // so it's a math expression
                 isMathExpr = true;
-                return true; 
+                return true;
             }
 
             // read the item from the stack
-            InstrBase instBeforeOpenBracket= stackInstr.Peek();
+            InstrBase instBeforeOpenBracket = stackInstr.Peek();
 
             // the last item on the stack is an object name? exp: OpenExcel(f)
-            if(instBeforeOpenBracket.IsFunctionCall)
+            if (instBeforeOpenBracket.IsFunctionCall)
             {
-                isListOfParams= true;
+                isListOfParams = true;
                 return true;
             }
 
             // the item is an math operator, before the open bracket? exp: *(2)
-            if(ParserUtils.IsMathOperator(instBeforeOpenBracket))
+            if (ParserUtils.IsMathOperator(instBeforeOpenBracket))
             {
                 isMathExpr = true;
                 return true;
@@ -179,7 +173,5 @@ internal class TokenCloseBracketProcessor
             return false;
         }
         return true;
-
     }
-
 }

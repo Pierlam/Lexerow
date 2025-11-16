@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -16,7 +11,7 @@ public class InstrProcessSheets : InstrBase
     public InstrProcessSheets(ScriptToken scriptToken, List<InstrOnSheet> listSheet) : base(scriptToken)
     {
         InstrType = InstrType.ProcessSheets;
-        ListSheet= listSheet;
+        ListSheet = listSheet;
     }
 
     /// <summary>

@@ -8,7 +8,6 @@ using Lexerow.Core.Tests._05_Common;
 
 namespace Lexerow.Core.Tests.ScriptLexer;
 
-
 /// <summary>
 /// Test script lexical analyzer.
 /// </summary>
@@ -28,7 +27,7 @@ public class ScriptLexerBasicTests
 
         // analyse the source code, line by line
         var logger = A.Fake<IActivityLogger>();
-        Lexer.Process(logger, execResult , script, out List<ScriptLineTokens> lt, new LexerConfig());
+        Lexer.Process(logger, execResult, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
         Assert.IsTrue(execResult.Result);
 
@@ -79,7 +78,6 @@ public class ScriptLexerBasicTests
         Assert.IsFalse(execResult.Result);
 
         Assert.AreEqual(ErrorCode.LexerFoundSgtringBadFormatted, execResult.ListError[0].ErrorCode);
-
     }
 
     /// <summary>
@@ -103,7 +101,7 @@ public class ScriptLexerBasicTests
     /// <summary>
     /// analyse a source code
     /// OnExcel "file.xlsx"
-    /// 
+    ///
     /// The result: split tokens
     /// </summary>
     [TestMethod]
@@ -182,11 +180,10 @@ public class ScriptLexerBasicTests
         Assert.AreEqual("Row", lt[0].ListScriptToken[1].Value);
     }
 
-
     /// <summary>
     /// analyse a source code
     ///      If A.Cell >10 Then A.Cell= 10
-    /// 
+    ///
     /// The result: split tokens
     /// </summary>
     [TestMethod]

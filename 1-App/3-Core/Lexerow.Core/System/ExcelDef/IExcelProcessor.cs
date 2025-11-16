@@ -1,11 +1,5 @@
-﻿using NPOI.SS.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lexerow.Core.System.Excel;
 
-namespace Lexerow.Core.System.Excel;
 public interface IExcelProcessor
 {
     bool Open(string fileName, out IExcelFile excelFile, out ExecResultError coreError);
@@ -55,5 +49,4 @@ public interface IExcelProcessor
     bool SetCellValueBlank(IExcelCell excelCell);
 
     bool Save(IExcelFile excelFile);
-
 }

@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -12,9 +7,9 @@ namespace Lexerow.Core.System;
 /// 1/ If LeftOperand SepComparison RightOperand Then
 /// 2/ If Operand Then
 /// </summary>
-public class InstrIf:InstrBase
+public class InstrIf : InstrBase
 {
-    public InstrIf(ScriptToken scriptToken):base(scriptToken)
+    public InstrIf(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.If;
         ReturnType = InstrFunctionReturnType.ValueBool;

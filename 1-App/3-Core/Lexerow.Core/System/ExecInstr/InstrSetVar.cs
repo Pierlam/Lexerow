@@ -1,10 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using NPOI.HPSF;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -14,9 +8,9 @@ namespace Lexerow.Core.System;
 /// or the result of an instruction.
 /// exp: file= OpenExcel('list.xlsx')
 /// </summary>
-public class InstrSetVar: InstrBase
+public class InstrSetVar : InstrBase
 {
-    public InstrSetVar(ScriptToken scriptToken):base(scriptToken)
+    public InstrSetVar(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.SetVar;
     }
@@ -26,8 +20,8 @@ public class InstrSetVar: InstrBase
     /// Set only if there is a basic name.
     /// exp: a= 12
     /// for an instruction like this: sheet.Cell(A,1)=12 VarName is not set.
-    /// 
-    /// TODO: on garde?  
+    ///
+    /// TODO: on garde?
     /// </summary>
     //public string VarName { get; set; } = string.Empty;
 
@@ -35,20 +29,18 @@ public class InstrSetVar: InstrBase
     /// The left part of the SetVar instruction.
     /// before the char equal.
     /// Used if the left part is an object.
-    /// exp: 
-    ///   file= 
-    ///   A.Cell= 
+    /// exp:
+    ///   file=
+    ///   A.Cell=
     ///   A.Cell.BgColor=
     /// </summary>
     public InstrBase? InstrLeft { get; set; } = null;
 
-
     /// <summary>
     /// the right part, after the equal
     /// =12        -> InstrConstValue
-    /// =a         -> InstrVar 
-    /// =sheet.Cell(A,1)  -> InstrExcelValue 
+    /// =a         -> InstrVar
+    /// =sheet.Cell(A,1)  -> InstrExcelValue
     /// </summary>
     public InstrBase InstrRight { get; set; }
-
 }

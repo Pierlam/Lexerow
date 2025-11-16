@@ -2,7 +2,6 @@
 
 namespace Lexerow.Core.ProgExec;
 
-
 /// <summary>
 /// Program execution variables manager.
 /// </summary>
@@ -20,7 +19,7 @@ public class ProgExecVarMgr
 
     public ProgExecVar FindVarByName(string varname)
     {
-        return  ListExecVar.FirstOrDefault(v => v.NameEquals(varname));
+        return ListExecVar.FirstOrDefault(v => v.NameEquals(varname));
     }
 
     /// <summary>
@@ -35,13 +34,13 @@ public class ProgExecVarMgr
     {
         ProgExecVar currProgExecVar = null;
 
-        while (true) 
+        while (true)
         {
             currProgExecVar = ListExecVar.FirstOrDefault(v => v.NameEquals(varname));
             if (currProgExecVar == null) return null;
 
-            var v= currProgExecVar.Value as InstrObjectName;
-            if(v==null)return currProgExecVar;
+            var v = currProgExecVar.Value as InstrObjectName;
+            if (v == null) return currProgExecVar;
 
             // now find the var value
             varname = v.ObjectName;

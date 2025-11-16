@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -30,7 +25,7 @@ public class InstrOnSheet : InstrBase
     /// </summary>
     public int SheetNum { get; set; } = 1;
 
-    public string SheetName { get; set; }=string.Empty;
+    public string SheetName { get; set; } = string.Empty;
 
     /// <summary>
     /// Human readable, base1
@@ -46,5 +41,5 @@ public class InstrOnSheet : InstrBase
     /// List of instr to apply on each row.
     /// ForEach Row
     /// </summary>
-    public List<InstrBase> ListInstrForEachRow { get; set; }= new List<InstrBase>();  
+    public List<InstrBase> ListInstrForEachRow { get; set; } = new List<InstrBase>();
 }

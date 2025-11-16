@@ -1,9 +1,4 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System;
 
@@ -71,7 +66,6 @@ public enum InstrType
     InstrBlank,
     InstrNull,
 
-
     ProcessSheets,
     ProcessInstrForEachRow,
     ProcessRow,
@@ -107,14 +101,14 @@ public abstract class InstrBase
 {
     public InstrBase(ScriptToken scriptToken)
     {
-        if(scriptToken != null)
+        if (scriptToken != null)
             ListScriptToken.Add(scriptToken);
     }
 
     /// <summary>
     /// attached to one or more script token.
     /// </summary>
-    public List<ScriptToken> ListScriptToken { get; set; }=new List<ScriptToken>();
+    public List<ScriptToken> ListScriptToken { get; set; } = new List<ScriptToken>();
 
     public ScriptToken FirstScriptToken()
     {
@@ -133,5 +127,4 @@ public abstract class InstrBase
     /// Return type of this function call.
     /// </summary>
     public InstrFunctionReturnType ReturnType { get; set; } = InstrFunctionReturnType.Nothing;
-
 }

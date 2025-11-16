@@ -6,7 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.Compilator;
+namespace Lexerow.Core.System.ScriptCompile;
+
+/// <summary>
+/// Compilation Stack of instructions.
+/// Used to parse script code.
+/// </summary>
 public class CompilStackInstr
 {
     IActivityLogger _logger;

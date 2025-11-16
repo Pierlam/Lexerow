@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
-using Lexerow.Core.System.Compilator;
+using Lexerow.Core.System.ScriptCompile;
+using Lexerow.Core.System.ScriptDef;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using Org.BouncyCastle.Utilities.Collections;
 using System;

@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.ScriptCompile.lex;
-using Lexerow.Core.System.Compilator;
+using Lexerow.Core.System.ScriptCompile;
+using Lexerow.Core.System.ScriptDef;
 using System;
 using System.Collections.Generic;
 using System.Linq;

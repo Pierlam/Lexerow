@@ -1,4 +1,4 @@
-﻿using Lexerow.Core.System.Compilator;
+﻿using Lexerow.Core.System.ScriptDef;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +18,6 @@ public class ProgramScript
         Script =script;
         ListInstr = listInstr;
     }
-
-    /// <summary>
-    /// Possible to create instructions only in build stage.
-    /// </summary>
-    public CoreStage Stage { get; set; } = CoreStage.Build;
 
     /// <summary>
     /// list of instruction to execute. Obtains after Lexical analyse and Syntax analyse.

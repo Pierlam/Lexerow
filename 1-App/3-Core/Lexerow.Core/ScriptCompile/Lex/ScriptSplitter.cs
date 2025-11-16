@@ -1,4 +1,4 @@
-﻿using Lexerow.Core.System.Compilator;
+﻿using Lexerow.Core.System.ScriptDef;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

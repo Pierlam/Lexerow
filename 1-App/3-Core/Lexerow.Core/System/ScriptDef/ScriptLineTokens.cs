@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.Compilator;
+namespace Lexerow.Core.System.ScriptDef;
 
 /// <summary>
 /// a script line tokens.

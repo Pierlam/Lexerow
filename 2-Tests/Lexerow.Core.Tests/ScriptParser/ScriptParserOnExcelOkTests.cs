@@ -2,7 +2,7 @@
 using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Compilator;
+using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 
 namespace Lexerow.Core.Tests.ScriptParser;

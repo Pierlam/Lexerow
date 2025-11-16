@@ -1,6 +1,5 @@
 ﻿using Lexerow.Core.ExcelLayer;
 using Lexerow.Core.System;
-using Lexerow.Core.System.Compilator;
 using Lexerow.Core.System.Excel;
 using NPOI.HPSF;
 using NPOI.SS.Formula.Functions;
@@ -8,6 +7,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.ScriptCompile;
 using Lexerow.Core.ScriptLoad;
 using Lexerow.Core.ProgExec;
+using Lexerow.Core.System.ScriptDef;
 
 namespace Lexerow.Core;
 
@@ -42,10 +42,6 @@ public class LexerowCore
         _scriptCompiler = new ScriptCompiler(_logger, _coreData);
 
         _programRunner = new ProgramExecutor(_logger, _excelProcessor);
-
-        // TODO: will be removed!
-        //Exec = new Exec(_coreData, _excelProcessor);
-
     }
 
     public event EventHandler<ActivityLog> ActivityLogEvent;

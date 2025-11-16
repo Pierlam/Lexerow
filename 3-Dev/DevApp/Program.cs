@@ -2,29 +2,10 @@
 using Lexerow.Core;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Exec.Event;
 
 Console.WriteLine("==>Lexerow Dev:");
 
-void AppTraceEvent(AppTrace appTrace)
-{
-    Console.WriteLine(appTrace.When.ToString() + "|" + appTrace.Level.ToString() + "|" + appTrace.Msg);
-}
 
-void EventOccured(InstrBaseExecEvent execEvent)
-{
-    InstrOpenExcelExecEvent oe = execEvent as InstrOpenExcelExecEvent;
-    if(oe != null)
-    {
-        Console.WriteLine(oe.When.ToString()+ " OpenExcel: " + oe.State+ ", Res: " + oe.Result + ", ElapsedTime: " + oe.ElapsedTime.ToString());
-    }
-
-    InstrForEachRowIfThenExecEvent fr = execEvent as InstrForEachRowIfThenExecEvent;
-    if (fr != null) 
-    {
-        Console.WriteLine(fr.When.ToString() + " ForEachIf: " + fr.State + ", Res: " + fr.Result + ", Row count: " + fr.DataRowCount + ", IfCondFiredCount: " + fr.IfConditionFiredCount + ", ElapsedTime: " + fr.ElapsedTime.ToString());
-    }
-}
 
 
 void Core_ActivityLogEvent(object? sender, ActivityLog e)

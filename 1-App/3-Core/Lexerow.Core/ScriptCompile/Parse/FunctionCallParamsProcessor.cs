@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Compilator;
+using Lexerow.Core.System.ScriptCompile;
+using Lexerow.Core.System.ScriptDef;
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;

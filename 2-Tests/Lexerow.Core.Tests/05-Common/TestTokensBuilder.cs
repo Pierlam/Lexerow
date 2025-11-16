@@ -1,4 +1,4 @@
-﻿using Lexerow.Core.System.Compilator;
+﻿using Lexerow.Core.System.ScriptDef;
 
 namespace Lexerow.Core.Tests._05_Common;
 

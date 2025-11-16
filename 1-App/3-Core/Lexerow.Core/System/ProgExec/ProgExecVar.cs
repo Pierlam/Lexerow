@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System;
+namespace Lexerow.Core.System.ProgExec;
 
 public enum ProgRunVarType
 {

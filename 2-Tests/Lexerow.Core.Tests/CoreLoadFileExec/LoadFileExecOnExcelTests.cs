@@ -130,7 +130,7 @@ public class LoadFileExecOnExcelTests : BaseTests
     }
 
     [TestMethod]
-    public void onExcelManyIf()
+    public void onExcelManyIfOk()
     {
         ExecResult execResult;
         LexerowCore core = new LexerowCore();
@@ -161,7 +161,40 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
         res = ExcelTestChecker.CheckCellValue(wb, 0, "C3", 13);
         Assert.IsTrue(res);
+    }
 
+    [TestMethod]
+    public void onExcelManyThenOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "onExcelManyThen.lxrw";
+
+        // load the script, compile it and then execute it
+        execResult = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "onExcelManyThen.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+
+        //--line2: A=12.3, B=blank , C=Y
+        bool res = ExcelTestChecker.CheckCellValue(wb, 0, "A2", 12.3);
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValueBlank(wb, 0, "B2");
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "C2", "Y");
+        Assert.IsTrue(res);
+
+
+        //--line3: A=34, B=hello, C=567
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "A3", 34);
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "B3","hello");
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "C3", 567);
+        Assert.IsTrue(res);
     }
 
     /// <summary>

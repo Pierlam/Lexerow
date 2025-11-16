@@ -59,6 +59,9 @@ internal class InstrOnExcelExecutor
         var selectedFilename = ctx.ListSelectedFilename[ctx.FileToProcessNum];
         ctx.ExcelFileObject = new InstrExcelFileObject(selectedFilename.InstrBase.FirstScriptToken(), selectedFilename.Filename);
 
+        // update insights
+        execResult.Insights.StartNewFile(selectedFilename.Filename);
+
         // load the excel file
         if (!OpenExcelFile(execResult, ctx.ExcelFileObject))
             return false;
@@ -90,6 +93,9 @@ internal class InstrOnExcelExecutor
             ctx.StackInstr.Pop();
             return true;
         }
+
+        // update insights
+        execResult.Insights.StartNewSheet(instrNextSheet.SheetNum);
 
         // focus on the current sheet
         InstrOnSheet instrOnSheet = instrNextSheet.ListSheet[instrNextSheet.SheetNum];
@@ -162,6 +168,9 @@ internal class InstrOnExcelExecutor
         ctx.RowNum = instrProcessRow.RowNum;
         // prepare the next one
         instrProcessRow.RowNum++;
+
+        // update insights
+        execResult.Insights.NewRowProcessed();
 
         // next: process all defined instructions on the current row
         InstrProcessInstrForEachRow instrForEachRow = new InstrProcessInstrForEachRow(instrProcessRow.FirstScriptToken(), instrProcessRow.ListInstrForEachRow);

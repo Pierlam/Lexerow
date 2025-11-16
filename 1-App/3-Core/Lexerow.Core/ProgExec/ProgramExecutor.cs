@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Exec;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.ProgRun;

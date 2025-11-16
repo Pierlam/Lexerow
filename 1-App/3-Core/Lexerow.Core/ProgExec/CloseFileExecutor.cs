@@ -6,12 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.Core.Exec;
-
-/// <summary>
-/// Keep it!!
-/// </summary>
-public class CloseExcelFileRunner
+namespace Lexerow.Core.ProgExec;
+internal class CloseFileExecutor
 {
     public static bool Exec(ExecResult execResult, IExcelProcessor excelProcessor, IExcelFile excelFile)
     {

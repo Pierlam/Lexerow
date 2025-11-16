@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Exec;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.ProgRun;
@@ -411,59 +410,7 @@ public class InstrComparisonExecutor
         return true;
     }
 
-    /// <summary>
-    /// Execute the comparison condition.
-    /// Only 2 cases: equal or different, exp:
-    /// If A.Cell = Null Then
-    /// If A.Cell <> Null Then
-    /// 
-    /// </summary>
-    /// <param name="excelProcessor"></param>
-    /// <param name="instrComp"></param>
-    /// <param name="excelCell"></param>
-    /// <param name="compResult"></param>
-    /// <returns></returns>
-    public static bool ExecInstrCompCellValIsNull(ExecResult execResult, IExcelProcessor excelProcessor, InstrCompColCellValIsNull instrComp, IExcelCell excelCell, out bool compResult)
-    {
-        if (excelCell == null || excelCell.GetRawValueString().Length == 0)
-        {
-            // if A.Cell = null -> yes
-            if (instrComp.Operator == ValCompOperator.Equal)
-            {
-                compResult = true;
-                return true;
-            }
-            // if A.Cell = null -> no
-            if (instrComp.Operator == ValCompOperator.NotEqual)
-            {
-                compResult = false;
-                return true;
-            }
-            // XX ERROR
-            compResult = false;
-            return true;
-        }
 
-        // the cell hasa value
-        // if A.Cell <> null -> yes
-        if (instrComp.Operator == ValCompOperator.NotEqual)
-        {
-            compResult = true;
-            return true;
-        }
-
-        // if A.Cell = null -> no
-        if (instrComp.Operator == ValCompOperator.Equal)
-        {
-            compResult = false;
-            return true;
-        }
-
-        // XX ERROR
-        compResult = false;
-        return true;
-
-    }
 
     /// <summary>
     /// A.Cell In [ "y", "yes", "ok"]

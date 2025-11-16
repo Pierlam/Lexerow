@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.Core.Exec;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.ProgRun;
@@ -53,7 +52,7 @@ internal class InstrOnExcelExecutor
         // save and close the current excel file
         if (ctx.ExcelFileObject != null) 
         {
-            if(!CloseExcelFileRunner.Exec(execResult, _excelProcessor, ctx.ExcelFileObject.ExcelFile))
+            if(!CloseFileExecutor.Exec(execResult, _excelProcessor, ctx.ExcelFileObject.ExcelFile))
                 return false;
         }
 

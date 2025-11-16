@@ -7,7 +7,6 @@ using NPOI.SS.Formula.Functions;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.ScriptCompile;
 using Lexerow.Core.ScriptLoad;
-using Lexerow.Core.Core.Exec;
 using Lexerow.Core.ProgExec;
 
 namespace Lexerow.Core;

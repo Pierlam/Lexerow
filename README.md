@@ -50,7 +50,7 @@ OnExcel "MyFile.xlsx"
 End OnExcel	
 ```
 
-This a very basic script, but of course it's possible to create more complex script to manage your cases.
+This a very basic script, but of course it's possible to create more complex script to manage different cases.
 
 ## A C# program to execute the script
 
@@ -84,10 +84,14 @@ If A.Cell=blank
 If A.Cell=null
 ```
 
-You can put one or more Set Cell Value instruction in the Then part. 
+In Then part, you can set a value to a cell.
+Type of value can be: int, double, string.
 
-It is also possible to remove the cell by setting null. 
-Another option is to set Blank to a cell value, in this case the style of cell (BgColor, FgColor, Border,..) will remain.
+To clear the cell value, you have to put blank. 
+The formating of the cell will remain: background color and border.
+
+To remove completly a cell, to have to set it to null.
+ 
 
 ```
 Then A.Cell=13

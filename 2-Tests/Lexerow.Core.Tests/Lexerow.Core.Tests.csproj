@@ -22,34 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="10-Files\ForIfCellIsNullSetDate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\OnExcelIfInStringItemsErrAreNumber.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\OnExcelIfInStringItemsOk.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfThenDateTimeOnDateOnly.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfThenDateOnlyOnDateTime.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfThenSetBlankBasic.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfTimeOnlyBasic.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfDateTimeBasic.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfDateOnlyBasic.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\Greater50Set12.xlsx">
+    <None Update="10-Files\Run\OpenClose.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="10-Files\Run\onExcelManyIf.xlsx">
@@ -118,25 +91,7 @@
     <None Update="10-Files\Run\data1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\TestForEachRowIfAndThen.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\Test2ForEachRowIfThen.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\TestForEachRow2IfThen.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\Test2OpenClose.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfCellIsNullSetNA.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\ForIfThenSetNullBasic.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-Files\TestOpenClose.xlsx">
+    <None Update="15-Scripts\onExcelManyThen.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\onExcelManyIf.lxrw">

@@ -23,7 +23,7 @@ public class ExcelProcessorOpenCloseFileTests : BaseTests
         // injecter la lib NPOI
         IExcelProcessor proc = new ExcelProcessorNpoi();
 
-        string fileName = @"..\..\..\10-Files\TestOpenClose.xlsx";
+        string fileName = @"..\..\..\10-Files\Run\OpenClose.xlsx";
 
         bool res = proc.Open(fileName, out IExcelFile excelFile, out ExecResultError coreError);
         Assert.IsTrue(res);

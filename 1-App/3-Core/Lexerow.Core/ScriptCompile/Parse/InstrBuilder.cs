@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 using NPOI.Util;

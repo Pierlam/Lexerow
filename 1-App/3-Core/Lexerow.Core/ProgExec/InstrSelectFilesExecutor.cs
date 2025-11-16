@@ -1,17 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
-using Lexerow.Core.System.ProgExec;
-using Lexerow.Core.System.ProgRun;
 using Lexerow.Core.Utils;
-using NPOI.HPSF;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
 
@@ -27,12 +17,9 @@ public class InstrSelectFilesExecutor
 {
     IActivityLogger _logger;
 
-    IExcelProcessor _excelProcessor;
-
-    public InstrSelectFilesExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrSelectFilesExecutor(IActivityLogger activityLogger)
     {
         _logger = activityLogger;
-        _excelProcessor = excelProcessor;
     }
 
     /// <summary>
@@ -47,7 +34,7 @@ public class InstrSelectFilesExecutor
     /// <param name="listVar"></param>
     /// <param name="instrSelectFiles"></param>
     /// <returns></returns>
-    public bool Exec(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles)
+    public bool Exec(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
 

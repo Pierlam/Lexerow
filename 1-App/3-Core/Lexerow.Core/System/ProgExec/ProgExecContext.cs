@@ -4,8 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.ProgRun;
-public class ProgramExecContext
+namespace Lexerow.Core.System;
+
+/// <summary>
+/// Program execution context.
+/// Used during the execution of script program.
+/// </summary>
+public class ProgExecContext
 {
     public Stack<InstrBase> StackInstr { get; private set; } = new Stack<InstrBase>();
 

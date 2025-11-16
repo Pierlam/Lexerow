@@ -1,12 +1,11 @@
 ﻿using Lexerow.Core.System;
-using Lexerow.Core.System.ProgExec;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
+
+
+/// <summary>
+/// Program execution variables manager.
+/// </summary>
 public class ProgExecVarMgr
 {
     /// <summary>

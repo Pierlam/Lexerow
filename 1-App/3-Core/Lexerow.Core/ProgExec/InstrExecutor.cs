@@ -1,7 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
-using Lexerow.Core.System.ProgRun;
 
 namespace Lexerow.Core.ProgExec;
 
@@ -27,7 +26,7 @@ public class InstrExecutor
     public InstrExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
-        _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger, excelProcessor);
+        _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger);
         _instrOnExcelExecutor = new InstrOnExcelExecutor(_logger, excelProcessor);
         _instrIfThenElseExecutor = new InstrIfThenElseExecutor(_logger);
         _instrComparisonExecutor= new InstrComparisonExecutor(_logger, excelProcessor);
@@ -46,7 +45,7 @@ public class InstrExecutor
     /// <returns></returns>
     public bool ExecInstr(ExecResult execResult, ProgExecVarMgr progExecVarMgr, InstrBase instr)
     {
-        ProgramExecContext ctx = new ProgramExecContext();
+        ProgExecContext ctx = new ProgExecContext();
 
         bool res = true;
         ctx.StackInstr.Push(instr);

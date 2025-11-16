@@ -32,7 +32,7 @@ public class InstrSetColCellFuncExecutor
     /// <returns></returns>
     public bool ExecSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrConstValue instrConstValue)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncRunner.Run", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
         // get the cell
         IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum-1);

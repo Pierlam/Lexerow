@@ -1,14 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Excel;
-using Lexerow.Core.System.ProgRun;
-using NPOI.SS.UserModel;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
 public class InstrIfThenElseExecutor
@@ -20,7 +11,7 @@ public class InstrIfThenElseExecutor
         _logger = activityLogger;
     }
 
-    public bool ExecInstrIfThenElse(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIfThenElse instrIfThenElse)
+    public bool ExecInstrIfThenElse(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIfThenElse instrIfThenElse)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIfThenElse", string.Empty);
 
@@ -73,7 +64,7 @@ public class InstrIfThenElseExecutor
     /// <param name="listVar"></param>
     /// <param name="instrIf"></param>
     /// <returns></returns>
-    public bool ExecInstrIf(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIf instrIf)
+    public bool ExecInstrIf(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIf instrIf)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrIf", string.Empty);
 
@@ -125,7 +116,7 @@ public class InstrIfThenElseExecutor
         return true;
     }
 
-    public bool ExecInstrThen(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrThen instrThen)
+    public bool ExecInstrThen(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrThen instrThen)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseRunner.RunInstrThen", string.Empty);
 

@@ -1,16 +1,6 @@
-﻿using Lexerow.Core.System;
+﻿using Lexerow.Core.ProgExec;
+using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.ProgExec;
-using Lexerow.Core.System.ProgRun;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexerow.Core.ProgExec;
 
 /// <summary>
 /// InstrSetVar executor.
@@ -48,7 +38,7 @@ public class InstrSetVarExecutor
     /// <param name="listVar"></param>
     /// <param name="instrSetVar"></param>
     /// <returns></returns>
-    public bool Exec(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar)
+    public bool Exec(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetVarExecutor.Exec", "Token: " + instrSetVar.FirstScriptToken());
 
@@ -113,7 +103,7 @@ public class InstrSetVarExecutor
     /// <param name="instrSetVar"></param>
     /// <param name="instrColCellFunc"></param>
     /// <returns></returns>
-    bool ExecSetToColCellFunc(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar, InstrColCellFunc instrColCellFunc)
+    bool ExecSetToColCellFunc(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar, InstrColCellFunc instrColCellFunc)
     {
         _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrSetVarExecutor.ExecSetToColCellFunc", "Left is InstrColCellFunc: " + instrSetVar.FirstScriptToken());
 
@@ -158,7 +148,7 @@ public class InstrSetVarExecutor
         return false;
     }
 
-    bool CreateVar(ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrBase instrName, InstrBase instrtValue)
+    bool CreateVar(ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrBase instrName, InstrBase instrtValue)
     {
         // the var already defined ?
         ProgExecVar execVar = progRunVarMgr.ListExecVar.FirstOrDefault(v => v.AreSame(instrName));

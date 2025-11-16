@@ -1,18 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
-using Lexerow.Core.System.ProgExec;
-using Lexerow.Core.System.ProgRun;
-using NPOI.HPSF;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
 internal class InstrOnExcelExecutor
@@ -39,7 +27,7 @@ internal class InstrOnExcelExecutor
     /// <param name="listVar"></param>
     /// <param name="instrOnExcel"></param>
     /// <returns></returns>
-    public bool ExecInstrOnExcel(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel)
+    public bool ExecInstrOnExcel(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
         bool res;
@@ -89,7 +77,7 @@ internal class InstrOnExcelExecutor
     /// <param name="listVar"></param>
     /// <param name="instrNextSheet"></param>
     /// <returns></returns>
-    public bool ExecInstrProcessSheets(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
+    public bool ExecInstrProcessSheets(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessSheets", string.Empty);
 
@@ -118,7 +106,7 @@ internal class InstrOnExcelExecutor
     /// <param name="listVar"></param>
     /// <param name="instrOnSheet"></param>
     /// <returns></returns>
-    public bool ExecInstrOnSheet(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet)
+    public bool ExecInstrOnSheet(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", string.Empty);
         bool res;
@@ -157,7 +145,7 @@ internal class InstrOnExcelExecutor
     /// <param name="listVar"></param>
     /// <param name="instrProcessRow"></param>
     /// <returns></returns>
-    public bool ExecInstrProcessRow(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessRow instrProcessRow)
+    public bool ExecInstrProcessRow(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessRow instrProcessRow)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessRow", string.Empty);
 
@@ -194,7 +182,7 @@ internal class InstrOnExcelExecutor
     /// <param name="listVar"></param>
     /// <param name="instrForEachRow"></param>
     /// <returns></returns>
-    public bool ExecProcessInstrForEachRow(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessInstrForEachRow instrForEachRow)
+    public bool ExecProcessInstrForEachRow(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessInstrForEachRow instrForEachRow)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecProcessInstrForEachRow", string.Empty);
 
@@ -217,7 +205,7 @@ internal class InstrOnExcelExecutor
         return true;
     }
 
-    bool CheckInitOnExcel(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
+    bool CheckInitOnExcel(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
 
@@ -262,7 +250,7 @@ internal class InstrOnExcelExecutor
     /// <param name="instrOnExcel"></param>
     /// <param name="exitStack"></param>
     /// <returns></returns>
-    bool IsOnExcelInitFilenameString(ExecResult execResult, ProgramExecContext ctx, InstrOnExcel instrOnExcel, out bool exitStack)
+    bool IsOnExcelInitFilenameString(ExecResult execResult, ProgExecContext ctx, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
         if (ctx.PrevInstrExecuted != null) return true;
@@ -299,7 +287,7 @@ internal class InstrOnExcelExecutor
     /// <param name="instrOnExcel"></param>
     /// <param name="exitStack"></param>
     /// <returns></returns>
-    bool IsOnExcelInitFilenameVar(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
+    bool IsOnExcelInitFilenameVar(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
         if (ctx.PrevInstrExecuted != null) return true;

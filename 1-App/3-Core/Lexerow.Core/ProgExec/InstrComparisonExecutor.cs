@@ -1,14 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
-using Lexerow.Core.System.ProgRun;
 using Lexerow.Core.Utils;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
 public class InstrComparisonExecutor
@@ -36,7 +29,7 @@ public class InstrComparisonExecutor
     /// <param name="listVar"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    public bool ExecInstrComparison(ExecResult execResult, ProgramExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrComparison instrComparison)
+    public bool ExecInstrComparison(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrComparison instrComparison)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrComparisonRunner.RunInstrComparison", string.Empty);
         bool res;

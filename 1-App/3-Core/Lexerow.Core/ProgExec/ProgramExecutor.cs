@@ -1,16 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
-using Lexerow.Core.System.ProgRun;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.ProgExec;
 
@@ -23,11 +14,8 @@ public class ProgramExecutor
 
     IExcelProcessor _excelProcessor;
 
-    //List<ProgRunVar> _listExecVar = new List<ProgRunVar>();
     ProgExecVarMgr _progRunVarMgr=new ProgExecVarMgr();
     InstrExecutor _instrExecutor;
-
-
 
     public ProgramExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {

@@ -29,6 +29,12 @@ public class LoadFileExecOnExcelTests : BaseTests
         execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
+        //--check result insights
+        Assert.AreEqual(1, execResult.Insights.FileTotalCount);
+        Assert.AreEqual(1, execResult.Insights.SheetTotalCount);
+        Assert.AreEqual(2, execResult.Insights.RowTotalCount);
+        Assert.AreEqual(1, execResult.Insights.IfCondMatchTotalCount);
+
         //--check the content of excel file
         var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datScriptOnExcel1.xlsx");
         Assert.IsNotNull(fileStream);

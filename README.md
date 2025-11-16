@@ -28,9 +28,9 @@ So to put the value 0 in each empty cell in column B, Lexerow will help you to d
 
 ## The solution, in 2 stages
 
--Create a script to fix cell values in the Excel datatable.
+-1/ Create a script to fix cell values in the Excel datatable.
 
--Execute the script in a C# program.
+-2/ Execute the script in a C# program.
  
 
 ## The Script to fix values
@@ -70,11 +70,11 @@ This is the minimum C# program you have to write.
 
 Lexerow library is packaged as a nuget ready to use:
 
-https://www.nuget.org/packages/Lexerow#versions-body-tab
+https://www.nuget.org/packages/Lexerow
 
 # Project Wiki
 
-It is possible to check many cases in If instruction.
+It's possible to check many cases in If instruction.
 
 ```
 If A.Cell=12
@@ -96,6 +96,17 @@ Then A.Cell="Hello"
 Then A.Cell=blank
 Then A.Cell= null
 ```
+
+Several instructions in Then part is also possible, example:
+
+```
+Then 
+	A.Cell=13
+    B.Cell=25.89
+	C.Cell=blank
+End If
+```
+
 
 You can find more information on how use all available functions on the library here:
 

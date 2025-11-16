@@ -1,14 +1,9 @@
 ﻿using FakeItEasy;
-using Lexerow.Core.ScriptCompile.SyntaxAnalyze;
+using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Compilator;
 using Lexerow.Core.Tests._05_Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptParser;
 
@@ -45,7 +40,7 @@ public class ScriptParserOnExcelIfBlankNullTests
         script.Add(line);
 
         // If A.Cell=blank Then A.Cell=12
-        TestTokensBuilder.BuidIfColCellOperKeywordThenSetACellInt(3, script, "A","=","Blank","A",12);
+        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, script, "A","=","Blank","A",12);
 
         // Next
         line = new ScriptLineTokensTest();
@@ -148,7 +143,7 @@ public class ScriptParserOnExcelIfBlankNullTests
         script.Add(line);
 
         // If A.Cell=blank Then A.Cell=12
-        TestTokensBuilder.BuidIfColCellOperKeywordThenSetACellInt(2, script, "A", ">", "Blank", "A", 12);
+        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(2, script, "A", ">", "Blank", "A", 12);
 
         // Next
         line = new ScriptLineTokensTest();

@@ -126,5 +126,4 @@ public class LoadLinesExecOnExcelTests : BaseTests
         res = ExcelTestChecker.CheckCellValue(wb, 0, 4, 2, 10);
         Assert.IsTrue(res);
     }
-
 }

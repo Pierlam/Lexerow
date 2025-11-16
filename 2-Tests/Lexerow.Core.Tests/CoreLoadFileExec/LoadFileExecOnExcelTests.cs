@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System;
+﻿using FakeItEasy;
+using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
 using System;
@@ -73,6 +74,92 @@ public class LoadFileExecOnExcelTests : BaseTests
 
         // C5: row4, col2: 10
         res = ExcelTestChecker.CheckCellValue(wb, 0, 4, 2, 10);
+        Assert.IsTrue(res);
+    }
+
+    [TestMethod]
+    public void IfACellEqStringOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "IfACellEqString.lxrw";
+
+        // load the script, compile it and then execute it
+        execResult = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "IfACellEqString.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+
+        // A2: row1, col0: 10
+        //bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 0, "Bonjour");
+        bool res = ExcelTestChecker.CheckCellValue(wb, 0, "A2", "Bonjour");
+        Assert.IsTrue(res);
+    }
+
+    [TestMethod]
+    public void IfACellGreaterDoubleOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "IfACellGreaterDouble.lxrw";
+
+        // load the script, compile it and then execute it
+        execResult = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "IfACellGreaterDouble.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+
+        // A2: row1, col0: 10
+        bool res = ExcelTestChecker.CheckCellValue(wb, 0, "A2", 10);
+        Assert.IsTrue(res);
+
+        // A3: row2, col0: 13
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "A3", 13.1);
+        Assert.IsTrue(res);
+
+        // A4: row3, col0: 13
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "A4", 13.1);
+        Assert.IsTrue(res);
+
+    }
+
+    [TestMethod]
+    public void onExcelManyIf()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "onExcelManyIf.lxrw";
+
+        // load the script, compile it and then execute it
+        execResult = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(execResult.Result);
+
+        //--check the content of excel file
+        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "onExcelManyIf.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+
+        //--line2: A=12, B=Y, C=10
+        bool res = ExcelTestChecker.CheckCellValue(wb, 0, "A2", 12);
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "B2", "Y");
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "C2", 10);
+        Assert.IsTrue(res);
+
+
+        //--line3: A = 34, B = blank, C = 13
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "A3", 34);
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValueBlank(wb, 0, "B3");
+        Assert.IsTrue(res);
+        res = ExcelTestChecker.CheckCellValue(wb, 0, "C3", 13);
         Assert.IsTrue(res);
 
     }

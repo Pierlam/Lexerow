@@ -95,6 +95,11 @@ void TestGetFiles()
 
 //Test2();
 
+//--check syntax or comparison operator
+int a = 12;
+if (a >= 10) { }
+if (a <= 10) { }
+
 TestGetFiles();
 
 

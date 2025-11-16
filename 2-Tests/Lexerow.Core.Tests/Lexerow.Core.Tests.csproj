@@ -52,6 +52,18 @@
     <None Update="10-Files\Greater50Set12.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="10-Files\Run\onExcelManyIf.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-Files\Run\datLinesIfACellGreaterBCell2.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-Files\Run\IfACellGreaterDouble.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-Files\Run\IfACellEqString.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="10-Files\Run\IfACellGreaterBCell2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -125,6 +137,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="10-Files\TestOpenClose.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelManyIf.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\IfACellGreaterDouble.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\IfACellEqString.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\execOnExcel1Err.lxrw">

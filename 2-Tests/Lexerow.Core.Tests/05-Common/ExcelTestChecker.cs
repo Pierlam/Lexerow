@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.Utils;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -49,6 +50,13 @@ public class ExcelTestChecker
         return CheckCellValue(workbook, sheetNum, rowNum, colNum, expectedValue);
     }
 
+    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, double expectedValue)
+    {
+        if(!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellValue(workbook,sheetNum,rowIndex-1,colIndex-1, expectedValue);
+    }
+
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, double expectedValue)
     {
         var sheet = workbook.GetSheetAt(sheetNum);
@@ -62,6 +70,21 @@ public class ExcelTestChecker
         double val = cell.NumericCellValue;
 
         return expectedValue== val;
+    }
+
+    /// <summary>
+    /// cell=A2
+    /// </summary>
+    /// <param name="workbook"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="cell"></param>
+    /// <param name="expectedValue"></param>
+    /// <returns></returns>
+    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, string expectedValue)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, expectedValue);
     }
 
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, string expectedValue)
@@ -131,6 +154,13 @@ public class ExcelTestChecker
         if (cell == null) return true;
 
         return false;
+    }
+
+    public static bool CheckCellValueBlank(XSSFWorkbook workbook, int sheetNum, string cell)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellValueBlank(workbook, sheetNum, rowIndex-1, colIndex - 1);
     }
 
     public static bool CheckCellValueBlank(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum)

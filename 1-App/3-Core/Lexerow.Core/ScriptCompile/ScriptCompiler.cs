@@ -54,8 +54,8 @@ public class ScriptCompiler
         // re-arrange comparison separators, gather them, exp: >,= to >=  ...
         //ComparisonSepMgr.ReArrangeAllComparisonSep(listSourceCodeLineTokens);
 
-        Parser syntaxAnalyser = new Parser(_logger);
-        bool res= syntaxAnalyser.Process(execResult, listScriptLineTokens, out listInstr);
+        Parser parser = new Parser(_logger);
+        bool res= parser.Process(execResult, listScriptLineTokens, out listInstr);
 
         // save the list of instructions build by the compilation stage
         // TODO:

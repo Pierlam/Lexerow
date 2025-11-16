@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System;
+﻿using Lexerow.Core.ScriptCompile.Parse;
+using Lexerow.Core.System;
 using Lexerow.Core.System.Compilator;
 
 namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;

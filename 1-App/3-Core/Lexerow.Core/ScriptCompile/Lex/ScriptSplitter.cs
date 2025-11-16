@@ -95,7 +95,7 @@ public class ScriptSplitter
                 continue;
             }
 
-            //--is is a char separator?
+            //--is is a char separator?  manage special cases: >=, <=, <>
             if (ProcessSeparator(separators, line, i, out iOut, out token))
             {
                 token.LineNum = lineNum;
@@ -210,6 +210,7 @@ public class ScriptSplitter
     /// <summary>
     /// find numbers: integer and double. exp: 12  12.34
     /// Decimal separator is the dot: .
+    /// 12E1O, 23E-10
     /// </summary>
     /// <param name="line"></param>
     /// <param name="i"></param>
@@ -355,6 +356,16 @@ public class ScriptSplitter
         return true;
     }
 
+    /// <summary>
+    /// is the current char a separator?  .=,;+- 
+    /// Manage special cases: >=, <=, <>
+    /// </summary>
+    /// <param name="separators"></param>
+    /// <param name="line"></param>
+    /// <param name="i"></param>
+    /// <param name="iOut"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     bool ProcessSeparator(string separators, string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
@@ -367,10 +378,55 @@ public class ScriptSplitter
             token.ScriptTokenType = ScriptTokenType.Separator;
             token.Value = line[i].ToString();
             token.ColNum = i;
-            iOut = i + 1;
+            // next
+            i++;
+            iOut = i;
+
+            // special case:  >=, <=, <>
+            ProcessLessGreaterEqualSeparator(line, i, token, out iOut);
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="line"></param>
+    /// <param name="i"></param>
+    /// <param name="token"></param>
+    /// <param name="iOut"></param>
+    /// <returns></returns>
+    bool ProcessLessGreaterEqualSeparator(string line, int i, ScriptToken token, out int iOut)
+    {
+        iOut = i;
+        // no more char to process
+        if (i > line.Length) return true;
+
+        // >=
+        if(token.Value==">" && line[i]=='=')
+        {
+            token.Value = ">=";
+            iOut = i + 1;
+            return true;
+        }
+
+        // <=
+        if (token.Value == "<" && line[i] == '=')
+        {
+            token.Value = "<=";
+            iOut = i + 1;
+            return true;
+        }
+
+        // <>
+        if (token.Value == "<" && line[i] == '>')
+        {
+            token.Value = "<>";
+            iOut = i + 1;
+            return true;
+        }
+        return true;
     }
 
     /// <summary>

@@ -1,0 +1,9 @@
+﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
+
+OnExcel ".\10-Files\Run\onExcelManyIf.xlsx"
+	ForEachRow
+		If A.Cell <= 8 Then A.Cell=12
+		If B.Cell="X" Then B.Cell=Blank
+		If C.Cell=9.55 Then C.Cell=10
+	Next
+End OnExcel

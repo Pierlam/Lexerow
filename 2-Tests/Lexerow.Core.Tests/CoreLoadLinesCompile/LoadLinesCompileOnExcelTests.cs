@@ -36,6 +36,46 @@ public class LoadLinesCompileOnExcelTests
     }
 
     [TestMethod]
+    public void IfACellGreaterEqualOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel \"mydata.xlsx\"",
+            "  ForEach Row",
+            "    If A.Cell>=10 Then A.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script and compile it
+        execResult = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+    }
+
+    [TestMethod]
+    public void IfACellDiffOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel \"mydata.xlsx\"",
+            "  ForEach Row",
+            "    If A.Cell<>10 Then A.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script and compile it
+        execResult = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(execResult.Result);
+    }
+
+    [TestMethod]
     public void IfACellEqualStringOk()
     {
         ExecResult execResult;
@@ -116,6 +156,31 @@ public class LoadLinesCompileOnExcelTests
         Assert.IsTrue(execResult.Result);
     }
 
+    /// <summary>
+    /// Special case, ForEachRow is allowed like ForEach Row.
+    /// </summary>
+    [TestMethod]
+    public void ForEachRowOk()
+    {
+        ExecResult execResult;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "OnExcel \"mydata.xlsx\"",
+            "  ForEachRow",
+            "    If A.Cell>10 Then A.Cell=10",
+            "  Next",
+            "End OnExcel"
+            ];
+
+        // load the script and compile it
+        execResult = core.LoadLinesScript("script", lines);
+
+        // TODO: acccept both syntax?? ForEach Row and ForEachRow
+        Assert.IsTrue(execResult.Result);
+    }
+
     [TestMethod]
     public void NextMissingError()
     {
@@ -154,30 +219,6 @@ public class LoadLinesCompileOnExcelTests
         Assert.IsFalse(execResult.Result);
     }
 
-    /// <summary>
-    /// Special case, ForEachRow is allowed like ForEach Row.
-    /// </summary>
-    [TestMethod]
-    public void ForEachRowError()
-    {
-        ExecResult execResult;
-        LexerowCore core = new LexerowCore();
-
-        // create a basic script
-        List<string> lines = [
-            "OnExcel \"mydata.xlsx\"",
-            "  ForEachRow",
-            "    If A.Cell>10 Then A.Cell=10",
-            "  Next",
-            "End OnExcel"
-            ];
-
-        // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-
-        // TODO: acccept both syntax?? ForEach Row and ForEachRow
-        Assert.IsTrue(execResult.Result);
-    }
 
     // test script with error: EndOnExcel in one word, ...
 }

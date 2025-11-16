@@ -1,6 +1,6 @@
 ﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
 
-OnExcel ".\10-Files\Run\onExcelManyIf.xlsx"
+OnExcel ".\10-ExcelFiles\onExcelManyIf.xlsx"
 	ForEachRow
 		If A.Cell <= 8 Then A.Cell=12
 		If B.Cell="X" Then B.Cell=Blank

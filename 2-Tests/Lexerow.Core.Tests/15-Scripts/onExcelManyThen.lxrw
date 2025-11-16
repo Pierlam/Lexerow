@@ -1,5 +1,5 @@
 ﻿
-OnExcel ".\10-Files\Run\onExcelManyThen.xlsx"
+OnExcel ".\10-ExcelFiles\onExcelManyThen.xlsx"
 	ForEachRow
 		If A.Cell <= 10 Then 
 			A.Cell=12.3

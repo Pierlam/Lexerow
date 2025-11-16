@@ -1,6 +1,6 @@
 ﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
 
-OnExcel ".\10-Files\Run\datScriptOnExcel1.xlsx"
+OnExcel ".\10-ExcelFiles\datScriptOnExcel1.xlsx"
 	ForEachRow
 		If A.Cell>10 Then A.Cell=10
 	Next

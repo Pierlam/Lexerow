@@ -1,6 +1,6 @@
 ﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
 
-OnExcel ".\10-Files\Run\IfACellGreaterDouble.xlsx"
+OnExcel ".\10-ExcelFiles\IfACellGreaterDouble.xlsx"
 	ForEachRow
 		If A.Cell > 12.5 Then A.Cell=13.1
 	Next

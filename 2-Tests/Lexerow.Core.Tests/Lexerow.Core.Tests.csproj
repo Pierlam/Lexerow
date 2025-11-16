@@ -22,76 +22,76 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="10-Files\Run\onExcelManyThen.xlsx">
+    <None Update="10-ExcelFiles\onExcelManyThen.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\OpenClose.xlsx">
+    <None Update="10-ExcelFiles\OpenClose.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\onExcelManyIf.xlsx">
+    <None Update="10-ExcelFiles\onExcelManyIf.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesIfACellGreaterBCell2.xlsx">
+    <None Update="10-ExcelFiles\datLinesIfACellGreaterBCell2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\IfACellGreaterDouble.xlsx">
+    <None Update="10-ExcelFiles\IfACellGreaterDouble.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\IfACellEqString.xlsx">
+    <None Update="10-ExcelFiles\IfACellEqString.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\IfACellGreaterBCell2.xlsx">
+    <None Update="10-ExcelFiles\IfACellGreaterBCell2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesIfACellGreaterBCell.xlsx">
+    <None Update="10-ExcelFiles\datLinesIfACellGreaterBCell.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesThenACellBlankOk.xlsx">
+    <None Update="10-ExcelFiles\datLinesThenACellBlankOk.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesACellEqualBlankOk.xlsx">
+    <None Update="10-ExcelFiles\datLinesACellEqualBlankOk.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datScriptOnExcel1.xlsx">
+    <None Update="10-ExcelFiles\datScriptOnExcel1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesRunOnExcel2.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunOnExcel2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesRunOnExcel1.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunOnExcel1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesRunSelect2.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunSelect2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\datLinesRunSelect1.xlsx">
+    <None Update="10-ExcelFiles\datLinesRunSelect1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataOnExcelJokerB2.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcelJokerB2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataOnExcelJokerB.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcelJokerB.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataOnExcelJokerA2.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcelJokerA2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataOnExcelJokerA.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcelJokerA.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataOnExcel3.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcel3.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataOnExcel2.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcel2.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataOnExcel1.xlsx">
+    <None Update="10-ExcelFiles\dataOnExcel1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\dataName.xlsx">
+    <None Update="10-ExcelFiles\dataName.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="10-Files\Run\data1.xlsx">
+    <None Update="10-ExcelFiles\data1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\onExcelManyThen.lxrw">

@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Tests.Common;
 public abstract class BaseTests
 {
-    public string PathExcelFilesCompil = @"..\..\..\10-Files\";
+    /// <summary>
+    /// Path where excel files are saved.
+    /// </summary>
+    public string PathExcelFilesExec = @".\10-ExcelFiles\";
 
-    public string PathExcelFilesExec = @".\10-Files\Run\";
-
+    /// <summary>
+    /// Path where script are saved.
+    /// </summary>
     public string PathScriptFiles = @"..\..\..\15-Scripts\";
 
     /// <summary>

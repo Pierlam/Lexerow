@@ -1,6 +1,6 @@
 ﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
 
-OnExcel ".\10-Files\Run\IfACellEqString.xlsx"
+OnExcel ".\10-ExcelFiles\IfACellEqString.xlsx"
 	ForEachRow
 		If A.Cell="Hello" Then A.Cell="Bonjour"
 	Next

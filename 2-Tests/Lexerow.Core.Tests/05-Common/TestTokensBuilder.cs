@@ -37,6 +37,39 @@ public class TestTokensBuilder
         return line;
     }
 
+    // FirstRow 3
+    public static void AddLineFirstRow(int numLine, List<ScriptLineTokens> script, int firstRowValue)
+    {
+        var line = new ScriptLineTokensTest();
+        line.AddTokenName(numLine, "FirstRow");
+        line.AddTokenInteger(numLine, firstRowValue);
+        script.Add(line);
+    }
+
+    // ForEach Row
+    public static void AddLineForEachRow(int numLine, List<ScriptLineTokens> script)
+    {
+        var line = new ScriptLineTokensTest();
+        line.AddTokenName(numLine, "ForEach", "Row");
+        script.Add(line);
+    }
+
+    // Next
+    public static void AddLineNext(int numLine, List<ScriptLineTokens> script)
+    {
+        var line = new ScriptLineTokensTest();
+        line.AddTokenName(numLine, 1, "Next");
+        script.Add(line);
+    }
+
+    // End OnExcel
+    public static void AddLineEndOnExcel(int numLine, List<ScriptLineTokens> script)
+    {
+        var line = new ScriptLineTokensTest();
+        line.AddTokenName(numLine, "End", "OnExcel");
+        script.Add(line);
+    }
+
     /// <summary>
     /// Build this script line:
     ///   If A.Cell >10 Then A.Cell=10

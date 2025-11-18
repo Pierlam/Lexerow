@@ -46,6 +46,13 @@ public class InstrBuilder
                 return true;
             }
 
+            // FirstRow
+            if (scriptToken.Value.Equals(CoreInstr.InstrFirstRow, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFirstRow(scriptToken);
+                return true;
+            }
+
             // ForEach
             if (scriptToken.Value.Equals(CoreInstr.InstrForEach, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -115,11 +122,6 @@ public class InstrBuilder
                 instrBase = new InstrNull(scriptToken);
                 return true;
             }
-            // ExcelCol, exp: A
-            // TODO:
-
-            // ExcelCellAddress, exp: A1
-            // TODO:
 
             // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
             instrBase = new InstrObjectName(scriptToken);

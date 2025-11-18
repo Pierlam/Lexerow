@@ -61,7 +61,7 @@ Create a program in C# and use the Lexerow library in this way:
 LexerowCore core = new LexerowCore();
 
 // load and execute the script   
-core.LoadExecScript("MyScript", MyScript.lxrw);   
+core.LoadExecScript("MyScript", "MyScript.lxrw");   
 ```
 
 This is the minimum C# program you have to write.

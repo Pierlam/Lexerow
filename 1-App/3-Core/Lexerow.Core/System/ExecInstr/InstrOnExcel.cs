@@ -9,6 +9,8 @@ public enum InstrOnExcelBuildStage
     OnSheet,
     SheetNum,
     SheetName,
+    FirstRow,
+    FirstRowValue,
     ForEach,
 
     // waiting for the first instr after the token Row

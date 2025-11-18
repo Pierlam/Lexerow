@@ -28,6 +28,7 @@ public class InstrOnSheet : InstrBase
     public string SheetName { get; set; } = string.Empty;
 
     /// <summary>
+    /// First row
     /// Human readable, base1
     /// </summary>
     public int FirstRowNum { get; set; } = 2;

@@ -109,6 +109,17 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
+            // FirstRow token found
+            if (instr.InstrType == InstrType.FirstRow)
+            {
+                // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
+                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
+                instrOnExcel.BuildStage = InstrOnExcelBuildStage.FirstRowValue;
+                // push the FirstRow instr on the stack
+                stkInstr.Push(instr);
+                return true;
+            }
+
             // ForEach token found
             if (instr.InstrType == InstrType.ForEach)
             {
@@ -160,6 +171,31 @@ public class InstrOnExcelBuilder
             // TODO:
 
             // error
+            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            return false;
+        }
+
+        //--case4: FirstRowValue: next stage -> ForEach/ForEachRow
+        if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.FirstRowValue)
+        {
+            // ForEach token found
+            if (instr.InstrType == InstrType.ForEach)
+            {
+                // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
+                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
+                instrOnExcel.BuildStage = InstrOnExcelBuildStage.ForEach;
+                return true;
+            }
+
+            // ForEachRow token found, same as found Row token.
+            if (instr.InstrType == InstrType.ForEachRow)
+            {
+                // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
+                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
+                instrOnExcel.BuildStage = InstrOnExcelBuildStage.Row;
+                return true;
+            }
+
             execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }

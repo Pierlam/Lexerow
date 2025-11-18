@@ -1,5 +1,8 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ScriptCompile;
+using Lexerow.Core.Utils;
+using NPOI.Util;
+using Org.BouncyCastle.Utilities.Collections;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -24,7 +27,7 @@ internal class ParserStackContentProcessor
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public static bool ScriptEndLineReached(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
+    public static bool ScriptEndLineReached(ExecResult execResult, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
     {
         bool res, isToken;
 
@@ -39,46 +42,84 @@ internal class ParserStackContentProcessor
             if (isToken) return true;
 
             //--is it OnExcel instr ?
-            res = ProcessOnExcel(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = ProcessOnExcel(execResult, stackInstr, scriptLineNum, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) return true;
 
             //--is previous instr on stack SetVar?  exp: a=12,  a=b, a=OpenExcel(), ...
-            res = GatherSetVar(execResult, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
+            res = GatherSetVar(execResult, listVar, scriptLineNum, stackInstr, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
-            //--is previous instr on stack Then?  exp: Then Inst
-            res = GatherThen(execResult, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
+            //--is previous instr on stack FirstRow value?
+            res = ProcessFirstRowVal(execResult, scriptLineNum, stackInstr, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack ForEach?
             // TODO: never true, strange
-            res = GatherForEachRow(execResult, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
+            res = GatherForEachRow(execResult, listVar, scriptLineNum, stackInstr, listInstrToExec, out isToken);
+            if (!res) return false;
+            if (isToken) continue;
+
+            //--is previous instr on stack Then?  exp: Then Inst
+            res = GatherThen(execResult, listVar, scriptLineNum, stackInstr, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack If?
-            res = GatherIfThen(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = GatherIfThen(execResult, stackInstr, scriptLineNum, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack End If?
-            res = GatherEnd(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = GatherEnd(execResult, stackInstr, scriptLineNum, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is it a fct call, exp: fct()
-            res = ProcessFctCall(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = ProcessFctCall(execResult, stackInstr, scriptLineNum, listInstrToExec, out isToken);
             if (!res) return false;
             // TODO: fct call can be in a Then or in a ForEachRow!
             if (isToken) continue;
 
             // case not managed, error or not yet implemented
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
+            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptLineNum.ToString());
             return false;
         }
+    }
+
+    /// <summary>
+    /// Stack  IN: ...;  If; Then
+    /// manage case Then without instr on the same line -> need a End If
+    ///
+    /// </summary>
+    /// <param name="stackInstr"></param>
+    /// <param name="isToken"></param>
+    private static void ManageCaseThenWithoutInstrSameLine(CompilStackInstr stackInstr, out bool isToken)
+    {
+        isToken = false;
+
+        if (stackInstr.Count == 0)
+            return;
+
+        // read the instr on top of the stack
+        InstrBase instrBase = stackInstr.Peek();
+
+        if (instrBase.InstrType != InstrType.Then)
+            return;
+
+        InstrThen instrThen = instrBase as InstrThen;
+
+        if (instrThen.HasInstrAfterInSameLine)
+            // not the case there is an instr after the token then on the same script line -> no EndIf expected
+            return;
+
+        if (instrThen.IsEndIfReached)
+            return;
+
+        // no instr after then, so expect an End If instr
+        isToken = true;
     }
 
     /// <summary>
@@ -134,7 +175,7 @@ internal class ParserStackContentProcessor
             return true;
 
         // the instr before on top of the stack?  SetVar, instr
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             // not a set var instr to finish
             return true;
@@ -249,6 +290,96 @@ internal class ParserStackContentProcessor
     }
 
     /// <summary>
+    /// is previous instr on stack FirstRow IntVal?
+    /// Stack  IN: OnExcel; FirstRow; IntVal
+    /// Stack OUT: OnExcel
+    /// </summary>
+    /// <param name="execResult"></param>
+    /// <param name="scriptLineNum"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessFirstRowVal(ExecResult execResult, int scriptLineNum, CompilStackInstr stackInstr, out bool isToken)
+    {
+        isToken = false;
+
+        if (stackInstr.Count == 0)
+            return true;
+
+        // get the instr before on top of the stack
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
+        if (instrBefTop == null)
+            return true;
+
+        // the instr just before the top should be a constValue int
+        if (instrBefTop.InstrType != InstrType.FirstRow)
+            // not a then instr
+            return true;
+
+        isToken = true;
+
+        // so the top instr on the stack should be a constvalue string
+        var instr = stackInstr.Pop();
+        if(!InstrUtils.GetConstValueInt(instr, scriptLineNum, out ExecResultError error, out int val))
+        {
+            execResult.ListError.Add(error);
+            return false;
+        }
+
+        // check the int value, should be >= 1
+        if(val<1)
+        {
+            execResult.AddError(ErrorCode.ParserConstIntValueWrong, instr.FirstScriptToken());
+            return false;
+        }
+
+        // remove the instr FirstRow from the stack
+        stackInstr.Pop();
+
+        // get the OnExcel instr from the stack
+        InstrOnExcel instrOnExcel= stackInstr.Peek() as InstrOnExcel;
+        if(instrOnExcel==null)
+        {
+            // TODO: OnExcel expected
+        }
+
+        // save the value into the current OnExcel sheet
+        instrOnExcel.CurrOnSheet.FirstRowNum = val;
+        return true;
+    }
+
+    private static bool GatherForEachRow(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    {
+        isToken = false;
+
+        if (stackInstr.Count == 0)
+            return true;
+
+        // the instr before on top of the stack?  ForEachRow; instr
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
+        if (instrBefTop == null)
+            return true;
+
+        // the instr just before the top is a then instr?
+        if (instrBefTop.InstrType != InstrType.ForEach)
+            // not a then instr
+            return true;
+
+        //XXX-TODO: never come here, strange
+
+        isToken = true;
+
+        InstrForEach instrForEach = instrBefTop as InstrForEach;
+
+        // extract the top instr
+        InstrBase instrBase = stackInstr.Pop();
+
+        // remove the next which then instr
+        stackInstr.Pop();
+        return true;
+    }
+
+    /// <summary>
     /// Gather then instr.
     /// Stack  IN: ...;  If; Then; Instr
     /// Stack OUT: ...;  If; Then
@@ -272,7 +403,7 @@ internal class ParserStackContentProcessor
             return true;
 
         // the instr before on top of the stack?  Then; instr
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -305,69 +436,6 @@ internal class ParserStackContentProcessor
         return true;
     }
 
-    /// <summary>
-    /// Stack  IN: ...;  If; Then
-    /// manage case Then without instr on the same line -> need a End If
-    ///
-    /// </summary>
-    /// <param name="stackInstr"></param>
-    /// <param name="isToken"></param>
-    private static void ManageCaseThenWithoutInstrSameLine(CompilStackInstr stackInstr, out bool isToken)
-    {
-        isToken = false;
-
-        if (stackInstr.Count == 0)
-            return;
-
-        // read the instr on top of the stack
-        InstrBase instrBase = stackInstr.Peek();
-
-        if (instrBase.InstrType != InstrType.Then)
-            return;
-
-        InstrThen instrThen = instrBase as InstrThen;
-
-        if (instrThen.HasInstrAfterInSameLine)
-            // not the case there is an instr after the token then on the same script line -> no EndIf expected
-            return;
-
-        if (instrThen.IsEndIfReached)
-            return;
-
-        // no instr after then, so expect an End If instr
-        isToken = true;
-    }
-
-    private static bool GatherForEachRow(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
-    {
-        isToken = false;
-
-        if (stackInstr.Count == 0)
-            return true;
-
-        // the instr before on top of the stack?  ForEachRow; instr
-        var instrBefTop = stackInstr.GetBeforeTop();
-        if (instrBefTop == null)
-            return true;
-
-        // the instr just before the top is a then instr?
-        if (instrBefTop.InstrType != InstrType.ForEach)
-            // not a then instr
-            return true;
-
-        //XXX-TODO: never come here, strange
-
-        isToken = true;
-
-        InstrForEach instrForEach = instrBefTop as InstrForEach;
-
-        // extract the top instr
-        InstrBase instrBase = stackInstr.Pop();
-
-        // remove the next which then instr
-        stackInstr.Pop();
-        return true;
-    }
 
     /// <summary>
     /// is the last instr on the stack is Then?
@@ -388,7 +456,7 @@ internal class ParserStackContentProcessor
             return true;
 
         // the instr before on top of the stack?
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -457,7 +525,7 @@ internal class ParserStackContentProcessor
             return true;
 
         // the instr before on top of the stack?
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             return true;
 

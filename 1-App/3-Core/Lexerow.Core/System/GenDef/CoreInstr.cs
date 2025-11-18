@@ -6,6 +6,7 @@ public class CoreInstr
     public const string InstrSelectFiles = "SelectFiles";
     public const string InstrOnExcel = "OnExcel";
     public const string InstrOnSheet = "OnSheet";
+    public const string InstrFirstRow = "FirstRow";
     public const string InstrForEach = "ForEach";
 
     public const string InstrRow = "Row";

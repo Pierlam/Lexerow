@@ -4,6 +4,11 @@ namespace Lexerow.Core.Tests._05_Common;
 
 public class ScriptLineTokensTest : ScriptLineTokens
 {
+    public void AddTokenInteger(int numLine, int value)
+    {
+        AddTokenInteger(Numline,1,value);
+    }
+
     public void AddTokenName(int numLine, string value)
     {
         AddToken(numLine, 1, ScriptTokenType.Name, value);
@@ -21,12 +26,12 @@ public class ScriptLineTokensTest : ScriptLineTokens
     /// <param name="numLine"></param>
     /// <param name="excelfile"></param>
     /// <returns></returns>
-    public static ScriptLineTokensTest CreateOnExcelFileString(string excelfileString)
+    public static void CreateOnExcelFileString(int numLine, List<ScriptLineTokens> script,  string excelfileString)
     {
-        var lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "OnExcel");
-        lineTok.AddTokenString(1, 9, excelfileString);
-        return lineTok;
+        var line = new ScriptLineTokensTest();
+        line.AddTokenName(numLine, 1, "OnExcel");
+        line.AddTokenString(numLine, 9, excelfileString);
+        script.Add(line);
     }
 
     /// <summary>

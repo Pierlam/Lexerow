@@ -135,7 +135,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  SetVar, instr
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             // not a set var instr to finish
             return true;
@@ -247,7 +247,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  Then; instr
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -321,7 +321,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?  ForEachRow; instr
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -363,7 +363,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             return true;
 
@@ -432,7 +432,7 @@ internal class StackContentProcessor
             return true;
 
         // the instr before on top of the stack?
-        var instrBefTop = stackInstr.GetBeforeTop();
+        var instrBefTop = stackInstr.ReadInstrBeforeTop();
         if (instrBefTop == null)
             return true;
 

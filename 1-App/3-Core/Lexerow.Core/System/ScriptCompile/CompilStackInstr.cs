@@ -46,13 +46,13 @@ public class CompilStackInstr
     }
 
     /// <summary>
-    /// Get the inst just before the instr on top of the stack.
+    /// Get/read the inst just before the instr on top of the stack.
     /// </summary>
     /// <param name="stkInstr"></param>
     /// <returns></returns>
-    public InstrBase GetBeforeTop()
+    public InstrBase ReadInstrBeforeTop()
     {
-        // need to ahve 2 isntr on the stack
+        // need to have 2 instr on the stack
         if (StackInstr.Count < 2) return null;
         return StackInstr.ElementAt(1);
     }

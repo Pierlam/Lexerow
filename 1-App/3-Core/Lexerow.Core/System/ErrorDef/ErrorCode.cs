@@ -201,6 +201,9 @@ public enum ErrorCode
     ParserSetVarWrongRightPart,
     ParserFctResultNotSet,
     ParserConstStringValueExpected,
+    ParserConstIntValueExpected,
+
+    ParserConstIntValueWrong,
 
     ParserOnSheetExpected,
     ParserTokenDotExpected,

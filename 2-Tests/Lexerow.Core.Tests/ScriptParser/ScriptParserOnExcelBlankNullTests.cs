@@ -27,32 +27,25 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelIfACellEqualBlankOk()
     {
-        ScriptLineTokensTest line;
+        int numLine = 1;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
         //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(2, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, script);
 
         // If A.Cell=blank Then A.Cell=12
         TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, script, "A", "=", "Blank", "A", 12);
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, script);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, script);
 
-        // just to check the content of the script
+        //==>just to check the content of the script
         //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
         //==> Parse the script tokens
@@ -129,32 +122,25 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelIfACellGreaterBlankError()
     {
-        ScriptLineTokensTest line;
+        int numLine = 0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
         //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, script);  
 
         // If A.Cell=blank Then A.Cell=12
-        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(2, script, "A", ">", "Blank", "A", 12);
+        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(numLine++, script, "A", ">", "Blank", "A", 12);
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(3, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, script);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(4, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, script);
 
-        // just to check the content of the script
+        //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
         //==> Parse the script tokens
@@ -182,32 +168,25 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelThenACellEqBlankOk()
     {
-        ScriptLineTokensTest line;
+        int numLine=0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
         //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(2, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, script);
 
         // If A.Cell=9 Then A.Cell=Blank
-        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellKeyword(3, script, "A", "=", 9, "A", "Blank");
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellKeyword(numLine++, script, "A", "=", 9, "A", "Blank");
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, script);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, script);
 
-        // just to check the content of the script
+        //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
         //==> Parse the script tokens
@@ -283,32 +262,25 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelThenACellEqNullOk()
     {
-        ScriptLineTokensTest line;
+        int numLine = 0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        // build one line of tokens
+        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(2, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, script);
 
         // If A.Cell=9 Then A.Cell=Blank
         TestTokensBuilder.BuidIfColCellCompIntThenSetColCellKeyword(3, script, "A", "=", 9, "A", "Null");
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, script);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, script); 
 
-        // just to check the content of the script
+        //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
         //==> Parse the script tokens

@@ -49,6 +49,7 @@ public enum InstrType
 
     OnExcel,
     OnSheet,
+    FirstRow,
     ForEach,
     Row,
     ForEachRow,

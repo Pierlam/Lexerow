@@ -28,12 +28,11 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void FileEqSelectFilesOk()
     {
+        int numLine = 0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
-        ScriptLineTokens line;
 
         //-line #1
-        line = TestTokensBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
-        script.Add(line);
+        TestTokensBuilder.AddLineSelectFiles(numLine++, script, "file", "\"data.xlsx\"");
 
         var logger = A.Fake<IActivityLogger>();
         Parser sa = new Parser(logger);

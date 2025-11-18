@@ -24,40 +24,100 @@ public class TestTokensBuilder
         return sc;
     }
 
-    //-line #1
-    public static ScriptLineTokens BuildSelectFiles(string varName, string fileString)
+    /// <summary>
+    /// varname= SelectFiles(fileString)
+    /// filestring -> "data.xlsx", should have double quotes!
+    /// </summary>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    /// <returns></returns>
+    public static void AddLineSelectFiles(int numLine, List<ScriptLineTokens> script, string varName, string fileString)
     {
         var line = new ScriptLineTokens();
-        line.AddTokenName(1, 1, varName);
-        line.AddTokenSeparator(1, 1, "=");
-        line.AddTokenName(1, 1, "SelectFiles");
-        line.AddTokenSeparator(1, 1, "(");
-        line.AddTokenString(1, 1, fileString);
-        line.AddTokenSeparator(1, 1, ")");
-        return line;
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenName(numLine, 1, "SelectFiles");
+        line.AddTokenSeparator(numLine, 1, "(");
+        line.AddTokenString(numLine, 1, fileString);
+        line.AddTokenSeparator(numLine, 1, ")");
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// SetVar = intValue
+    /// a=10
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarInt(int numLine, List<ScriptLineTokens> script, string varName, int value)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenInteger(numLine, 1, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// OnExcel "data.xlsx"
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="excelfile"></param>
+    /// <returns></returns>
+    public static void AddLineOnExcelFileString(int numLine, List<ScriptLineTokens> script, string excelfileString)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, "OnExcel");
+        line.AddTokenString(numLine, 9, excelfileString);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// OnExcel file
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="excelfile"></param>
+    /// <returns></returns>
+    public static void  CreateOnExcelFileName(int numLine, List<ScriptLineTokens> script, string excelfileName)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "OnExcel");
+        line.AddTokenName(1, 9, excelfileName);
+        script.Add(line);
     }
 
     // FirstRow 3
     public static void AddLineFirstRow(int numLine, List<ScriptLineTokens> script, int firstRowValue)
     {
-        var line = new ScriptLineTokensTest();
-        line.AddTokenName(numLine, "FirstRow");
-        line.AddTokenInteger(numLine, firstRowValue);
+        var line = new ScriptLineTokens();
+        line.AddToken(numLine, 1, ScriptTokenType.Name, "FirstRow");
+        line.AddTokenInteger(numLine, 1, firstRowValue);
+        script.Add(line);
+    }
+
+    // FirstRow varname
+    public static void AddLineFirstRowVar(int numLine, List<ScriptLineTokens> script, string varname)
+    {
+        var line = new ScriptLineTokens();
+        line.AddToken(numLine, 1, ScriptTokenType.Name, "FirstRow");
+        line.AddTokenName(numLine, 1, varname);
         script.Add(line);
     }
 
     // ForEach Row
     public static void AddLineForEachRow(int numLine, List<ScriptLineTokens> script)
     {
-        var line = new ScriptLineTokensTest();
-        line.AddTokenName(numLine, "ForEach", "Row");
+        var line = new ScriptLineTokens();
+        AddTokenName(numLine, line, "ForEach", "Row");
         script.Add(line);
     }
 
     // Next
     public static void AddLineNext(int numLine, List<ScriptLineTokens> script)
     {
-        var line = new ScriptLineTokensTest();
+        var line = new ScriptLineTokens();
         line.AddTokenName(numLine, 1, "Next");
         script.Add(line);
     }
@@ -65,8 +125,8 @@ public class TestTokensBuilder
     // End OnExcel
     public static void AddLineEndOnExcel(int numLine, List<ScriptLineTokens> script)
     {
-        var line = new ScriptLineTokensTest();
-        line.AddTokenName(numLine, "End", "OnExcel");
+        var line = new ScriptLineTokens();
+        AddTokenName(numLine, line, "End", "OnExcel");
         script.Add(line);
     }
 
@@ -207,4 +267,11 @@ public class TestTokensBuilder
         line.AddTokenName(numLine, 1, valstr);
         return line;
     }
+
+    public static void AddTokenName(int numLine, ScriptLineTokens line, string value, string value2)
+    {
+        line.AddToken(numLine, 1, ScriptTokenType.Name, value);
+        line.AddToken(numLine, value.Length + 2, ScriptTokenType.Name, value2);
+    }
+
 }

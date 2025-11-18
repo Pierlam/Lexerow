@@ -20,7 +20,7 @@ public class ScriptParserOnExcelErrorTests
     /// Result: one instruction OnExcel
     /// Implicite: sheet=0, FirstRow=1
     ///
-    ///	OnExcel "file.xlsx"
+    ///	OnExcel "data.xlsx"
     ///   ForEach Row
     ///     If A.Cell >10 Then A.Cell=10
     ///   Next
@@ -32,8 +32,8 @@ public class ScriptParserOnExcelErrorTests
         int numLine = 0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        // build one line of tokens
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, script);

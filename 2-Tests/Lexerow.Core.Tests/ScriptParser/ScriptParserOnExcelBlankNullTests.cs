@@ -30,8 +30,8 @@ public class ScriptParserOnExcelBlankNullTests
         int numLine = 1;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, script);
@@ -51,14 +51,13 @@ public class ScriptParserOnExcelBlankNullTests
         //==> Parse the script tokens
         var logger = A.Fake<IActivityLogger>();
         Parser sa = new Parser(logger);
-
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
 
+        //==> Check result
         Assert.IsTrue(res);
         Assert.AreEqual(1, listInstr.Count);
 
-        //==> Check result
         // OnExcel
         Assert.AreEqual(InstrType.OnExcel, listInstr[0].InstrType);
         InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
@@ -125,8 +124,8 @@ public class ScriptParserOnExcelBlankNullTests
         int numLine = 0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, script);  
@@ -171,8 +170,8 @@ public class ScriptParserOnExcelBlankNullTests
         int numLine=0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, script);
@@ -265,8 +264,8 @@ public class ScriptParserOnExcelBlankNullTests
         int numLine = 0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        // build one line of tokens
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, script);

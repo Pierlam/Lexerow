@@ -35,8 +35,8 @@ public class ScriptParserOnExcelFirstRowOkTests
         int numLine = 1;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++ , script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++ , script, "\"data.xlsx\"");
 
         // FirstRow 3
         TestTokensBuilder.AddLineFirstRow(numLine++, script, 3);
@@ -87,10 +87,100 @@ public class ScriptParserOnExcelFirstRowOkTests
     [TestMethod]
     public void OnExcelFirstRowZeroError()
     {
+        int numLine = 1;
+        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+
         // FirstRow 0
-        //ici();
+        TestTokensBuilder.AddLineFirstRow(numLine++, script, 0);
+
+        // ForEach Row
+        TestTokensBuilder.AddLineForEachRow(numLine++, script);
+
+        // If A.Cell>10 Then A.Cell=10
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(numLine++, script, "A", ">", 10, "A", 10);
+
+        // Next
+        TestTokensBuilder.AddLineNext(numLine++, script);
+
+        // End OnExcel
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, script);
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+
+        //==> Parse the script tokens
+        var logger = A.Fake<IActivityLogger>();
+        Parser sa = new Parser(logger);
+        ExecResult execResult = new ExecResult();
+        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
+
+        //==> check the result
+        Assert.IsFalse(res);
+        Assert.AreEqual(ErrorCode.ParserConstIntValueWrong, execResult.ListError[0].ErrorCode);
+
     }
 
     // FirstRow a
+    /// <summary>
+    /// Default: sheet=0
+    ///
+    /// r=3
+    ///	OnExcel "file.xlsx"
+    ///	  FirstRow r
+    ///   ForEach Row
+    ///     If A.Cell>10 Then A.Cell=10
+    ///   Next
+    /// End OnExcel
+    /// </summary>
+    [TestMethod]
+    public void OnExcelFirstRowVarOk()
+    {
+        int numLine = 1;
+        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+
+        // create var r=3
+        TestTokensBuilder.AddLineSetVarInt(numLine++, script, "r", 3);
+
+        //OnExcel "file.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+
+        // FirstRow r
+        TestTokensBuilder.AddLineFirstRowVar(numLine++, script, "r");
+
+        // ForEach Row
+        TestTokensBuilder.AddLineForEachRow(numLine++, script);
+
+        // If A.Cell>10 Then A.Cell=10
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(numLine++, script, "A", ">", 10, "A", 10);
+
+        // Next
+        TestTokensBuilder.AddLineNext(numLine++, script);
+
+        // End OnExcel
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, script);
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+
+        //==> Parse the script tokens
+        var logger = A.Fake<IActivityLogger>();
+        Parser sa = new Parser(logger);
+        ExecResult execResult = new ExecResult();
+        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
+
+        //==> check the result
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, listInstr.Count);
+
+        // OnExcel
+        Assert.AreEqual(InstrType.OnExcel, listInstr[0].InstrType);
+        InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
+
+        // check the firstrow value
+        Assert.AreEqual(3, instrOnExcel.ListSheets[0].FirstRowNum);
+    }
 
 }

@@ -32,8 +32,8 @@ public class ScriptParserOnExcelOkTests
         int numLine=0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, script);
@@ -125,42 +125,38 @@ public class ScriptParserOnExcelOkTests
     [TestMethod]
     public void VeryShortOnExcelFileNameOk()
     {
-        ScriptLineTokensTest lineTok;
+        int numLine = 0;
+        ScriptLineTokens lineTok;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
 
         //--file=OpenExcel("data.xlsx")
-        var line = TestTokensBuilder.BuildSelectFiles("file", "\"data.xlsx\"");
-        script.Add(line);
+        TestTokensBuilder.AddLineSelectFiles(numLine++, script, "file", "\"data.xlsx\"");
 
-        //-build one line of tokens
-        lineTok = ScriptLineTokensTest.CreateOnExcelFileName("file");
-        script.Add(lineTok);
+        // OnExcel file
+        TestTokensBuilder.CreateOnExcelFileName(numLine++, script, "file");
 
         // ForEach Row
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(2, "ForEach", "Row");
-        script.Add(lineTok);
+        TestTokensBuilder.AddLineForEachRow(numLine++, script); 
 
         // If A.Cell >10 Then A.Cell=10
         TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, script);
 
         // Next
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "Next");
-        script.Add(lineTok);
+        TestTokensBuilder.AddLineNext(numLine++, script);
 
         // End OnExcel
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, "End", "OnExcel");
-        script.Add(lineTok);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, script);
 
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+
+        //==> Parse the script tokens
         var logger = A.Fake<IActivityLogger>();
         Parser sa = new Parser(logger);
-
-        //--parse the tokens
         ExecResult execResult = new ExecResult();
         bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
 
+        //==> Check result
         Assert.IsTrue(res);
         Assert.AreEqual(2, listInstr.Count);
 
@@ -204,36 +200,36 @@ public class ScriptParserOnExcelOkTests
     public void VeryShortOnExcelOneIfThenInlineOk()
     {
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
-        ScriptLineTokensTest lineTok;
+        ScriptLineTokens line;
 
         //-OnExcel
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "OnExcel");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "OnExcel");
+        script.Add(line);
 
         //-"data.xslx"
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenString(1, 1, "\"data.xlsx\"");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        script.Add(line);
 
         //-ForEach Row
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(5, "ForEach", "Row");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        TestTokensBuilder.AddTokenName(5, line, "ForEach", "Row");
+        script.Add(line);
 
         // If A.Cell >10 Then A.Cell=10
         TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, script);
 
         // Next
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "Next");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "Next");
+        script.Add(line);
 
         // End OnExcel
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "End");
-        lineTok.AddTokenName(1, 1, "OnExcel");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "End");
+        line.AddTokenName(1, 1, "OnExcel");
+        script.Add(line);
 
         var logger = A.Fake<IActivityLogger>();
         Parser sa = new Parser(logger);
@@ -310,22 +306,22 @@ public class ScriptParserOnExcelOkTests
     public void VeryShortOnExcel2IfThenInlineOk()
     {
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
-        ScriptLineTokensTest lineTok;
+        ScriptLineTokens line;
 
         //-OnExcel
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "OnExcel");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "OnExcel");
+        script.Add(line);
 
         //-"data.xslx"
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenString(2, 1, "\"data.xlsx\"");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenString(2, 1, "\"data.xlsx\"");
+        script.Add(line);
 
         //-ForEach Row
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(3, "ForEach", "Row");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        TestTokensBuilder.AddTokenName(3, line, "ForEach", "Row");
+        script.Add(line);
 
         // If A.Cell >10 Then A.Cell=10
         TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, script);
@@ -334,15 +330,15 @@ public class ScriptParserOnExcelOkTests
         TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(4, script, "B", ">", 12, "B", 12);
 
         // Next
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "Next");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "Next");
+        script.Add(line);
 
         // End OnExcel
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(1, 1, "End");
-        lineTok.AddTokenName(1, 1, "OnExcel");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "End");
+        line.AddTokenName(1, 1, "OnExcel");
+        script.Add(line);
 
         var logger = A.Fake<IActivityLogger>();
         Parser sa = new Parser(logger);
@@ -527,7 +523,7 @@ public class ScriptParserOnExcelOkTests
     /// Result: one instruction OnExcel
     /// Implicite: sheet=0, FirstRow=1
     ///
-    ///	OnExcel "file.xlsx"
+    ///	OnExcel "data.xlsx"
     ///        ForEach Row
     ///            If A.Cell >10 Then
     ///               A.Cell=10
@@ -540,30 +536,30 @@ public class ScriptParserOnExcelOkTests
     {
         int numLine = 0;
         List<ScriptLineTokens> script = new List<ScriptLineTokens>();
-        ScriptLineTokensTest lineTok;
+        ScriptLineTokens line;
 
-        //-OnExcel "data.xslx"
-        ScriptLineTokensTest.CreateOnExcelFileString(numLine++, script, "\"data.xlsx\"");
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, script, "\"data.xlsx\"");
 
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, script);
         
         // If A.Cell >10 Then
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(3, 1, "If");
-        TestTokensBuilder.BuidColCellOperInt(3, lineTok, "A", ">", 10);
-        lineTok.AddTokenName(3, 1, "Then");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        line.AddTokenName(3, 1, "If");
+        TestTokensBuilder.BuidColCellOperInt(3, line, "A", ">", 10);
+        line.AddTokenName(3, 1, "Then");
+        script.Add(line);
 
         // A.Cell=10
-        lineTok = new ScriptLineTokensTest();
-        TestTokensBuilder.BuidColCellOperInt(4, lineTok, "A", "=", 10);
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        TestTokensBuilder.BuidColCellOperInt(4, line, "A", "=", 10);
+        script.Add(line);
 
         // End If
-        lineTok = new ScriptLineTokensTest();
-        lineTok.AddTokenName(5, "End", "If");
-        script.Add(lineTok);
+        line = new ScriptLineTokens();
+        TestTokensBuilder.AddTokenName(5, line, "End", "If");
+        script.Add(line);
 
         // Next
         TestTokensBuilder.AddLineNext(numLine++, script);

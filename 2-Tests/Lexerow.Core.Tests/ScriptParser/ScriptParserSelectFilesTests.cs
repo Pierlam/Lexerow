@@ -62,7 +62,7 @@ public class ScriptParserSelectFilesTests
 
         // OpenExcel Param
         Assert.AreEqual(1, instrOpenExcel.ListInstrParams.Count);
-        InstrConstValue instrConstValue = instrOpenExcel.ListInstrParams[0] as InstrConstValue;
+        InstrValue instrConstValue = instrOpenExcel.ListInstrParams[0] as InstrValue;
         Assert.IsNotNull(instrConstValue);
         Assert.AreEqual("data.xlsx", instrConstValue.RawValue);
         Assert.AreEqual("data.xlsx", (instrConstValue.ValueBase as ValueString).Val);
@@ -132,7 +132,7 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual("name", instrObjectName.ObjectName);
 
         // InstrRight: ConstValue
-        InstrConstValue instrConstValue = instrSetVar.InstrRight as InstrConstValue;
+        InstrValue instrConstValue = instrSetVar.InstrRight as InstrValue;
         Assert.IsNotNull(instrConstValue);
         Assert.AreEqual("data.xlsx", instrConstValue.RawValue);
         Assert.AreEqual("data.xlsx", (instrConstValue.ValueBase as ValueString).Val);

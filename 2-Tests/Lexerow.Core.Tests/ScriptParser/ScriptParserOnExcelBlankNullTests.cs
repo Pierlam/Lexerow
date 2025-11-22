@@ -65,7 +65,7 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
 
         // OnExcel.ListFiles
         Assert.IsNotNull(instrOnExcel.InstrFiles);
-        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
+        InstrValue constExcelFileName = instrOnExcel.InstrFiles as InstrValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -206,7 +206,7 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
 
         // OnExcel.ListFiles
         Assert.IsNotNull(instrOnExcel.InstrFiles);
-        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
+        InstrValue constExcelFileName = instrOnExcel.InstrFiles as InstrValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -299,7 +299,7 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
 
         // OnExcel.ListFiles
         Assert.IsNotNull(instrOnExcel.InstrFiles);
-        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
+        InstrValue constExcelFileName = instrOnExcel.InstrFiles as InstrValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet

@@ -91,10 +91,10 @@ public class InstrSelectFilesExecutor
 
     private bool DecodeParam(ExecResult execResult, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
     {
-        InstrConstValue instrConstValue;
+        InstrValue instrConstValue;
 
         //--1/param is constValue type string? exp: SelectFiles("file.xlsx")
-        instrConstValue = param as InstrConstValue;
+        instrConstValue = param as InstrValue;
         if (instrConstValue != null)
         {
             if (!SelectFilesFromStringFilename(execResult, instrSelectFiles, instrConstValue, out List<string> listFilename))
@@ -115,7 +115,7 @@ public class InstrSelectFilesExecutor
             }
 
             //-the value of the var is a string constValue?
-            instrConstValue = execVar.Value as InstrConstValue;
+            instrConstValue = execVar.Value as InstrValue;
             if (instrConstValue != null)
             {
                 if (!SelectFilesFromStringFilename(execResult, instrSelectFiles, instrConstValue, out List<string> listFilename))
@@ -169,7 +169,7 @@ public class InstrSelectFilesExecutor
         }
     }
 
-    private bool SelectFilesFromStringFilename(ExecResult execResult, InstrSelectFiles instrSelectFiles, InstrConstValue instrConstValue, out List<string> listFilename)
+    private bool SelectFilesFromStringFilename(ExecResult execResult, InstrSelectFiles instrSelectFiles, InstrValue instrConstValue, out List<string> listFilename)
     {
         // should be a string
         ValueString valueString = instrConstValue.ValueBase as ValueString;

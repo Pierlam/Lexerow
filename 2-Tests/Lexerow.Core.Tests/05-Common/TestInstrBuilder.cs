@@ -27,7 +27,7 @@ public class TestInstrBuilder
         InstrOnExcel instrOnExcel = new InstrOnExcel(token);
 
         // OnExcel "data.xslx"
-        InstrConstValue instrConstValue = CreateInstrConstValueString(fileNameString);
+        InstrValue instrConstValue = CreateInstrConstValueString(fileNameString);
         //instrOnExcel.ListFiles.Add(instrConstValue);
         instrOnExcel.InstrFiles = instrConstValue;
 
@@ -180,14 +180,14 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrConstValue CreateInstrConstValueString(string val)
+    public static InstrValue CreateInstrConstValueString(string val)
     {
         // token
         var token = CreateScriptTokenString(val);
         var str = StringUtils.RemoveStartEndDoubleQuote(val);
 
         // InstrConstValue
-        InstrConstValue instrConstValue = new InstrConstValue(token, str);
+        InstrValue instrConstValue = new InstrValue(token, str);
         instrConstValue.ValueBase = new ValueString(val);
         return instrConstValue;
     }
@@ -198,13 +198,13 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrConstValue CreateInstrConstValueInt(int val)
+    public static InstrValue CreateInstrConstValueInt(int val)
     {
         // token
         var token = CreateScriptTokenInt(val);
 
         // InstrConstValue
-        InstrConstValue instrConstValue = new InstrConstValue(token, val.ToString());
+        InstrValue instrConstValue = new InstrValue(token, val.ToString());
         instrConstValue.ValueBase = new ValueInt(val);
         return instrConstValue;
     }
@@ -234,7 +234,7 @@ public class TestInstrBuilder
     /// <returns></returns>
     public static InstrSelectFiles CreateInstrSelectExcelParamString(string fileName)
     {
-        InstrConstValue instrConstValue = CreateInstrConstValueString(fileName);
+        InstrValue instrConstValue = CreateInstrConstValueString(fileName);
         return CreateInstrSelectExcel(instrConstValue);
     }
 
@@ -259,7 +259,7 @@ public class TestInstrBuilder
         InstrObjectName instrObjectName = CreateInstrObjectName(varname);
 
         //-instr right
-        InstrConstValue instrConstValue = CreateInstrConstValueInt(value);
+        InstrValue instrConstValue = CreateInstrConstValueInt(value);
 
         return CreateInstrSetVar(instrObjectName, instrConstValue);
     }

@@ -143,7 +143,7 @@ public class ExecOnExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //instr right
-        InstrConstValue instrConstValue = TestInstrBuilder.CreateInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcel2.xlsx"));
+        InstrValue instrConstValue = TestInstrBuilder.CreateInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcel2.xlsx"));
 
         InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrConstValue);
         program.ListInstr.Add(instrSetVar);
@@ -203,7 +203,7 @@ public class ExecOnExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //instr right
-        InstrConstValue instrConstValue = TestInstrBuilder.CreateInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcelJokerB*.xlsx"));
+        InstrValue instrConstValue = TestInstrBuilder.CreateInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcelJokerB*.xlsx"));
 
         InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrConstValue);
         program.ListInstr.Add(instrSetVar);

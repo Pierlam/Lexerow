@@ -11,7 +11,7 @@ namespace Lexerow.Core.System;
 /// </summary>
 public class InstrOnSheet : InstrBase
 {
-    public InstrOnSheet(ScriptToken scriptToken, InstrConstValue instrValue) : base(scriptToken)
+    public InstrOnSheet(ScriptToken scriptToken, InstrValue instrValue) : base(scriptToken)
     {
         InstrType = InstrType.OnSheet;
         InstrFirstDataRow= instrValue;

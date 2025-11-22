@@ -88,7 +88,7 @@ internal class TokenCloseBracketProcessor
 
             // the current stack item should be an item, a string, a number or an instruction
             //if (item.IsTokenVarName() || item.IsTokenExcelColName() || item.IsTokenExcelCellAddress() || item.IsTokenConstValue() || item.IsInstr())
-            if (instr is InstrObjectName || instr is InstrConstValue)
+            if (instr is InstrObjectName || instr is InstrValue)
             {
                 // save the item in the fct param list
                 listItem.Add(instr);

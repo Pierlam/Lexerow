@@ -20,7 +20,7 @@ public class TestInstrHelper
     public static void TestInstrConstValue(string stage, InstrBase instrBase, int val)
     {
         // check If-Operand Right
-        InstrConstValue instrConstValue = instrBase as InstrConstValue;
+        InstrValue instrConstValue = instrBase as InstrValue;
         Assert.IsNotNull(instrConstValue);
         Assert.AreEqual(val.ToString(), instrConstValue.RawValue);
         Assert.AreEqual(val, (instrConstValue.ValueBase as ValueInt).Val);

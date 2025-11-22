@@ -203,7 +203,7 @@ internal class ParserStackContentProcessor
         stackInstr.Pop();
 
         //--case a=12, A.Cell=12
-        InstrConstValue instrConstValue = instrBase as InstrConstValue;
+        InstrValue instrConstValue = instrBase as InstrValue;
         if (instrConstValue != null)
         {
             instrSetVar.InstrRight = instrBase;
@@ -349,7 +349,7 @@ internal class ParserStackContentProcessor
         // TODO:
 
         //--the top instr on the stack is a value string?
-        InstrConstValue instrConstValue = instr as InstrConstValue;
+        InstrValue instrConstValue = instr as InstrValue;
         if (instrConstValue != null)
             return ProcessFirstDataRowValueValue(execResult, scriptLineNum, instrOnExcel, instrConstValue);
 
@@ -634,7 +634,7 @@ internal class ParserStackContentProcessor
         return false;
     }
 
-    private static bool ProcessFirstDataRowValueValue(ExecResult execResult, int scriptLineNum, InstrOnExcel instrOnExcel, InstrConstValue instrConstValue)
+    private static bool ProcessFirstDataRowValueValue(ExecResult execResult, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrConstValue)
     {
         if (!InstrUtils.GetValueIntFromInstrValue(instrConstValue, scriptLineNum, out ExecResultError error, out int val))
         {
@@ -674,7 +674,7 @@ internal class ParserStackContentProcessor
         // its a final int value, check it
         if (instrSetVar.InstrRight.InstrType== InstrType.ConstValue)
         {
-            var instrConstValue = instrSetVar.InstrRight as InstrConstValue;
+            var instrConstValue = instrSetVar.InstrRight as InstrValue;
             if (!InstrUtils.GetValueIntFromInstrValue(instrConstValue, scriptLineNum, out ExecResultError error, out int val))
             {
                 execResult.AddError(error);

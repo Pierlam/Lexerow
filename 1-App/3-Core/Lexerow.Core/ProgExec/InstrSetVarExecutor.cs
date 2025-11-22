@@ -56,7 +56,7 @@ public class InstrSetVarExecutor
         }
 
         //--case a=12, the right instr is a const value
-        InstrConstValue instrConstValue = instrSetVar.InstrRight as InstrConstValue;
+        InstrValue instrConstValue = instrSetVar.InstrRight as InstrValue;
         if (instrConstValue != null)
         {
             // get or create the var, set the value
@@ -111,7 +111,7 @@ public class InstrSetVarExecutor
         _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrSetVarExecutor.ExecSetToColCellFunc", "Left is InstrColCellFunc: " + instrSetVar.FirstScriptToken());
 
         //--case A.cell=10 ?
-        InstrConstValue instrConstValue = instrSetVar.InstrRight as InstrConstValue;
+        InstrValue instrConstValue = instrSetVar.InstrRight as InstrValue;
         if (instrConstValue != null)
         {
             if (!_instrSetColCellFuncRunner.ExecSetCellValue(execResult, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc, instrConstValue))

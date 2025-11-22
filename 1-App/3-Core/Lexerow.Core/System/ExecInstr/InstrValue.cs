@@ -3,26 +3,26 @@
 namespace Lexerow.Core.System;
 
 /// <summary>
-/// Represents a const value.
-/// can be an int, double, string, ...
+/// Represents a basic value.
+/// can be an int, double, or string.
 /// </summary>
-public class InstrConstValue : InstrBase
+public class InstrValue : InstrBase
 {
-    public InstrConstValue(ScriptToken scriptToken, string rawValue) : base(scriptToken)
+    public InstrValue(ScriptToken scriptToken, string rawValue) : base(scriptToken)
     {
         InstrType = InstrType.ConstValue;
         RawValue = rawValue;
         ValueBase = new ValueString(rawValue);
     }
 
-    public InstrConstValue(ScriptToken scriptToken, int value) : base(scriptToken)
+    public InstrValue(ScriptToken scriptToken, int value) : base(scriptToken)
     {
         InstrType = InstrType.ConstValue;
         RawValue = value.ToString();
         ValueBase = new ValueInt(value);
     }
 
-    public InstrConstValue(ScriptToken scriptToken, double value) : base(scriptToken)
+    public InstrValue(ScriptToken scriptToken, double value) : base(scriptToken)
     {
         InstrType = InstrType.ConstValue;
         RawValue = value.ToString();
@@ -35,6 +35,6 @@ public class InstrConstValue : InstrBase
 
     public override string ToString()
     {
-        return "Type: ConstValue, Val: " + RawValue;
+        return "Type: Value, Val: " + RawValue;
     }
 }

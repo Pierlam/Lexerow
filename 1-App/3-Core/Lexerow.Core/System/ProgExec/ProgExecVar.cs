@@ -37,7 +37,7 @@ public class ProgExecVar
 
     public string GetValueString()
     {
-        InstrConstValue instrConstValue = Value as InstrConstValue;
+        InstrValue instrConstValue = Value as InstrValue;
         if (instrConstValue != null)
             return instrConstValue.RawValue;
 
@@ -51,8 +51,8 @@ public class ProgExecVar
         //--possible??
         if (ObjectName.InstrType == InstrType.ConstValue)
         {
-            string name = (ObjectName as InstrConstValue).RawValue;
-            string name2 = (instr as InstrConstValue).RawValue;
+            string name = (ObjectName as InstrValue).RawValue;
+            string name2 = (instr as InstrValue).RawValue;
             if (name.Equals(name2)) return true;
 
             return false;

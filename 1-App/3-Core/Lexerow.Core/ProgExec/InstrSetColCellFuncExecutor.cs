@@ -25,7 +25,7 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instrColCellFunc"></param>
     /// <param name="instrRight"></param>
     /// <returns></returns>
-    public bool ExecSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrConstValue instrConstValue)
+    public bool ExecSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrConstValue)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
@@ -75,7 +75,7 @@ public class InstrSetColCellFuncExecutor
         return true;
     }
 
-    private bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, InstrConstValue instrSetCellVal, IExcelCell cell)
+    private bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, InstrValue instrSetCellVal, IExcelCell cell)
     {
         // get the cell value type
         CellRawValueType cellType = excelProcessor.GetCellValueType(sheet, cell);

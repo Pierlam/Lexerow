@@ -128,7 +128,7 @@ internal class InstrOnExcelExecutor
         if (ctx.PrevInstrExecuted != null) return true;
         if (instrOnExcel.InstrFiles == null) return true;
 
-        var instrConstValue = instrOnExcel.InstrFiles as InstrConstValue;
+        var instrConstValue = instrOnExcel.InstrFiles as InstrValue;
         if (instrConstValue == null) return true;
 
         if (instrConstValue.ValueBase.ValueType != System.ValueType.String)
@@ -178,7 +178,7 @@ internal class InstrOnExcelExecutor
         }
 
         //--1/ var value is a ConstValue string?
-        InstrConstValue instrConstValue = progRunVar.Value as InstrConstValue;
+        InstrValue instrConstValue = progRunVar.Value as InstrValue;
         if (instrConstValue != null)
         {
             if (instrConstValue.ValueBase.ValueType != System.ValueType.String)

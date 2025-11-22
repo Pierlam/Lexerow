@@ -36,7 +36,7 @@ public class InstrComparisonExecutor
         bool res;
 
         InstrColCellFunc instrColCellFuncLeft = instrComparison.OperandLeft as InstrColCellFunc;
-        InstrConstValue instrConstValueRight = instrComparison.OperandRight as InstrConstValue;
+        InstrValue instrConstValueRight = instrComparison.OperandRight as InstrValue;
 
         //--A.Cell>10
         if (instrColCellFuncLeft != null && instrConstValueRight != null)
@@ -50,7 +50,7 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        InstrConstValue instrConstValueLeft = instrComparison.OperandLeft as InstrConstValue;
+        InstrValue instrConstValueLeft = instrComparison.OperandLeft as InstrValue;
         InstrColCellFunc instrColCellFuncRight = instrComparison.OperandRight as InstrColCellFunc;
 
         //--10<A.Cell
@@ -126,7 +126,7 @@ public class InstrComparisonExecutor
     /// <param name="resultComp"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    private bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrConstValue instrConstValueRight, out bool resultComp)
+    private bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrValue instrConstValueRight, out bool resultComp)
     {
         resultComp = false;
 

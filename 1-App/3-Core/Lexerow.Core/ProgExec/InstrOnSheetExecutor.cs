@@ -115,10 +115,10 @@ internal class InstrOnSheetExecutor
         val = 1;
 
         //--is it a Value?
-        InstrConstValue instrConstValue = instrOnSheet.InstrFirstDataRow as InstrConstValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = instrOnSheet.InstrFirstDataRow as InstrValue;
+        if (instrValue != null)
         {
-            if (!InstrUtils.GetValueIntFromInstrValue(instrConstValue, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ExecResultError error, out val))
+            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ExecResultError error, out val))
             {
                 execResult.AddError(error);
                 return false;
@@ -126,7 +126,7 @@ internal class InstrOnSheetExecutor
             // check the int value, should be >= 1
             if (val < 1)
             {
-                execResult.AddError(ErrorCode.ExecValueIntWrong, instrConstValue.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
                 return false;
             }
 
@@ -140,7 +140,7 @@ internal class InstrOnSheetExecutor
             ProgExecVar progExecVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
             if(progExecVar == null)
             {
-                execResult.AddError(ErrorCode.ExecInstrVarNotFound, instrConstValue.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecInstrVarNotFound, instrValue.FirstScriptToken());
                 return false;
             }
 
@@ -153,7 +153,7 @@ internal class InstrOnSheetExecutor
             // check the int value, should be >= 1
             if (val < 1)
             {
-                execResult.AddError(ErrorCode.ExecValueIntWrong, instrConstValue.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
                 return false;
             }
 

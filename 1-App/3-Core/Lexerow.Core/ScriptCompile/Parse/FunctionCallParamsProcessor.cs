@@ -52,7 +52,7 @@ internal class FunctionCallParamsProcessor
         }
 
         //--is the param a string const value token?  exp: SelectFiles("MyFile.xlsx")
-        InstrConstValue instrConstValue = listParams[0] as InstrConstValue;
+        InstrValue instrConstValue = listParams[0] as InstrValue;
         if (instrConstValue != null)
         {
             // the const value type should be a string

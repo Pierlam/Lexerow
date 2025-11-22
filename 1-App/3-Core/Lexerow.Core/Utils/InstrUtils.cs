@@ -29,7 +29,7 @@ public class InstrUtils
         if(instrBase==null)
             return false;
 
-        InstrConstValue instrConstValue = instrBase as InstrConstValue;
+        InstrValue instrConstValue = instrBase as InstrValue;
         if (instrConstValue == null) 
             return false;
 
@@ -53,7 +53,7 @@ public class InstrUtils
         error = null;
         value = 0;
 
-        var instrConstValue = instr as InstrConstValue;
+        var instrConstValue = instr as InstrValue;
         if (instrConstValue == null)
         {
             error = new ExecResultError(ErrorCode.ParserTokenExpected, scriptLineNum, instr.FirstScriptToken().ColNum, instr.FirstScriptToken().ToString());
@@ -69,12 +69,12 @@ public class InstrUtils
         return true;
     }
 
-    public static InstrConstValue CreateInstrValueInt(int initValue)
+    public static InstrValue CreateInstrValueInt(int initValue)
     {
         ValueInt valueInt= new ValueInt(initValue);
         ScriptToken scriptToken= new ScriptToken();
         scriptToken.Value= initValue.ToString();
-        return new InstrConstValue(scriptToken, initValue);
+        return new InstrValue(scriptToken, initValue);
     }
 
 }

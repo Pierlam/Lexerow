@@ -75,7 +75,7 @@ public class InstrOnExcelBuilder
             if (instr.InstrType == InstrType.ConstValue)
             {
                 // should be a string
-                if (ParserUtils.IsValueString((instr as InstrConstValue).ValueBase))
+                if (ParserUtils.IsValueString((instr as InstrValue).ValueBase))
                 {
                     // save the string filename
                     instrOnExcel.InstrFiles = instr;

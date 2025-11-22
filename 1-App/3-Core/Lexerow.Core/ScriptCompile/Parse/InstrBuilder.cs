@@ -42,7 +42,7 @@ public class InstrBuilder
             // OnSheet
             if (scriptToken.Value.Equals(CoreInstr.InstrOnSheet, StringComparison.InvariantCultureIgnoreCase))
             {
-                InstrConstValue value= InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
+                InstrValue value= InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
                 instrBase = new InstrOnSheet(scriptToken, value);
                 return true;
             }
@@ -188,21 +188,21 @@ public class InstrBuilder
         {
             // remove double quote
             string val = StringUtils.RemoveStartEndDoubleQuote(scriptToken.Value);
-            instrBase = new InstrConstValue(scriptToken, val);
+            instrBase = new InstrValue(scriptToken, val);
             return true;
         }
 
         //--script token is a int
         if (scriptToken.ScriptTokenType == ScriptTokenType.Integer)
         {
-            instrBase = new InstrConstValue(scriptToken, scriptToken.ValueInt);
+            instrBase = new InstrValue(scriptToken, scriptToken.ValueInt);
             return true;
         }
 
         //--script token is a double
         if (scriptToken.ScriptTokenType == ScriptTokenType.Double)
         {
-            instrBase = new InstrConstValue(scriptToken, scriptToken.ValueDouble);
+            instrBase = new InstrValue(scriptToken, scriptToken.ValueDouble);
             return true;
         }
 

@@ -23,18 +23,17 @@ public class ScriptLexerBasicTests
     {
         Script script = TestTokensBuilder.CreateScript("#comment", "file=SelectFiles(\"data.xslx\")");
 
+        //=>exec lexer, line by line
         Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        // analyse the source code, line by line
-        var logger = A.Fake<IActivityLogger>();
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
-
+        //=> Check the result
         Assert.IsTrue(result.Res);
 
         // only 1 line, remove the line containing the comment
         Assert.AreEqual(1, lt.Count);
 
-        // the second line has 6 source code tokens
+        // the line has 6 source code tokens
         Assert.AreEqual(6, lt[0].ListScriptToken.Count);
         Assert.AreEqual("file", lt[0].ListScriptToken[0].Value);
         Assert.AreEqual("=", lt[0].ListScriptToken[1].Value);
@@ -49,12 +48,12 @@ public class ScriptLexerBasicTests
     public void SourceScriptIsEmpty()
     {
         Script script = new Script("name", "fileName");
+
+        //=>exec lexer, line by line
         Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        var logger = A.Fake<IActivityLogger>();
-
-        // analyse the source code, line by line
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+        //=> Check the result
         Assert.IsTrue(result.Res);
 
         Assert.AreEqual(0, lt.Count);
@@ -67,14 +66,13 @@ public class ScriptLexerBasicTests
     [TestMethod]
     public void SourceTokenStringEndTagMissingErr()
     {
-        Result result = new Result();
-
         Script script = TestTokensBuilder.CreateScript("file=SelectFiles(\"data.xslx)");
 
-        var logger = A.Fake<IActivityLogger>();
+        //=>exec lexer, line by line
+        Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        // analyse the source code, line by line
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+        //=> Check the result
         Assert.IsFalse(result.Res);
 
         Assert.AreEqual(ErrorCode.LexerFoundSgtringBadFormatted, result.ListError[0].ErrorCode);
@@ -87,12 +85,12 @@ public class ScriptLexerBasicTests
     public void SourceScriptHasOnlyComment()
     {
         Script script = TestTokensBuilder.CreateScript("#comment");
+
+        //=>exec lexer, line by line
         Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        var logger = A.Fake<IActivityLogger>();
-
-        // analyse the source code, line by line
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+        //=> Check the result
         Assert.IsTrue(result.Res);
 
         Assert.AreEqual(0, lt.Count);
@@ -108,12 +106,12 @@ public class ScriptLexerBasicTests
     public void ParseOnExcelFilenameOk()
     {
         Script script = TestTokensBuilder.CreateScript("OnExcel \"file.xlsx\"");
+
+        //=>exec lexer, line by line
         Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        var logger = A.Fake<IActivityLogger>();
-
-        // analyse the source code, line by line
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+        //=> Check the result
         Assert.IsTrue(result.Res);
 
         Assert.AreEqual(1, lt.Count);
@@ -136,12 +134,11 @@ public class ScriptLexerBasicTests
     {
         Script script = TestTokensBuilder.CreateScript("  ForEach Row");
 
+        //=>exec lexer, line by line
         Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        var logger = A.Fake<IActivityLogger>();
-
-        // analyse the source code, line by line
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+        //=> Check the result
         Assert.IsTrue(result.Res);
 
         // only 1 line, remove the line containing the comment
@@ -164,12 +161,11 @@ public class ScriptLexerBasicTests
     {
         Script script = TestTokensBuilder.CreateScript("  ForEach Row #comment");
 
+        //=>exec lexer, line by line
         Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        var logger = A.Fake<IActivityLogger>();
-
-        // analyse the source code, line by line
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+        //=> Check the result
         Assert.IsTrue(result.Res);
 
         // only 1 line, remove the line containing the comment
@@ -181,7 +177,7 @@ public class ScriptLexerBasicTests
     }
 
     /// <summary>
-    /// analyse a source code
+    /// analyse the source code:
     ///      If A.Cell >10 Then A.Cell= 10
     ///
     /// The result: split tokens
@@ -190,12 +186,12 @@ public class ScriptLexerBasicTests
     public void ParseIfACellGt10ThenACellEq10Ok()
     {
         Script script = TestTokensBuilder.CreateScript("If A.Cell>10 Then A.Cell=10");
+
+        //=>exec lexer, line by line
         Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
 
-        var logger = A.Fake<IActivityLogger>();
-
-        // analyse the source code, line by line
-        Lexer.Process(logger, result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+        //=> Check the result
         Assert.IsTrue(result.Res);
 
         Assert.AreEqual(1, lt.Count);
@@ -224,5 +220,4 @@ public class ScriptLexerBasicTests
         Assert.AreEqual(ScriptTokenType.Integer, lt[0].ListScriptToken[11].ScriptTokenType);
     }
 
-    // TODO: script is on several lines
 }

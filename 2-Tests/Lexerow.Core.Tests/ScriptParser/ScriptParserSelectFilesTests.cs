@@ -8,7 +8,7 @@ using Lexerow.Core.Tests._05_Common;
 namespace Lexerow.Core.Tests.ScriptParser;
 
 /// <summary>
-/// Test script lexical analyzer on SelectFiles instr.
+/// Test script Lexer basic tests: lexical analyzer on SelectFiles instr.
 /// </summary>
 [TestClass]
 public class ScriptParserSelectFilesTests

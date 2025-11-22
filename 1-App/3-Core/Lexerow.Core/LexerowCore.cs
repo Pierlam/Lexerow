@@ -24,7 +24,7 @@ public class LexerowCore
 
     private ScriptCompiler _scriptCompiler;
 
-    private ProgramExecutor _programRunner;
+    private ProgramExecutor _programExecutor;
 
     /// <summary>
     /// Constructor.
@@ -39,7 +39,7 @@ public class LexerowCore
         _scriptLoader = new ScriptLoader();
         _scriptCompiler = new ScriptCompiler(_logger, _coreData);
 
-        _programRunner = new ProgramExecutor(_logger, _excelProcessor);
+        _programExecutor = new ProgramExecutor(_logger, _excelProcessor);
     }
 
     public event EventHandler<ActivityLog> ActivityLogEvent;
@@ -86,7 +86,7 @@ public class LexerowCore
         }
 
         // any program should have the same name
-        ProgramScript program = _coreData.GetProgramByName(scriptName);
+        Program program = _coreData.GetProgramByName(scriptName);
         if (program != null)
         {
             execResult.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
@@ -97,15 +97,12 @@ public class LexerowCore
             return execResult;
 
         // compile the script,  generate instructions
-        _scriptCompiler.CompileScript(execResult, script, out List<InstrBase> listInstr);
+        _scriptCompiler.CompileScript(execResult, script, out Program programScript);
         if (!execResult.Result)
             return execResult;
 
-        // create the program
-        ProgramScript programInstr = new ProgramScript(script, listInstr);
-
         // save it
-        _coreData.ListProgram.Add(programInstr);
+        _coreData.ListProgram.Add(programScript);
 
         _logger.LogCompilEnd(ActivityLogLevel.Important, "LoadScriptFromFile", scriptName);
 
@@ -149,7 +146,7 @@ public class LexerowCore
         }
 
         // any program should have the same name
-        ProgramScript program = _coreData.GetProgramByName(scriptName);
+        Program program = _coreData.GetProgramByName(scriptName);
         if (program != null)
         {
             execResult.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
@@ -160,12 +157,10 @@ public class LexerowCore
             return execResult;
 
         // compile the script,  generate instructions
-        _scriptCompiler.CompileScript(execResult, script, out List<InstrBase> listInstr);
+        _scriptCompiler.CompileScript(execResult, script, out Program programInstr);
         if (!execResult.Result)
             return execResult;
 
-        // create the program
-        ProgramScript programInstr = new ProgramScript(script, listInstr);
 
         // save it
         _coreData.ListProgram.Add(programInstr);
@@ -197,7 +192,7 @@ public class LexerowCore
         }
 
         // find the program script
-        ProgramScript program = _coreData.GetProgramByName(scriptName);
+        Program program = _coreData.GetProgramByName(scriptName);
         if (program == null)
         {
             execResult.AddError(ErrorCode.ProgramNotFound, scriptName);
@@ -205,7 +200,7 @@ public class LexerowCore
         }
 
         // execute ProgramScript
-        _programRunner.Exec(execResult, program);
+        _programExecutor.Exec(execResult, program);
 
         return execResult;
     }

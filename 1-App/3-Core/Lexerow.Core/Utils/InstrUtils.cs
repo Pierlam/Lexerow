@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.ScriptDef;
 using System;
 using System.Collections.Generic;
@@ -13,30 +14,67 @@ namespace Lexerow.Core.Utils;
 /// </summary>
 public class InstrUtils
 {
-    public static bool GetConstValueInt(InstrBase instrBase, int scriptLineNum, out ExecResultError error, out int value)
+    /// <summary>
+    /// Return the value int, if it's a case.
+    /// </summary>
+    /// <param name="instrBase"></param>
+    /// <param name="scriptLineNum"></param>
+    /// <param name="error"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetValueInt(InstrBase instrBase, int scriptLineNum, out int value)
+    {
+        value = 0;
+
+        if(instrBase==null)
+            return false;
+
+        InstrConstValue instrConstValue = instrBase as InstrConstValue;
+        if (instrConstValue == null) 
+            return false;
+
+        if (instrConstValue.ValueBase.ValueType != System.ValueType.Int)
+            return false;
+
+        value = (instrConstValue.ValueBase as ValueInt).Val;
+        return true;
+    }
+
+    /// <summary>
+    /// Return the value int from the InstrValue parameter.
+    /// </summary>
+    /// <param name="instrBase"></param>
+    /// <param name="scriptLineNum"></param>
+    /// <param name="error"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetValueIntFromInstrValue(InstrBase instr, int scriptLineNum, out ExecResultError error, out int value)
     {
         error = null;
         value = 0;
 
-        if(instrBase==null)
+        var instrConstValue = instr as InstrConstValue;
+        if (instrConstValue == null)
         {
-            error = new ExecResultError(ErrorCode.ParserTokenExpected, scriptLineNum, 0, string.Empty);
-            return false;
-        }
-
-        InstrConstValue instrConstValue = instrBase as InstrConstValue;
-        if (instrConstValue == null) 
-        {
-            error = new ExecResultError(ErrorCode.ParserConstStringValueExpected, instrBase.FirstScriptToken().LineNum, instrBase.FirstScriptToken().ColNum, instrBase.FirstScriptToken().Value);
+            error = new ExecResultError(ErrorCode.ParserTokenExpected, scriptLineNum, instr.FirstScriptToken().ColNum, instr.FirstScriptToken().ToString());
             return false;
         }
 
         if (instrConstValue.ValueBase.ValueType != System.ValueType.Int)
         {
-            error = new ExecResultError(ErrorCode.ParserConstIntValueExpected, instrBase.FirstScriptToken().LineNum, instrBase.FirstScriptToken().ColNum, instrBase.FirstScriptToken().Value);
+            error = new ExecResultError(ErrorCode.ParserConstIntValueExpected, instrConstValue.FirstScriptToken().LineNum, instrConstValue.FirstScriptToken().ColNum, instrConstValue.FirstScriptToken().Value);
             return false;
         }
         value = (instrConstValue.ValueBase as ValueInt).Val;
         return true;
     }
+
+    public static InstrConstValue CreateInstrValueInt(int initValue)
+    {
+        ValueInt valueInt= new ValueInt(initValue);
+        ScriptToken scriptToken= new ScriptToken();
+        scriptToken.Value= initValue.ToString();
+        return new InstrConstValue(scriptToken, initValue);
+    }
+
 }

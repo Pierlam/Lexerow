@@ -29,23 +29,27 @@ public class ScriptParserSelectFilesTests
     public void FileEqSelectFilesOk()
     {
         int numLine = 0;
-        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
         //-line #1
-        TestTokensBuilder.AddLineSelectFiles(numLine++, script, "file", "\"data.xlsx\"");
+        TestTokensBuilder.AddLineSelectFiles(numLine++, scriptTokens, "file", "\"data.xlsx\"");
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsTrue(res);
-        Assert.AreEqual(1, listInstr.Count);
+        Assert.AreEqual(1, prog.ListInstr.Count);
 
         // SetVar
-        Assert.AreEqual(InstrType.SetVar, listInstr[0].InstrType);
-        InstrSetVar instrSetVar = listInstr[0] as InstrSetVar;
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
+        InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
         InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
@@ -85,7 +89,7 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void SetVarFileEqSelectFilesOk()
     {
-        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
         ScriptLineTokens line;
 
         //-line #1
@@ -93,7 +97,7 @@ public class ScriptParserSelectFilesTests
         line.AddTokenName(1, 1, "name");
         line.AddTokenSeparator(1, 1, "=");
         line.AddTokenString(1, 1, "\"data.xlsx\"");
-        script.Add(line);
+        scriptTokens.Add(line);
 
         //-build one line of tokens
         line = new ScriptLineTokens();
@@ -103,20 +107,24 @@ public class ScriptParserSelectFilesTests
         line.AddTokenSeparator(2, 1, "(");
         line.AddTokenName(2, 1, "name");
         line.AddTokenSeparator(2, 1, ")");
-        script.Add(line);
+        scriptTokens.Add(line);
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsTrue(res);
-        Assert.AreEqual(2, listInstr.Count);
+        Assert.AreEqual(2, prog.ListInstr.Count);
 
         //--SetVar #1
-        Assert.AreEqual(InstrType.SetVar, listInstr[0].InstrType);
-        InstrSetVar instrSetVar = listInstr[0] as InstrSetVar;
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
+        InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
         InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
@@ -130,8 +138,8 @@ public class ScriptParserSelectFilesTests
         Assert.AreEqual("data.xlsx", (instrConstValue.ValueBase as ValueString).Val);
 
         //--SetVar #2
-        Assert.AreEqual(InstrType.SetVar, listInstr[1].InstrType);
-        instrSetVar = listInstr[1] as InstrSetVar;
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[1].InstrType);
+        instrSetVar = prog.ListInstr[1] as InstrSetVar;
 
         // InstrLeft: ObjectName
         instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
@@ -156,28 +164,31 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void FileEqQwertyWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "file");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "Qwerty");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenString(1, 1, "\"data.xlsx\"");
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "file");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "Qwerty");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
+
+        //==> Check the result
 
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
@@ -189,28 +200,30 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void StrJohnEqSelectFilesWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenString(1, 1, "\"john\"");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenString(1, 1, "\"data.xlsx\"");
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenString(1, 1, "\"john\"");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
@@ -221,29 +234,31 @@ public class ScriptParserSelectFilesTests
     /// </summary>
     [TestMethod]
     public void i12EqSelectFilesWrong()
-    {
-        ScriptLineTokens slt;
-
+    {        
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenInteger(1, 1, 12);
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenString(1, 1, "\"data.xlsx\"");
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens  line = new ScriptLineTokens();
+        line.AddTokenInteger(1, 1, 12);
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
     }
@@ -255,27 +270,29 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void FileEqSelectFilesParamMissingWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "file");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "file");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, execResult.ListError[0].ErrorCode);
     }
@@ -287,28 +304,30 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void FileEqSelectFilesParam12Wrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "file");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenInteger(1, 1, 12);
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "file");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenInteger(1, 1, 12);
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserFctParamTypeWrong, execResult.ListError[0].ErrorCode);
     }
@@ -320,28 +339,30 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void FileEqSelectFilesParamvarFWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "file");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenName(1, 1, "f");
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "file");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenName(1, 1, "f");
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserFctParamVarNotDefined, execResult.ListError[0].ErrorCode);
     }
@@ -353,25 +374,27 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void FileEqSelectFilesNoParamWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "file");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "file");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, execResult.ListError[0].ErrorCode);
     }
@@ -384,28 +407,30 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void ThenEqSelectFilesWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "then");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenString(1, 1, "\"data.xlsx\"");
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "then");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
         Assert.AreEqual("then", execResult.ListError[0].Param);
@@ -418,29 +443,31 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void ThenEqSelectFilesLoadWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "file");
-        slt.AddTokenSeparator(1, 1, "=");
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenString(1, 1, "\"data.xlsx\"");
-        slt.AddTokenSeparator(1, 1, ")");
-        slt.AddTokenName(1, 1, "load");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "file");
+        line.AddTokenSeparator(1, 1, "=");
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        line.AddTokenSeparator(1, 1, ")");
+        line.AddTokenName(1, 1, "load");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
 
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
@@ -454,26 +481,28 @@ public class ScriptParserSelectFilesTests
     [TestMethod]
     public void SelectFilesWrong()
     {
-        ScriptLineTokens slt;
-
         //-build one line of tokens
-        slt = new ScriptLineTokens();
-        slt.AddTokenName(1, 1, "SelectFiles");
-        slt.AddTokenSeparator(1, 1, "(");
-        slt.AddTokenString(1, 1, "\"data.xlsx\"");
-        slt.AddTokenSeparator(1, 1, ")");
+        ScriptLineTokens line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "SelectFiles");
+        line.AddTokenSeparator(1, 1, "(");
+        line.AddTokenString(1, 1, "\"data.xlsx\"");
+        line.AddTokenSeparator(1, 1, ")");
 
         //-build source code lines of tokens
-        List<ScriptLineTokens> lt = [slt];
+        List<ScriptLineTokens> scriptTokens = [line];
 
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
         ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, lt, out List<InstrBase> listInstr);
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(execResult, scriptTokens, prog);
 
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(0, listInstr.Count);
+        Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, execResult.ListError.Count);
 
         Assert.AreEqual(ErrorCode.ParserFctResultNotSet, execResult.ListError[0].ErrorCode);

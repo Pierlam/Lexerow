@@ -21,7 +21,7 @@ public class ScriptLexerBasicTests
     [TestMethod]
     public void SelectFilesOk()
     {
-        Script script = TestTokensBuilder.Build("#comment", "file=SelectFiles(\"data.xslx\")");
+        Script script = TestTokensBuilder.CreateScript("#comment", "file=SelectFiles(\"data.xslx\")");
 
         ExecResult execResult = new ExecResult();
 
@@ -69,7 +69,7 @@ public class ScriptLexerBasicTests
     {
         ExecResult execResult = new ExecResult();
 
-        Script script = TestTokensBuilder.Build("file=SelectFiles(\"data.xslx)");
+        Script script = TestTokensBuilder.CreateScript("file=SelectFiles(\"data.xslx)");
 
         var logger = A.Fake<IActivityLogger>();
 
@@ -86,7 +86,7 @@ public class ScriptLexerBasicTests
     [TestMethod]
     public void SourceScriptHasOnlyComment()
     {
-        Script script = TestTokensBuilder.Build("#comment");
+        Script script = TestTokensBuilder.CreateScript("#comment");
         ExecResult execResult = new ExecResult();
 
         var logger = A.Fake<IActivityLogger>();
@@ -107,7 +107,7 @@ public class ScriptLexerBasicTests
     [TestMethod]
     public void ParseOnExcelFilenameOk()
     {
-        Script script = TestTokensBuilder.Build("OnExcel \"file.xlsx\"");
+        Script script = TestTokensBuilder.CreateScript("OnExcel \"file.xlsx\"");
         ExecResult execResult = new ExecResult();
 
         var logger = A.Fake<IActivityLogger>();
@@ -134,7 +134,7 @@ public class ScriptLexerBasicTests
     [TestMethod]
     public void ParseForEachRowOk()
     {
-        Script script = TestTokensBuilder.Build("  ForEach Row");
+        Script script = TestTokensBuilder.CreateScript("  ForEach Row");
 
         ExecResult execResult = new ExecResult();
 
@@ -162,7 +162,7 @@ public class ScriptLexerBasicTests
     [TestMethod]
     public void ParseForEachRowCommentOk()
     {
-        Script script = TestTokensBuilder.Build("  ForEach Row #comment");
+        Script script = TestTokensBuilder.CreateScript("  ForEach Row #comment");
 
         ExecResult execResult = new ExecResult();
 
@@ -189,7 +189,7 @@ public class ScriptLexerBasicTests
     [TestMethod]
     public void ParseIfACellGt10ThenACellEq10Ok()
     {
-        Script script = TestTokensBuilder.Build("If A.Cell>10 Then A.Cell=10");
+        Script script = TestTokensBuilder.CreateScript("If A.Cell>10 Then A.Cell=10");
         ExecResult execResult = new ExecResult();
 
         var logger = A.Fake<IActivityLogger>();

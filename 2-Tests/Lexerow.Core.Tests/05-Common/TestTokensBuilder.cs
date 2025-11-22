@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System.ScriptDef;
+﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ScriptDef;
 
 namespace Lexerow.Core.Tests._05_Common;
 
@@ -7,7 +8,7 @@ namespace Lexerow.Core.Tests._05_Common;
 /// </summary>
 public class TestTokensBuilder
 {
-    public static Script Build(string l1)
+    public static Script CreateScript(string l1)
     {
         Script sc = new Script("name", "filename");
 
@@ -15,7 +16,7 @@ public class TestTokensBuilder
         return sc;
     }
 
-    public static Script Build(string l1, string l2)
+    public static Script CreateScript(string l1, string l2)
     {
         Script sc = new Script("name", "filename");
 

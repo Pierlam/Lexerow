@@ -181,8 +181,7 @@ public class InstrOnExcelBuilder
             // ForEach token found
             if (instr.InstrType == InstrType.ForEach)
             {
-                // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
-                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
+                // coming from FirstRowValue, the Sheet is already created!
                 instrOnExcel.BuildStage = InstrOnExcelBuildStage.ForEach;
                 return true;
             }
@@ -190,8 +189,7 @@ public class InstrOnExcelBuilder
             // ForEachRow token found, same as found Row token.
             if (instr.InstrType == InstrType.ForEachRow)
             {
-                // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
-                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
+                // coming from FirstRowValue, the Sheet is already created!
                 instrOnExcel.BuildStage = InstrOnExcelBuildStage.Row;
                 return true;
             }

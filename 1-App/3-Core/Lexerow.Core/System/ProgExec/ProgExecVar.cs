@@ -1,13 +1,8 @@
 ﻿namespace Lexerow.Core.System;
 
-public enum ProgRunVarType
-{
-    // string, int, double, ...
-    BasicValue,
-
-    ExcelFile
-}
-
+/// <summary>
+/// A variable during program execution.
+/// </summary>
 public class ProgExecVar
 {
     public ProgExecVar(InstrBase name, InstrBase value)
@@ -25,7 +20,8 @@ public class ProgExecVar
     public InstrBase ObjectName { get; set; }
 
     /// <summary>
-    /// The value of the variable.
+    /// The value of the variable. Defined in the script.
+    /// can be a value, a variable, a ColCellFunc, a fct call like SelectFiles.
     /// </summary>
     public InstrBase Value { get; set; }
 

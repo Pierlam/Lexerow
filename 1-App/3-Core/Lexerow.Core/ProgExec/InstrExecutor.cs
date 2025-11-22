@@ -15,6 +15,10 @@ public class InstrExecutor
 
     private InstrOnExcelExecutor _instrOnExcelExecutor;
 
+    private InstrOnSheetExecutor _instrOnSheetExecutor;
+
+    private InstrRowExecutor _instrRowExecutor;
+
     private InstrIfThenElseExecutor _instrIfThenElseExecutor;
 
     private InstrComparisonExecutor _instrComparisonExecutor;
@@ -28,6 +32,8 @@ public class InstrExecutor
         _logger = activityLogger;
         _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger);
         _instrOnExcelExecutor = new InstrOnExcelExecutor(_logger, excelProcessor);
+        _instrOnSheetExecutor= new InstrOnSheetExecutor(_logger, excelProcessor);
+        _instrRowExecutor = new InstrRowExecutor(_logger, excelProcessor);
         _instrIfThenElseExecutor = new InstrIfThenElseExecutor(_logger);
         _instrComparisonExecutor = new InstrComparisonExecutor(_logger, excelProcessor);
         _instrSetColCellFuncExecutor = new InstrSetColCellFuncExecutor(_logger, excelProcessor);
@@ -83,28 +89,28 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.ProcessSheets)
             {
-                res = _instrOnExcelExecutor.ExecInstrProcessSheets(execResult, ctx, progExecVarMgr, instr as InstrProcessSheets);
+                res = _instrOnSheetExecutor.ExecInstrProcessSheets(execResult, ctx, progExecVarMgr, instr as InstrProcessSheets);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.OnSheet)
             {
-                res = _instrOnExcelExecutor.ExecInstrOnSheet(execResult, ctx, progExecVarMgr, instr as InstrOnSheet);
+                res = _instrOnSheetExecutor.ExecInstrOnSheet(execResult, ctx, progExecVarMgr, instr as InstrOnSheet);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.ProcessRow)
             {
-                res = _instrOnExcelExecutor.ExecInstrProcessRow(execResult, ctx, progExecVarMgr, instr as InstrProcessRow);
+                res = _instrRowExecutor.ExecInstrProcessRow(execResult, ctx, progExecVarMgr, instr as InstrProcessRow);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.ProcessInstrForEachRow)
             {
-                res = _instrOnExcelExecutor.ExecProcessInstrForEachRow(execResult, ctx, progExecVarMgr, instr as InstrProcessInstrForEachRow);
+                res = _instrRowExecutor.ExecProcessInstrForEachRow(execResult, ctx, progExecVarMgr, instr as InstrProcessInstrForEachRow);
                 if (!res) return false;
                 continue;
             }

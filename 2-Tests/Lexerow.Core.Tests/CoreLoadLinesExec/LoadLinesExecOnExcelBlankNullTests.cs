@@ -38,20 +38,20 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
-        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datLinesACellEqualBlankOk.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesACellEqualBlankOk.xlsx");
         Assert.IsNotNull(fileStream);
-        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // A2: r1, c0: 9  -> not modified
-        bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
         Assert.IsTrue(res);
 
         // A3: r2, c0: 123 -> modified!
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 0, 123);
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 123);
         Assert.IsTrue(res);
 
         // A6: r5, c0: 123 -> modified!
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 5, 0, 123);
+        res = TestExcelChecker.CheckCellValue(wb, 0, 5, 0, 123);
         Assert.IsTrue(res);
     }
 
@@ -82,16 +82,16 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
-        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datLinesThenACellBlankOk.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesThenACellBlankOk.xlsx");
         Assert.IsNotNull(fileStream);
-        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // A2: r1, c0: blank  -> modified
-        bool res = ExcelTestChecker.CheckCellValueBlank(wb, 0, 1, 0);
+        bool res = TestExcelChecker.CheckCellValueBlank(wb, 0, 1, 0);
         Assert.IsTrue(res);
 
         // A4: r3, c0: blank  -> modified
-        res = ExcelTestChecker.CheckCellValueBlank(wb, 0, 3, 0);
+        res = TestExcelChecker.CheckCellValueBlank(wb, 0, 3, 0);
         Assert.IsTrue(res);
     }
 }

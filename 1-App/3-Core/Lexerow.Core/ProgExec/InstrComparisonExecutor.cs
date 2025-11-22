@@ -103,6 +103,12 @@ public class InstrComparisonExecutor
             return true;
         }
 
+        //--A.Cell>val
+        // TODO:
+
+        //--a=b
+        // TODO:
+
         execResult.AddError(ErrorCode.ExecInstrNotManaged, instrComparison.OperandLeft.FirstScriptToken());
         return false;
     }

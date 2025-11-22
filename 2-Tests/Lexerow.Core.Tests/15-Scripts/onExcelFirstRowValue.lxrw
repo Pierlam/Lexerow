@@ -1,0 +1,8 @@
+﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
+
+OnExcel ".\10-ExcelFiles\onExcelFirstRowValue.xlsx"
+	FirstRow 3
+	ForEachRow
+		If A.Cell <= 10 Then A.Cell=12
+	Next
+End OnExcel

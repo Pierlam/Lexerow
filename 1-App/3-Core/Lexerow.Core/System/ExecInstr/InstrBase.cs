@@ -32,9 +32,9 @@ public enum InstrType
 
     ExcelCellAddress,
 
-    SetCellVal,
-    SetCellNull,
-    SetCellBlank,
+    //SetCellVal,
+    //SetCellNull,
+    //SetCellBlank,
 
     SepComparison,
     Comparison,

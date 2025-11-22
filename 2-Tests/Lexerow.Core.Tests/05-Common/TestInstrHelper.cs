@@ -5,7 +5,7 @@ namespace Lexerow.Core.Tests._05_Common;
 /// <summary>
 /// Instruction test helper.
 /// </summary>
-public class InstrTestHelper
+public class TestInstrHelper
 {
     public static void TestInstrColCellFuncValue(string stage, InstrBase instrBase, string colName, int colNum)
     {

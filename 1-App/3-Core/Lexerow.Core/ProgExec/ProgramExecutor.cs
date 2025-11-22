@@ -14,7 +14,8 @@ public class ProgramExecutor
 
     private IExcelProcessor _excelProcessor;
 
-    private ProgExecVarMgr _progRunVarMgr = new ProgExecVarMgr();
+    private ProgExecVarMgr _progExecVarMgr = new ProgExecVarMgr();
+
     private InstrExecutor _instrExecutor;
 
     public ProgramExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
@@ -31,7 +32,7 @@ public class ProgramExecutor
     /// <param name="execResult"></param>
     /// <param name="programScript"></param>
     /// <returns></returns>
-    public bool Exec(ExecResult execResult, ProgramScript programScript)
+    public bool Exec(ExecResult execResult, Program programScript)
     {
         bool res = true;
 
@@ -44,7 +45,7 @@ public class ProgramExecutor
         // execute instr, one by one
         foreach (var instrBase in programScript.ListInstr)
         {
-            res = _instrExecutor.ExecInstr(execResult, _progRunVarMgr, instrBase);
+            res = _instrExecutor.ExecInstr(execResult, _progExecVarMgr, instrBase);
             if (!res) return false;
         }
 

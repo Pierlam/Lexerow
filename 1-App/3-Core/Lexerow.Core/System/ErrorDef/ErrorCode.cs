@@ -200,20 +200,23 @@ public enum ErrorCode
     ParserFctParamVarNotDefined,
     ParserSetVarWrongRightPart,
     ParserFctResultNotSet,
+    
     ParserConstStringValueExpected,
     ParserConstIntValueExpected,
+    ParserConstValueIntWrong,
+    ParserVarNotDefined,
 
-    ParserConstIntValueWrong,
-
+    ParserOnExcelExpected,
     ParserOnSheetExpected,
     ParserTokenDotExpected,
     ParserColAddressExpected,
-    ParserColNumWrong,
     ParserSepComparatorExpected,
-    ParserSepComparatorWrong,
-    ParserReturnTypeWrong,
     ParserTokenIfExpected,
     ParserTokenThenExpected,
+
+    ParserColNumWrong,
+    ParserSepComparatorWrong,
+    ParserReturnTypeWrong,
     ParserThenPartIsEmpty,
 
     //--run program, instructions
@@ -230,6 +233,7 @@ public enum ErrorCode
     ExecFuncNotExists,
 
     ExecFuncOneParamExpected,
+    ExecValueIntWrong,
 
     InstrNotExpected,
     IntMustBePositive

@@ -1,4 +1,6 @@
-﻿using Lexerow.Core.System.ScriptDef;
+﻿using Lexerow.Core.System.GenDef;
+using Lexerow.Core.System.ScriptDef;
+using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.System;
 
@@ -84,7 +86,9 @@ public class InstrOnExcel : InstrBase
     /// <param name="sheetNum"></param>
     public void CreateOnSheet(ScriptToken scriptToken, int sheetNum)
     {
-        InstrOnSheet instrOnSheet = new InstrOnSheet(scriptToken);
+        InstrConstValue value = InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
+
+        InstrOnSheet instrOnSheet = new InstrOnSheet(scriptToken, value);
         instrOnSheet.SheetNum = sheetNum;
         ListSheets.Add(instrOnSheet);
         CurrOnSheet = instrOnSheet;

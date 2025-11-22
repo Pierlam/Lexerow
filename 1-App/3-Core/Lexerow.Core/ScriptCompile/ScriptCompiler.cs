@@ -35,25 +35,22 @@ public class ScriptCompiler
     /// <param name="script"></param>
     /// <param name="listInstr"></param>
     /// <returns></returns>
-    public ExecResult CompileScript(ExecResult execResult, Script script, out List<InstrBase> listInstr)
+    public ExecResult CompileScript(ExecResult execResult, Script script, out Program programScript)
     {
         _logger.LogCompilStart(ActivityLogLevel.Important, "CompileScript", script.Name);
 
         // analyse the source code, line by line
         if (!Lexer.Process(_logger, execResult, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
         {
-            listInstr = new List<InstrBase>();
+            programScript = null;
             return execResult;
         }
 
-        // re-arrange comparison separators, gather them, exp: >,= to >=  ...
-        //ComparisonSepMgr.ReArrangeAllComparisonSep(listSourceCodeLineTokens);
+        // create the program
+        programScript = new Program(script);
 
         Parser parser = new Parser(_logger);
-        bool res = parser.Process(execResult, listScriptLineTokens, out listInstr);
-
-        // save the list of instructions build by the compilation stage
-        // TODO:
+        bool res = parser.Process(execResult, listScriptLineTokens, programScript);
 
         if (res)
             _logger.LogCompilEnd(ActivityLogLevel.Important, "CompileScript", script.Name);

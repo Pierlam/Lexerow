@@ -25,4 +25,13 @@ public class CoreInstr
 
     public const string InstrBlank = "Blank";
     public const string InstrNull = "Null";
+
+    /// <summary>
+    /// Used in OnExcel instr.
+    /// The first data row to process.
+    /// (after the header row)
+    /// 
+    /// value in base1 (human readable).
+    /// </summary>
+    public static int FirstDataRowNum = 2;
 }

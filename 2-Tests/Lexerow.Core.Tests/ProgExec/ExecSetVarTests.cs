@@ -32,8 +32,8 @@ public class ExecSetVarTests :BaseTests
 
         //--create the program runner
         ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new ExcelProcessorNpoi());
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
     }
 

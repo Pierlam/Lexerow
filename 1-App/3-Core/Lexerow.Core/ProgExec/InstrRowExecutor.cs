@@ -26,12 +26,12 @@ public class InstrRowExecutor
     ///  -Stack: ProcessRow, OnSheet, OnExcel
     ///  Next: ForEachRow.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrProcessRow"></param>
     /// <returns></returns>
-    public bool ExecInstrProcessRow(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessRow instrProcessRow)
+    public bool ExecInstrProcessRow(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessRow instrProcessRow)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrRowExecutor.ExecInstrProcessRow", string.Empty);
 
@@ -50,7 +50,7 @@ public class InstrRowExecutor
         instrProcessRow.RowNum++;
 
         // update insights
-        execResult.Insights.NewRowProcessed();
+        result.Insights.NewRowProcessed();
 
         // next: process all defined instructions on the current row
         InstrProcessInstrForEachRow instrForEachRow = new InstrProcessInstrForEachRow(instrProcessRow.FirstScriptToken(), instrProcessRow.ListInstrForEachRow);
@@ -65,12 +65,12 @@ public class InstrRowExecutor
     /// Execute next instr defined in the ForEach/Next instr block.
     ///  -Stack: ProcessInstrForEachRow, ProcessRow, OnSheet, OnExcel
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrForEachRow"></param>
     /// <returns></returns>
-    public bool ExecProcessInstrForEachRow(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessInstrForEachRow instrForEachRow)
+    public bool ExecProcessInstrForEachRow(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessInstrForEachRow instrForEachRow)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrRowExecutor.ExecProcessInstrForEachRow", string.Empty);
 

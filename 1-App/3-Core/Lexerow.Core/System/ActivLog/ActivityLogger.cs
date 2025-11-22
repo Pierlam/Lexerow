@@ -45,7 +45,7 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilEndError(ExecResultError error, string operation, string msg)
+    public void LogCompilEndError(ResultError error, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Important, operation, msg);
         log.ActivityLogBaseType = ActivityLogType.CompileScript;
@@ -91,7 +91,7 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogExecEndError(ExecResultError error, string operation, string msg)
+    public void LogExecEndError(ResultError error, string operation, string msg)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Important, operation, msg);
         log.ActivityLogBaseType = ActivityLogType.ExecProg;

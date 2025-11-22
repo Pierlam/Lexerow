@@ -52,13 +52,13 @@ public class ScriptParserOnExcelErrorTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserTokenExpected, execResult.ListError[0].ErrorCode);
-        Assert.AreEqual("OnExcel", execResult.ListError[0].Param);
+        Assert.AreEqual(ErrorCode.ParserTokenExpected, result.ListError[0].ErrorCode);
+        Assert.AreEqual("OnExcel", result.ListError[0].Param);
     }
 }

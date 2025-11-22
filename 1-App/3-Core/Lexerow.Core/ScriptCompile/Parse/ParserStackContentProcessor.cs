@@ -28,7 +28,7 @@ internal class ParserStackContentProcessor
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public static bool ScriptEndLineReached(ExecResult execResult, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
+    public static bool ScriptEndLineReached(Result result, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
     {
         bool res, isToken;
 
@@ -43,49 +43,49 @@ internal class ParserStackContentProcessor
             if (isToken) return true;
 
             //--is it OnExcel instr ?
-            res = ProcessOnExcel(execResult, stackInstr, scriptLineNum, program.ListInstr, out isToken);
+            res = ProcessOnExcel(result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
             if (!res) return false;
             if (isToken) return true;
 
             //--is previous instr on stack SetVar?  exp: a=12,  a=b, a=OpenExcel(), ...
-            res = GatherSetVar(execResult, listVar, scriptLineNum, stackInstr, program.ListInstr, out isToken);
+            res = GatherSetVar(result, listVar, scriptLineNum, stackInstr, program.ListInstr, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack FirstRow value?
-            res = ProcessFirstDataRowValue(execResult, listVar, scriptLineNum, stackInstr, program, out isToken);
+            res = ProcessFirstDataRowValue(result, listVar, scriptLineNum, stackInstr, program, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack ForEach?
             // TODO: never true, strange
-            res = GatherForEachRow(execResult, listVar, scriptLineNum, stackInstr, program.ListInstr, out isToken);
+            res = GatherForEachRow(result, listVar, scriptLineNum, stackInstr, program.ListInstr, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack Then?  exp: Then Inst
-            res = GatherThen(execResult, listVar, scriptLineNum, stackInstr, program.ListInstr, out isToken);
+            res = GatherThen(result, listVar, scriptLineNum, stackInstr, program.ListInstr, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack If?
-            res = GatherIfThen(execResult, stackInstr, scriptLineNum, program.ListInstr, out isToken);
+            res = GatherIfThen(result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack End If?
-            res = GatherEnd(execResult, stackInstr, scriptLineNum, program.ListInstr, out isToken);
+            res = GatherEnd(result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is it a fct call, exp: fct()
-            res = ProcessFctCall(execResult, stackInstr, scriptLineNum, program.ListInstr, out isToken);
+            res = ProcessFctCall(result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
             if (!res) return false;
             // TODO: fct call can be in a Then or in a ForEachRow!
             if (isToken) continue;
 
             // case not managed, error or not yet implemented
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptLineNum.ToString());
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptLineNum.ToString());
             return false;
         }
     }
@@ -127,13 +127,13 @@ internal class ParserStackContentProcessor
     /// OnExcel instr found.
     /// Nothing more to do at this stage.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessOnExcel(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool ProcessOnExcel(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -168,7 +168,7 @@ internal class ParserStackContentProcessor
     /// <param name="stackInstr"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    private static bool GatherSetVar(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherSetVar(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -231,7 +231,7 @@ internal class ParserStackContentProcessor
 
                 return true;
             }
-            execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -267,12 +267,12 @@ internal class ParserStackContentProcessor
             // check that the function return something to set to a var
             if (instrBase.ReturnType == InstrFunctionReturnType.Nothing)
             {
-                execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+                result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;
             }
 
             // check the fct call: params set and type ok?
-            if (!InstrChecker.CheckFunctionCall(execResult, instrBase))
+            if (!InstrChecker.CheckFunctionCall(result, instrBase))
                 return false;
 
             instrSetVar.InstrRight = instrBase;
@@ -286,7 +286,7 @@ internal class ParserStackContentProcessor
         }
 
         // other cases: unexpected so error
-        execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken());
+        result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken());
         return false;
     }
 
@@ -299,12 +299,12 @@ internal class ParserStackContentProcessor
     ///   [OnSheet sheetNum]
     ///   [FirstRow val/var]
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="scriptLineNum"></param>
     /// <param name="stackInstr"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessFirstDataRowValue(ExecResult execResult, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program, out bool isToken)
+    private static bool ProcessFirstDataRowValue(Result result, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program, out bool isToken)
     {
         isToken = false;
 
@@ -332,7 +332,7 @@ internal class ParserStackContentProcessor
         if(stackInstr.Count != 1)
         {
             // Instr OnExcel expected
-            execResult.AddError(ErrorCode.ParserOnExcelExpected, scriptLineNum.ToString());
+            result.AddError(ErrorCode.ParserOnExcelExpected, scriptLineNum.ToString());
             return false;
         }
 
@@ -341,7 +341,7 @@ internal class ParserStackContentProcessor
         if (instrOnExcel == null)
         {
             // Instr OnExcel expected
-            execResult.AddError(ErrorCode.ParserOnExcelExpected, stackInstr.Peek().FirstScriptToken());
+            result.AddError(ErrorCode.ParserOnExcelExpected, stackInstr.Peek().FirstScriptToken());
             return false;
         }
 
@@ -351,21 +351,21 @@ internal class ParserStackContentProcessor
         //--the top instr on the stack is a value string?
         InstrValue instrValue = instr as InstrValue;
         if (instrValue != null)
-            return ProcessFirstDataRowValueValue(execResult, scriptLineNum, instrOnExcel, instrValue);
+            return ProcessFirstDataRowValueValue(result, scriptLineNum, instrOnExcel, instrValue);
 
         //--the top instr on the stack is a varname?
         InstrObjectName instrObjectName = instr as InstrObjectName;
         if (instrObjectName != null) 
-            return ProcessFirstDataRowValueVar(execResult, listVar, scriptLineNum, program, instrOnExcel, instrObjectName);
+            return ProcessFirstDataRowValueVar(result, listVar, scriptLineNum, program, instrOnExcel, instrObjectName);
 
         //--the top instr on the stack is a fctcall?
         // TODO:
 
-        execResult.AddError(ErrorCode.ParserCaseNotManaged, instr.FirstScriptToken());
+        result.AddError(ErrorCode.ParserCaseNotManaged, instr.FirstScriptToken());
         return false;
     }
 
-    private static bool GatherForEachRow(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherForEachRow(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -405,14 +405,14 @@ internal class ParserStackContentProcessor
     /// Stack  IN: ...;  If; Then; EndIf
     /// Stack OUT: ...;  If; Then
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="stackInstr"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherThen(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherThen(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -459,13 +459,13 @@ internal class ParserStackContentProcessor
     /// Stack  IN: OnExcel, If, Then
     /// Stack OUT: OnExcel, IfThen
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stkItems"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherIfThen(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherIfThen(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -491,7 +491,7 @@ internal class ParserStackContentProcessor
         InstrThen instrThen = instrBase as InstrThen;
         if (instrThen == null)
         {
-            execResult.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
             return false;
         }
 
@@ -506,7 +506,7 @@ internal class ParserStackContentProcessor
         // check that there at leat one instr in the then part
         if (instrThen.ListInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.ParserThenPartIsEmpty, instrBase.FirstScriptToken());
+            result.AddError(ErrorCode.ParserThenPartIsEmpty, instrBase.FirstScriptToken());
             return false;
         }
 
@@ -516,7 +516,7 @@ internal class ParserStackContentProcessor
         instrIfThenElse.InstrThen = instrThen;
 
         // OnExcel instr, add IfThen instr to the current OnSheet/ForEachRow
-        bool res = InstrOnExcelBuilder.BuildIfThen(execResult, stackInstr, instrIfThenElse);
+        bool res = InstrOnExcelBuilder.BuildIfThen(result, stackInstr, instrIfThenElse);
         if (!res) return false;
 
         isToken = true;
@@ -528,13 +528,13 @@ internal class ParserStackContentProcessor
     /// Stack  IN: ...; End; If
     /// Stack OUT: ...; EndIf
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherEnd(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherEnd(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -583,19 +583,19 @@ internal class ParserStackContentProcessor
             return true;
         }
 
-        execResult.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
+        result.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
         return false;
     }
 
     /// <summary>
     /// is it a fct call, without setVar, exp: fct()
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessFctCall(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool ProcessFctCall(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -613,7 +613,7 @@ internal class ParserStackContentProcessor
         // it's a fct call, the stack should contains onyl one item
         if (stackInstr.Count != 1)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -625,27 +625,27 @@ internal class ParserStackContentProcessor
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!
-            execResult.AddError(ErrorCode.ParserFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
         // other cases: unexpected -> error
-        execResult.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+        result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
         return false;
     }
 
-    private static bool ProcessFirstDataRowValueValue(ExecResult execResult, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrValue)
+    private static bool ProcessFirstDataRowValueValue(Result result, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrValue)
     {
-        if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ExecResultError error, out int val))
+        if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ResultError error, out int val))
         {
-            execResult.AddError(error);
+            result.AddError(error);
             return false;
         }
 
         // check the int value, should be >= 1
         if (val < 1)
         {
-            execResult.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
+            result.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
             return false;
         }
         // save the value into the current OnExcel sheet
@@ -653,13 +653,13 @@ internal class ParserStackContentProcessor
         return true;
     }
 
-    private static bool ProcessFirstDataRowValueVar(ExecResult execResult, List<InstrObjectName> listVar, int scriptLineNum, Program program, InstrOnExcel instrOnExcel, InstrObjectName instrObjectName)
+    private static bool ProcessFirstDataRowValueVar(Result result, List<InstrObjectName> listVar, int scriptLineNum, Program program, InstrOnExcel instrOnExcel, InstrObjectName instrObjectName)
     {
         // the varname should be defined
         var instrObjectNameVar = listVar.FirstOrDefault(v => v.MatchName(instrObjectName.ObjectName));
         if (instrObjectNameVar == null)
         {
-            execResult.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
+            result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
             return false;
         }
 
@@ -667,7 +667,7 @@ internal class ParserStackContentProcessor
         InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectNameVar.ObjectName);
         if (instrSetVar == null)
         {
-            execResult.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
+            result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
             return false;
         }
 
@@ -675,16 +675,16 @@ internal class ParserStackContentProcessor
         if (instrSetVar.InstrRight.InstrType== InstrType.ConstValue)
         {
             var instrValue = instrSetVar.InstrRight as InstrValue;
-            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ExecResultError error, out int val))
+            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ResultError error, out int val))
             {
-                execResult.AddError(error);
+                result.AddError(error);
                 return false;
             }
 
             // check the int value, should be >= 1
             if (val < 1)
             {
-                execResult.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
+                result.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
                 return false;
             }
             // save the var object
@@ -695,7 +695,7 @@ internal class ParserStackContentProcessor
         // can be fct call, a math expr
         // TODO: 
 
-        execResult.AddError(ErrorCode.ParserCaseNotManaged, instrSetVar.InstrRight.FirstScriptToken());
+        result.AddError(ErrorCode.ParserCaseNotManaged, instrSetVar.InstrRight.FirstScriptToken());
         return false;
 
     }

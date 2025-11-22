@@ -14,12 +14,12 @@ public class LoadFileCompileOnExcelTests : BaseTests
     [TestMethod]
     public void OnExcelBasicOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "loadOnExcel1.lxrw";
 
         // load the script and compile it
-        execResult = core.LoadScript("script", scriptfile);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadScript("script", scriptfile);
+        Assert.IsTrue(result.Res);
     }
 }

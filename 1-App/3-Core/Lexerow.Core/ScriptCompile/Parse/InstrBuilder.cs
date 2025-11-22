@@ -13,7 +13,7 @@ public class InstrBuilder
     /// <param name="scriptToken"></param>
     /// <param name="instrBase"></param>
     /// <returns></returns>
-    public static bool Build(ExecResult execResult, ScriptToken scriptToken, out InstrBase instrBase)
+    public static bool Build(Result result, ScriptToken scriptToken, out InstrBase instrBase)
     {
         //--script token is a name/id
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
@@ -178,7 +178,7 @@ public class InstrBuilder
                 return true;
             }
 
-            execResult.AddError(new ExecResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
+            result.AddError(new ResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
             instrBase = null;
             return false;
         }
@@ -206,7 +206,7 @@ public class InstrBuilder
             return true;
         }
 
-        execResult.AddError(new ExecResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
+        result.AddError(new ResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
         instrBase = null;
         return false;
     }

@@ -21,11 +21,11 @@ public class InstrSetColCellFuncExecutor
     /// A.Cell= 12
     /// TODO: see ExecInstrSetCellMgr
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="instrColCellFunc"></param>
     /// <param name="instrRight"></param>
     /// <returns></returns>
-    public bool ExecSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
+    public bool ExecSetCellValue(Result result, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
@@ -33,12 +33,12 @@ public class InstrSetColCellFuncExecutor
         IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
         if (cell != null)
-            return ExecCellExists(execResult, _excelProcessor, excelSheet, rowNum, instrValue, cell);
+            return ExecCellExists(result, _excelProcessor, excelSheet, rowNum, instrValue, cell);
 
         // create a new cell object
         cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
-        return ApplySetCellValAndType(execResult, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
+        return ApplySetCellValAndType(result, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public bool ExecSetCellNull(ExecResult execResult, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
+    public bool ExecSetCellNull(Result result, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
         IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
@@ -62,7 +62,7 @@ public class InstrSetColCellFuncExecutor
         return true;
     }
 
-    public bool ExecSetCellBlank(ExecResult execResult, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
+    public bool ExecSetCellBlank(Result result, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
         IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
@@ -75,7 +75,7 @@ public class InstrSetColCellFuncExecutor
         return true;
     }
 
-    private bool ExecCellExists(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, InstrValue instrSetCellVal, IExcelCell cell)
+    private bool ExecCellExists(Result result, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, InstrValue instrSetCellVal, IExcelCell cell)
     {
         // get the cell value type
         CellRawValueType cellType = excelProcessor.GetCellValueType(sheet, cell);
@@ -85,13 +85,13 @@ public class InstrSetColCellFuncExecutor
 
         // yes
         if (res)
-            return ApplySetCellVal(execResult, excelProcessor, sheet, cell, instrSetCellVal.ValueBase);
+            return ApplySetCellVal(result, excelProcessor, sheet, cell, instrSetCellVal.ValueBase);
 
         // type mismatch:problem, the cell exists but the value type to set is different
-        return ApplySetCellValAndType(execResult, excelProcessor, sheet, cell, instrSetCellVal.ValueBase);
+        return ApplySetCellValAndType(result, excelProcessor, sheet, cell, instrSetCellVal.ValueBase);
     }
 
-    private bool ApplySetCellVal(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    private bool ApplySetCellVal(Result result, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
         if (value.ValueType == System.ValueType.Int)
         {
@@ -142,11 +142,11 @@ public class InstrSetColCellFuncExecutor
         }
 
         // type not managed
-        execResult.AddError(new ExecResultError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
+        result.AddError(new ResultError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
         return false;
     }
 
-    private bool ApplySetCellValAndType(ExecResult execResult, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    private bool ApplySetCellValAndType(Result result, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
     {
         if (value.ValueType == System.ValueType.String)
         {
@@ -185,7 +185,7 @@ public class InstrSetColCellFuncExecutor
         }
 
         // type not managed
-        execResult.AddError(ErrorCode.ExcelCellTypeNotManaged, value.ValueType.ToString());
+        result.AddError(ErrorCode.ExcelCellTypeNotManaged, value.ValueType.ToString());
         return false;
     }
 }

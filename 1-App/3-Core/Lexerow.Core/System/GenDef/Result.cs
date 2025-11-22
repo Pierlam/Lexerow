@@ -3,13 +3,12 @@
 namespace Lexerow.Core.System;
 
 /// <summary>
-/// Execution result.
-/// Function/process/treatment execution result.
+/// Result of a function or a program execution.
 ///
 /// </summary>
-public class ExecResult
+public class Result
 {
-    public ExecResult()
+    public Result()
     {
         
     }
@@ -19,59 +18,59 @@ public class ExecResult
     /// Return true if there is no error.
     /// true by default.
     /// </summary>
-    public bool Result { get; set; } = true;
+    public bool Res { get; set; } = true;
 
     /// <summary>
     /// list of error occured.
     /// </summary>
-    public List<ExecResultError> ListError { get; private set; } = new List<ExecResultError>();
+    public List<ResultError> ListError { get; private set; } = new List<ResultError>();
 
     /// <summary>
     /// list of warning occured.
     /// </summary>
-    public List<ExecResultWarning> ListWarning { get; private set; } = new List<ExecResultWarning>();
+    public List<ResultWarning> ListWarning { get; private set; } = new List<ResultWarning>();
 
     /// <summary>
     /// execution result insights/informations: how many datarow are modified, created or removed.
     /// </summary>
-    public ExecResultInsights Insights { get; private set; } = new ExecResultInsights();
+    public ResultInsights Insights { get; private set; } = new ResultInsights();
 
-    public void AddListError(List<ExecResultError> listError)
+    public void AddListError(List<ResultError> listError)
     {
         if (listError.Count == 0) return;
 
         ListError.AddRange(listError);
-        Result = false;
+        Res = false;
     }
 
-    public void AddError(ExecResultError error)
+    public void AddError(ResultError error)
     {
         this.ListError.Add(error);
-        Result = false;
+        Res = false;
     }
 
-    public ExecResultError AddError(ErrorCode errorCode, Exception exception, string msg)
+    public ResultError AddError(ErrorCode errorCode, Exception exception, string msg)
     {
-        var execResultError = new ExecResultError(errorCode, 0, 0, exception, msg);
-        ListError.Add(execResultError);
-        Result = false;
-        return execResultError;
+        var resultError = new ResultError(errorCode, 0, 0, exception, msg);
+        ListError.Add(resultError);
+        Res = false;
+        return resultError;
     }
 
-    public ExecResultError AddError(ErrorCode errorCode, string msg)
+    public ResultError AddError(ErrorCode errorCode, string msg)
     {
-        var execResultError = new ExecResultError(errorCode, 0, 0, msg);
-        ListError.Add(execResultError);
-        Result = false;
-        return execResultError;
+        var resultError = new ResultError(errorCode, 0, 0, msg);
+        ListError.Add(resultError);
+        Res = false;
+        return resultError;
     }
 
-    public ExecResultError AddError(ErrorCode errorCode, int numLine, int colLine, string msg)
+    public ResultError AddError(ErrorCode errorCode, int numLine, int colLine, string msg)
     {
-        var execResultError = new ExecResultError(errorCode, numLine, 0, msg);
-        ListError.Add(execResultError);
-        Result = false;
-        return execResultError;
+        var resultError = new ResultError(errorCode, numLine, 0, msg);
+        ListError.Add(resultError);
+        Res = false;
+        return resultError;
     }
 
     /// <summary>
@@ -81,13 +80,13 @@ public class ExecResult
     /// <param name="scriptToken"></param>
     public void AddError(ErrorCode errorCode, ScriptToken scriptToken)
     {
-        ExecResultError execResultError;
+        ResultError resultError;
         if (scriptToken != null)
-            execResultError = new ExecResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value);
+            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value);
         else
-            execResultError = new ExecResultError(errorCode, 0, 0, string.Empty);
-        ListError.Add(execResultError);
-        Result = false;
+            resultError = new ResultError(errorCode, 0, 0, string.Empty);
+        ListError.Add(resultError);
+        Res = false;
     }
 
     /// <summary>
@@ -97,13 +96,13 @@ public class ExecResult
     /// <param name="scriptToken"></param>
     public void AddError(ErrorCode errorCode, ScriptToken scriptToken, string param)
     {
-        ExecResultError execResultError;
+        ResultError resultError;
         if (scriptToken != null)
-            execResultError = new ExecResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value, param);
+            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value, param);
         else
-            execResultError = new ExecResultError(errorCode, 0, 0, string.Empty, param);
-        ListError.Add(execResultError);
-        Result = false;
+            resultError = new ResultError(errorCode, 0, 0, string.Empty, param);
+        ListError.Add(resultError);
+        Res = false;
     }
 
     /// <summary>
@@ -113,13 +112,13 @@ public class ExecResult
     /// <param name="scriptToken"></param>
     public void AddError(ErrorCode errorCode, ScriptToken scriptToken, Exception exception)
     {
-        ExecResultError execResultError;
+        ResultError resultError;
         if (scriptToken != null)
-            execResultError = new ExecResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, exception, scriptToken.Value);
+            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, exception, scriptToken.Value);
         else
-            execResultError = new ExecResultError(errorCode, 0, 0, exception, string.Empty);
-        ListError.Add(execResultError);
-        Result = false;
+            resultError = new ResultError(errorCode, 0, 0, exception, string.Empty);
+        ListError.Add(resultError);
+        Res = false;
     }
 
     /// <summary>
@@ -131,7 +130,7 @@ public class ExecResult
     /// <param name="colNum"></param>
     /// <param name="cellValueType"></param>
     /// <returns></returns>
-    public ExecResultWarning? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public ResultWarning? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
     {
         if (fileName == null) fileName = string.Empty;
         return ListWarning.Find(x => x.ErrorCode == errorCode && x.FileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase) && x.SheetNum == sheetNum && x.ColNum == colNum && x.CellValueType == cellValueType);
@@ -142,14 +141,14 @@ public class ExecResult
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
 
         // is there a warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
-        ExecResultWarning? warning = FindWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
+        ResultWarning? warning = FindWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
         if (warning != null)
         {
             warning.IncCounter();
             return;
         }
 
-        warning = new ExecResultWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
+        warning = new ResultWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
         ListWarning.Add(warning);
     }
 }

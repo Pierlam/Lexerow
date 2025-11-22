@@ -18,7 +18,7 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
     [TestMethod]
     public void IfACellEqualBlankOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -31,11 +31,11 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
-        execResult = core.ExecuteScript("script");
-        Assert.IsTrue(execResult.Result);
+        result = core.ExecuteScript("script");
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesACellEqualBlankOk.xlsx");
@@ -62,7 +62,7 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
     [TestMethod]
     public void ThenACellBlankOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -75,11 +75,11 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
-        execResult = core.ExecuteScript("script");
-        Assert.IsTrue(execResult.Result);
+        result = core.ExecuteScript("script");
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesThenACellBlankOk.xlsx");

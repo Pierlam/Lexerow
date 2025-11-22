@@ -25,7 +25,7 @@ internal class StackContentProcessor
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public static bool ScriptEndLineReached(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
+    public static bool ScriptEndLineReached(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
     {
         bool res, isToken;
 
@@ -40,44 +40,44 @@ internal class StackContentProcessor
             if (isToken) return true;
 
             //--is it OnExcel instr ?
-            res = ProcessOnExcel(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = ProcessOnExcel(result, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) return true;
 
             //--is previous instr on stack SetVar?  exp: a=12,  a=b, a=OpenExcel(), ...
-            res = GatherSetVar(execResult, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
+            res = GatherSetVar(result, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack Then?  exp: Then Inst
-            res = GatherThen(execResult, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
+            res = GatherThen(result, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack ForEach?
             // TODO: never true, strange
-            res = GatherForEachRow(execResult, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
+            res = GatherForEachRow(result, listVar, sourceCodeLineIndex, stackInstr, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack If?
-            res = GatherIfThen(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = GatherIfThen(result, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is previous instr on stack End If?
-            res = GatherEnd(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = GatherEnd(result, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is it a fct call, exp: fct()
-            res = ProcessFctCall(execResult, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
+            res = ProcessFctCall(result, stackInstr, sourceCodeLineIndex, listInstrToExec, out isToken);
             if (!res) return false;
             // TODO: fct call can be in a Then or in a ForEachRow!
             if (isToken) continue;
 
             // case not managed, error or not yet implemented
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
             return false;
         }
     }
@@ -86,13 +86,13 @@ internal class StackContentProcessor
     /// OnExcel instr found.
     /// Nothing more to do at this stage.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessOnExcel(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool ProcessOnExcel(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -127,7 +127,7 @@ internal class StackContentProcessor
     /// <param name="stackInstr"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    private static bool GatherSetVar(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherSetVar(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -190,7 +190,7 @@ internal class StackContentProcessor
 
                 return true;
             }
-            execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -200,12 +200,12 @@ internal class StackContentProcessor
             // check that the function return something to set to a var
             if (instrBase.ReturnType == InstrFunctionReturnType.Nothing)
             {
-                execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+                result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;
             }
 
             // check the fct call: params set and type ok?
-            if (!InstrChecker.CheckFunctionCall(execResult, instrBase))
+            if (!InstrChecker.CheckFunctionCall(result, instrBase))
                 return false;
 
             instrSetVar.InstrRight = instrBase;
@@ -219,7 +219,7 @@ internal class StackContentProcessor
         }
 
         // other cases: unexpected so error
-        execResult.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken());
+        result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken());
         return false;
     }
 
@@ -232,14 +232,14 @@ internal class StackContentProcessor
     /// Stack  IN: ...;  If; Then; EndIf
     /// Stack OUT: ...;  If; Then
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="stackInstr"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherThen(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherThen(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -313,7 +313,7 @@ internal class StackContentProcessor
         isToken = true;
     }
 
-    private static bool GatherForEachRow(ExecResult execResult, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherForEachRow(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -349,13 +349,13 @@ internal class StackContentProcessor
     /// Stack  IN: OnExcel, If, Then
     /// Stack OUT: OnExcel, IfThen
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stkItems"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherIfThen(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherIfThen(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -381,7 +381,7 @@ internal class StackContentProcessor
         InstrThen instrThen = instrBase as InstrThen;
         if (instrThen == null)
         {
-            execResult.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
             return false;
         }
 
@@ -396,7 +396,7 @@ internal class StackContentProcessor
         // check that there at leat one instr in the then part
         if (instrThen.ListInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.ParserThenPartIsEmpty, instrBase.FirstScriptToken());
+            result.AddError(ErrorCode.ParserThenPartIsEmpty, instrBase.FirstScriptToken());
             return false;
         }
 
@@ -406,7 +406,7 @@ internal class StackContentProcessor
         instrIfThenElse.InstrThen = instrThen;
 
         // OnExcel instr, add IfThen instr to the current OnSheet/ForEachRow
-        bool res = InstrOnExcelBuilder.BuildIfThen(execResult, stackInstr, instrIfThenElse);
+        bool res = InstrOnExcelBuilder.BuildIfThen(result, stackInstr, instrIfThenElse);
         if (!res) return false;
 
         isToken = true;
@@ -418,13 +418,13 @@ internal class StackContentProcessor
     /// Stack  IN: ...; End; If
     /// Stack OUT: ...; EndIf
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="sourceCodeLineIndex"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherEnd(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherEnd(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -473,19 +473,19 @@ internal class StackContentProcessor
             return true;
         }
 
-        execResult.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
+        result.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
         return false;
     }
 
     /// <summary>
     /// is it a fct call, without setVar, exp: fct()
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessFctCall(ExecResult execResult, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool ProcessFctCall(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -503,7 +503,7 @@ internal class StackContentProcessor
         // it's a fct call, the stack should contains onyl one item
         if (stackInstr.Count != 1)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -515,12 +515,12 @@ internal class StackContentProcessor
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!
-            execResult.AddError(ErrorCode.ParserFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
         // other cases: unexpected -> error
-        execResult.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+        result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
         return false;
     }
 }

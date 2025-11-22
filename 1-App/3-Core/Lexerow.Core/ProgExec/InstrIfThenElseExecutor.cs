@@ -15,7 +15,7 @@ public class InstrIfThenElseExecutor
         _logger = activityLogger;
     }
 
-    public bool ExecInstrIfThenElse(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIfThenElse instrIfThenElse)
+    public bool ExecInstrIfThenElse(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIfThenElse instrIfThenElse)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseExecutor.ExecInstrIfThenElse", string.Empty);
 
@@ -63,12 +63,12 @@ public class InstrIfThenElseExecutor
     /// -Stack: InstrComparison, InstrIf, IfThenElse, ForEachRow, NextRow, OnSheet, OnExcel
     ///
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrIf"></param>
     /// <returns></returns>
-    public bool ExecInstrIf(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIf instrIf)
+    public bool ExecInstrIf(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrIf instrIf)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseExecutor.ExecInstrIf", string.Empty);
 
@@ -89,7 +89,7 @@ public class InstrIfThenElseExecutor
                 if (instrIf.Result)
                 {
                     // update insights
-                    execResult.Insights.NewIfCondMatch();
+                    result.Insights.NewIfCondMatch();
 
                     // the if instr becomes the previous one
                     ctx.PrevInstrExecuted = instrIf;
@@ -124,7 +124,7 @@ public class InstrIfThenElseExecutor
         return true;
     }
 
-    public bool ExecInstrThen(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrThen instrThen)
+    public bool ExecInstrThen(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrThen instrThen)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseExecutor.ExecInstrThen", string.Empty);
 

@@ -51,9 +51,9 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -145,15 +145,15 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserSepComparatorWrong, execResult.ListError[0].ErrorCode);
-        Assert.AreEqual(">", execResult.ListError[0].Param);
-        Assert.AreEqual(2, execResult.ListError[0].LineNum);
+        Assert.AreEqual(ErrorCode.ParserSepComparatorWrong, result.ListError[0].ErrorCode);
+        Assert.AreEqual(">", result.ListError[0].Param);
+        Assert.AreEqual(2, result.ListError[0].LineNum);
     }
 
     /// <summary>
@@ -191,9 +191,9 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -285,9 +285,9 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);

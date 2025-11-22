@@ -18,7 +18,7 @@ public class ScriptLoader
     /// <param name="progName"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public bool LoadScriptFromLines(ExecResult execResult, string scriptName, List<string> scriptLines, out Script script)
+    public bool LoadScriptFromLines(Result result, string scriptName, List<string> scriptLines, out Script script)
     {
         script = new Script(scriptName, string.Empty);
 
@@ -26,12 +26,12 @@ public class ScriptLoader
 
         if (scriptLines == null)
         {
-            execResult.AddError(ErrorCode.LoadScriptLinesNull, scriptName);
+            result.AddError(ErrorCode.LoadScriptLinesNull, scriptName);
             return false;
         }
         if (scriptLines.Count == 0)
         {
-            execResult.AddError(ErrorCode.LoadScriptLinesEmpty, scriptName);
+            result.AddError(ErrorCode.LoadScriptLinesEmpty, scriptName);
             return false;
         }
 
@@ -50,27 +50,27 @@ public class ScriptLoader
     /// <param name="progName"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public bool LoadScriptFromFile(ExecResult execResult, string scriptName, string fileName, out Script script)
+    public bool LoadScriptFromFile(Result result, string scriptName, string fileName, out Script script)
     {
         script = null;
 
         // the file doesn't exists
         if (!File.Exists(fileName))
         {
-            execResult.AddError(ErrorCode.FileNotFound, fileName);
+            result.AddError(ErrorCode.FileNotFound, fileName);
             return false;
         }
 
         if (!LoadScript(scriptName, fileName, out script, out Exception exception))
         {
-            execResult.AddError(ErrorCode.LoadScriptFileException, exception, fileName);
+            result.AddError(ErrorCode.LoadScriptFileException, exception, fileName);
             return false;
         }
 
         // contains one line at least
         if (script.ScriptLines.Count == 0)
         {
-            execResult.AddError(ErrorCode.LoadScriptFileEmpty, exception, fileName);
+            result.AddError(ErrorCode.LoadScriptFileEmpty, exception, fileName);
             return false;
         }
 

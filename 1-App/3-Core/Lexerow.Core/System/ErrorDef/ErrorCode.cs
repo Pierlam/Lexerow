@@ -1,30 +1,5 @@
 ﻿namespace Lexerow.Core.System;
 
-public enum ErrorType
-{
-    Repository,
-    Design,
-    Execution
-    //License
-}
-
-/// <summary>
-/// TODO: garder??
-/// </summary>
-public enum ErrorParamKey
-{
-    TypeExecResult,
-    WrongPos
-}
-
-/// <summary>
-/// An error parameter.
-/// </summary>
-public class ErrorParam
-{
-    public ErrorParamKey Key { get; set; }
-    public string Value { get; set; }
-}
 
 /// <summary>
 /// Error/warning code.

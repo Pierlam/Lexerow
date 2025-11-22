@@ -13,11 +13,11 @@ internal class ParserUtils
     /// The stack should contains items in reverse order.
     /// the last token is on the top of stack: Cell or BgColor or FgColor.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="isInstr"></param>
     /// <returns></returns>
-    public static bool ProcessInstrColCellFunc(ExecResult execResult, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isInstr)
+    public static bool ProcessInstrColCellFunc(Result result, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isInstr)
     {
         isInstr = false;
         if (stackInstr.Count == 0) return true;
@@ -34,17 +34,17 @@ internal class ParserUtils
             // still 2 saved instr are expected
             if (stackInstr.Count < 2)
             {
-                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
 
-            res = IsInstrColDot(execResult, stackInstr, out InstrObjectName instrObjectName);
+            res = IsInstrColDot(result, stackInstr, out InstrObjectName instrObjectName);
 
             // get the colNum based on the col name
             int colNum = ExcelUtils.ColumnNameToNumber(instrObjectName.ObjectName);
             if (colNum < 1)
             {
-                execResult.AddError(ErrorCode.ParserColNumWrong, instrObjectName.FirstScriptToken());
+                result.AddError(ErrorCode.ParserColNumWrong, instrObjectName.FirstScriptToken());
                 return false;
             }
 
@@ -97,7 +97,7 @@ internal class ParserUtils
         return false;
     }
 
-    static bool IsInstrColDot(ExecResult execResult, CompilStackInstr stkInstr, out InstrObjectName instrObjectName)
+    static bool IsInstrColDot(Result result, CompilStackInstr stkInstr, out InstrObjectName instrObjectName)
     {
         instrObjectName = null;
 
@@ -106,7 +106,7 @@ internal class ParserUtils
         InstrDot instrDot = instrBaseDot as InstrDot;
         if (instrDot == null)
         {
-            execResult.AddError(ErrorCode.ParserTokenDotExpected, instrBaseDot.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenDotExpected, instrBaseDot.FirstScriptToken());
             return false;
         }
 
@@ -115,7 +115,7 @@ internal class ParserUtils
         instrObjectName = instrBaseColAddr as InstrObjectName;
         if (instrObjectName == null)
         {
-            execResult.AddError(ErrorCode.ParserColAddressExpected, instrBaseDot.FirstScriptToken());
+            result.AddError(ErrorCode.ParserColAddressExpected, instrBaseDot.FirstScriptToken());
             return false;
         }
 

@@ -38,8 +38,8 @@ public class ExecSelectExcelBasicTests : BaseTests
 
         //--create the program runner
         ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new ExcelProcessorNpoi());
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         // found one file
@@ -72,8 +72,8 @@ public class ExecSelectExcelBasicTests : BaseTests
 
         //--create the program runner
         ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new ExcelProcessorNpoi());
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
 
         Assert.IsTrue(res);
         Assert.AreEqual(0, instrSelectFiles.ListSelectedFilename.Count);
@@ -118,8 +118,8 @@ public class ExecSelectExcelBasicTests : BaseTests
 
         //--create the program runner
         ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new ExcelProcessorNpoi());
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         // found one file: "....\dataName.xlsx"
@@ -182,8 +182,8 @@ public class ExecSelectExcelBasicTests : BaseTests
 
         //--create the program runner
         ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new ExcelProcessorNpoi());
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         // found one file: "....\dataName.xlsx"
@@ -217,10 +217,10 @@ public class ExecSelectExcelBasicTests : BaseTests
 
         //--create the program runner
         ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new ExcelProcessorNpoi());
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
 
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ExecInstrVarNotFound, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ExecInstrVarNotFound, result.ListError[0].ErrorCode);
     }
 }

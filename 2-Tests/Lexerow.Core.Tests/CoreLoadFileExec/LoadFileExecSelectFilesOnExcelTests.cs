@@ -23,19 +23,19 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
     [TestMethod]
     public void SelectFilesOnExcelBasicOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "execSelectFilesOnExcel.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(result.Res);
 
         //--check result insights
-        Assert.AreEqual(1, execResult.Insights.FileTotalCount);
-        Assert.AreEqual(1, execResult.Insights.SheetTotalCount);
-        Assert.AreEqual(2, execResult.Insights.RowTotalCount);
-        Assert.AreEqual(1, execResult.Insights.IfCondMatchTotalCount);
+        Assert.AreEqual(1, result.Insights.FileTotalCount);
+        Assert.AreEqual(1, result.Insights.SheetTotalCount);
+        Assert.AreEqual(2, result.Insights.RowTotalCount);
+        Assert.AreEqual(1, result.Insights.IfCondMatchTotalCount);
 
         //--check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "execSelectFilesOnExcel.xlsx");

@@ -21,11 +21,11 @@ public class ScriptLoaderBasicTests
     {
         ScriptLoader loader = new ScriptLoader();
 
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         string fileName = @"15-Scripts\script1.lxrw";
-        loader.LoadScriptFromFile(execResult, "MyScript", fileName, out Script script);
+        loader.LoadScriptFromFile(result, "MyScript", fileName, out Script script);
 
-        Assert.IsTrue(execResult.Result);
+        Assert.IsTrue(result.Res);
         Assert.AreEqual(2, script.ScriptLines.Count);
 
         // check line 1
@@ -44,13 +44,13 @@ public class ScriptLoaderBasicTests
     {
         ScriptLoader loader = new ScriptLoader();
 
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         string fileName = @"15-Scripts\scriptEmpty.lxrw";
-        loader.LoadScriptFromFile(execResult, "MyScript", fileName, out Script script);
+        loader.LoadScriptFromFile(result, "MyScript", fileName, out Script script);
 
-        Assert.IsFalse(execResult.Result);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.LoadScriptFileEmpty, execResult.ListError[0].ErrorCode);
+        Assert.IsFalse(result.Res);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.LoadScriptFileEmpty, result.ListError[0].ErrorCode);
         Assert.AreEqual(0, script.ScriptLines.Count);
     }
 
@@ -61,12 +61,12 @@ public class ScriptLoaderBasicTests
     {
         ScriptLoader loader = new ScriptLoader();
 
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         string fileName = @"15-Scripts\notexist.lxrw";
-        loader.LoadScriptFromFile(execResult, "MyScript", fileName, out Script script);
+        loader.LoadScriptFromFile(result, "MyScript", fileName, out Script script);
 
-        Assert.IsFalse(execResult.Result);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.FileNotFound, execResult.ListError[0].ErrorCode);
+        Assert.IsFalse(result.Res);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.FileNotFound, result.ListError[0].ErrorCode);
     }
 }

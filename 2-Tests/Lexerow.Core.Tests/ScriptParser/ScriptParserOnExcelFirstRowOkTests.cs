@@ -58,9 +58,9 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> check the result
         Assert.IsTrue(res);
@@ -122,13 +122,13 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -170,13 +170,13 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -222,9 +222,9 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> check the result
         Assert.IsTrue(res);
@@ -289,13 +289,13 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserVarNotDefined, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserVarNotDefined, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -341,12 +341,12 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, result.ListError[0].ErrorCode);
     }
 }

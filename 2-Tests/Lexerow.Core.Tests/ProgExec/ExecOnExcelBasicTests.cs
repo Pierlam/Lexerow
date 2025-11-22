@@ -42,8 +42,8 @@ public class ExecOnExcelBasicTests : BaseTests
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
         ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -90,8 +90,8 @@ public class ExecOnExcelBasicTests : BaseTests
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
         ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -163,8 +163,8 @@ public class ExecOnExcelBasicTests : BaseTests
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
         ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -220,8 +220,8 @@ public class ExecOnExcelBasicTests : BaseTests
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
         ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
@@ -289,8 +289,8 @@ public class ExecOnExcelBasicTests : BaseTests
         ActivityLogger logger = new ActivityLogger();
         ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
         ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
-        ExecResult execResult = new ExecResult();
-        bool res = programExec.Exec(execResult, program);
+        Result result = new Result();
+        bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file

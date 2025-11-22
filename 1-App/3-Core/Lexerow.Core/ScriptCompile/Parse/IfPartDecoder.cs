@@ -18,20 +18,20 @@ internal class IfPartDecoder
     /// case1: If A.Cell >
     /// case2: If varBool  NO! when then token is found
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="stkItems"></param>
     /// <returns></returns>
-    public static bool ProcessStackBeforeTokenSepEqualAfterTokenIf(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptTokenSepComp)
+    public static bool ProcessStackBeforeTokenSepEqualAfterTokenIf(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptTokenSepComp)
     {
         if (stackInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptTokenSepComp);
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptTokenSepComp);
             return false;
         }
 
         //--is the stack contains A.Cell expression?
-        bool res = ParserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptTokenSepComp, out bool isInstr);
+        bool res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptTokenSepComp, out bool isInstr);
         if (!res) return false;
         if (isInstr)
         {
@@ -42,7 +42,7 @@ internal class IfPartDecoder
         }
 
         //--is it a function call?  exp: If fct()=12
-        execResult.AddError(ErrorCode.ParserCaseNotManaged, scriptTokenSepComp, "If fctCall...");
+        result.AddError(ErrorCode.ParserCaseNotManaged, scriptTokenSepComp, "If fctCall...");
         return false;
     }
 
@@ -53,13 +53,13 @@ internal class IfPartDecoder
     /// -a fct call returning a bool
     /// -a bool variable
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="stackInstr"></param>
     /// <param name="scriptTokenSepComp"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessStackBeforeTokenThen(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    public static bool ProcessStackBeforeTokenThen(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
@@ -71,16 +71,16 @@ internal class IfPartDecoder
         InstrThen instrThen = new InstrThen(scriptToken);
 
         //--case operandLeft operator B.Cell Then ? exp: If A.Cell>B.Cell
-        bool res = ParserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptToken, out bool isInstr);
+        bool res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptToken, out bool isInstr);
         if (!res) return false;
 
-        if (!MoveInstrToListUntilReachIf(execResult, stackInstr, scriptToken, out InstrIf instrIf, out List<InstrBase> listInstr))
+        if (!MoveInstrToListUntilReachIf(result, stackInstr, scriptToken, out InstrIf instrIf, out List<InstrBase> listInstr))
             return false;
 
         // nothing between If and then
         if (listInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
             return false;
         }
 
@@ -88,11 +88,11 @@ internal class IfPartDecoder
         if (listInstr.Count == 3)
         {
             // build the 3 items comparison instructions: operandLeft operator operandRight
-            if (!BuildInstrComparison(execResult, listInstr[2], listInstr[1], listInstr[0], out InstrComparison instrComparison))
+            if (!BuildInstrComparison(result, listInstr[2], listInstr[1], listInstr[0], out InstrComparison instrComparison))
                 return false;
 
             // check the comparison, if an error occurs, continue the execution!
-            CheckInstrComparison(execResult, instrComparison);
+            CheckInstrComparison(result, instrComparison);
 
             instrIf.InstrBase = instrComparison;
 
@@ -107,7 +107,7 @@ internal class IfPartDecoder
             // check the return type, should be a bool value
             if (listInstr[0].ReturnType != InstrFunctionReturnType.ValueBool)
             {
-                execResult.AddError(ErrorCode.ParserReturnTypeWrong, scriptToken);
+                result.AddError(ErrorCode.ParserReturnTypeWrong, scriptToken);
                 return false;
             }
 
@@ -119,20 +119,20 @@ internal class IfPartDecoder
         }
 
         // wrong instr count between If and Then
-        execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+        result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
         return false;
     }
 
     /// <summary>
     /// Build the 3 items comparison instructions: operandLeft operator operandRight.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="instrLeft"></param>
     /// <param name="instrSepComp"></param>
     /// <param name="InstrRight"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    private static bool BuildInstrComparison(ExecResult execResult, InstrBase instrLeft, InstrBase instrSepComp, InstrBase instrRight, out InstrComparison instrComparison)
+    private static bool BuildInstrComparison(Result result, InstrBase instrLeft, InstrBase instrSepComp, InstrBase instrRight, out InstrComparison instrComparison)
     {
         instrComparison = null;
 
@@ -140,7 +140,7 @@ internal class IfPartDecoder
         InstrSepComparison instrOperator = instrSepComp as InstrSepComparison;
         if (instrOperator == null)
         {
-            execResult.AddError(ErrorCode.ParserSepComparatorExpected, instrSepComp.FirstScriptToken());
+            result.AddError(ErrorCode.ParserSepComparatorExpected, instrSepComp.FirstScriptToken());
             return false;
         }
 
@@ -156,17 +156,17 @@ internal class IfPartDecoder
     /// <summary>
     /// Check the comparison instr.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    private static bool CheckInstrComparison(ExecResult execResult, InstrComparison instrComparison)
+    private static bool CheckInstrComparison(Result result, InstrComparison instrComparison)
     {
         if (instrComparison.OperandRight.InstrType == InstrType.InstrBlank || instrComparison.OperandLeft.InstrType == InstrType.InstrBlank ||
             instrComparison.OperandRight.InstrType == InstrType.InstrNull || instrComparison.OperandLeft.InstrType == InstrType.InstrNull)
         {
             if (instrComparison.Operator.Operator != SepComparisonOperator.Equal && instrComparison.Operator.Operator != SepComparisonOperator.Different)
             {
-                execResult.AddError(ErrorCode.ParserSepComparatorWrong, instrComparison.FirstScriptToken());
+                result.AddError(ErrorCode.ParserSepComparatorWrong, instrComparison.FirstScriptToken());
                 return false;
             }
         }
@@ -176,13 +176,13 @@ internal class IfPartDecoder
     /// <summary>
     ///
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
     /// <param name="instrIf"></param>
     /// <param name="listInstr"></param>
     /// <returns></returns>
-    private static bool MoveInstrToListUntilReachIf(ExecResult execResult, CompilStackInstr stackInstr, ScriptToken scriptToken, out InstrIf instrIf, out List<InstrBase> listInstr)
+    private static bool MoveInstrToListUntilReachIf(Result result, CompilStackInstr stackInstr, ScriptToken scriptToken, out InstrIf instrIf, out List<InstrBase> listInstr)
     {
         // to save instr between If and Then, in the reverse direction
         listInstr = new List<InstrBase>();
@@ -194,7 +194,7 @@ internal class IfPartDecoder
         {
             if (stackInstr.Count == 0)
             {
-                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
             // is it the If Instr?

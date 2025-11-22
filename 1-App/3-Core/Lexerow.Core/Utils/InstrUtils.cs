@@ -48,7 +48,7 @@ public class InstrUtils
     /// <param name="error"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool GetValueIntFromInstrValue(InstrBase instr, int scriptLineNum, out ExecResultError error, out int value)
+    public static bool GetValueIntFromInstrValue(InstrBase instr, int scriptLineNum, out ResultError error, out int value)
     {
         error = null;
         value = 0;
@@ -56,13 +56,13 @@ public class InstrUtils
         var instrValue = instr as InstrValue;
         if (instrValue == null)
         {
-            error = new ExecResultError(ErrorCode.ParserTokenExpected, scriptLineNum, instr.FirstScriptToken().ColNum, instr.FirstScriptToken().ToString());
+            error = new ResultError(ErrorCode.ParserTokenExpected, scriptLineNum, instr.FirstScriptToken().ColNum, instr.FirstScriptToken().ToString());
             return false;
         }
 
         if (instrValue.ValueBase.ValueType != System.ValueType.Int)
         {
-            error = new ExecResultError(ErrorCode.ParserConstIntValueExpected, instrValue.FirstScriptToken().LineNum, instrValue.FirstScriptToken().ColNum, instrValue.FirstScriptToken().Value);
+            error = new ResultError(ErrorCode.ParserConstIntValueExpected, instrValue.FirstScriptToken().LineNum, instrValue.FirstScriptToken().ColNum, instrValue.FirstScriptToken().Value);
             return false;
         }
         value = (instrValue.ValueBase as ValueInt).Val;

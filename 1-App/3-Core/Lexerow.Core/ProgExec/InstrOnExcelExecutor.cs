@@ -26,19 +26,19 @@ internal class InstrOnExcelExecutor
     ///   1/ OnExcel "data.xslx"
     ///   2/ OnExcel files
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listInstr"></param>
     /// <param name="listVar"></param>
     /// <param name="instrOnExcel"></param>
     /// <returns></returns>
-    public bool ExecInstrOnExcel(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel)
+    public bool ExecInstrOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
         bool res;
 
         // check the init, several cases to manage
-        if (!CheckInitOnExcel(execResult, ctx, progRunVarMgr, instrOnExcel, out bool exitStack))
+        if (!CheckInitOnExcel(result, ctx, progRunVarMgr, instrOnExcel, out bool exitStack))
             return false;
 
         if (exitStack) return true;
@@ -46,7 +46,7 @@ internal class InstrOnExcelExecutor
         // save and close the current excel file
         if (ctx.ExcelFileObject != null)
         {
-            if (!CloseFileExecutor.Exec(execResult, _excelProcessor, ctx.ExcelFileObject.ExcelFile))
+            if (!CloseFileExecutor.Exec(result, _excelProcessor, ctx.ExcelFileObject.ExcelFile))
                 return false;
         }
 
@@ -65,10 +65,10 @@ internal class InstrOnExcelExecutor
         ctx.ExcelFileObject = new InstrExcelFileObject(selectedFilename.InstrBase.FirstScriptToken(), selectedFilename.Filename);
 
         // update insights
-        execResult.Insights.StartNewFile(selectedFilename.Filename);
+        result.Insights.StartNewFile(selectedFilename.Filename);
 
         // load the excel file
-        if (!OpenExcelFile(execResult, ctx.ExcelFileObject))
+        if (!OpenExcelFile(result, ctx.ExcelFileObject))
             return false;
 
         // process all sheets, one by one
@@ -78,7 +78,7 @@ internal class InstrOnExcelExecutor
     }
 
 
-    private bool CheckInitOnExcel(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
+    private bool CheckInitOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
 
@@ -87,12 +87,12 @@ internal class InstrOnExcelExecutor
             return true;
 
         //--init-0, case OnExcel "data.xslx"
-        if (!IsOnExcelInitFilenameString(execResult, ctx, instrOnExcel, out exitStack))
+        if (!IsOnExcelInitFilenameString(result, ctx, instrOnExcel, out exitStack))
             return false;
         if (exitStack) return true;
 
         //--init-0, case OnExcel files, files can be a string, varname or a selectFiles fctcall
-        if (!IsOnExcelInitFilenameVar(execResult, ctx, progRunVarMgr, instrOnExcel, out exitStack))
+        if (!IsOnExcelInitFilenameVar(result, ctx, progRunVarMgr, instrOnExcel, out exitStack))
             return false;
         if (exitStack) return true;
 
@@ -102,7 +102,7 @@ internal class InstrOnExcelExecutor
         //--init-0, all cases checked
         if (instrOnExcel.InstrSelectFiles == null)
         {
-            execResult.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.FirstScriptToken());
+            result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.FirstScriptToken());
             return false;
         }
 
@@ -117,12 +117,12 @@ internal class InstrOnExcelExecutor
     /// <summary>
     /// Init, case OnExcel "data.xslx"
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="instrOnExcel"></param>
     /// <param name="exitStack"></param>
     /// <returns></returns>
-    private bool IsOnExcelInitFilenameString(ExecResult execResult, ProgExecContext ctx, InstrOnExcel instrOnExcel, out bool exitStack)
+    private bool IsOnExcelInitFilenameString(Result result, ProgExecContext ctx, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
         if (ctx.PrevInstrExecuted != null) return true;
@@ -134,7 +134,7 @@ internal class InstrOnExcelExecutor
         if (instrValue.ValueBase.ValueType != System.ValueType.String)
         {
             // value should be string, a filename
-            execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
+            result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
             return false;
         }
 
@@ -153,13 +153,13 @@ internal class InstrOnExcelExecutor
     /// 2/ a selectFiles fct call. exp: files=SelectFiles(...)
     /// 3/ a another var, exp: files= myfiles
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="progRunVarMgr"></param>
     /// <param name="instrOnExcel"></param>
     /// <param name="exitStack"></param>
     /// <returns></returns>
-    private bool IsOnExcelInitFilenameVar(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
+    private bool IsOnExcelInitFilenameVar(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
         if (ctx.PrevInstrExecuted != null) return true;
@@ -173,7 +173,7 @@ internal class InstrOnExcelExecutor
         if (progRunVar == null)
         {
             // var name not found, not defined before in the script
-            execResult.AddError(ErrorCode.ExecInstrVarNotFound, instrOnExcel.InstrFiles.FirstScriptToken());
+            result.AddError(ErrorCode.ExecInstrVarNotFound, instrOnExcel.InstrFiles.FirstScriptToken());
             return false;
         }
 
@@ -184,7 +184,7 @@ internal class InstrOnExcelExecutor
             if (instrValue.ValueBase.ValueType != System.ValueType.String)
             {
                 // value should be string, a filename
-                execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
+                result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
                 return false;
             }
 
@@ -210,16 +210,16 @@ internal class InstrOnExcelExecutor
     /// <summary>
     /// Open the excel file object, from the name.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="instrValue"></param>
     /// <param name="instrExcelFileObject"></param>
     /// <returns></returns>
-    private bool OpenExcelFile(ExecResult execResult, InstrExcelFileObject instrExcelFileObject)
+    private bool OpenExcelFile(Result result, InstrExcelFileObject instrExcelFileObject)
     {
         // execute the instr OpenExcel(fileName)
-        if (!_excelProcessor.Open(instrExcelFileObject.Filename, out IExcelFile excelFile, out ExecResultError error))
+        if (!_excelProcessor.Open(instrExcelFileObject.Filename, out IExcelFile excelFile, out ResultError error))
         {
-            execResult.AddError(error);
+            result.AddError(error);
             return false;
         }
         instrExcelFileObject.ExcelFile = excelFile;

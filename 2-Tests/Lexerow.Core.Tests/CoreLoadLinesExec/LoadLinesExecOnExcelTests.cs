@@ -15,7 +15,7 @@ public class LoadLinesExecOnExcelTests : BaseTests
     [TestMethod]
     public void OnExcelBasicOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -28,11 +28,11 @@ public class LoadLinesExecOnExcelTests : BaseTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
-        execResult = core.ExecuteScript("script");
-        Assert.IsTrue(execResult.Result);
+        result = core.ExecuteScript("script");
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx");
@@ -51,7 +51,7 @@ public class LoadLinesExecOnExcelTests : BaseTests
     [TestMethod]
     public void OnExcelBasic2Ok()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -64,8 +64,8 @@ public class LoadLinesExecOnExcelTests : BaseTests
             ];
 
         // load the script, compile it and execute it
-        execResult = core.LoadExecLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadExecLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel2.xlsx");
@@ -84,7 +84,7 @@ public class LoadLinesExecOnExcelTests : BaseTests
     [TestMethod]
     public void IfACellGreateBCellOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -97,8 +97,8 @@ public class LoadLinesExecOnExcelTests : BaseTests
             ];
 
         // load the script, compile it and execute it
-        execResult = core.LoadExecLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadExecLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesIfACellGreaterBCell2.xlsx");

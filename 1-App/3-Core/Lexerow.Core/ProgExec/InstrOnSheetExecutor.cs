@@ -30,12 +30,12 @@ internal class InstrOnSheetExecutor
     /// <summary>
     /// after OnExcel, comes here, process all sheets, one by one.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrNextSheet"></param>
     /// <returns></returns>
-    public bool ExecInstrProcessSheets(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
+    public bool ExecInstrProcessSheets(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessSheets", string.Empty);
 
@@ -50,7 +50,7 @@ internal class InstrOnSheetExecutor
         }
 
         // update insights
-        execResult.Insights.StartNewSheet(instrNextSheet.SheetNum);
+        result.Insights.StartNewSheet(instrNextSheet.SheetNum);
 
         // focus on the current sheet
         InstrOnSheet instrOnSheet = instrNextSheet.ListSheet[instrNextSheet.SheetNum];
@@ -62,12 +62,12 @@ internal class InstrOnSheetExecutor
     /// <summary>
     /// Process a sheet, execute all defined instr in ForEach Row block.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrOnSheet"></param>
     /// <returns></returns>
-    public bool ExecInstrOnSheet(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet)
+    public bool ExecInstrOnSheet(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", string.Empty);
         bool res;
@@ -82,7 +82,7 @@ internal class InstrOnSheetExecutor
             InstrProcessRow instrProcessRow = new InstrProcessRow(instrOnSheet.FirstScriptToken(), instrOnSheet.ListInstrForEachRow);
 
             // get the FirstRow value, can be an instrValue, a var or a fct call.
-            if(!GetFirstRowValue(execResult, ctx, progRunVarMgr, instrOnSheet, out int val))
+            if(!GetFirstRowValue(result, ctx, progRunVarMgr, instrOnSheet, out int val))
                 return false;
 
             // translate in base0 from human readable base1
@@ -103,14 +103,14 @@ internal class InstrOnSheetExecutor
     /// get FirstRow value
     /// can be a InstrValue, InstrObjectName (var) of a fct call.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="progRunVarMgr"></param>
     /// <param name="instrOnSheet"></param>
     /// <param name="instrProcessRow"></param>
     /// <param name="val"></param>
     /// <returns></returns>
-    private bool GetFirstRowValue(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet, out int val)
+    private bool GetFirstRowValue(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet, out int val)
     {
         val = 1;
 
@@ -118,15 +118,15 @@ internal class InstrOnSheetExecutor
         InstrValue instrValue = instrOnSheet.InstrFirstDataRow as InstrValue;
         if (instrValue != null)
         {
-            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ExecResultError error, out val))
+            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ResultError error, out val))
             {
-                execResult.AddError(error);
+                result.AddError(error);
                 return false;
             }
             // check the int value, should be >= 1
             if (val < 1)
             {
-                execResult.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
+                result.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
                 return false;
             }
 
@@ -140,20 +140,20 @@ internal class InstrOnSheetExecutor
             ProgExecVar progExecVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
             if(progExecVar == null)
             {
-                execResult.AddError(ErrorCode.ExecInstrVarNotFound, instrValue.FirstScriptToken());
+                result.AddError(ErrorCode.ExecInstrVarNotFound, instrValue.FirstScriptToken());
                 return false;
             }
 
             // the value of the value should be an Int value
-            if (!InstrUtils.GetValueIntFromInstrValue(progExecVar.Value, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ExecResultError error, out val))
+            if (!InstrUtils.GetValueIntFromInstrValue(progExecVar.Value, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ResultError error, out val))
             {
-                execResult.AddError(error);
+                result.AddError(error);
                 return false;
             }
             // check the int value, should be >= 1
             if (val < 1)
             {
-                execResult.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
+                result.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
                 return false;
             }
 
@@ -163,7 +163,7 @@ internal class InstrOnSheetExecutor
         //--is it a fct call?
         // TODO:
 
-        execResult.AddError(ErrorCode.ExecInstrNotManaged, instrOnSheet.InstrFirstDataRow.FirstScriptToken());
+        result.AddError(ErrorCode.ExecInstrNotManaged, instrOnSheet.InstrFirstDataRow.FirstScriptToken());
         return false;
     }
 }

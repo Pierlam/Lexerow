@@ -52,9 +52,9 @@ public class ScriptParserOnExcelOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -150,9 +150,9 @@ public class ScriptParserOnExcelOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -234,9 +234,9 @@ public class ScriptParserOnExcelOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -347,9 +347,9 @@ public class ScriptParserOnExcelOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -471,9 +471,9 @@ public class ScriptParserOnExcelOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -582,9 +582,9 @@ public class ScriptParserOnExcelOkTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);

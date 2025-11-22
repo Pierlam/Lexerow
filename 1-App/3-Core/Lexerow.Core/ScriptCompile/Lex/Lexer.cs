@@ -18,7 +18,7 @@ public class Lexer
     /// <param name="script"></param>
     /// <param name="listScriptLineTokens"></param>
     /// <returns></returns>
-    public static bool Process(IActivityLogger logger, ExecResult execResult, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexerConfig lac)
+    public static bool Process(IActivityLogger logger, Result result, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexerConfig lac)
     {
         logger.LogCompilStart(ActivityLogLevel.Important, "Lexer.Process", script.Name);
 
@@ -36,18 +36,18 @@ public class Lexer
             {
                 if (lastTokenType == ScriptTokenType.WrongNumber)
                 {
-                    var error = execResult.AddError(ErrorCode.LexerFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
+                    var error = result.AddError(ErrorCode.LexerFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
                     logger.LogCompilEndError(error, "Lexer.Process", script.Name);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.StringBadFormed)
                 {
-                    execResult.AddError(new ExecResultError(ErrorCode.LexerFoundSgtringBadFormatted, scriptLine.Line));
+                    result.AddError(new ResultError(ErrorCode.LexerFoundSgtringBadFormatted, scriptLine.Line));
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.Undefined)
                 {
-                    execResult.AddError(new ExecResultError(ErrorCode.LexerFoundCharUndefined, scriptLine.Line));
+                    result.AddError(new ResultError(ErrorCode.LexerFoundCharUndefined, scriptLine.Line));
                     return false;
                 }
             }

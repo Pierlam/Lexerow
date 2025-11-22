@@ -39,9 +39,9 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -114,9 +114,9 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -181,16 +181,16 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
 
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -217,15 +217,15 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -252,15 +252,15 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -286,15 +286,15 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -321,15 +321,15 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamTypeWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserFctParamTypeWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -356,15 +356,15 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamVarNotDefined, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserFctParamVarNotDefined, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -388,15 +388,15 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -424,16 +424,16 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
-        Assert.AreEqual("then", execResult.ListError[0].Param);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
+        Assert.AreEqual("then", result.ListError[0].Param);
     }
 
     /// <summary>
@@ -461,16 +461,16 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
+        Assert.AreEqual(1, result.ListError.Count);
 
-        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -496,16 +496,16 @@ public class ScriptParserSelectFilesTests
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(execResult, scriptTokens, prog);
+        bool res = parser.Process(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
-        Assert.AreEqual(1, execResult.ListError.Count);
+        Assert.AreEqual(1, result.ListError.Count);
 
-        Assert.AreEqual(ErrorCode.ParserFctResultNotSet, execResult.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserFctResultNotSet, result.ListError[0].ErrorCode);
     }
 
     // file=

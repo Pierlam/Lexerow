@@ -29,10 +29,10 @@ public class ProgramExecutor
     /// <summary>
     /// Execute a program, obtained after the compilation of a script.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="programScript"></param>
     /// <returns></returns>
-    public bool Exec(ExecResult execResult, Program programScript)
+    public bool Exec(Result result, Program programScript)
     {
         bool res = true;
 
@@ -45,18 +45,18 @@ public class ProgramExecutor
         // execute instr, one by one
         foreach (var instrBase in programScript.ListInstr)
         {
-            res = _instrExecutor.ExecInstr(execResult, _progExecVarMgr, instrBase);
+            res = _instrExecutor.ExecInstr(result, _progExecVarMgr, instrBase);
             if (!res) return false;
         }
 
         // close all opened excel file, if its not done
         // TODO: don't call it! each excel file will be closed just the use of it at the end of the exec of the instr OnExcel
-        //res= CloseAllOpenedExcelFile(execResult, _listExecVar);
+        //res= CloseAllOpenedExcelFile(result, _listExecVar);
 
         stopwatch.Stop();
         string elapsedTime = string.Format("{0:hh\\:mm\\:ss}", stopwatch.Elapsed);
         if (!res)
-            _logger.LogExecEndError(execResult.ListError[0], "ProgramExecutor.Exec", "Error count: " + execResult.ListError.Count.ToString());
+            _logger.LogExecEndError(result.ListError[0], "ProgramExecutor.Exec", "Error count: " + result.ListError.Count.ToString());
         else
             _logger.LogExecEnd(ActivityLogLevel.Important, "ProgramExecutor.Exec", "Elapsed time: " + elapsedTime);
         return res;

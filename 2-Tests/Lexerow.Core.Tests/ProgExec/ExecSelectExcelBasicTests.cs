@@ -96,10 +96,10 @@ public class ExecSelectExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("name");
 
         //-instr right
-        InstrValue instrConstValue = TestInstrBuilder.CreateInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));
+        InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));
 
         //-Setvar
-        InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrConstValue);
+        InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrValue);
         program.ListInstr.Add(instrSetVar);
 
         //--SetVar #2:
@@ -126,8 +126,6 @@ public class ExecSelectExcelBasicTests : BaseTests
         Assert.AreEqual(1, instrSelectFiles.ListSelectedFilename.Count);
         Assert.IsNotNull(1, instrSelectFiles.ListSelectedFilename[0].Filename);
         Assert.IsTrue(instrSelectFiles.ListSelectedFilename[0].Filename.EndsWith("dataName.xlsx"));
-
-        //Assert.AreEqual((instrSelectFiles.ListInstrParams[0] as InstrConstValue).RawValue, (instrSelectFiles.ListFinalFilename[0].InstrBase as InstrConstValue).RawValue);
     }
 
     /// <summary>
@@ -148,10 +146,10 @@ public class ExecSelectExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("f");
 
         //-instr right
-        InstrValue instrConstValue = TestInstrBuilder.CreateInstrConstValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));
+        InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));
 
         //-Setvar
-        InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrConstValue);
+        InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrValue);
         program.ListInstr.Add(instrSetVar);
 
         //--SetVar #2: name=f

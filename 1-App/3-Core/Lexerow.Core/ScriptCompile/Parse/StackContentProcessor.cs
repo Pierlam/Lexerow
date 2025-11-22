@@ -162,8 +162,8 @@ internal class StackContentProcessor
         stackInstr.Pop();
 
         //--case a=12, A.Cell=12
-        InstrValue instrConstValue = instrBase as InstrValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = instrBase as InstrValue;
+        if (instrValue != null)
         {
             instrSetVar.InstrRight = instrBase;
             if (stackInstr.Count == 0)

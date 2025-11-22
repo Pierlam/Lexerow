@@ -17,12 +17,12 @@ public class TestInstrHelper
         Assert.AreEqual(InstrColCellFuncType.Value, instrColCellFunc.InstrColCellFuncType);
     }
 
-    public static void TestInstrConstValue(string stage, InstrBase instrBase, int val)
+    public static void TestInstrValue(string stage, InstrBase instrBase, int val)
     {
         // check If-Operand Right
-        InstrValue instrConstValue = instrBase as InstrValue;
-        Assert.IsNotNull(instrConstValue);
-        Assert.AreEqual(val.ToString(), instrConstValue.RawValue);
-        Assert.AreEqual(val, (instrConstValue.ValueBase as ValueInt).Val);
+        InstrValue instrValue = instrBase as InstrValue;
+        Assert.IsNotNull(instrValue);
+        Assert.AreEqual(val.ToString(), instrValue.RawValue);
+        Assert.AreEqual(val, (instrValue.ValueBase as ValueInt).Val);
     }
 }

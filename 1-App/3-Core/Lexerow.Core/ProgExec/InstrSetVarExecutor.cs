@@ -56,11 +56,11 @@ public class InstrSetVarExecutor
         }
 
         //--case a=12, the right instr is a const value
-        InstrValue instrConstValue = instrSetVar.InstrRight as InstrValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
+        if (instrValue != null)
         {
             // get or create the var, set the value
-            CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrConstValue);
+            CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrValue);
             ctx.StackInstr.Pop();
             return true;
         }
@@ -111,10 +111,10 @@ public class InstrSetVarExecutor
         _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrSetVarExecutor.ExecSetToColCellFunc", "Left is InstrColCellFunc: " + instrSetVar.FirstScriptToken());
 
         //--case A.cell=10 ?
-        InstrValue instrConstValue = instrSetVar.InstrRight as InstrValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
+        if (instrValue != null)
         {
-            if (!_instrSetColCellFuncRunner.ExecSetCellValue(execResult, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc, instrConstValue))
+            if (!_instrSetColCellFuncRunner.ExecSetCellValue(execResult, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc, instrValue))
                 return false;
             ctx.StackInstr.Pop();
             return true;

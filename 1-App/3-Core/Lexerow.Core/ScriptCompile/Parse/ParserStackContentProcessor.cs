@@ -203,8 +203,8 @@ internal class ParserStackContentProcessor
         stackInstr.Pop();
 
         //--case a=12, A.Cell=12
-        InstrValue instrConstValue = instrBase as InstrValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = instrBase as InstrValue;
+        if (instrValue != null)
         {
             instrSetVar.InstrRight = instrBase;
             if (stackInstr.Count == 0)
@@ -349,9 +349,9 @@ internal class ParserStackContentProcessor
         // TODO:
 
         //--the top instr on the stack is a value string?
-        InstrValue instrConstValue = instr as InstrValue;
-        if (instrConstValue != null)
-            return ProcessFirstDataRowValueValue(execResult, scriptLineNum, instrOnExcel, instrConstValue);
+        InstrValue instrValue = instr as InstrValue;
+        if (instrValue != null)
+            return ProcessFirstDataRowValueValue(execResult, scriptLineNum, instrOnExcel, instrValue);
 
         //--the top instr on the stack is a varname?
         InstrObjectName instrObjectName = instr as InstrObjectName;
@@ -634,9 +634,9 @@ internal class ParserStackContentProcessor
         return false;
     }
 
-    private static bool ProcessFirstDataRowValueValue(ExecResult execResult, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrConstValue)
+    private static bool ProcessFirstDataRowValueValue(ExecResult execResult, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrValue)
     {
-        if (!InstrUtils.GetValueIntFromInstrValue(instrConstValue, scriptLineNum, out ExecResultError error, out int val))
+        if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ExecResultError error, out int val))
         {
             execResult.AddError(error);
             return false;
@@ -645,11 +645,11 @@ internal class ParserStackContentProcessor
         // check the int value, should be >= 1
         if (val < 1)
         {
-            execResult.AddError(ErrorCode.ParserConstValueIntWrong, instrConstValue.FirstScriptToken());
+            execResult.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
             return false;
         }
         // save the value into the current OnExcel sheet
-        instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrConstValue;
+        instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrValue;
         return true;
     }
 
@@ -674,8 +674,8 @@ internal class ParserStackContentProcessor
         // its a final int value, check it
         if (instrSetVar.InstrRight.InstrType== InstrType.ConstValue)
         {
-            var instrConstValue = instrSetVar.InstrRight as InstrValue;
-            if (!InstrUtils.GetValueIntFromInstrValue(instrConstValue, scriptLineNum, out ExecResultError error, out int val))
+            var instrValue = instrSetVar.InstrRight as InstrValue;
+            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ExecResultError error, out int val))
             {
                 execResult.AddError(error);
                 return false;
@@ -684,7 +684,7 @@ internal class ParserStackContentProcessor
             // check the int value, should be >= 1
             if (val < 1)
             {
-                execResult.AddError(ErrorCode.ParserConstValueIntWrong, instrConstValue.FirstScriptToken());
+                execResult.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
                 return false;
             }
             // save the var object

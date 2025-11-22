@@ -37,9 +37,9 @@ public class ProgExecVar
 
     public string GetValueString()
     {
-        InstrValue instrConstValue = Value as InstrValue;
-        if (instrConstValue != null)
-            return instrConstValue.RawValue;
+        InstrValue instrValue = Value as InstrValue;
+        if (instrValue != null)
+            return instrValue.RawValue;
 
         return string.Empty;
     }

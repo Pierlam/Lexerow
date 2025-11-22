@@ -25,7 +25,7 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instrColCellFunc"></param>
     /// <param name="instrRight"></param>
     /// <returns></returns>
-    public bool ExecSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrConstValue)
+    public bool ExecSetCellValue(ExecResult execResult, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
@@ -33,12 +33,12 @@ public class InstrSetColCellFuncExecutor
         IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
         if (cell != null)
-            return ExecCellExists(execResult, _excelProcessor, excelSheet, rowNum, instrConstValue, cell);
+            return ExecCellExists(execResult, _excelProcessor, excelSheet, rowNum, instrValue, cell);
 
         // create a new cell object
         cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
-        return ApplySetCellValAndType(execResult, _excelProcessor, excelSheet, cell, instrConstValue.ValueBase);
+        return ApplySetCellValAndType(execResult, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
     }
 
     /// <summary>

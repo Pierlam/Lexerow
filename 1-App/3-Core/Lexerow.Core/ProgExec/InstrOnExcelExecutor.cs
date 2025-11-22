@@ -128,13 +128,13 @@ internal class InstrOnExcelExecutor
         if (ctx.PrevInstrExecuted != null) return true;
         if (instrOnExcel.InstrFiles == null) return true;
 
-        var instrConstValue = instrOnExcel.InstrFiles as InstrValue;
-        if (instrConstValue == null) return true;
+        var instrValue = instrOnExcel.InstrFiles as InstrValue;
+        if (instrValue == null) return true;
 
-        if (instrConstValue.ValueBase.ValueType != System.ValueType.String)
+        if (instrValue.ValueBase.ValueType != System.ValueType.String)
         {
             // value should be string, a filename
-            execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrConstValue.FirstScriptToken());
+            execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
             return false;
         }
 
@@ -178,19 +178,19 @@ internal class InstrOnExcelExecutor
         }
 
         //--1/ var value is a ConstValue string?
-        InstrValue instrConstValue = progRunVar.Value as InstrValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = progRunVar.Value as InstrValue;
+        if (instrValue != null)
         {
-            if (instrConstValue.ValueBase.ValueType != System.ValueType.String)
+            if (instrValue.ValueBase.ValueType != System.ValueType.String)
             {
                 // value should be string, a filename
-                execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrConstValue.FirstScriptToken());
+                execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
                 return false;
             }
 
             // create an adhoc SelectFiles instr
-            instrOnExcel.InstrSelectFiles = new InstrSelectFiles(instrConstValue.FirstScriptToken());
-            instrOnExcel.InstrSelectFiles.AddParamSelect(instrConstValue);
+            instrOnExcel.InstrSelectFiles = new InstrSelectFiles(instrValue.FirstScriptToken());
+            instrOnExcel.InstrSelectFiles.AddParamSelect(instrValue);
             ctx.StackInstr.Push(instrOnExcel.InstrSelectFiles);
             exitStack = true;
             return true;
@@ -211,7 +211,7 @@ internal class InstrOnExcelExecutor
     /// Open the excel file object, from the name.
     /// </summary>
     /// <param name="execResult"></param>
-    /// <param name="instrConstValue"></param>
+    /// <param name="instrValue"></param>
     /// <param name="instrExcelFileObject"></param>
     /// <returns></returns>
     private bool OpenExcelFile(ExecResult execResult, InstrExcelFileObject instrExcelFileObject)

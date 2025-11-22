@@ -52,14 +52,14 @@ internal class FunctionCallParamsProcessor
         }
 
         //--is the param a string const value token?  exp: SelectFiles("MyFile.xlsx")
-        InstrValue instrConstValue = listParams[0] as InstrValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = listParams[0] as InstrValue;
+        if (instrValue != null)
         {
             // the const value type should be a string
-            if (instrConstValue.ValueBase.ValueType == System.ValueType.String)
+            if (instrValue.ValueBase.ValueType == System.ValueType.String)
             {
                 // push the string param to the instr SelectFiles
-                instr.AddParamSelect(instrConstValue);
+                instr.AddParamSelect(instrValue);
                 return true;
             }
 

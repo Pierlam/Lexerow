@@ -29,14 +29,14 @@ public class InstrUtils
         if(instrBase==null)
             return false;
 
-        InstrValue instrConstValue = instrBase as InstrValue;
-        if (instrConstValue == null) 
+        InstrValue instrValue = instrBase as InstrValue;
+        if (instrValue == null) 
             return false;
 
-        if (instrConstValue.ValueBase.ValueType != System.ValueType.Int)
+        if (instrValue.ValueBase.ValueType != System.ValueType.Int)
             return false;
 
-        value = (instrConstValue.ValueBase as ValueInt).Val;
+        value = (instrValue.ValueBase as ValueInt).Val;
         return true;
     }
 
@@ -53,19 +53,19 @@ public class InstrUtils
         error = null;
         value = 0;
 
-        var instrConstValue = instr as InstrValue;
-        if (instrConstValue == null)
+        var instrValue = instr as InstrValue;
+        if (instrValue == null)
         {
             error = new ExecResultError(ErrorCode.ParserTokenExpected, scriptLineNum, instr.FirstScriptToken().ColNum, instr.FirstScriptToken().ToString());
             return false;
         }
 
-        if (instrConstValue.ValueBase.ValueType != System.ValueType.Int)
+        if (instrValue.ValueBase.ValueType != System.ValueType.Int)
         {
-            error = new ExecResultError(ErrorCode.ParserConstIntValueExpected, instrConstValue.FirstScriptToken().LineNum, instrConstValue.FirstScriptToken().ColNum, instrConstValue.FirstScriptToken().Value);
+            error = new ExecResultError(ErrorCode.ParserConstIntValueExpected, instrValue.FirstScriptToken().LineNum, instrValue.FirstScriptToken().ColNum, instrValue.FirstScriptToken().Value);
             return false;
         }
-        value = (instrConstValue.ValueBase as ValueInt).Val;
+        value = (instrValue.ValueBase as ValueInt).Val;
         return true;
     }
 

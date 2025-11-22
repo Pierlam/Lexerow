@@ -36,12 +36,12 @@ public class InstrComparisonExecutor
         bool res;
 
         InstrColCellFunc instrColCellFuncLeft = instrComparison.OperandLeft as InstrColCellFunc;
-        InstrValue instrConstValueRight = instrComparison.OperandRight as InstrValue;
+        InstrValue instrValueRight = instrComparison.OperandRight as InstrValue;
 
         //--A.Cell>10
-        if (instrColCellFuncLeft != null && instrConstValueRight != null)
+        if (instrColCellFuncLeft != null && instrValueRight != null)
         {
-            if (!Compare(execResult, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrConstValueRight, out bool resultComp))
+            if (!Compare(execResult, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrValueRight, out bool resultComp))
                 return false;
 
             instrComparison.Result = resultComp;
@@ -50,15 +50,15 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        InstrValue instrConstValueLeft = instrComparison.OperandLeft as InstrValue;
+        InstrValue instrValueLeft = instrComparison.OperandLeft as InstrValue;
         InstrColCellFunc instrColCellFuncRight = instrComparison.OperandRight as InstrColCellFunc;
 
         //--10<A.Cell
-        if (instrConstValueLeft != null && instrColCellFuncRight != null)
+        if (instrValueLeft != null && instrColCellFuncRight != null)
         {
             // revert the operator,exp: < becomes >
             InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
-            if (!Compare(execResult, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, sepCompRevert, instrConstValueRight, out bool resultComp))
+            if (!Compare(execResult, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, sepCompRevert, instrValueRight, out bool resultComp))
                 return false;
 
             instrComparison.Result = resultComp;
@@ -122,11 +122,11 @@ public class InstrComparisonExecutor
     /// <param name="rowNum"></param>
     /// <param name="instrColCellFuncLeft"></param>
     /// <param name="compOperator"></param>
-    /// <param name="instrConstValueRight"></param>
+    /// <param name="instrValueRight"></param>
     /// <param name="resultComp"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    private bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrValue instrConstValueRight, out bool resultComp)
+    private bool Compare(ExecResult execResult, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrValue instrValueRight, out bool resultComp)
     {
         resultComp = false;
 
@@ -136,7 +136,7 @@ public class InstrComparisonExecutor
         CellRawValueType cellType = excelProcessor.GetCellValueType(excelSheet, cell);
 
         // does the cell type match the If-Comparison cell.Value type?
-        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrConstValueRight.ValueBase))
+        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrValueRight.ValueBase))
         {
             // is there an warning already existing?
             execResult.AddWarning(ErrorCode.IfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellType);
@@ -145,7 +145,7 @@ public class InstrComparisonExecutor
         }
 
         // execute the If part: comparison condition
-        return CompareValues(execResult, excelProcessor, cell, compOperator, instrConstValueRight.ValueBase, out resultComp);
+        return CompareValues(execResult, excelProcessor, cell, compOperator, instrValueRight.ValueBase, out resultComp);
     }
 
     /// <summary>
@@ -157,7 +157,7 @@ public class InstrComparisonExecutor
     /// <param name="rowNum"></param>
     /// <param name="instrColCellFuncLeft"></param>
     /// <param name="compOperator"></param>
-    /// <param name="instrConstValueRight"></param>
+    /// <param name="instrValueRight"></param>
     /// <param name="resultComp"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>

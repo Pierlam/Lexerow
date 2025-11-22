@@ -78,9 +78,9 @@ public class ScriptParserOnExcelFirstRowOkTests
         Assert.AreEqual(1, instrOnSheet.ListInstrForEachRow.Count);
 
         // check the firstrow value
-        InstrValue instrConstValue = instrOnExcel.ListSheets[0].InstrFirstDataRow as InstrValue;
-        Assert.IsNotNull(instrConstValue);
-        Assert.AreEqual(3, ((instrConstValue.ValueBase) as ValueInt).Val);
+        InstrValue instrValue = instrOnExcel.ListSheets[0].InstrFirstDataRow as InstrValue;
+        Assert.IsNotNull(instrValue);
+        Assert.AreEqual(3, ((instrValue.ValueBase) as ValueInt).Val);
     }
 
     /// <summary>

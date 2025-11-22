@@ -4,7 +4,7 @@
 a=3
 r=a
 
-OnExcel ".\10-ExcelFiles\onExcelFirstRowVar.xlsx"
+OnExcel ".\10-ExcelFiles\onExcelFirstRowVarVar.xlsx"
 	FirstRow r
 	ForEachRow
 		If A.Cell <= 10 Then A.Cell=12

@@ -15,12 +15,11 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void OnExcelBasicOk()
     {
-        ExecResult execResult;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "execOnExcel1.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
+        ExecResult execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
         //--check result insights
@@ -46,12 +45,11 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void IfACellGreaterBCellOk()
     {
-        ExecResult execResult;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "IfACellGreaterBCell.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
+        ExecResult execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
@@ -79,12 +77,11 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void IfACellEqStringOk()
     {
-        ExecResult execResult;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "IfACellEqString.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
+        ExecResult execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
@@ -100,12 +97,11 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void IfACellGreaterDoubleOk()
     {
-        ExecResult execResult;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "IfACellGreaterDouble.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
+        ExecResult execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
@@ -129,12 +125,11 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void onExcelManyIfOk()
     {
-        ExecResult execResult;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "onExcelManyIf.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
+        ExecResult execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
@@ -162,12 +157,11 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void onExcelManyThenOk()
     {
-        ExecResult execResult;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "onExcelManyThen.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
+        ExecResult execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file
@@ -195,12 +189,11 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void OnExcelFirstRowValueOk()
     {
-        ExecResult execResult;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "onExcelFirstRowValue.lxrw";
 
         // load the script, compile it and then execute it
-        execResult = core.LoadExecScript("script", scriptfile);
+        ExecResult execResult = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(execResult.Result);
 
         //--check the content of excel file

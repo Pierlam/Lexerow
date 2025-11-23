@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 
 namespace Lexerow.Core.ScriptCompile.Parse;

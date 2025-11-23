@@ -62,6 +62,31 @@ public class TestTokensBuilder
     }
 
     /// <summary>
+    /// SetVar = intValue
+    /// a=Date(2025,11,23)
+    /// a=Date(year,month,day)
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarDate(int numLine, List<ScriptLineTokens> script, string varName, int year, int month, int day)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenName(numLine, 1, "Date");
+        line.AddTokenSeparator(numLine, 10, "(");
+        line.AddTokenInteger(numLine, 13, year);
+        line.AddTokenSeparator(numLine, 10, ",");
+        line.AddTokenInteger(numLine, 13, month);
+        line.AddTokenSeparator(numLine, 10, ",");
+        line.AddTokenInteger(numLine, 13, day);
+        line.AddTokenSeparator(numLine, 10, ")");
+        script.Add(line);
+    }
+
+    /// <summary>
     /// a=-7
     /// </summary>
     /// <param name="numLine"></param>

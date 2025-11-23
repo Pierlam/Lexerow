@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
+using Lexerow.Core.System.InstrDef;
 
 namespace Lexerow.Core.ProgExec;
 
@@ -73,9 +74,9 @@ public class InstrExecutor
                 continue;
             }
 
-            if (instr.InstrType == InstrType.SelectFiles)
+            if (instr.InstrType == InstrType.FuncSelectFiles)
             {
-                res = _instrSelectFilesExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrSelectFiles);
+                res = _instrSelectFilesExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrFuncSelectFiles);
                 if (!res) return false;
                 continue;
             }

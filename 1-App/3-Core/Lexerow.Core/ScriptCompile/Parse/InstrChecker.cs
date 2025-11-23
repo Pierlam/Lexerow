@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -16,7 +17,7 @@ internal class InstrChecker
         if (!instrBase.IsFunctionCall) return true;
 
         //--is it OpenExcel?
-        InstrSelectFiles instrOpenExcel = instrBase as InstrSelectFiles;
+        InstrFuncSelectFiles instrOpenExcel = instrBase as InstrFuncSelectFiles;
         if (instrOpenExcel != null)
         {
             // need at least one parameter

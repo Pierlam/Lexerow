@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ProgExec;
@@ -33,7 +34,7 @@ public class InstrSelectFilesExecutor
     /// <param name="listVar"></param>
     /// <param name="instrSelectFiles"></param>
     /// <returns></returns>
-    public bool Exec(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles)
+    public bool Exec(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrFuncSelectFiles instrSelectFiles)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
 
@@ -57,7 +58,7 @@ public class InstrSelectFilesExecutor
 
             // get the current param and selector
             InstrBase param = instrSelectFiles.ListInstrParams[instrSelectFiles.CurrParamNum];
-            InstrSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[instrSelectFiles.CurrParamNum];
+            InstrFuncSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[instrSelectFiles.CurrParamNum];
 
             // is it a const value (string) or varname?
             if (param.InstrType == InstrType.Value || param.InstrType == InstrType.ObjectName)
@@ -76,7 +77,7 @@ public class InstrSelectFilesExecutor
         {
             // get the current param and selector
             InstrBase param = instrSelectFiles.ListInstrParams[i];
-            InstrSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[i];
+            InstrFuncSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[i];
 
             // the param is a const value or a varname, get final lsit of filename to process: apply select and unselect filters
             if (!DecodeParam(result, progRunVarMgr, instrSelectFiles, param, selector))
@@ -89,7 +90,7 @@ public class InstrSelectFilesExecutor
         return true;
     }
 
-    private bool DecodeParam(Result result, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
+    private bool DecodeParam(Result result, ProgExecVarMgr progRunVarMgr, InstrFuncSelectFiles instrSelectFiles, InstrBase param, InstrFuncSelectFilesSelector selector)
     {
         InstrValue instrValue;
 
@@ -169,7 +170,7 @@ public class InstrSelectFilesExecutor
         }
     }
 
-    private bool SelectFilesFromStringFilename(Result result, InstrSelectFiles instrSelectFiles, InstrValue instrValue, out List<string> listFilename)
+    private bool SelectFilesFromStringFilename(Result result, InstrFuncSelectFiles instrSelectFiles, InstrValue instrValue, out List<string> listFilename)
     {
         // should be a string
         ValueString valueString = instrValue.ValueBase as ValueString;

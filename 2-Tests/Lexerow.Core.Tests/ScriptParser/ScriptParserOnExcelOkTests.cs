@@ -2,6 +2,7 @@
 using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 
@@ -260,7 +261,7 @@ public class ScriptParserOnExcelOkTests
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("file", instrObjectName.ObjectName);
         // right:  InstrOpenExcel
-        InstrSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrSelectFiles;
+        InstrFuncSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrFuncSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
         // no need to test further
 

@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ProgExec;
@@ -139,7 +140,7 @@ internal class InstrOnExcelExecutor
         }
 
         // create an adhoc SelectFiles instr
-        instrOnExcel.InstrSelectFiles = new InstrSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());
+        instrOnExcel.InstrSelectFiles = new InstrFuncSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());
         instrOnExcel.InstrSelectFiles.AddParamSelect(instrOnExcel.InstrFiles);
         ctx.StackInstr.Push(instrOnExcel.InstrSelectFiles);
         exitStack = true;
@@ -189,7 +190,7 @@ internal class InstrOnExcelExecutor
             }
 
             // create an adhoc SelectFiles instr
-            instrOnExcel.InstrSelectFiles = new InstrSelectFiles(instrValue.FirstScriptToken());
+            instrOnExcel.InstrSelectFiles = new InstrFuncSelectFiles(instrValue.FirstScriptToken());
             instrOnExcel.InstrSelectFiles.AddParamSelect(instrValue);
             ctx.StackInstr.Push(instrOnExcel.InstrSelectFiles);
             exitStack = true;
@@ -197,7 +198,7 @@ internal class InstrOnExcelExecutor
         }
 
         //--2/ var value is a SelectFiles fct call ?
-        InstrSelectFiles instrSelectFiles = progRunVar.Value as InstrSelectFiles;
+        InstrFuncSelectFiles instrSelectFiles = progRunVar.Value as InstrFuncSelectFiles;
         if (instrSelectFiles != null)
         {
             // Should be already executed before

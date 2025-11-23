@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 
 namespace Lexerow.Core.ScriptCompile.SyntaxAnalyze;
@@ -511,7 +512,7 @@ internal class StackContentProcessor
         // TODO:
 
         //--is it the fct InstrOpenExcel ?
-        InstrSelectFiles instrOpenExcel = instrBase as InstrSelectFiles;
+        InstrFuncSelectFiles instrOpenExcel = instrBase as InstrFuncSelectFiles;
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!

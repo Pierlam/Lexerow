@@ -2,6 +2,7 @@
 using Lexerow.Core.ProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Tests.Common;
 
@@ -30,7 +31,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //-instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "data1.xlsx"));
+        InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "data1.xlsx"));
 
         //-Setvar
         InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrSelectFiles);
@@ -64,7 +65,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //-instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote("blabla.xlsx"));
+        InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote("blabla.xlsx"));
 
         //-Setvar
         InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrSelectFiles);
@@ -110,7 +111,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //-instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamObjectName("name");
+        InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamObjectName("name");
 
         //-Setvar
         instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrSelectFiles);
@@ -174,7 +175,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //-instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamObjectName("name");
+        InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamObjectName("name");
 
         //-Setvar
         instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrSelectFiles);
@@ -209,7 +210,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         var instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //-instr right
-        InstrSelectFiles instrOpenExcel = TestInstrBuilder.CreateInstrSelectExcelParamObjectName("name");
+        InstrFuncSelectFiles instrOpenExcel = TestInstrBuilder.CreateInstrSelectExcelParamObjectName("name");
 
         //-Setvar
         var instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrOpenExcel);

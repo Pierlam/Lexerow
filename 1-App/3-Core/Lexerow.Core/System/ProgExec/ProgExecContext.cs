@@ -1,4 +1,6 @@
-﻿namespace Lexerow.Core.System;
+﻿using Lexerow.Core.System.InstrDef;
+
+namespace Lexerow.Core.System;
 
 /// <summary>
 /// Program execution context.
@@ -35,5 +37,5 @@ public class ProgExecContext
     /// <summary>
     /// list of selected excel filename to process
     /// </summary>
-    public List<InstrSelectedFilename> ListSelectedFilename { get; private set; } = new List<InstrSelectedFilename>();
+    public List<InstrFuncSelectedFilename> ListSelectedFilename { get; private set; } = new List<InstrFuncSelectedFilename>();
 }

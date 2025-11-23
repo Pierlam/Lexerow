@@ -1,4 +1,6 @@
-﻿namespace Lexerow.Core.System;
+﻿using Lexerow.Core.System.InstrDef;
+
+namespace Lexerow.Core.System;
 
 /// <summary>
 /// A variable during program execution.

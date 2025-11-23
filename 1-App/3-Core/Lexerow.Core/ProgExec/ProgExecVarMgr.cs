@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 
 namespace Lexerow.Core.ProgExec;
 

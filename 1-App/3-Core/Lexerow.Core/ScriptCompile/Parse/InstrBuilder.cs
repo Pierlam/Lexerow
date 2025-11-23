@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.GenDef;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
@@ -28,7 +29,7 @@ public class InstrBuilder
             // SelectFiles
             if (scriptToken.Value.Equals(CoreInstr.InstrSelectFiles, StringComparison.InvariantCultureIgnoreCase))
             {
-                instrBase = new InstrSelectFiles(scriptToken);
+                instrBase = new InstrFuncSelectFiles(scriptToken);
                 return true;
             }
 

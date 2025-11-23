@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.GenDef;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using NPOI.SS.Formula.Functions;
 using Org.BouncyCastle.Utilities.Collections;

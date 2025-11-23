@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 
@@ -33,15 +34,15 @@ internal class FunctionCallParamsProcessor
 
         logger.LogCompilStart(ActivityLogLevel.Important, "FunctionCallParamsProcessor.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
 
-        if (instrBase.InstrType == InstrType.SelectFiles)
-            return ProcessSelectFiles(logger, result, listVar, instrBase as InstrSelectFiles, listInstrToExec, listParams);
+        if (instrBase.InstrType == InstrType.FuncSelectFiles)
+            return ProcessSelectFiles(logger, result, listVar, instrBase as InstrFuncSelectFiles, listInstrToExec, listParams);
 
         // get the last instr from the stack
 
         throw new NotImplementedException("not yet implemented, InstrType:" + instrBase.InstrType.ToString());
     }
 
-    private static bool ProcessSelectFiles(IActivityLogger logger, Result result, List<InstrObjectName> listVar, InstrSelectFiles instr, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
+    private static bool ProcessSelectFiles(IActivityLogger logger, Result result, List<InstrObjectName> listVar, InstrFuncSelectFiles instr, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
     {
         logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessSelectFiles", "Param count: " + instr.ListInstrParams.Count);
         // only one param expected, type should be string or an instr returning a string

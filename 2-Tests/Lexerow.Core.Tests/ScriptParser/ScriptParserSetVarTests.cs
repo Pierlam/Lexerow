@@ -2,6 +2,7 @@
 using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 using System;
@@ -154,8 +155,52 @@ public class ScriptParserSetVarTests
         instrObjectName = instrSetVar.InstrRight as InstrObjectName;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.ObjectName);
-
     }
+
+    /// <summary>
+    /// a=Date(2025,22,23)
+    /// </summary>
+    [TestMethod]
+    public void SetaEqDateOk()
+    {
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
+
+        //-a=12
+        TestTokensBuilder.AddLineSetVarDate(numLine++, scriptTokens, "a", 2025,11,23);
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
+
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
+
+        //==> Check the result
+        Assert.IsTrue(res);
+        Assert.AreEqual(2, prog.ListInstr.Count);
+
+        //--SetVar a=Date()
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
+        InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
+
+        // InstrLeft: ObjectName
+        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        Assert.IsNotNull(instrObjectName);
+        Assert.AreEqual("a", instrObjectName.ObjectName);
+
+        // InstrRight: built-in fct Date
+        InstrFuncDate instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
+        Assert.IsNotNull(instrFuncDate);
+        Assert.AreEqual(2025, instrFuncDate.Year);
+        Assert.AreEqual(11, instrFuncDate.Month);
+        Assert.AreEqual(23, instrFuncDate.Day);
+    }
+
+    // TODO: SetVarDate wrong : not enought param, param type wrong, month or day wrong
+
 
     /// <summary>
     /// a=b

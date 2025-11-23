@@ -2,6 +2,7 @@
 using Lexerow.Core.ProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Tests._20_Utils;
@@ -272,7 +273,7 @@ public class ExecOnExcelBasicTests : BaseTests
         InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         // instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "dataOnExcel3.xlsx"));
+        InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "dataOnExcel3.xlsx"));
 
         InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrSelectFiles);
         program.ListInstr.Add(instrSetVar);

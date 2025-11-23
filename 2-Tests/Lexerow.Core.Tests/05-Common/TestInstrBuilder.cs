@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
@@ -212,14 +213,14 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrSelectFiles CreateInstrSelectExcelParamObjectName(string val)
+    public static InstrFuncSelectFiles CreateInstrSelectExcelParamObjectName(string val)
     {
         // ObjectName
         var token = CreateScriptTokenName(val);
         var instrObjectName = new InstrObjectName(token);
 
         // OpenExcel
-        InstrSelectFiles instrOpenExcel = new InstrSelectFiles(instrObjectName.FirstScriptToken());
+        InstrFuncSelectFiles instrOpenExcel = new InstrFuncSelectFiles(instrObjectName.FirstScriptToken());
         instrOpenExcel.AddParamSelect(instrObjectName);
         return instrOpenExcel;
     }
@@ -230,15 +231,15 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static InstrSelectFiles CreateInstrSelectExcelParamString(string fileName)
+    public static InstrFuncSelectFiles CreateInstrSelectExcelParamString(string fileName)
     {
         InstrValue instrValue = CreateValueString(fileName);
         return CreateInstrSelectExcel(instrValue);
     }
 
-    public static InstrSelectFiles CreateInstrSelectExcel(InstrBase paramFileName)
+    public static InstrFuncSelectFiles CreateInstrSelectExcel(InstrBase paramFileName)
     {
-        InstrSelectFiles instrSelectFiles = new InstrSelectFiles(paramFileName.FirstScriptToken());
+        InstrFuncSelectFiles instrSelectFiles = new InstrFuncSelectFiles(paramFileName.FirstScriptToken());
         instrSelectFiles.AddParamSelect(paramFileName);
         return instrSelectFiles;
     }

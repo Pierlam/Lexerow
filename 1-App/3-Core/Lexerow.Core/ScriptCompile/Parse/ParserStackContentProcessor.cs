@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.Utils;
 using NPOI.Util;
@@ -623,7 +624,7 @@ internal class ParserStackContentProcessor
         // TODO:
 
         //--is it the fct SelectFiles ?
-        InstrSelectFiles instrOpenExcel = instrBase as InstrSelectFiles;
+        InstrFuncSelectFiles instrOpenExcel = instrBase as InstrFuncSelectFiles;
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!

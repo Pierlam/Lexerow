@@ -17,7 +17,7 @@ Lexerow is an open source library.
 You have an Excel file containing a datatable in the first sheet: the first line is the header, and others are datarows of the table.
 In column B, some cells are empty, and it's a problem. It would better to have a value in each cell.
 
-Comment: In Excel language, we say more blank than empty.
+Comment: In Excel language, we say blank rather than empty.
 
 ```
 +------+-------+
@@ -76,7 +76,7 @@ End OnExcel
 ```
 
 The script will scan each datarow present in the sheet starting by defaut from the row #2.
-Each time the cell value in column B is blank, the int value 0 is set in place.
+Each time the cell value in column B is blank, the value 0 will be set in place.
 The execution will stop automatically after the last row was processed.
 
 This a very basic script with few instructions to manage this standard case, but of course it's possible to create more complex scripts to manage all your specific cases.
@@ -108,7 +108,7 @@ The source code is hosted on github here:
 https://github.com/Pierlam/Lexerow
 
 
-# to go further with scripts
+# To go further - Script tuning
 
 Now let's manage a specific case of your datatable.
 
@@ -137,7 +137,7 @@ If A.Cell=null
 In Then instruction, you can set a value to a cell or clear it.
 
 To clear the cell value, you can put blank in it. 
-The formating of the cell will remain: background color and border.
+The formating of the cell will remain: background/foreground color and border.
 
 To remove completly a cell (value and formatting) , you have to set it to null. 
 
@@ -150,7 +150,7 @@ Then A.Cell=13
 Then A.Cell=25.89
 Then A.Cell="Hello"
 Then A.Cell=blank    # cell formatting will stay
-Then A.Cell= null    # cell formatting will be cleared
+Then A.Cell=null     # cell formatting will be cleared
 ```
 
 From a technical point of view, you can manage easily errors occured during compilation or during the execution of scripts.

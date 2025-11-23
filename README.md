@@ -2,7 +2,7 @@
 Lexerow is a backend dotnet library to process easily datarows and cells in Excel files (xlsx).
 
 You can for example detect empty cell in a column and set a specific value. 
-You can compare a cell value to a specific value and then put a new value in the same cell or in another cell fo the row.
+You can compare a cell value to a specific value and then put a new value in the same cell or in another cell of the row.
 
 Lexerow is developed in C# and can be used in any dotnet application. 
 
@@ -15,7 +15,7 @@ Lexerow is an open source library.
 You have an Excel file containing a datatable: the first line is the header, and others are datarows of the table.
 In column B, some cells are empty, and it's a problem. It would better to have a value in each cell.
 
-Comment: In Excel language, we say more blank than empty.
+Comment: In Excel language, we say blank rather than empty.
 
 
 <p align="center">
@@ -57,7 +57,7 @@ End OnExcel
 ```
 
 The script will scan each datarow present in the sheet starting by defaut from the row #2.
-Each time the cell value in column B is blank, the int value 0 is set in place.
+Each time the cell value in column B is blank, the value 0 will be set in place.
 The execution will stop automatically after the last row was processed.
 
 This a very basic script with few instructions to manage this standard case, but of course it's possible to create more complex scripts to manage all your specific cases.
@@ -87,7 +87,7 @@ Lexerow library is packaged as a nuget ready to use:
 https://www.nuget.org/packages/Lexerow
 
 
-# to go further with scripts
+# To go further - Script tuning
 
 Now let's manage a specific case of your datatable.
 
@@ -109,14 +109,14 @@ There are several kind of checks available in If condition:
 If A.Cell=12
 If A.Cell>8.55
 If A.Cell<>"Hello"
-If A.Cell=blank
-If A.Cell=null
+If A.Cell=blank      # no value in the cell, can have formatting
+If A.Cell=null       # no value and no formatting
 ```
 
 In Then instruction, you can set a value to a cell or clear it.
 
 To clear the cell value, you can put blank in it. 
-The formating of the cell will remain: background color and border.
+The formating of the cell will remain: background/foreground color and border.
 
 To remove completly a cell (value and formatting) , you have to set it to null. 
  
@@ -126,7 +126,7 @@ Then A.Cell=13
 Then A.Cell=25.89
 Then A.Cell="Hello"
 Then A.Cell=blank    # cell formatting will stay
-Then A.Cell= null    # cell formatting will be cleared
+Then A.Cell=null     # cell formatting will be cleared
 ```
 
 For If and Then instruction, type of value can be: int, double, string.

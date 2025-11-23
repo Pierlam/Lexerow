@@ -220,4 +220,31 @@ public class ScriptLexerBasicTests
         Assert.AreEqual(ScriptTokenType.Integer, lt[0].ListScriptToken[11].ScriptTokenType);
     }
 
+    [TestMethod]
+    public void ParseIfACellEqDateOk()
+    {
+        Script script = TestTokensBuilder.CreateScript("If A.Cell=Date(2025,11,23)");
+
+        //=>exec lexer, line by line
+        Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> listlineTokens, new LexerConfig());
+
+        //=> Check the result
+        Assert.IsTrue(result.Res);
+        Assert.AreEqual(1, listlineTokens.Count);
+
+        var lineTokens = listlineTokens[0];
+        Assert.AreEqual(13, lineTokens.ListScriptToken.Count);
+
+        int idx = 5;
+        Assert.IsTrue(TestTokensHelper.TestName(lineTokens, idx++, "Date"));
+        Assert.IsTrue(TestTokensHelper.TestSep(lineTokens, idx++, "("));
+        Assert.IsTrue(TestTokensHelper.TestNumberInt(lineTokens, idx++, 2025));
+        Assert.IsTrue(TestTokensHelper.TestSep(lineTokens, idx++, ","));
+        Assert.IsTrue(TestTokensHelper.TestNumberInt(lineTokens, idx++, 11));
+        Assert.IsTrue(TestTokensHelper.TestSep(lineTokens, idx++, ","));
+        Assert.IsTrue(TestTokensHelper.TestNumberInt(lineTokens, idx++, 23));
+        Assert.IsTrue(TestTokensHelper.TestSep(lineTokens, idx++, ")"));
+
+    }
 }

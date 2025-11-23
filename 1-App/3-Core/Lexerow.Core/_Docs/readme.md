@@ -62,7 +62,7 @@ To process datarow of the excel file as explained, Lexerow provide a powerful in
 Let's consider the excel file to fix blank values is "file.xlsx".
 The first row is the header. Data starts at the second row which is the default case.
 
-Create a basic script and save it let's say with this name: "script.lxrw"
+Create a basic script as a text file and save it let's say with this name: "script.lxrw"
 
 The file name extension is free.
 

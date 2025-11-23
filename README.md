@@ -2,7 +2,7 @@
 Lexerow is a backend dotnet library to process easily datarows and cells in Excel files (xlsx).
 
 You can for example detect empty cell in a column and set a specific value. 
-You can compare a cell value to a specific value and then put a new value in the same cell row or in another cell.
+You can compare a cell value to a specific value and then put a new value in the same cell or in another cell fo the row.
 
 Lexerow is developed in C# and can be used in any dotnet application. 
 
@@ -14,6 +14,8 @@ Lexerow is an open source library.
 
 You have an Excel file containing a datatable: the first line is the header, and others are datarows of the table.
 In column B, some cells are empty, and it's a problem. It would better to have a value in each cell.
+
+Comment: In Excel language, we say more blank than empty.
 
 
 <p align="center">
@@ -58,7 +60,7 @@ The script will scan each datarow present in the sheet starting by defaut from t
 Each time the cell value in column B is blank, the int value 0 is set in place.
 The execution will stop automatically after the last row was processed.
 
-This a very basic script with few instructions to manage this standard case, but of course it's possible to create more complex, more precise script to manage all your specific cases.
+This a very basic script with few instructions to manage this standard case, but of course it's possible to create more complex scripts to manage all your specific cases.
 
 
 ## A C# program to execute the script
@@ -73,7 +75,7 @@ Create a program in C# and use it in this way:
 LexerowCore core = new LexerowCore();
 
 // load and execute the script   
-core.LoadExecScript("MyScript", "MyScript.lxrw");   
+core.LoadExecScript("MyScript", "script.lxrw");   
 ```
 
 This is the smallest C# program you have to write.
@@ -111,15 +113,12 @@ If A.Cell=blank
 If A.Cell=null
 ```
 
-In Then instruction, you can set a value to a cell.
-Type of value can be: int, double, string.
+In Then instruction, you can set a value to a cell or clear it.
 
-Date and time will be managed later.
-
-To clear the cell value, you have to put blank in it. 
+To clear the cell value, you can put blank in it. 
 The formating of the cell will remain: background color and border.
 
-To remove completly a cell, to have to set it to null.
+To remove completly a cell (value and formatting) , you have to set it to null. 
  
 
 ```
@@ -129,6 +128,10 @@ Then A.Cell="Hello"
 Then A.Cell=blank    # cell formatting will stay
 Then A.Cell= null    # cell formatting will be cleared
 ```
+
+For If and Then instruction, type of value can be: int, double, string.
+
+Date and time will be managed later.
 
 You may want to apply many Then instructions for one If instruction; for example:
 
@@ -140,12 +143,12 @@ OnExcel "file.xlsx"
 		A.Cell="N"
 		B.Cell=25.89
 		C.Cell=blank
-		End If
+	  End If
     Next
 End OnExcel	
 ```
 
-From a technical point of view, you can manage easily errors occuring during compilation or during the execution of scripts.
+From a technical point of view, you can manage easily errors occured during compilation or during the execution of scripts.
 
 ```
 

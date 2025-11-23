@@ -72,15 +72,16 @@ OnExcel "file.xlsx"
 End OnExcel	
 ```
 
-The script will scan each datarow present in the first sheet starting by defaut from the row #2.
+The script will scan each datarow present in the sheet starting by defaut from the row #2.
 Each time the cell value in column B is blank, the int value 0 is set in place.
 The execution will stop automatically after the last row was processed.
 
-This a very basic script, but of course it's possible to create more complex, more precise script to manage all your specific cases.
+This a very basic script with few instructions to manage this standard case, but of course it's possible to create more complex, more precise script to manage all your specific cases.
 
 
 ## A C# program to execute the script
 
+Now let's open your Visual Studio or VSCode.
 First import the nuget Lexerow package in your solution or project. 
 
 Create a program in C# and use it in this way:
@@ -106,7 +107,21 @@ https://github.com/Pierlam/Lexerow
 
 # to go further with scripts
 
-If the header of the datatable use 2 rows or more, tt's possible to set a different first data row. For example, start at the row #3 in place of default row #2. You may use the instruction FirstRow.
+Now let's manage a specific case of your datatable.
+
+If the header use 2 rows or more, it's possible to set a different first data row to process. For example, start at the row #3 in place of default row #2. You may use the instruction FirstRow.
+
+```
+# process datarow of the Excel, one by one
+OnExcel "file.xlsx"
+	FirstRow 3
+    ForEachRow
+	  If B.Cell=blank Then B.Cell=0
+    Next
+End OnExcel	
+```
+
+There are several kind of checks available in If condition:
 
 ```
 If A.Cell=12
@@ -116,7 +131,7 @@ If A.Cell=blank
 If A.Cell=null
 ```
 
-In Then block, you can set a value to a cell.
+In Then instruction, you can set a value to a cell.
 Type of value can be: int, double, string.
 
 Date and time will be managed later.
@@ -130,11 +145,11 @@ To remove completly a cell, to have to set it to null.
 Then A.Cell=13
 Then A.Cell=25.89
 Then A.Cell="Hello"
-Then A.Cell=blank
-Then A.Cell= null
+Then A.Cell=blank    # cell formatting will stay
+Then A.Cell= null    # cell formatting will be cleared
 ```
 
-You can have several instructions in Then block, example:
+From a technical point of view, you can manage easily errors occuring during compilation or during the execution of scripts.
 
 ```
 OnExcel "file.xlsx"
@@ -157,7 +172,8 @@ You can also manage easily errors occuring during compilation or during the exec
 var result= core.LoadExecScript("MyScript", "MyScript.lxrw");   
 if(!result.Res)
 {
-	// errors occured -> see result.ListError.Count
+	// errors occured -> see result.ListError
+	// On an error, see ErrorCode to know the type of error that occured
 }
 ```
 

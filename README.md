@@ -20,7 +20,7 @@ In column B, some cells are empty, and it's a problem. It would better to have a
     <img src="0-Docs/Readmemd/datarow_cells_empty_2025-04-13.jpg" alt="Some cells are empty">
 </p>
 
-So to put the value 0 in each empty cell in column B, Lexerow will help you to do that easily with some lines of code.
+So to put the value 0 in each empty cell in column B, Lexerow will help you to do that easily with few lines of code.
 
 <p align="center">
     <img src="0-Docs/Readmemd/datarow_cells_set_zero_2025-04-13.jpg" alt="Cells have now values">
@@ -28,27 +28,31 @@ So to put the value 0 in each empty cell in column B, Lexerow will help you to d
 
 ## The solution, in 2 stages
 
--1/ Create a script to fix cell values in the Excel datatable.
-
--2/ Execute the script in a C# program.
+-1/ Create a dotnet program to execute your scripts.
  
+-2/ Create a script to fix cell values in the Excel datatable. Create, Modify scripts to process data in your Excel file.
+
 
 ## The Script to fix values
 
 To process datarow of the excel file as explained, Lexerow provide a powerful instruction which is: OnExcel ForEachRow If/Then.
 
 Let's consider the excel file to fix blank values is "file.xlsx"
+The first row is the header. Data starts at the second row which is the default case.
 
 Create a basic script and save it "script.lxrw"
 
 ```
 # process datarow of the Excel, one by one
-OnExcel "MyFile.xlsx"
+OnExcel "file.xlsx"
     ForEachRow
 	  If B.Cell=blank Then B.Cell=0
     Next
 End OnExcel	
 ```
+
+This script will scan each datarow present in the first sheet starting by defaut from the row #2 until the last one automatically.
+
 
 This a very basic script, but of course it's possible to create more complex script to manage different cases.
 
@@ -72,7 +76,20 @@ Lexerow library is packaged as a nuget ready to use:
 
 https://www.nuget.org/packages/Lexerow
 
-# Project Wiki
+
+# to go further with script
+
+It's possible to set a different first data row. For example, start at the row #3 in place of default row #2.
+
+```
+# process datarow of the Excel, one by one
+OnExcel "file.xlsx"
+	FirstRow 3
+    ForEachRow
+	  If B.Cell=blank Then B.Cell=0
+    Next
+End OnExcel	
+```
 
 It's possible to check many cases in If instruction.
 
@@ -104,17 +121,24 @@ Then A.Cell= null
 Several instructions in Then part is also possible, example:
 
 ```
-Then 
-	A.Cell=13
-    B.Cell=25.89
-	C.Cell=blank
-End If
+OnExcel "file.xlsx"
+	FirstRow 3
+    ForEachRow
+	  If A.Cell="Y" Then 
+		A.Cell="N"
+		B.Cell=25.89
+		C.Cell=blank
+		End If
+    Next
+End OnExcel	
 ```
 
+# Project Wiki
 
 You can find more information on how use all available functions on the library here:
 
 https://github.com/Pierlam/Lexerow/wiki
+
 
 # Dependency
 

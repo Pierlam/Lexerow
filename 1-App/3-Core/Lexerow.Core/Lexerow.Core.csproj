@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DbAccess\" />
+    <Folder Include="ExcelLayer\DbAccess\" />
   </ItemGroup>
 
   <ItemGroup>

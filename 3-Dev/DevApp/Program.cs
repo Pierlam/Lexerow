@@ -1,4 +1,5 @@
-﻿using Lexerow.Core;
+﻿using DevApp;
+using Lexerow.Core;
 using Lexerow.Core.System.ActivLog;
 
 Console.WriteLine("==>Lexerow Dev:");
@@ -76,6 +77,8 @@ int a = 12;
 if (a >= 10) { }
 if (a <= 10) { }
 
-TestGetFiles();
+//TestGetFiles();
+
+DateSandBox.TestDates();
 
 Console.WriteLine("\n=> ends.");

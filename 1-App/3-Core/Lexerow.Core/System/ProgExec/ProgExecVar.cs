@@ -1,13 +1,8 @@
 ﻿namespace Lexerow.Core.System;
 
-public enum ProgRunVarType
-{
-    // string, int, double, ...
-    BasicValue,
-
-    ExcelFile
-}
-
+/// <summary>
+/// A variable during program execution.
+/// </summary>
 public class ProgExecVar
 {
     public ProgExecVar(InstrBase name, InstrBase value)
@@ -25,7 +20,8 @@ public class ProgExecVar
     public InstrBase ObjectName { get; set; }
 
     /// <summary>
-    /// The value of the variable.
+    /// The value of the variable. Defined in the script.
+    /// can be a value, a variable, a ColCellFunc, a fct call like SelectFiles.
     /// </summary>
     public InstrBase Value { get; set; }
 
@@ -41,9 +37,9 @@ public class ProgExecVar
 
     public string GetValueString()
     {
-        InstrConstValue instrConstValue = Value as InstrConstValue;
-        if (instrConstValue != null)
-            return instrConstValue.RawValue;
+        InstrValue instrValue = Value as InstrValue;
+        if (instrValue != null)
+            return instrValue.RawValue;
 
         return string.Empty;
     }
@@ -53,10 +49,10 @@ public class ProgExecVar
         if (ObjectName.InstrType != instr.InstrType) return false;
 
         //--possible??
-        if (ObjectName.InstrType == InstrType.ConstValue)
+        if (ObjectName.InstrType == InstrType.Value)
         {
-            string name = (ObjectName as InstrConstValue).RawValue;
-            string name2 = (instr as InstrConstValue).RawValue;
+            string name = (ObjectName as InstrValue).RawValue;
+            string name2 = (instr as InstrValue).RawValue;
             if (name.Equals(name2)) return true;
 
             return false;

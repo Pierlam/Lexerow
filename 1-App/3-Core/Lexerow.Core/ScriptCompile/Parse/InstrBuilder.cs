@@ -13,7 +13,7 @@ public class InstrBuilder
     /// <param name="scriptToken"></param>
     /// <param name="instrBase"></param>
     /// <returns></returns>
-    public static bool Build(ExecResult execResult, ScriptToken scriptToken, out InstrBase instrBase)
+    public static bool Build(Result result, ScriptToken scriptToken, out InstrBase instrBase)
     {
         //--script token is a name/id
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
@@ -42,7 +42,15 @@ public class InstrBuilder
             // OnSheet
             if (scriptToken.Value.Equals(CoreInstr.InstrOnSheet, StringComparison.InvariantCultureIgnoreCase))
             {
-                instrBase = new InstrOnSheet(scriptToken);
+                InstrValue value= InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
+                instrBase = new InstrOnSheet(scriptToken, value);
+                return true;
+            }
+
+            // FirstRow
+            if (scriptToken.Value.Equals(CoreInstr.InstrFirstRow, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFirstRow(scriptToken);
                 return true;
             }
 
@@ -115,11 +123,6 @@ public class InstrBuilder
                 instrBase = new InstrNull(scriptToken);
                 return true;
             }
-            // ExcelCol, exp: A
-            // TODO:
-
-            // ExcelCellAddress, exp: A1
-            // TODO:
 
             // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
             instrBase = new InstrObjectName(scriptToken);
@@ -175,7 +178,7 @@ public class InstrBuilder
                 return true;
             }
 
-            execResult.AddError(new ExecResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
+            result.AddError(new ResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
             instrBase = null;
             return false;
         }
@@ -185,25 +188,25 @@ public class InstrBuilder
         {
             // remove double quote
             string val = StringUtils.RemoveStartEndDoubleQuote(scriptToken.Value);
-            instrBase = new InstrConstValue(scriptToken, val);
+            instrBase = new InstrValue(scriptToken, val);
             return true;
         }
 
         //--script token is a int
         if (scriptToken.ScriptTokenType == ScriptTokenType.Integer)
         {
-            instrBase = new InstrConstValue(scriptToken, scriptToken.ValueInt);
+            instrBase = new InstrValue(scriptToken, scriptToken.ValueInt);
             return true;
         }
 
         //--script token is a double
         if (scriptToken.ScriptTokenType == ScriptTokenType.Double)
         {
-            instrBase = new InstrConstValue(scriptToken, scriptToken.ValueDouble);
+            instrBase = new InstrValue(scriptToken, scriptToken.ValueDouble);
             return true;
         }
 
-        execResult.AddError(new ExecResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
+        result.AddError(new ResultError(ErrorCode.ParserTokenNotExpected, scriptToken.Value));
         instrBase = null;
         return false;
     }

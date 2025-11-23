@@ -6,6 +6,11 @@ namespace Lexerow.Core.Tests._05_Common;
 
 public class TestInstrBuilder
 {
+    public static Program CreateProgram()
+    {
+        return new Program(new Script("scriptName", "fileName"));
+    }
+
     /// <summary>
     /// OnExcel "dataOnExcel1.xlsx"
     ///   ForEach Row
@@ -22,9 +27,9 @@ public class TestInstrBuilder
         InstrOnExcel instrOnExcel = new InstrOnExcel(token);
 
         // OnExcel "data.xslx"
-        InstrConstValue instrConstValue = BuildInstrConstValueString(fileNameString);
-        //instrOnExcel.ListFiles.Add(instrConstValue);
-        instrOnExcel.InstrFiles = instrConstValue;
+        InstrValue instrValue = CreateValueString(fileNameString);
+        //instrOnExcel.ListFiles.Add(instrValue);
+        instrOnExcel.InstrFiles = instrValue;
 
         // OnSheet
         var tokenSheet = CreateScriptTokenName("OnSheet");
@@ -52,7 +57,7 @@ public class TestInstrBuilder
         InstrOnExcel instrOnExcel = new InstrOnExcel(token);
 
         // OnExcel file  (varname)
-        InstrObjectName instrObjectName = BuildInstrObjectName(fileName);
+        InstrObjectName instrObjectName = CreateInstrObjectName(fileName);
         instrOnExcel.InstrFiles = instrObjectName;
 
         // OnSheet
@@ -125,7 +130,7 @@ public class TestInstrBuilder
         instrComparison.Operator.Operator = sep;
 
         // val
-        var instrRight = BuildInstrConstValueInt(val);
+        var instrRight = CreateInstrValueInt(val);
         instrComparison.OperandRight = instrRight;
 
         instrIf.InstrBase = instrComparison;
@@ -151,7 +156,7 @@ public class TestInstrBuilder
         InstrSetVar instrSetVar = new InstrSetVar(tokenSetVar);
         instrSetVar.InstrLeft = instrColCellFunc;
         // 10
-        instrSetVar.InstrRight = BuildInstrConstValueInt(val);
+        instrSetVar.InstrRight = CreateInstrValueInt(val);
 
         instrThen.ListInstr.Add(instrSetVar);
         return instrThen;
@@ -163,45 +168,43 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrObjectName BuildInstrObjectName(string val)
+    public static InstrObjectName CreateInstrObjectName(string val)
     {
         var script = CreateScriptTokenName(val);
         return new InstrObjectName(script);
     }
 
     /// <summary>
-    /// InstrConstValue, type: string
+    /// InstrValue, type: string
     /// exp: "data.xlsx"
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrConstValue BuildInstrConstValueString(string val)
+    public static InstrValue CreateValueString(string val)
     {
         // token
         var token = CreateScriptTokenString(val);
         var str = StringUtils.RemoveStartEndDoubleQuote(val);
 
-        // InstrConstValue
-        InstrConstValue instrConstValue = new InstrConstValue(token, str);
-        instrConstValue.ValueBase = new ValueString(val);
-        return instrConstValue;
+        InstrValue instrValue = new InstrValue(token, str);
+        instrValue.ValueBase = new ValueString(val);
+        return instrValue;
     }
 
     /// <summary>
-    /// InstrConstValue, type: int
+    /// InstrValue, type: int
     /// exp: 10
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrConstValue BuildInstrConstValueInt(int val)
+    public static InstrValue CreateInstrValueInt(int val)
     {
         // token
         var token = CreateScriptTokenInt(val);
 
-        // InstrConstValue
-        InstrConstValue instrConstValue = new InstrConstValue(token, val.ToString());
-        instrConstValue.ValueBase = new ValueInt(val);
-        return instrConstValue;
+        InstrValue instrValue = new InstrValue(token, val.ToString());
+        instrValue.ValueBase = new ValueInt(val);
+        return instrValue;
     }
 
     /// <summary>
@@ -209,7 +212,7 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrSelectFiles BuildInstrSelectExcelParamObjectName(string val)
+    public static InstrSelectFiles CreateInstrSelectExcelParamObjectName(string val)
     {
         // ObjectName
         var token = CreateScriptTokenName(val);
@@ -227,17 +230,47 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static InstrSelectFiles BuildInstrSelectExcelParamString(string fileName)
+    public static InstrSelectFiles CreateInstrSelectExcelParamString(string fileName)
     {
-        InstrConstValue instrConstValue = BuildInstrConstValueString(fileName);
-        return BuildInstrSelectExcel(instrConstValue);
+        InstrValue instrValue = CreateValueString(fileName);
+        return CreateInstrSelectExcel(instrValue);
     }
 
-    public static InstrSelectFiles BuildInstrSelectExcel(InstrBase paramFileName)
+    public static InstrSelectFiles CreateInstrSelectExcel(InstrBase paramFileName)
     {
         InstrSelectFiles instrSelectFiles = new InstrSelectFiles(paramFileName.FirstScriptToken());
         instrSelectFiles.AddParamSelect(paramFileName);
         return instrSelectFiles;
+    }
+
+    /// <summary>
+    /// SetVar:   a= 12
+    ///    InstrLeft:  ObjectName: a
+    ///    InstrRight: InstrValue, Int=12
+    /// </summary>
+    /// <param name="varname"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static InstrSetVar CreateInstrSetVarNameValueInt(string varname, int value)
+    {
+        //-instr left
+        InstrObjectName instrObjectName = CreateInstrObjectName(varname);
+
+        //-instr right
+        InstrValue instrValue = CreateInstrValueInt(value);
+
+        return CreateInstrSetVar(instrObjectName, instrValue);
+    }
+
+    public static InstrSetVar CreateInstrSetVarNameVarName(string varname, string value)
+    {
+        //-instr left
+        InstrObjectName instrObjectName = CreateInstrObjectName(varname);
+
+        //-instr right
+        InstrObjectName instrObjectName2 = CreateInstrObjectName(varname);
+
+        return CreateInstrSetVar(instrObjectName, instrObjectName2);
     }
 
     /// <summary>
@@ -248,7 +281,7 @@ public class TestInstrBuilder
     /// <param name="instrLeft"></param>
     /// <param name="instrRight"></param>
     /// <returns></returns>
-    public static InstrSetVar BuildInstrSetVar(InstrBase instrLeft, InstrBase instrRight)
+    public static InstrSetVar CreateInstrSetVar(InstrBase instrLeft, InstrBase instrRight)
     {
         InstrSetVar instrSetVar = new InstrSetVar(instrLeft.FirstScriptToken());
         instrSetVar.InstrLeft = instrLeft;
@@ -256,7 +289,7 @@ public class TestInstrBuilder
         return instrSetVar;
     }
 
-    public static string BuildString(string s)
+    public static string CreateString(string s)
     {
         return "\"" + s + "\"";
     }
@@ -287,7 +320,7 @@ public class TestInstrBuilder
         var token = new ScriptToken();
         token.ScriptTokenType = ScriptTokenType.String;
         // add double quote, start and end
-        token.Value = BuildString(val);
+        token.Value = CreateString(val);
         return token;
     }
 

@@ -2,6 +2,8 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
+using Lexerow.Core.Utils;
+using Org.BouncyCastle.Utilities.Collections;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -33,7 +35,7 @@ public class Parser
     /// <param name="listSourceCodeLineTokens"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public bool Process(ExecResult execResult, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstr)
+    public bool Process(Result result, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
         _logger.LogCompilStart(ActivityLogLevel.Important, "Parser.Process", "script lines Num: " + listScriptLineTokens.Count.ToString());
         _listVar.Clear();
@@ -41,30 +43,34 @@ public class Parser
         // no token in the source code! -> error or warning?
         if (listScriptLineTokens.Count == 0)
         {
-            listInstr = null;
-            execResult.AddError(ErrorCode.ParserTokenExpected, string.Empty);
+            result.AddError(ErrorCode.ParserTokenExpected, string.Empty);
             return false;
         }
 
-        // check for wrong tokens: stringWrong and DoubleWrong
-        // TODO: ->error, stop
-
         // process, loop on tokens
-        bool res = LoopOnTokens(execResult, _listVar, listScriptLineTokens, out listInstr);
+        bool res = LoopOnTokens(result, _listVar, listScriptLineTokens, program);
 
         if (res)
         {
-            _logger.LogCompilEnd(ActivityLogLevel.Important, "Parser.Process", "Instr count: " + listInstr.Count().ToString());
+            _logger.LogCompilEnd(ActivityLogLevel.Important, "Parser.Process", "Instr count: " + program.ListInstr.Count().ToString());
 
             // ok, no error
             return true;
         }
 
-        _logger.LogCompilEndError(null, "SyntaxAnalParseryzer.Process", "Error count: " + execResult.ListError.Count().ToString());
+        _logger.LogCompilEndError(null, "SyntaxAnalParseryzer.Process", "Error count: " + result.ListError.Count().ToString());
         return false;
     }
 
-    private bool LoopOnTokens(ExecResult execResult, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, out List<InstrBase> listInstrToExec)
+    /// <summary>
+    /// Loop on script tokens to parse it and produce instructions to execute.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="listScriptLineTokens"></param>
+    /// <param name="listInstrToExec"></param>
+    /// <returns></returns>
+    private bool LoopOnTokens(Result result, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
         bool res;
         bool isToken = false;
@@ -75,7 +81,7 @@ public class Parser
         currLineTokens = listScriptLineTokens[0];
 
         // final list of compiled instructions to execute
-        listInstrToExec = new List<InstrBase>();
+        //listInstrToExec = new List<InstrBase>();
 
         //--init vars on tokens
         int currTokenIndex = -1;
@@ -93,7 +99,7 @@ public class Parser
                 _logger.LogCompilOnGoing(ActivityLogLevel.Important, "Parser.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
 
                 // no more token in the current line tokens, process items saved in the stack
-                res = ParserStackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
+                res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);
                 if (!res) break;
 
                 // no more token in the current line tokens, go to the next one
@@ -113,10 +119,10 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            //if (currToken.Value.Equals("Then"))
-            //{
-            //    int a = 12;
-            //}
+            if (currToken.Value.Equals("-"))
+            {
+                int a = 12;
+            }
 
             //--is the token a comment?  dont manage it
             if (currToken.ScriptTokenType == ScriptTokenType.Comment)
@@ -126,12 +132,12 @@ public class Parser
             if (currToken.ScriptTokenType == ScriptTokenType.Undefined || currToken.ScriptTokenType == ScriptTokenType.StringBadFormed ||
                 currToken.ScriptTokenType == ScriptTokenType.WrongNumber)
             {
-                execResult.AddError(ErrorCode.ParserTokenNotExpected, currToken.Value);
+                result.AddError(ErrorCode.ParserTokenNotExpected, currToken.Value);
                 return false;
             }
 
-            //--is it the SetVar equal char? SetVarDecoder
-            res = SetVarDecoder.ProcessSetVarEqualChar(execResult, listVar, stackInstr, currToken, listInstrToExec, out isToken);
+            //--is it the SetVar equal char? 
+            res = SetVarDecoder.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -139,23 +145,23 @@ public class Parser
             if (ParserUtils.IsComparisonSeparator(currToken))
             {
                 // process the content of the stack until the If instr
-                res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(execResult, listVar, stackInstr, currToken);
+                res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(result, listVar, stackInstr, currToken);
                 if (!res) break;
                 continue;
             }
 
             //--Is it the Then token?
-            res = IfPartDecoder.ProcessStackBeforeTokenThen(execResult, listVar, stackInstr, currToken, out isToken);
+            res = IfPartDecoder.ProcessStackBeforeTokenThen(result, listVar, stackInstr, currToken, out isToken);
             if (!res) break;
             if (isToken) continue;
 
             //--is the token the char ) ?  pop the stack until found ( et traite l'expression. parametre d'une fonction/méthode.
-            res = TokenCloseBracketProcessor.Do(execResult, listVar, stackInstr, currToken, listInstrToExec, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
+            res = TokenCloseBracketProcessor.Do(result, listVar, stackInstr, currToken, program.ListInstr, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
             if (!res) break;
             if (isListOfParams)
             {
                 // process the fct call, check and set parameters, error saved
-                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, execResult, listVar, stackInstr, currToken, listInstrToExec, listItem);
+                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, result, listVar, stackInstr, currToken, program.ListInstr, listItem);
                 if (!res) break;
                 continue;
             }
@@ -167,16 +173,16 @@ public class Parser
             }
 
             // move the script token into an exec token
-            res = InstrBuilder.Build(execResult, currToken, out InstrBase instr);
+            res = InstrBuilder.Build(result, currToken, out InstrBase instr);
             if (!res) break;
 
             // is it the OnExcel instr build ongoing?
-            res = InstrOnExcelBuilder.OnExcelBuildOngoing(execResult, listVar, stackInstr, instr, listInstrToExec, out isToken);
+            res = InstrOnExcelBuilder.OnExcelBuildOngoing(result, listVar, stackInstr, instr, program.ListInstr, out isToken);
             if (!res) break;
             if (isToken) continue;
 
             // process special cases: all token of OnExcel instr inline for exp
-            res = ProcessSpecialCases(execResult, listVar, currLineTokensIndex, stackInstr, instr, listInstrToExec, out isToken);
+            res = ProcessSpecialCases(result, listVar, currLineTokensIndex, stackInstr, instr, program, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -185,10 +191,10 @@ public class Parser
         }
 
         // end of tokens parsing, check for errors
-        if (!CheckEndParsing(execResult, stackInstr, listInstrToExec))
+        if (!CheckEndParsing(result, stackInstr, program.ListInstr))
             return false;
 
-        return execResult.Result;
+        return result.Res;
     }
 
     /// <summary>
@@ -197,7 +203,7 @@ public class Parser
     ///     OnExcel "data.xlsx" ForEach Row If A.Cell >10 Then A.Cell=10 Next
     ///
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="currLineTokensIndex"></param>
     /// <param name="stackInstr"></param>
@@ -205,21 +211,32 @@ public class Parser
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSpecialCases(ExecResult execResult, List<InstrObjectName> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool ProcessSpecialCases(Result result, List<InstrObjectName> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
     {
         isToken = false;
 
+        //--instr Next
         if (instr.InstrType == InstrType.Next)
         {
             // special case? Next inline: ..Then A.Cell= 12 Next   or  ..Then fct() Next
-            bool res = ParserStackContentProcessor.ScriptEndLineReached(execResult, listVar, currLineTokensIndex, stackInstr, listInstrToExec);
+            bool res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);
             if (!res) return false;
 
             // now process the token Next of the OnExcel instr
-            res = InstrOnExcelBuilder.OnExcelBuildOngoing(execResult, listVar, stackInstr, instr, listInstrToExec, out isToken);
+            res = InstrOnExcelBuilder.OnExcelBuildOngoing(result, listVar, stackInstr, instr, program.ListInstr, out isToken);
             if (!res) return false;
             return true;
         }
+
+        //--a=-7, curr=7. Stack> Minus; SetVar
+        if(!ProcessNegativeValueNumber(result, stackInstr, instr, out isToken))
+            return false;
+        if(isToken)return true;
+
+        //--If a=-1; Stack IN> ??
+
+        //--Then a=-1; Stack IN> ??
+
 
         return true;
     }
@@ -227,13 +244,13 @@ public class Parser
     /// <summary>
     /// End of tokens parsing, check for errors
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="listInstrToExec"></param>
     /// <returns></returns>
-    private static bool CheckEndParsing(ExecResult execResult, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
+    private static bool CheckEndParsing(Result result, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec)
     {
-        if (!execResult.Result)
+        if (!result.Res)
         {
             // clear the list of instructions obtained
             listInstrToExec.Clear();
@@ -250,14 +267,68 @@ public class Parser
         {
             if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.OnSheet)
             {
-                execResult.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken(), "Maybe 'End OnExcel' is missing");
+                result.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken(), "Maybe 'End OnExcel' is missing");
                 return false;
             }
-            execResult.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenExpected, instrOnExcel.FirstScriptToken());
             return false;
         }
 
-        execResult.AddError(ErrorCode.ParserTokenExpected, stackInstr.Peek().FirstScriptToken());
+        result.AddError(ErrorCode.ParserTokenExpected, stackInstr.Peek().FirstScriptToken());
         return false;
     }
+
+    /// <summary>
+    /// case1: a=-7, 
+    /// instr=7, Stack> Minus; SetVar
+    ///
+    /// case2: A.Cell>10
+    /// instr=10, Stack> Minus; SepComparison; ColCellFunc; If; OnExcel
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="instr"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessNegativeValueNumber(Result result, CompilStackInstr stackInstr, InstrBase instr, out bool isToken)
+    {
+        isToken = false;
+
+        // the current instr is not an int or a double?
+        if(!InstrUtils.IsValueInt(instr) && InstrUtils.IsValueDouble(instr))return true;
+
+        // not enought instr in the stack
+        if (stackInstr.Count < 2) return true;
+
+        // read the instr in the top of the stack
+        InstrCharMinus instrCharMinus = stackInstr.Peek() as InstrCharMinus;
+        if(instrCharMinus==null) return true;
+
+        //--case1: the next instr is the SetVar instr?
+        if ((stackInstr.ReadInstrBeforeTop() as InstrSetVar) != null)
+        {
+            InstrUtils.MergeInstrMinus(instrCharMinus, instr as InstrValue);
+            // remove the charMinus
+            stackInstr.Pop();
+
+            stackInstr.Push(instr);
+            isToken = true;
+            return true;
+        }
+
+        //--case2: the next instr is the SepComparison instr?
+        if ((stackInstr.ReadInstrBeforeTop() as InstrSepComparison) != null)
+        {
+            InstrUtils.MergeInstrMinus(instrCharMinus, instr as InstrValue);
+            // remove the charMinus
+            stackInstr.Pop();
+
+            stackInstr.Push(instr);
+            isToken = true;
+            return true;
+        }
+
+        return true;
+    }
+
 }

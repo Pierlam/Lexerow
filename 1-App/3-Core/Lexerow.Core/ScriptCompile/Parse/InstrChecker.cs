@@ -7,10 +7,10 @@ internal class InstrChecker
     /// <summary>
     /// Check the fct call: params set and type ok?
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="instrBase"></param>
     /// <returns></returns>
-    public static bool CheckFunctionCall(ExecResult execResult, InstrBase instrBase)
+    public static bool CheckFunctionCall(Result result, InstrBase instrBase)
     {
         // not a fct call, bye
         if (!instrBase.IsFunctionCall) return true;
@@ -22,7 +22,7 @@ internal class InstrChecker
             // need at least one parameter
             if (instrOpenExcel.ListInstrParams.Count == 0)
             {
-                execResult.AddError(ErrorCode.ParserFctParamCountWrong, instrBase.FirstScriptToken());
+                result.AddError(ErrorCode.ParserFctParamCountWrong, instrBase.FirstScriptToken());
                 return false;
             }
             // isntr OpenExcel is ok

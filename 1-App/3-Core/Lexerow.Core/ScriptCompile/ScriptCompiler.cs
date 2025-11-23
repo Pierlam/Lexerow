@@ -31,35 +31,32 @@ public class ScriptCompiler
     /// Compile the script (source code). this a list of lines.
     /// Generate a list of instructions, ready to be executed.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="script"></param>
     /// <param name="listInstr"></param>
     /// <returns></returns>
-    public ExecResult CompileScript(ExecResult execResult, Script script, out List<InstrBase> listInstr)
+    public Result CompileScript(Result result, Script script, out Program programScript)
     {
         _logger.LogCompilStart(ActivityLogLevel.Important, "CompileScript", script.Name);
 
         // analyse the source code, line by line
-        if (!Lexer.Process(_logger, execResult, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
+        if (!Lexer.Process(_logger, result, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
         {
-            listInstr = new List<InstrBase>();
-            return execResult;
+            programScript = null;
+            return result;
         }
 
-        // re-arrange comparison separators, gather them, exp: >,= to >=  ...
-        //ComparisonSepMgr.ReArrangeAllComparisonSep(listSourceCodeLineTokens);
+        // create the program
+        programScript = new Program(script);
 
         Parser parser = new Parser(_logger);
-        bool res = parser.Process(execResult, listScriptLineTokens, out listInstr);
-
-        // save the list of instructions build by the compilation stage
-        // TODO:
+        bool res = parser.Process(result, listScriptLineTokens, programScript);
 
         if (res)
             _logger.LogCompilEnd(ActivityLogLevel.Important, "CompileScript", script.Name);
         else
-            _logger.LogCompilEndError(execResult.ListError[0], "CompileScript", script.Name);
+            _logger.LogCompilEndError(result.ListError[0], "CompileScript", script.Name);
 
-        return execResult;
+        return result;
     }
 }

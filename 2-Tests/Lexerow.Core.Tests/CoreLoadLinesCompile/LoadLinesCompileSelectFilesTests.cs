@@ -13,7 +13,7 @@ public class LoadLinesCompileSelectFilesTests
     [TestMethod]
     public void BasicOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -22,14 +22,14 @@ public class LoadLinesCompileSelectFilesTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void WithOneLineCommentOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -39,14 +39,14 @@ public class LoadLinesCompileSelectFilesTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void FunctionNotExistsError()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -56,9 +56,9 @@ public class LoadLinesCompileSelectFilesTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsFalse(execResult.Result);
-        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, execResult.ListError[0].ErrorCode);
-        Assert.AreEqual("SelectXXX", execResult.ListError[0].Param);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsFalse(result.Res);
+        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
+        Assert.AreEqual("SelectXXX", result.ListError[0].Param);
     }
 }

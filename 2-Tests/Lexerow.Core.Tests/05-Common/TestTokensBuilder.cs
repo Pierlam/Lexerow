@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System.ScriptDef;
+﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ScriptDef;
 
 namespace Lexerow.Core.Tests._05_Common;
 
@@ -7,7 +8,7 @@ namespace Lexerow.Core.Tests._05_Common;
 /// </summary>
 public class TestTokensBuilder
 {
-    public static Script Build(string l1)
+    public static Script CreateScript(string l1)
     {
         Script sc = new Script("name", "filename");
 
@@ -15,7 +16,7 @@ public class TestTokensBuilder
         return sc;
     }
 
-    public static Script Build(string l1, string l2)
+    public static Script CreateScript(string l1, string l2)
     {
         Script sc = new Script("name", "filename");
 
@@ -24,17 +25,158 @@ public class TestTokensBuilder
         return sc;
     }
 
-    //-line #1
-    public static ScriptLineTokens BuildSelectFiles(string varName, string fileString)
+    /// <summary>
+    /// varname= SelectFiles(fileString)
+    /// filestring -> "data.xlsx", should have double quotes!
+    /// </summary>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    /// <returns></returns>
+    public static void AddLineSelectFiles(int numLine, List<ScriptLineTokens> script, string varName, string fileString)
     {
         var line = new ScriptLineTokens();
-        line.AddTokenName(1, 1, varName);
-        line.AddTokenSeparator(1, 1, "=");
-        line.AddTokenName(1, 1, "SelectFiles");
-        line.AddTokenSeparator(1, 1, "(");
-        line.AddTokenString(1, 1, fileString);
-        line.AddTokenSeparator(1, 1, ")");
-        return line;
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenName(numLine, 1, "SelectFiles");
+        line.AddTokenSeparator(numLine, 1, "(");
+        line.AddTokenString(numLine, 1, fileString);
+        line.AddTokenSeparator(numLine, 1, ")");
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// SetVar = intValue
+    /// a=10
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarInt(int numLine, List<ScriptLineTokens> script, string varName, int value)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenInteger(numLine, 13, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// a=-7
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="value"></param>
+    public static void AddLineSetVarMinusInt(int numLine, List<ScriptLineTokens> script, string varName, int value)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenSeparator(numLine, 12, "-");
+        line.AddTokenInteger(numLine, 13, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// SetVar = intValue
+    /// a=10
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarVar(int numLine, List<ScriptLineTokens> script, string varName, string value)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenName(numLine, 1, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// A.Cell=10
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="colName"></param>
+    /// <param name="value"></param>
+    public static void AddLineSetVarColCellInt(int numLine, List<ScriptLineTokens> script, string colName, int value)
+    {
+        var line = new ScriptLineTokens();
+        BuidColCellOperInt(numLine++, line, colName, "=", value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// OnExcel "data.xlsx"
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="excelfile"></param>
+    /// <returns></returns>
+    public static void AddLineOnExcelFileString(int numLine, List<ScriptLineTokens> script, string excelfileString)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, "OnExcel");
+        line.AddTokenString(numLine, 9, excelfileString);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// OnExcel file
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="excelfile"></param>
+    /// <returns></returns>
+    public static void  CreateOnExcelFileName(int numLine, List<ScriptLineTokens> script, string excelfileName)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(1, 1, "OnExcel");
+        line.AddTokenName(1, 9, excelfileName);
+        script.Add(line);
+    }
+
+    // FirstRow 3
+    public static void AddLineFirstRow(int numLine, List<ScriptLineTokens> script, int firstRowValue)
+    {
+        var line = new ScriptLineTokens();
+        line.AddToken(numLine, 1, ScriptTokenType.Name, "FirstRow");
+        line.AddTokenInteger(numLine, 1, firstRowValue);
+        script.Add(line);
+    }
+
+    // FirstRow varname
+    public static void AddLineFirstRowVar(int numLine, List<ScriptLineTokens> script, string varname)
+    {
+        var line = new ScriptLineTokens();
+        line.AddToken(numLine, 1, ScriptTokenType.Name, "FirstRow");
+        line.AddTokenName(numLine, 1, varname);
+        script.Add(line);
+    }
+
+    // ForEach Row
+    public static void AddLineForEachRow(int numLine, List<ScriptLineTokens> script)
+    {
+        var line = new ScriptLineTokens();
+        AddTokenName(numLine, line, "ForEach", "Row");
+        script.Add(line);
+    }
+
+    // Next
+    public static void AddLineNext(int numLine, List<ScriptLineTokens> script)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, "Next");
+        script.Add(line);
+    }
+
+    // End OnExcel
+    public static void AddLineEndOnExcel(int numLine, List<ScriptLineTokens> script)
+    {
+        var line = new ScriptLineTokens();
+        AddTokenName(numLine, line, "End", "OnExcel");
+        script.Add(line);
     }
 
     /// <summary>
@@ -61,6 +203,20 @@ public class TestTokensBuilder
     {
         var line = new ScriptLineTokens();
         line = BuidIfColCellCompIntThenSetColCellInt(numLine, line, colNameIf, compIf, valIf, colNameThen, valThen);
+        script.Add(line);
+        return line;
+    }
+
+    /// <summary>
+    /// Build this script line:
+    ///   If A.Cell >10 Then A.Cell=10
+    /// </summary>
+    /// <param name="script"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidIfColCellCompNegIntThenSetColCellInt(int numLine, List<ScriptLineTokens> script, string colNameIf, string compIf, int valIf, string colNameThen, int valThen)
+    {
+        var line = new ScriptLineTokens();
+        line = BuidIfColCellCompNegIntThenSetColCellNegInt(numLine, line, colNameIf, compIf, valIf, colNameThen, valThen);
         script.Add(line);
         return line;
     }
@@ -104,6 +260,21 @@ public class TestTokensBuilder
         script.Add(line);
         return line;
     }
+
+    /// <summary>
+    /// If A.Cell>-10 Then A.Cell=-10
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidIfColCellCompNegIntThenSetColCellNegInt(int numLine, ScriptLineTokens line, string colNameIf, string compIf, int valIf, string colNameThen, int valThen)
+    {
+        line.AddTokenName(numLine, 1, "If");
+        BuidColCellOperNegInt(numLine, line, colNameIf, compIf, valIf);
+        line.AddTokenName(numLine, 1, "Then");
+        BuidColCellOperNegInt(numLine, line, colNameIf, "=", valIf);
+        return line;
+    }
+
 
     /// <summary>
     /// If A.Cell>10 Then A.Cell=10
@@ -160,6 +331,23 @@ public class TestTokensBuilder
 
     /// <summary>
     /// Comparison or setvar
+    /// A.Cell>-10, A.Cell=-10
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidColCellOperNegInt(int numLine, ScriptLineTokens line, string colName, string compOrSet, int val)
+    {
+        line.AddTokenName(numLine, 1, colName);
+        line.AddTokenSeparator(numLine, 10, ".");
+        line.AddTokenName(numLine, 12, "Cell");
+        line.AddTokenSeparator(numLine, 13, compOrSet);
+        line.AddTokenSeparator(numLine, 14, "-");
+        line.AddTokenInteger(numLine, 15, val);
+        return line;
+    }
+
+    /// <summary>
+    /// Comparison or setvar
     /// A.Cell=blank, A.Cell=null
     /// A.Cell<>blank, A.Cell<>null
     /// </summary>
@@ -174,4 +362,11 @@ public class TestTokensBuilder
         line.AddTokenName(numLine, 1, valstr);
         return line;
     }
+
+    public static void AddTokenName(int numLine, ScriptLineTokens line, string value, string value2)
+    {
+        line.AddToken(numLine, 1, ScriptTokenType.Name, value);
+        line.AddToken(numLine, value.Length + 2, ScriptTokenType.Name, value2);
+    }
+
 }

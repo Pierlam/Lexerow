@@ -2,18 +2,17 @@
 
 /// <summary>
 /// Execution (load, save, compilation or execution) result error.
-/// TODO: rename into ResultError??
 /// </summary>
-public class ExecResultError
+public class ResultError
 {
-    public ExecResultError(ErrorCode errorCode, string param)
+    public ResultError(ErrorCode errorCode, string param)
     {
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
         Param = param;
     }
 
-    public ExecResultError(ErrorCode errorCode, string param, string param2)
+    public ResultError(ErrorCode errorCode, string param, string param2)
     {
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
@@ -21,14 +20,14 @@ public class ExecResultError
         Param2 = param2;
     }
 
-    public ExecResultError(ErrorCode errorCode, Exception exception, string param)
+    public ResultError(ErrorCode errorCode, Exception exception, string param)
     {
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
         Param = param;
     }
 
-    public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, string param)
+    public ResultError(ErrorCode errorCode, int lineNum, int colNum, string param)
     {
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
@@ -37,7 +36,7 @@ public class ExecResultError
         ColNum = colNum;
     }
 
-    public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, string param, string param2)
+    public ResultError(ErrorCode errorCode, int lineNum, int colNum, string param, string param2)
     {
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
@@ -47,7 +46,7 @@ public class ExecResultError
         ColNum = colNum;
     }
 
-    public ExecResultError(ErrorCode errorCode, int lineNum, int colNum, Exception exception, string param)
+    public ResultError(ErrorCode errorCode, int lineNum, int colNum, Exception exception, string param)
     {
         DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;

@@ -27,13 +27,13 @@ public class InstrSelectFilesExecutor
     ///   SelectExcel("file.xlsx")
     ///   SelectExcel(fileName)     filename="file.xlsx"
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listInstr"></param>
     /// <param name="listVar"></param>
     /// <param name="instrSelectFiles"></param>
     /// <returns></returns>
-    public bool Exec(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles)
+    public bool Exec(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
 
@@ -60,7 +60,7 @@ public class InstrSelectFilesExecutor
             InstrSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[instrSelectFiles.CurrParamNum];
 
             // is it a const value (string) or varname?
-            if (param.InstrType == InstrType.ConstValue || param.InstrType == InstrType.ObjectName)
+            if (param.InstrType == InstrType.Value || param.InstrType == InstrType.ObjectName)
             {
                 instrSelectFiles.RunTmpListFinalInstrParams.Add(param);
                 continue;
@@ -79,7 +79,7 @@ public class InstrSelectFilesExecutor
             InstrSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[i];
 
             // the param is a const value or a varname, get final lsit of filename to process: apply select and unselect filters
-            if (!DecodeParam(execResult, progRunVarMgr, instrSelectFiles, param, selector))
+            if (!DecodeParam(result, progRunVarMgr, instrSelectFiles, param, selector))
                 return false;
         }
 
@@ -89,15 +89,15 @@ public class InstrSelectFilesExecutor
         return true;
     }
 
-    private bool DecodeParam(ExecResult execResult, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
+    private bool DecodeParam(Result result, ProgExecVarMgr progRunVarMgr, InstrSelectFiles instrSelectFiles, InstrBase param, InstrSelectFilesSelector selector)
     {
-        InstrConstValue instrConstValue;
+        InstrValue instrValue;
 
         //--1/param is constValue type string? exp: SelectFiles("file.xlsx")
-        instrConstValue = param as InstrConstValue;
-        if (instrConstValue != null)
+        instrValue = param as InstrValue;
+        if (instrValue != null)
         {
-            if (!SelectFilesFromStringFilename(execResult, instrSelectFiles, instrConstValue, out List<string> listFilename))
+            if (!SelectFilesFromStringFilename(result, instrSelectFiles, instrValue, out List<string> listFilename))
                 return false;
             return true;
         }
@@ -110,33 +110,33 @@ public class InstrSelectFilesExecutor
             ProgExecVar execVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
             if (execVar == null)
             {
-                execResult.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
+                result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
                 return false;
             }
 
             //-the value of the var is a string constValue?
-            instrConstValue = execVar.Value as InstrConstValue;
-            if (instrConstValue != null)
+            instrValue = execVar.Value as InstrValue;
+            if (instrValue != null)
             {
-                if (!SelectFilesFromStringFilename(execResult, instrSelectFiles, instrConstValue, out List<string> listFilename))
+                if (!SelectFilesFromStringFilename(result, instrSelectFiles, instrValue, out List<string> listFilename))
                     return false;
                 return true;
             }
         }
 
         // case not managed
-        execResult.AddError(ErrorCode.ExecInstrNotManaged, param.FirstScriptToken());
+        result.AddError(ErrorCode.ExecInstrNotManaged, param.FirstScriptToken());
         return false;
     }
 
-    private bool SelectFiles(ExecResult execResult, InstrBase instrBase, string filename, out List<string> listFilenameOut)
+    private bool SelectFiles(Result result, InstrBase instrBase, string filename, out List<string> listFilenameOut)
     {
         listFilenameOut = new List<string>();
         try
         {
             if (string.IsNullOrEmpty(filename))
             {
-                execResult.AddError(ErrorCode.ExecInstrFilenameWrong, instrBase.FirstScriptToken());
+                result.AddError(ErrorCode.ExecInstrFilenameWrong, instrBase.FirstScriptToken());
                 return false;
             }
 
@@ -149,7 +149,7 @@ public class InstrSelectFilesExecutor
 
             if (!Path.Exists(filepath))
             {
-                execResult.AddError(ErrorCode.ExecInstrFilePathWrong, instrBase.FirstScriptToken());
+                result.AddError(ErrorCode.ExecInstrFilePathWrong, instrBase.FirstScriptToken());
                 return false;
             }
 
@@ -164,28 +164,28 @@ public class InstrSelectFilesExecutor
         }
         catch (Exception ex)
         {
-            execResult.AddError(ErrorCode.ExecInstrAccessFileWrong, instrBase.FirstScriptToken(), ex);
+            result.AddError(ErrorCode.ExecInstrAccessFileWrong, instrBase.FirstScriptToken(), ex);
             return false;
         }
     }
 
-    private bool SelectFilesFromStringFilename(ExecResult execResult, InstrSelectFiles instrSelectFiles, InstrConstValue instrConstValue, out List<string> listFilename)
+    private bool SelectFilesFromStringFilename(Result result, InstrSelectFiles instrSelectFiles, InstrValue instrValue, out List<string> listFilename)
     {
         // should be a string
-        ValueString valueString = instrConstValue.ValueBase as ValueString;
+        ValueString valueString = instrValue.ValueBase as ValueString;
         if (valueString == null)
         {
             listFilename = new List<string>();
-            execResult.AddError(ErrorCode.ExecInstrTypeStringExpected, instrConstValue.FirstScriptToken());
+            result.AddError(ErrorCode.ExecInstrTypeStringExpected, instrValue.FirstScriptToken());
             return false;
         }
 
-        if (!SelectFiles(execResult, instrConstValue, StringUtils.RemoveStartEndDoubleQuote(valueString.Val), out listFilename))
+        if (!SelectFiles(result, instrValue, StringUtils.RemoveStartEndDoubleQuote(valueString.Val), out listFilename))
             return false;
 
         // save list of files
         foreach (string filename in listFilename)
-            instrSelectFiles.AddFinalFilename(instrConstValue, filename);
+            instrSelectFiles.AddFinalFilename(instrValue, filename);
         return true;
     }
 }

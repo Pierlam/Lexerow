@@ -1,4 +1,6 @@
-﻿using Lexerow.Core.System.ScriptDef;
+﻿using Lexerow.Core.System.GenDef;
+using Lexerow.Core.System.ScriptDef;
+using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.System;
 
@@ -9,6 +11,8 @@ public enum InstrOnExcelBuildStage
     OnSheet,
     SheetNum,
     SheetName,
+    FirstRow,
+    FirstRowValue,
     ForEach,
 
     // waiting for the first instr after the token Row
@@ -82,7 +86,9 @@ public class InstrOnExcel : InstrBase
     /// <param name="sheetNum"></param>
     public void CreateOnSheet(ScriptToken scriptToken, int sheetNum)
     {
-        InstrOnSheet instrOnSheet = new InstrOnSheet(scriptToken);
+        InstrValue value = InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
+
+        InstrOnSheet instrOnSheet = new InstrOnSheet(scriptToken, value);
         instrOnSheet.SheetNum = sheetNum;
         ListSheets.Add(instrOnSheet);
         CurrOnSheet = instrOnSheet;

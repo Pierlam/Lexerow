@@ -1,30 +1,5 @@
 ﻿namespace Lexerow.Core.System;
 
-public enum ErrorType
-{
-    Repository,
-    Design,
-    Execution
-    //License
-}
-
-/// <summary>
-/// TODO: garder??
-/// </summary>
-public enum ErrorParamKey
-{
-    TypeExecResult,
-    WrongPos
-}
-
-/// <summary>
-/// An error parameter.
-/// </summary>
-public class ErrorParam
-{
-    public ErrorParamKey Key { get; set; }
-    public string Value { get; set; }
-}
 
 /// <summary>
 /// Error/warning code.
@@ -198,19 +173,25 @@ public enum ErrorCode
     ParserFctParamCountWrong,
     ParserFctParamTypeWrong,
     ParserFctParamVarNotDefined,
-    ParserSetVarWrongRightPart,
     ParserFctResultNotSet,
-    ParserConstStringValueExpected,
+    
+    ParserValueStringExpected,
+    ParserValueIntExpected,
+    ParserValueIntWrong,
+    ParserVarNotDefined,
+    ParserVarWrongRightPart,
 
+    ParserOnExcelExpected,
     ParserOnSheetExpected,
     ParserTokenDotExpected,
     ParserColAddressExpected,
-    ParserColNumWrong,
     ParserSepComparatorExpected,
-    ParserSepComparatorWrong,
-    ParserReturnTypeWrong,
     ParserTokenIfExpected,
     ParserTokenThenExpected,
+
+    ParserColNumWrong,
+    ParserSepComparatorWrong,
+    ParserReturnTypeWrong,
     ParserThenPartIsEmpty,
 
     //--run program, instructions
@@ -227,6 +208,7 @@ public enum ErrorCode
     ExecFuncNotExists,
 
     ExecFuncOneParamExpected,
+    ExecValueIntWrong,
 
     InstrNotExpected,
     IntMustBePositive

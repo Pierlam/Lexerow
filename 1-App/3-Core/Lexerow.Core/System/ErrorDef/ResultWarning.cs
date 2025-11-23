@@ -1,23 +1,23 @@
 ﻿namespace Lexerow.Core.System;
 
 /// <summary>
-///  Execution  result warning.
+///  Result warning.
 ///  exp: IfCondTypeMismatch, excelFile=file, SheetNum=0, col=A, type=Number, Counter=12
 /// </summary>
-public class ExecResultWarning
+public class ResultWarning
 {
-    public ExecResultWarning(ErrorCode errorCode, string param)
+    public ResultWarning(ErrorCode errorCode, string param)
     {
         ErrorCode = errorCode;
         Param = param;
     }
 
-    public ExecResultWarning(ErrorCode errorCode)
+    public ResultWarning(ErrorCode errorCode)
     {
         ErrorCode = errorCode;
     }
 
-    public ExecResultWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public ResultWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
         ErrorCode = errorCode;

@@ -1,0 +1,7 @@
+﻿# test with negative int value
+
+OnExcel ".\10-ExcelFiles\IfACellGreaterMinus7.xlsx"
+	ForEachRow
+		If A.Cell< -7 Then A.Cell=-7
+	Next
+End OnExcel

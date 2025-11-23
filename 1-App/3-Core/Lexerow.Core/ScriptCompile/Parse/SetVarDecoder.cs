@@ -15,13 +15,13 @@ internal class SetVarDecoder
 	///   excelOut.B.Cell=      TODO
 	///   Sheet[1].B.Cell=      TODO?
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
-    /// <param name="listExecTok"></param>
+    /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSetVarEqualChar(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listExecTok, out bool isToken)
+    public static bool ProcessSetVarEqualChar(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
         bool res;
@@ -34,17 +34,17 @@ internal class SetVarDecoder
         // the stack contains nothing, strange  =blabla
         if (stackInstr.Count == 0)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
             return false;
         }
 
         // is it var=  ?
         if (stackInstr.Count == 1)
         {
-            res = ProcessVarName(execResult, listVar, stackInstr, scriptToken, out isToken);
+            res = ProcessVarName(result, listVar, stackInstr, scriptToken, out isToken);
             if (!isToken)
             {
-                execResult.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
 
@@ -55,7 +55,7 @@ internal class SetVarDecoder
         if (stackInstr.Count > 1)
         {
             // looking in the stack for Then instr or If. If not found search: ForEach Row
-            InstrBase instrResult = stackInstr.FindFirstFromTop(InstrType.If, InstrType.Then);
+            InstrBase instrResult = stackInstr.FindFirstInstrFromTop(InstrType.If, InstrType.Then);
             if (instrResult != null && instrResult.InstrType == InstrType.If)
                 // close to an If instr, it's a comparison, not a SetVar
                 return true;
@@ -64,15 +64,29 @@ internal class SetVarDecoder
         isToken = true;
 
         // is it varName= ?
-        res = ProcessVarName(execResult, listVar, stackInstr, scriptToken, out isToken);
+        res = ProcessVarName(result, listVar, stackInstr, scriptToken, out isToken);
         if (!res) return false;
         if (isToken) return true;
 
         //--is the stack contains A.Cell expression?
-        res = ParserUtils.ProcessInstrColCellFunc(execResult, stackInstr, scriptToken, out isToken);
+        res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptToken, out isToken);
         if (!res) return false;
         if (isToken)
         {
+            // allowed only in OnExcel/ForEachRow instr
+            InstrBase instrBase = stackInstr.FindInstrFromTop(InstrType.OnExcel);
+            if(instrBase==null)
+            {
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                return false;
+            }
+            InstrOnExcel instrOnExcel= (InstrOnExcel)instrBase;
+            if(instrOnExcel.BuildStage != InstrOnExcelBuildStage.If)
+            {
+                result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken());
+                return false;
+            }
+
             // the Instr Col.Cell.Function is on the top the stack
             InstrBase instrColCellFunc = stackInstr.Pop();
             // now process the SetVar instr
@@ -84,20 +98,20 @@ internal class SetVarDecoder
             return true;
         }
 
-        execResult.AddError(ErrorCode.ParserTokenNotExpected, stackInstr.Peek().FirstScriptToken());
+        result.AddError(ErrorCode.ParserTokenNotExpected, stackInstr.Peek().FirstScriptToken());
         return false;
     }
 
     /// <summary>
     /// Is the stack contains: varName ?
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="stkInstr"></param>
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessVarName(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
+    private static bool ProcessVarName(Result result, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 

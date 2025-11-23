@@ -19,14 +19,14 @@ internal class TokenCloseBracketProcessor
     ///
     ///   can be a calculation expression, exp: (2+3)
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
     /// <param name="listInstr"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool Do(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstr, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem)
+    public static bool Do(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstr, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem)
     {
         isListOfParams = false;
         isMathExpr = false;
@@ -70,7 +70,7 @@ internal class TokenCloseBracketProcessor
             // TODO: error? to confirm
 
             // error, item before the open bracket is not expected
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
             return false;
         }
 
@@ -88,7 +88,7 @@ internal class TokenCloseBracketProcessor
 
             // the current stack item should be an item, a string, a number or an instruction
             //if (item.IsTokenVarName() || item.IsTokenExcelColName() || item.IsTokenExcelCellAddress() || item.IsTokenConstValue() || item.IsInstr())
-            if (instr is InstrObjectName || instr is InstrConstValue)
+            if (instr is InstrObjectName || instr is InstrValue)
             {
                 // save the item in the fct param list
                 listItem.Add(instr);
@@ -169,7 +169,7 @@ internal class TokenCloseBracketProcessor
             }
 
             // error, wrong object name
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
             return false;
         }
         return true;

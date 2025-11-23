@@ -11,9 +11,10 @@ namespace Lexerow.Core.System;
 /// </summary>
 public class InstrOnSheet : InstrBase
 {
-    public InstrOnSheet(ScriptToken scriptToken) : base(scriptToken)
+    public InstrOnSheet(ScriptToken scriptToken, InstrValue instrValue) : base(scriptToken)
     {
         InstrType = InstrType.OnSheet;
+        InstrFirstDataRow= instrValue;
     }
 
     // OnHeader instructions
@@ -28,9 +29,17 @@ public class InstrOnSheet : InstrBase
     public string SheetName { get; set; } = string.Empty;
 
     /// <summary>
+    /// First row
     /// Human readable, base1
     /// </summary>
-    public int FirstRowNum { get; set; } = 2;
+    //public int FirstRowNum { get; set; } = 2;
+
+    /// <summary>
+    /// First data row value or var or fct call.
+    /// Human readable, base1
+    /// </summary>
+    public InstrBase InstrFirstDataRow { get; set; }
+
 
     /// <summary>
     /// Human readable, base1

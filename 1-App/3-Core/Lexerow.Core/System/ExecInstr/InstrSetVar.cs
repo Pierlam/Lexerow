@@ -38,7 +38,7 @@ public class InstrSetVar : InstrBase
 
     /// <summary>
     /// the right part, after the equal
-    /// =12        -> InstrConstValue
+    /// =12        -> InstrValue
     /// =a         -> InstrVar
     /// =sheet.Cell(A,1)  -> InstrExcelValue
     /// </summary>

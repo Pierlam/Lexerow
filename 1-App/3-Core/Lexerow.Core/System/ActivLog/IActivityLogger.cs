@@ -15,7 +15,7 @@ public interface IActivityLogger
 
     void LogCompilOnGoing(ActivityLogLevel level, string operation, string msg);
 
-    void LogCompilEndError(ExecResultError error, string operation, string msg);
+    void LogCompilEndError(ResultError error, string operation, string msg);
 
     void LogExecStart(ActivityLogLevel level, string operation, string msg);
 
@@ -23,5 +23,5 @@ public interface IActivityLogger
 
     void LogExecOnGoing(ActivityLogLevel level, string operation, string msg);
 
-    void LogExecEndError(ExecResultError error, string operation, string msg);
+    void LogExecEndError(ResultError error, string operation, string msg);
 }

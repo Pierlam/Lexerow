@@ -15,7 +15,7 @@ public enum InstrType
     Div,
     Percent,
 
-    ConstValue,
+    Value,
 
     ObjectName,
 
@@ -32,9 +32,9 @@ public enum InstrType
 
     ExcelCellAddress,
 
-    SetCellVal,
-    SetCellNull,
-    SetCellBlank,
+    //SetCellVal,
+    //SetCellNull,
+    //SetCellBlank,
 
     SepComparison,
     Comparison,
@@ -49,6 +49,7 @@ public enum InstrType
 
     OnExcel,
     OnSheet,
+    FirstRow,
     ForEach,
     Row,
     ForEachRow,

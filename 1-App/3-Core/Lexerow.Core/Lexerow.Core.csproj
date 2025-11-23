@@ -9,7 +9,7 @@
 	<AssemblyName>Lexerow</AssemblyName>
     <Authors>Pierlam</Authors>
     <Company>Pierlam Project</Company>
-	<VersionPrefix>0.3</VersionPrefix>
+	<VersionPrefix>0.4</VersionPrefix>
 	<releaseNotes></releaseNotes> 
 	<RepositoryUrl>https://github.com/Pierlam/Lexerow</RepositoryUrl>
 	<PackageTags>dotnet csharp parse excel row col cell</PackageTags>

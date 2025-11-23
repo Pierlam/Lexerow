@@ -14,7 +14,7 @@ public class LoadLinesExecSelectFilesTests : BaseTests
     [TestMethod]
     public void LoadThenExecuteOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -23,17 +23,17 @@ public class LoadLinesExecSelectFilesTests : BaseTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
-        execResult = core.ExecuteScript("script");
-        Assert.IsTrue(execResult.Result);
+        result = core.ExecuteScript("script");
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void LoadExecuteOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -42,7 +42,7 @@ public class LoadLinesExecSelectFilesTests : BaseTests
             ];
 
         // load the script, compile it and execute it
-        execResult = core.LoadExecLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadExecLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 }

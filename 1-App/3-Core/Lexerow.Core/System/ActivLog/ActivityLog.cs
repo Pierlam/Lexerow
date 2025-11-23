@@ -63,5 +63,5 @@ public class ActivityLog
     /// </summary>
     public ActivityLogResult Result { get; set; } = ActivityLogResult.Ok;
 
-    public ExecResultError? Error { get; set; } = null;
+    public ResultError? Error { get; set; } = null;
 }

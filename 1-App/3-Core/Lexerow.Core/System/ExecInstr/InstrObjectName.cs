@@ -16,4 +16,11 @@ public class InstrObjectName : InstrBase
     // type= undefined, var, function
 
     public string ObjectName { get; private set; }
+
+    public bool MatchName(string varname)
+    {
+        if(string.IsNullOrWhiteSpace(varname)) return false;
+        if (string.IsNullOrWhiteSpace(ObjectName))return false;
+        return ObjectName.Equals(varname, StringComparison.InvariantCultureIgnoreCase);
+    }
 }

@@ -4,6 +4,7 @@ using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
+using Lexerow.Core.Tests.Common;
 
 namespace Lexerow.Core.Tests.ScriptParser;
 
@@ -13,7 +14,7 @@ namespace Lexerow.Core.Tests.ScriptParser;
 /// One IfThen in ForEachRow.
 /// </summary>
 [TestClass]
-public class ScriptParserOnExcelBlankNullTests
+public class ScriptParserOnExcelBlankNullTests : BaseTests
 {
     /// <summary>
     /// Implicite: sheet=0, FirstRow=1
@@ -27,52 +28,44 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelIfACellEqualBlankOk()
     {
-        ScriptLineTokensTest line;
-        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        int numLine = 1;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, scriptTokens, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(2, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell=blank Then A.Cell=12
-        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, script, "A", "=", "Blank", "A", 12);
+        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(3, scriptTokens, "A", "=", "Blank", "A", 12);
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens);
 
-        // just to check the content of the script
+        //==>just to check the content of the script
         //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
 
         //==> Parse the script tokens
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
 
-        ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
-
+        //==> Check the result
         Assert.IsTrue(res);
-        Assert.AreEqual(1, listInstr.Count);
+        Assert.AreEqual(1, prog.ListInstr.Count);
 
-        //==> Check result
         // OnExcel
-        Assert.AreEqual(InstrType.OnExcel, listInstr[0].InstrType);
-        InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
+        Assert.AreEqual(InstrType.OnExcel, prog.ListInstr[0].InstrType);
+        InstrOnExcel instrOnExcel = prog.ListInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
         Assert.IsNotNull(instrOnExcel.InstrFiles);
-        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
+        InstrValue constExcelFileName = instrOnExcel.InstrFiles as InstrValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -99,22 +92,22 @@ public class ScriptParserOnExcelBlankNullTests
         Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
         // check If-Operand Left -> If A.Cell
-        InstrTestHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
 
         // check If-Operand Right  -> Blank
         InstrBlank instrBlank = instrComparison.OperandRight as InstrBlank;
         Assert.IsNotNull(instrBlank);
         //TestBuilder.TestInstrKeyword("If-OperandRight", instrComparison.OperandRight, 10);
 
-        // check Then, SetVar -> Left:InstrColCellFunc, Right InstrConstValue: 12
+        // check Then, SetVar -> Left:InstrColCellFunc, Right InstrValue: 12
         Assert.IsNotNull(instrIfThenElse.InstrThen);
         Assert.AreEqual(1, instrIfThenElse.InstrThen.ListInstr.Count);
 
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        InstrTestHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
-        InstrTestHelper.TestInstrConstValue("Then-SetVar-OperandRIght", instrSetVar.InstrRight, 12);
+        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
+        TestInstrHelper.TestInstrValue("Then-SetVar-OperandRIght", instrSetVar.InstrRight, 12);
     }
 
     /// <summary>
@@ -129,45 +122,38 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelIfACellGreaterBlankError()
     {
-        ScriptLineTokensTest line;
-        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, scriptTokens, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);  
 
         // If A.Cell=blank Then A.Cell=12
-        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(2, script, "A", ">", "Blank", "A", 12);
+        TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(numLine++, scriptTokens, "A", ">", "Blank", "A", 12);
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(3, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(4, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens);
 
-        // just to check the content of the script
-        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+        //==>just to check the content of the script
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 
         //==> Parse the script tokens
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
 
-        ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
-
+        //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserSepComparatorWrong, execResult.ListError[0].ErrorCode);
-        Assert.AreEqual(">", execResult.ListError[0].Param);
-        Assert.AreEqual(2, execResult.ListError[0].LineNum);
+        Assert.AreEqual(ErrorCode.ParserSepComparatorWrong, result.ListError[0].ErrorCode);
+        Assert.AreEqual(">", result.ListError[0].Param);
+        Assert.AreEqual(2, result.ListError[0].LineNum);
     }
 
     /// <summary>
@@ -182,52 +168,45 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelThenACellEqBlankOk()
     {
-        ScriptLineTokensTest line;
-        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        int numLine=0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, scriptTokens, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(2, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell=9 Then A.Cell=Blank
-        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellKeyword(3, script, "A", "=", 9, "A", "Blank");
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellKeyword(numLine++, scriptTokens, "A", "=", 9, "A", "Blank");
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens);
 
-        // just to check the content of the script
-        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 
         //==> Parse the script tokens
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
 
-        ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
-
+        //==> Check the result
         Assert.IsTrue(res);
-        Assert.AreEqual(1, listInstr.Count);
+        Assert.AreEqual(1, prog.ListInstr.Count);
 
         //==> Check result
         // OnExcel
-        Assert.AreEqual(InstrType.OnExcel, listInstr[0].InstrType);
-        InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
+        Assert.AreEqual(InstrType.OnExcel, prog.ListInstr[0].InstrType);
+        InstrOnExcel instrOnExcel = prog.ListInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
         Assert.IsNotNull(instrOnExcel.InstrFiles);
-        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
+        InstrValue constExcelFileName = instrOnExcel.InstrFiles as InstrValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -254,10 +233,10 @@ public class ScriptParserOnExcelBlankNullTests
         Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
         // check If-Operand Left -> If A.Cell
-        InstrTestHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
 
         // check If-Operand Right
-        InstrTestHelper.TestInstrConstValue("If-OperandRight", instrComparison.OperandRight, 9);
+        TestInstrHelper.TestInstrValue("If-OperandRight", instrComparison.OperandRight, 9);
 
         // check Then, SetVar
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -266,7 +245,7 @@ public class ScriptParserOnExcelBlankNullTests
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        InstrTestHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
+        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
         InstrBlank instrBlank = instrSetVar.InstrRight as InstrBlank;
         Assert.IsNotNull(instrBlank);
     }
@@ -283,52 +262,44 @@ public class ScriptParserOnExcelBlankNullTests
     [TestMethod]
     public void OnExcelThenACellEqNullOk()
     {
-        ScriptLineTokensTest line;
-        List<ScriptLineTokens> script = new List<ScriptLineTokens>();
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
-        //-build one line of tokens
-        line = ScriptLineTokensTest.CreateOnExcelFileString("\"data.xlsx\"");
-        script.Add(line);
+        // OnExcel "data.xlsx"
+        TestTokensBuilder.AddLineOnExcelFileString(numLine++, scriptTokens, "\"data.xlsx\"");
 
         // ForEach Row
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(2, "ForEach", "Row");
-        script.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell=9 Then A.Cell=Blank
-        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellKeyword(3, script, "A", "=", 9, "A", "Null");
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellKeyword(3, scriptTokens, "A", "=", 9, "A", "Null");
 
         // Next
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, 1, "Next");
-        script.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
 
         // End OnExcel
-        line = new ScriptLineTokensTest();
-        line.AddTokenName(1, "End", "OnExcel");
-        script.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens); 
 
-        // just to check the content of the script
-        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 
         //==> Parse the script tokens
-        var logger = A.Fake<IActivityLogger>();
-        Parser sa = new Parser(logger);
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
 
-        ExecResult execResult = new ExecResult();
-        bool res = sa.Process(execResult, script, out List<InstrBase> listInstr);
-
+        //==> Check the result
         Assert.IsTrue(res);
-        Assert.AreEqual(1, listInstr.Count);
+        Assert.AreEqual(1, prog.ListInstr.Count);
 
-        //==> Check result
         // OnExcel
-        Assert.AreEqual(InstrType.OnExcel, listInstr[0].InstrType);
-        InstrOnExcel instrOnExcel = listInstr[0] as InstrOnExcel;
+        Assert.AreEqual(InstrType.OnExcel, prog.ListInstr[0].InstrType);
+        InstrOnExcel instrOnExcel = prog.ListInstr[0] as InstrOnExcel;
 
         // OnExcel.ListFiles
         Assert.IsNotNull(instrOnExcel.InstrFiles);
-        InstrConstValue constExcelFileName = instrOnExcel.InstrFiles as InstrConstValue;
+        InstrValue constExcelFileName = instrOnExcel.InstrFiles as InstrValue;
         Assert.AreEqual("data.xlsx", (constExcelFileName.ValueBase as ValueString).Val);
 
         // check InstrOnSheet
@@ -355,10 +326,10 @@ public class ScriptParserOnExcelBlankNullTests
         Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
         // check If-Operand Left -> If A.Cell
-        InstrTestHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
 
         // check If-Operand Right
-        InstrTestHelper.TestInstrConstValue("If-OperandRight", instrComparison.OperandRight, 9);
+        TestInstrHelper.TestInstrValue("If-OperandRight", instrComparison.OperandRight, 9);
 
         // check Then, SetVar
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -367,7 +338,7 @@ public class ScriptParserOnExcelBlankNullTests
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        InstrTestHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
+        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
         InstrNull instrNull = instrSetVar.InstrRight as InstrNull;
         Assert.IsNotNull(instrNull);
     }

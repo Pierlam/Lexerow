@@ -33,34 +33,34 @@ public class InstrSetVarExecutor
     ///   Not really a set var instruction.
     ///   >Just set the value to the excel cell, doesn't create a var.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="listVar"></param>
     /// <param name="instrSetVar"></param>
     /// <returns></returns>
-    public bool Exec(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar)
+    public bool Exec(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrSetVar instrSetVar)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetVarExecutor.Exec", "Token: " + instrSetVar.FirstScriptToken());
 
         //--case A.Cell= xxx ?
         InstrColCellFunc instrColCellFunc = instrSetVar.InstrLeft as InstrColCellFunc;
         if (instrColCellFunc != null)
-            return ExecSetToColCellFunc(execResult, ctx, progRunVarMgr, instrSetVar, instrColCellFunc);
+            return ExecSetToColCellFunc(result, ctx, progExecVarMgr, instrSetVar, instrColCellFunc);
 
         // the left part should be an objectName (varname), exp: a=xx
         InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
         if (instrObjectName == null)
         {
-            execResult.AddError(ErrorCode.ExecInstrVarTypeNotExpected, "Instr Left: " + instrSetVar.InstrLeft.FirstScriptToken());
+            result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, "Instr Left: " + instrSetVar.InstrLeft.FirstScriptToken());
             return false;
         }
 
         //--case a=12, the right instr is a const value
-        InstrConstValue instrConstValue = instrSetVar.InstrRight as InstrConstValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
+        if (instrValue != null)
         {
             // get or create the var, set the value
-            CreateVar(ctx, progRunVarMgr, instrSetVar.InstrLeft, instrConstValue);
+            CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrValue);
             ctx.StackInstr.Pop();
             return true;
         }
@@ -69,8 +69,11 @@ public class InstrSetVarExecutor
         instrObjectName = instrSetVar.InstrRight as InstrObjectName;
         if (instrObjectName != null)
         {
+            // get the var on the right to catch the result
+            //ici();
+
             // get or create the var, set the value
-            CreateVar(ctx, progRunVarMgr, instrSetVar.InstrLeft, instrObjectName);
+            CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrObjectName);
             ctx.StackInstr.Pop();
             return true;
         }
@@ -82,8 +85,8 @@ public class InstrSetVarExecutor
             return true;
         }
 
-        // get or create the var, set the value
-        CreateVar(ctx, progRunVarMgr, instrSetVar.InstrLeft, ctx.PrevInstrExecuted);
+        // get or create the var, set the value, exp: f=SelectFiles()
+        CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, ctx.PrevInstrExecuted);
 
         // now remove the SetInstr from the stack
         ctx.PrevInstrExecuted = null;
@@ -97,21 +100,21 @@ public class InstrSetVarExecutor
     /// a.Cell=var
     /// A.Cell=B.Cell
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="progRunVarMgr"></param>
     /// <param name="instrSetVar"></param>
     /// <param name="instrColCellFunc"></param>
     /// <returns></returns>
-    private bool ExecSetToColCellFunc(ExecResult execResult, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar, InstrColCellFunc instrColCellFunc)
+    private bool ExecSetToColCellFunc(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrSetVar instrSetVar, InstrColCellFunc instrColCellFunc)
     {
         _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrSetVarExecutor.ExecSetToColCellFunc", "Left is InstrColCellFunc: " + instrSetVar.FirstScriptToken());
 
         //--case A.cell=10 ?
-        InstrConstValue instrConstValue = instrSetVar.InstrRight as InstrConstValue;
-        if (instrConstValue != null)
+        InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
+        if (instrValue != null)
         {
-            if (!_instrSetColCellFuncRunner.ExecSetCellValue(execResult, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc, instrConstValue))
+            if (!_instrSetColCellFuncRunner.ExecSetCellValue(result, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc, instrValue))
                 return false;
             ctx.StackInstr.Pop();
             return true;
@@ -124,7 +127,7 @@ public class InstrSetVarExecutor
         InstrBlank instrBlank = instrSetVar.InstrRight as InstrBlank;
         if (instrBlank != null)
         {
-            if (!_instrSetColCellFuncRunner.ExecSetCellBlank(execResult, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc))
+            if (!_instrSetColCellFuncRunner.ExecSetCellBlank(result, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc))
                 return false;
             ctx.StackInstr.Pop();
             return true;
@@ -134,7 +137,7 @@ public class InstrSetVarExecutor
         InstrNull instrNull = instrSetVar.InstrRight as InstrNull;
         if (instrNull != null)
         {
-            if (!_instrSetColCellFuncRunner.ExecSetCellNull(execResult, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc))
+            if (!_instrSetColCellFuncRunner.ExecSetCellNull(result, ctx.ExcelSheet, ctx.RowNum, instrColCellFunc))
                 return false;
             ctx.StackInstr.Pop();
             return true;
@@ -143,7 +146,7 @@ public class InstrSetVarExecutor
         //--case A.Cell= Fct() ?
         // TODO:
 
-        execResult.AddError(ErrorCode.ExecInstrNotManaged, "Instr Right: " + instrSetVar.InstrRight.FirstScriptToken());
+        result.AddError(ErrorCode.ExecInstrNotManaged, "Instr Right: " + instrSetVar.InstrRight.FirstScriptToken());
         return false;
     }
 

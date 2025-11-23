@@ -46,15 +46,22 @@ public class CompilStackInstr
     }
 
     /// <summary>
-    /// Get the inst just before the instr on top of the stack.
+    /// Get/read the inst just before the instr on top of the stack.
     /// </summary>
     /// <param name="stkInstr"></param>
     /// <returns></returns>
-    public InstrBase GetBeforeTop()
+    public InstrBase ReadInstrBeforeTop()
     {
-        // need to ahve 2 isntr on the stack
+        // need to have 2 instr on the stack
         if (StackInstr.Count < 2) return null;
         return StackInstr.ElementAt(1);
+    }
+
+    public InstrBase ReadInstrBeforeBeforeTop()
+    {
+        // need to have 3 instr on the stack
+        if (StackInstr.Count < 3) return null;
+        return StackInstr.ElementAt(2);
     }
 
     /// <summary>
@@ -63,13 +70,29 @@ public class CompilStackInstr
     /// <param name="stkInstr"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    public InstrBase FindFirstFromTop(InstrType type, InstrType type2)
+    public InstrBase FindFirstInstrFromTop(InstrType type, InstrType type2)
     {
         foreach (var instr in StackInstr)
         {
             if (instr.InstrType == type)
                 return instr;
             if (instr.InstrType == type2)
+                return instr;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Looking for an instr in the stack, starting from the top.
+    /// </summary>
+    /// <param name="stkInstr"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public InstrBase FindInstrFromTop(InstrType type)
+    {
+        foreach (var instr in StackInstr)
+        {
+            if (instr.InstrType == type)
                 return instr;
         }
         return null;

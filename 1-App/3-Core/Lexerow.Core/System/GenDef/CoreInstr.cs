@@ -6,6 +6,7 @@ public class CoreInstr
     public const string InstrSelectFiles = "SelectFiles";
     public const string InstrOnExcel = "OnExcel";
     public const string InstrOnSheet = "OnSheet";
+    public const string InstrFirstRow = "FirstRow";
     public const string InstrForEach = "ForEach";
 
     public const string InstrRow = "Row";
@@ -24,4 +25,13 @@ public class CoreInstr
 
     public const string InstrBlank = "Blank";
     public const string InstrNull = "Null";
+
+    /// <summary>
+    /// Used in OnExcel instr.
+    /// The first data row to process.
+    /// (after the header row)
+    /// 
+    /// value in base1 (human readable).
+    /// </summary>
+    public static int FirstDataRowNum = 2;
 }

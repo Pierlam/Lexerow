@@ -12,14 +12,14 @@ public class InstrOnExcelBuilder
     /// <summary>
     /// OnExcel build, new stage to manage.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listVar"></param>
     /// <param name="stkInstr"></param>
     /// <param name="instr"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool OnExcelBuildOngoing(ExecResult execResult, List<InstrObjectName> listVar, CompilStackInstr stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
+    public static bool OnExcelBuildOngoing(Result result, List<InstrObjectName> listVar, CompilStackInstr stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
         InstrOnExcel instrOnExcel;
@@ -53,7 +53,7 @@ public class InstrOnExcelBuilder
         if (instr.InstrType == InstrType.OnExcel && stkInstr.Count > 1)
         {
             // const value not a string, error
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -72,10 +72,10 @@ public class InstrOnExcelBuilder
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.OnExcel)
         {
             // filename expected. Type string const value or varname
-            if (instr.InstrType == InstrType.ConstValue)
+            if (instr.InstrType == InstrType.Value)
             {
                 // should be a string
-                if (ParserUtils.IsValueString((instr as InstrConstValue).ValueBase))
+                if (ParserUtils.IsValueString((instr as InstrValue).ValueBase))
                 {
                     // save the string filename
                     instrOnExcel.InstrFiles = instr;
@@ -83,7 +83,7 @@ public class InstrOnExcelBuilder
                     return true;
                 }
                 // const value not a string, error
-                execResult.AddError(ErrorCode.ParserConstStringValueExpected, instr.FirstScriptToken());
+                result.AddError(ErrorCode.ParserValueStringExpected, instr.FirstScriptToken());
                 return false;
             }
             // filename is a variable, should be defined before
@@ -95,7 +95,7 @@ public class InstrOnExcelBuilder
                 return true;
             }
             // const value not a string, error
-            execResult.AddError(ErrorCode.ParserConstStringValueExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserValueStringExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -106,6 +106,17 @@ public class InstrOnExcelBuilder
             {
                 instrOnExcel.BuildStage = InstrOnExcelBuildStage.OnSheet;
                 // nothing more to do, just check the stage
+                return true;
+            }
+
+            // FirstRow token found
+            if (instr.InstrType == InstrType.FirstRow)
+            {
+                // OnSheet token not found, so create the default OnSheet, SheetNum=1, the first one
+                instrOnExcel.CreateOnSheet(instr.FirstScriptToken(), 1);
+                instrOnExcel.BuildStage = InstrOnExcelBuildStage.FirstRowValue;
+                // push the FirstRow instr on the stack
+                stkInstr.Push(instr);
                 return true;
             }
 
@@ -127,7 +138,7 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
-            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -141,7 +152,7 @@ public class InstrOnExcelBuilder
             }
 
             // SheetNum
-            if (instr.InstrType == InstrType.ConstValue)
+            if (instr.InstrType == InstrType.Value)
             {
                 instrOnExcel.BuildStage = InstrOnExcelBuildStage.SheetNum;
 
@@ -160,7 +171,30 @@ public class InstrOnExcelBuilder
             // TODO:
 
             // error
-            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            return false;
+        }
+
+        //--case4: FirstRowValue: next stage -> ForEach/ForEachRow
+        if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.FirstRowValue)
+        {
+            // ForEach token found
+            if (instr.InstrType == InstrType.ForEach)
+            {
+                // coming from FirstRowValue, the Sheet is already created!
+                instrOnExcel.BuildStage = InstrOnExcelBuildStage.ForEach;
+                return true;
+            }
+
+            // ForEachRow token found, same as found Row token.
+            if (instr.InstrType == InstrType.ForEachRow)
+            {
+                // coming from FirstRowValue, the Sheet is already created!
+                instrOnExcel.BuildStage = InstrOnExcelBuildStage.Row;
+                return true;
+            }
+
+            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -173,7 +207,7 @@ public class InstrOnExcelBuilder
                 // nothing more to do, just check the stage
                 return true;
             }
-            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -188,7 +222,7 @@ public class InstrOnExcelBuilder
                 stkInstr.Push(instr);
                 return true;
             }
-            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -215,26 +249,26 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
-            execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
             return false;
         }
-        execResult.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+        result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
         return false;
     }
 
     /// <summary>
     /// Build the If Then instr.
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="instrIfThenElse"></param>
     /// <returns></returns>
-    public static bool BuildIfThen(ExecResult execResult, CompilStackInstr stackInstr, InstrIfThenElse instrIfThenElse)
+    public static bool BuildIfThen(Result result, CompilStackInstr stackInstr, InstrIfThenElse instrIfThenElse)
     {
         // the stack should contains the OnExcel instr
         if (stackInstr.Count != 1)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, instrIfThenElse.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instrIfThenElse.FirstScriptToken());
             return false;
         }
 
@@ -243,7 +277,7 @@ public class InstrOnExcelBuilder
         //--case7: If: next -> got back to Row, to add maybe others IfThen
         if (instrOnExcel.BuildStage != InstrOnExcelBuildStage.If)
         {
-            execResult.AddError(ErrorCode.ParserTokenNotExpected, instrIfThenElse.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instrIfThenElse.FirstScriptToken());
             return false;
         }
 

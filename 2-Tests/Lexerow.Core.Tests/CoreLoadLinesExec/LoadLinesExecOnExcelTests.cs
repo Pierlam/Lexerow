@@ -2,7 +2,7 @@
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
 
-namespace Lexerow.Core.Tests.CoreLoadLinesRun;
+namespace Lexerow.Core.Tests.CoreLoadLinesExec;
 
 /// <summary>
 /// Test the script load from lines, compile and execute from the core.
@@ -15,7 +15,7 @@ public class LoadLinesExecOnExcelTests : BaseTests
     [TestMethod]
     public void OnExcelBasicOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -28,30 +28,30 @@ public class LoadLinesExecOnExcelTests : BaseTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
-        execResult = core.ExecuteScript("script");
-        Assert.IsTrue(execResult.Result);
+        result = core.ExecuteScript("script");
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx");
         Assert.IsNotNull(fileStream);
-        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // r1, c0: 9  -> not modified
-        bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
         Assert.IsTrue(res);
     }
 
     [TestMethod]
     public void OnExcelBasic2Ok()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -64,27 +64,27 @@ public class LoadLinesExecOnExcelTests : BaseTests
             ];
 
         // load the script, compile it and execute it
-        execResult = core.LoadExecLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadExecLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel2.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel2.xlsx");
         Assert.IsNotNull(fileStream);
-        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // r1, c0: 9  -> not modified
-        bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
         Assert.IsTrue(res);
     }
 
     [TestMethod]
     public void IfACellGreateBCellOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -97,28 +97,28 @@ public class LoadLinesExecOnExcelTests : BaseTests
             ];
 
         // load the script, compile it and execute it
-        execResult = core.LoadExecLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadExecLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = ExcelTestChecker.OpenExcel(PathExcelFilesExec + "datLinesIfACellGreaterBCell2.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesIfACellGreaterBCell2.xlsx");
         Assert.IsNotNull(fileStream);
-        var wb = ExcelTestChecker.GetWorkbook(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // C2: row1, col2: 10
-        bool res = ExcelTestChecker.CheckCellValue(wb, 0, 1, 2, 10);
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 2, 10);
         Assert.IsTrue(res);
 
         // C3: row2, col2: 27
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 2, 2, 27);
+        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 2, 27);
         Assert.IsTrue(res);
 
         // C4: row3, col2: 10
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 3, 2, 10);
+        res = TestExcelChecker.CheckCellValue(wb, 0, 3, 2, 10);
         Assert.IsTrue(res);
 
         // C5: row4, col2: 10
-        res = ExcelTestChecker.CheckCellValue(wb, 0, 4, 2, 10);
+        res = TestExcelChecker.CheckCellValue(wb, 0, 4, 2, 10);
         Assert.IsTrue(res);
     }
 }

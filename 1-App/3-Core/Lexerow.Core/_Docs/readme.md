@@ -3,7 +3,7 @@
 Lexerow is a backend dotnet library to process easily datarows and cells in Excel files.
 
 For example you can detect empty cell in a column and set a specific value.
-You can compare a cell value to a specific value and then put a new value in the same cell row or in another cell.
+You can compare a cell value to a specific value and then put a new value in the same row or in another cell of the row.
 
 Lexerow is developed in C# and can be used in any dotnet application.
 
@@ -13,8 +13,11 @@ Lexerow is an open source library.
 
 ## Problem: empty cells
 
+
 You have an Excel file containing a datatable in the first sheet: the first line is the header, and others are datarows of the table.
-In column B, some cells are empty, and it's a problem to do calculation. It would better to have a value in each cell.
+In column B, some cells are empty, and it's a problem. It would better to have a value in each cell.
+
+Comment: In Excel language, we say blank rather than empty.
 
 ```
 +------+-------+
@@ -29,7 +32,7 @@ In column B, some cells are empty, and it's a problem to do calculation. It woul
 ```
 
 
-So to put the value 0 in each empty cell in column B, Lexerow will help you to do that easily with some lines of code.
+So to put the value 0 in each empty cell in column B, Lexerow will help you to do that easily with few lines of code.
 
 ```
 +------+-------+
@@ -43,51 +46,59 @@ So to put the value 0 in each empty cell in column B, Lexerow will help you to d
 +------+-------+
 ```
 
-## How it works
+## The solution
 
-To proceed datarow as explained, Lexerow provide the main function which is: "OnExcel ForEachRow If-Then".
+-1/ Create a script to fix cell values in the Excel datatable.
 
-To understand how it works here is the pseudo code:
+-2/ Create a dotnet program to execute your script.
+
+-3/ Feel free to modify the script as needed and execute it again.
+ 
+
+## The Script to fix values
+
+To process datarow of the excel file as explained, Lexerow provide a powerful instruction which is: OnExcel.
+
+Let's consider the excel file to fix blank values is "file.xlsx".
+The first row is the header. Data starts at the second row which is the default case.
+
+Create a basic script and save it let's say with this name: "script.lxrw"
+
+The file name extension is free.
 
 ```
-# open the excel file to process
-file=OpenExcel("MyFile.xlsx")
-
 # process datarow of the Excel, one by one
-OnExcel file
-  OnSheet 0,0
-    ForEach Row
-	  If B.Cell=null Then B.Cell= 0
-    End
+OnExcel "file.xlsx"
+    ForEachRow
+	  If B.Cell=blank Then B.Cell=0
+    Next
+End OnExcel	
 ```
 
-## How to implement using C# 
+The script will scan each datarow present in the sheet starting by defaut from the row #2.
+Each time the cell value in column B is blank, the value 0 will be set in place.
+The execution will stop automatically after the last row was processed.
 
-Create a program in C# and use the Lexerow library in this way:
+This a very basic script with few instructions to manage this standard case, but of course it's possible to create more complex scripts to manage all your specific cases.
+
+
+## A C# program to execute the script
+
+Now let's open your Visual Studio or VSCode.
+First import the nuget Lexerow package in your solution or project. 
+
+Create a program in C# and use it in this way:
+
 
 ```
+// create the core engine
 LexerowCore core = new LexerowCore();
-string fileName = "MyFile.xlsx";
-   
-// file= OpenExcel("MyExcelFile.xlsx")
-core.Builder.CreateInstrOpenExcel("file", fileName);
-   
-// Comparison: B.Cell=null  (B -> index 1)
-InstrCompColCellValIsNull instrCompIf = core.Builder.CreateInstrCompCellValIsNull(1);
 
-// Set: B.Cell= 0
-InstrSetCellVal instrSetValThen = core.Builder.CreateInstrSetCellVal(1, 0);
-
-// If B.Cell=null Then B.Cell= 0
-InstrIfColThen instrIfColThen;
-core.Builder.CreateInstrIfColThen(instrCompIf, instrSetValThen, out instrIfColThen);
-
-// OnExcel ForEach Row IfColThen, sheetNum=0, firstDataRow=1 below the header
-core.Builder.CreateInstrOnExcelForEachRowIfThen("file", 0, 1, instrIfColThen);
-
-// execute the instructions -> empty cells in col B will be remplaced by the value 0
-core.Exec.Execute();
+// load and execute the script   
+core.LoadExecScript("MyScript", script.lxrw);   
 ```
+
+This is the smallest C# program you have to write.
 
 
 # Project Github 
@@ -97,42 +108,89 @@ The source code is hosted on github here:
 https://github.com/Pierlam/Lexerow
 
 
+# To go further - Script tuning
+
+Now let's manage a specific case of your datatable.
+
+If the header use 2 rows or more, it's possible to set a different first data row to process. For example, start at the row #3 in place of default row #2. You may use the instruction FirstRow.
+
+```
+# process datarow of the Excel, one by one
+OnExcel "file.xlsx"
+	FirstRow 3
+    ForEachRow
+	  If B.Cell=blank Then B.Cell=0
+    Next
+End OnExcel	
+```
+
+There are several kind of checks available in If condition:
+
+```
+If A.Cell=12
+If A.Cell>8.55
+If A.Cell<>"Hello"
+If A.Cell=blank
+If A.Cell=null
+```
+
+In Then instruction, you can set a value to a cell or clear it.
+
+To clear the cell value, you can put blank in it. 
+The formating of the cell will remain: background/foreground color and border.
+
+To remove completly a cell (value and formatting) , you have to set it to null. 
+
+For If and Then instruction, type of value can be: int, double, string.
+
+Date and time will be managed later.
+
+```
+Then A.Cell=13
+Then A.Cell=25.89
+Then A.Cell="Hello"
+Then A.Cell=blank    # cell formatting will stay
+Then A.Cell=null     # cell formatting will be cleared
+```
+
+From a technical point of view, you can manage easily errors occured during compilation or during the execution of scripts.
+
+```
+OnExcel "file.xlsx"
+	FirstRow 3
+    ForEachRow
+	  If A.Cell="Y" Then 
+		A.Cell="N"
+		B.Cell=25.89
+		C.Cell=blank
+	  End If
+    Next
+End OnExcel	
+```
+
+You can also manage easily errors occuring during compilation or during the execution of scripts.
+
+```
+
+// load and execute the script   
+var result= core.LoadExecScript("MyScript", "MyScript.lxrw");   
+if(!result.Res)
+{
+	// errors occured -> see result.ListError
+	// On an error, see ErrorCode to know the type of error that occured
+}
+```
+
 # Project Wiki
 
-It is possible to check many cell type in If instruction: IsNull, Int, Double, DateTime, DateOnly and also TimeOnly.
-
-```
-If A.Cell = null
-If A.Cell = blank
-If A.Cell = 12
-If A.Cell = "tchao"
-If A.Cell > 02/19/2025
-If A.Cell < 01/02/2020 12:34:56
-if A.Cell in ["yes", "y", "ok"]
-```
-
-You can put one or more Set Cell Value instruction in the Then part. 
-Many type to set are available: Int, Double, DateTime, DateOnly and also TimeOnly.
-
-It is also possible to remove the cell by setting null. 
-Another option is to set Blank to a cell value, in this case the style of cell (BgColor, FgColor, Border,..) will remain.
-
-```
-Then A.Cell= 13
-Then A.Cell= "Hello"
-Then A.Cell= 12/04/2025
-Then A.Cell= null
-Then A.Cell= blank
-```
-
-You can find more information on how use all available functions on the library here:
+You can find more information on how to create more powerful scripts:
 
 https://github.com/Pierlam/Lexerow/wiki
 
 
 # Dependency
 
-To access Excel content file, Lexerow uses the great NPOI library found on Nuget here:
+To access Excel content file, Lexerow uses the great NPOI library available on Nuget here:
 
 https://www.nuget.org/packages/NPOI
 

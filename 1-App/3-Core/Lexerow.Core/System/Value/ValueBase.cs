@@ -50,17 +50,9 @@ public class ValueString : ValueBase
     public int MaxLength { get; set; } = int.MaxValue;
 }
 
-//public class ValueToken : ValueBase
-//{
-//    public ValueToken(string keywork)
-//    {
-//        ValueType = ValueType.Token;
-//        Val = keywork;
-//    }
-
-//    public string Val { get; set; }
-//}
-
+/// <summary>
+/// Integer value.
+/// </summary>
 public class ValueInt : ValueBase
 {
     public ValueInt(int val)
@@ -72,6 +64,9 @@ public class ValueInt : ValueBase
     public int Val { get; set; }
 }
 
+/// <summary>
+/// Double value.
+/// </summary>
 public class ValueDouble : ValueBase
 {
     public ValueDouble(double val)
@@ -83,6 +78,9 @@ public class ValueDouble : ValueBase
     public double Val { get; set; }
 }
 
+/// <summary>
+/// Boolean value.
+/// </summary>
 public class ValueBool : ValueBase
 {
     public ValueBool(bool val)
@@ -94,6 +92,9 @@ public class ValueBool : ValueBase
     public bool Val { get; set; }
 }
 
+/// <summary>
+/// DateTime value.
+/// </summary>
 public class ValueDateTime : ValueBase
 {
     public ValueDateTime(DateTime val)
@@ -110,6 +111,9 @@ public class ValueDateTime : ValueBase
     public DateTime Val { get; set; }
 }
 
+/// <summary>
+/// DateOnly value.
+/// </summary>
 public class ValueDateOnly : ValueBase
 {
     public ValueDateOnly(DateOnly val)
@@ -133,6 +137,9 @@ public class ValueDateOnly : ValueBase
     }
 }
 
+/// <summary>
+/// Time value.
+/// </summary>
 public class ValueTimeOnly : ValueBase
 {
     public ValueTimeOnly(TimeOnly val)

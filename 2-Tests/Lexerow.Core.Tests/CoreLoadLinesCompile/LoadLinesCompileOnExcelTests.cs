@@ -13,7 +13,7 @@ public class LoadLinesCompileOnExcelTests
     [TestMethod]
     public void BasicOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -26,14 +26,14 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void IfACellGreaterEqualOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -46,14 +46,14 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void IfACellDiffOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -66,14 +66,14 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void IfACellEqualStringOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -86,14 +86,14 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void IfACellEqualStringThenACellEqualStringOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -106,14 +106,14 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void IfACellGreaterBCellStringOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -126,14 +126,14 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void TwoIfThenOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -147,8 +147,8 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
     }
 
     /// <summary>
@@ -157,7 +157,7 @@ public class LoadLinesCompileOnExcelTests
     [TestMethod]
     public void ForEachRowOk()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -170,16 +170,16 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
+        result = core.LoadLinesScript("script", lines);
 
         // TODO: acccept both syntax?? ForEach Row and ForEachRow
-        Assert.IsTrue(execResult.Result);
+        Assert.IsTrue(result.Res);
     }
 
     [TestMethod]
     public void NextMissingError()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -191,14 +191,14 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsFalse(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsFalse(result.Res);
     }
 
     [TestMethod]
     public void EndOnExcelMissingError()
     {
-        ExecResult execResult;
+        Result result;
         LexerowCore core = new LexerowCore();
 
         // create a basic script
@@ -210,8 +210,8 @@ public class LoadLinesCompileOnExcelTests
             ];
 
         // load the script and compile it
-        execResult = core.LoadLinesScript("script", lines);
-        Assert.IsFalse(execResult.Result);
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsFalse(result.Res);
     }
 
     // test script with error: EndOnExcel in one word, ...

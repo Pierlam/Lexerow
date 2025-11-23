@@ -24,7 +24,7 @@ public class LexerowCore
 
     private ScriptCompiler _scriptCompiler;
 
-    private ProgramExecutor _programRunner;
+    private ProgramExecutor _programExecutor;
 
     /// <summary>
     /// Constructor.
@@ -39,7 +39,7 @@ public class LexerowCore
         _scriptLoader = new ScriptLoader();
         _scriptCompiler = new ScriptCompiler(_logger, _coreData);
 
-        _programRunner = new ProgramExecutor(_logger, _excelProcessor);
+        _programExecutor = new ProgramExecutor(_logger, _excelProcessor);
     }
 
     public event EventHandler<ActivityLog> ActivityLogEvent;
@@ -55,10 +55,10 @@ public class LexerowCore
     /// <param name="scriptName"></param>
     /// <param name="filename"></param>
     /// <returns></returns>
-    public ExecResult LoadExecLinesScript(string scriptName, List<string> scriptLines)
+    public Result LoadExecLinesScript(string scriptName, List<string> scriptLines)
     {
-        ExecResult execResult = LoadLinesScript(scriptName, scriptLines);
-        if (!execResult.Result) return execResult;
+        Result result = LoadLinesScript(scriptName, scriptLines);
+        if (!result.Res) return result;
 
         return ExecuteScript(scriptName);
     }
@@ -70,46 +70,43 @@ public class LexerowCore
     /// <param name="scriptName"></param>
     /// <param name="scriptLines"></param>
     /// <returns></returns>
-    public ExecResult LoadLinesScript(string scriptName, List<string> scriptLines)
+    public Result LoadLinesScript(string scriptName, List<string> scriptLines)
     {
         _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromLines", scriptName);
 
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
 
         // check that the name is not already used by another program
         if (string.IsNullOrWhiteSpace(scriptName))
         {
             if (scriptName == null) scriptName = string.Empty;
-            var error = execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
+            var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
             _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromLines", scriptName);
-            return execResult;
+            return result;
         }
 
         // any program should have the same name
-        ProgramScript program = _coreData.GetProgramByName(scriptName);
+        Program program = _coreData.GetProgramByName(scriptName);
         if (program != null)
         {
-            execResult.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
-            return execResult;
+            result.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
+            return result;
         }
 
-        if (!_scriptLoader.LoadScriptFromLines(execResult, scriptName, scriptLines, out Script script))
-            return execResult;
+        if (!_scriptLoader.LoadScriptFromLines(result, scriptName, scriptLines, out Script script))
+            return result;
 
         // compile the script,  generate instructions
-        _scriptCompiler.CompileScript(execResult, script, out List<InstrBase> listInstr);
-        if (!execResult.Result)
-            return execResult;
-
-        // create the program
-        ProgramScript programInstr = new ProgramScript(script, listInstr);
+        _scriptCompiler.CompileScript(result, script, out Program programScript);
+        if (!result.Res)
+            return result;
 
         // save it
-        _coreData.ListProgram.Add(programInstr);
+        _coreData.ListProgram.Add(programScript);
 
         _logger.LogCompilEnd(ActivityLogLevel.Important, "LoadScriptFromFile", scriptName);
 
-        return execResult;
+        return result;
     }
 
     /// <summary>
@@ -118,10 +115,10 @@ public class LexerowCore
     /// <param name="scriptName"></param>
     /// <param name="filename"></param>
     /// <returns></returns>
-    public ExecResult LoadExecScript(string scriptName, string filename)
+    public Result LoadExecScript(string scriptName, string filename)
     {
-        ExecResult execResult = LoadScript(scriptName, filename);
-        if (!execResult.Result) return execResult;
+        Result result = LoadScript(scriptName, filename);
+        if (!result.Res) return result;
 
         return ExecuteScript(scriptName);
     }
@@ -133,46 +130,44 @@ public class LexerowCore
     /// <param name="progName"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public ExecResult LoadScript(string scriptName, string fileName)
+    public Result LoadScript(string scriptName, string fileName)
     {
         _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
 
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
 
         // check that the name is not already used by another program
         if (string.IsNullOrWhiteSpace(scriptName))
         {
             if (scriptName == null) scriptName = string.Empty;
-            var error = execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
+            var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
             _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", scriptName);
-            return execResult;
+            return result;
         }
 
         // any program should have the same name
-        ProgramScript program = _coreData.GetProgramByName(scriptName);
+        Program program = _coreData.GetProgramByName(scriptName);
         if (program != null)
         {
-            execResult.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
-            return execResult;
+            result.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
+            return result;
         }
 
-        if (!_scriptLoader.LoadScriptFromFile(execResult, scriptName, fileName, out Script script))
-            return execResult;
+        if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out Script script))
+            return result;
 
         // compile the script,  generate instructions
-        _scriptCompiler.CompileScript(execResult, script, out List<InstrBase> listInstr);
-        if (!execResult.Result)
-            return execResult;
+        _scriptCompiler.CompileScript(result, script, out Program programInstr);
+        if (!result.Res)
+            return result;
 
-        // create the program
-        ProgramScript programInstr = new ProgramScript(script, listInstr);
 
         // save it
         _coreData.ListProgram.Add(programInstr);
 
         _logger.LogCompilEnd(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
 
-        return execResult;
+        return result;
     }
 
     /// <summary>
@@ -181,33 +176,33 @@ public class LexerowCore
     /// <param name="scriptName"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public ExecResult ExecuteScript(string scriptName)
+    public Result ExecuteScript(string scriptName)
     {
         _logger.LogExecStart(ActivityLogLevel.Important, "LexerowCore.ExecuteScript", scriptName);
 
-        ExecResult execResult = new ExecResult();
+        Result result = new Result();
 
         // check that the name is not already used by another program
         if (string.IsNullOrWhiteSpace(scriptName))
         {
             if (scriptName == null) scriptName = string.Empty;
-            var error = execResult.AddError(ErrorCode.ProgramWrongName, scriptName);
+            var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
             _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", scriptName);
-            return execResult;
+            return result;
         }
 
         // find the program script
-        ProgramScript program = _coreData.GetProgramByName(scriptName);
+        Program program = _coreData.GetProgramByName(scriptName);
         if (program == null)
         {
-            execResult.AddError(ErrorCode.ProgramNotFound, scriptName);
-            return execResult;
+            result.AddError(ErrorCode.ProgramNotFound, scriptName);
+            return result;
         }
 
         // execute ProgramScript
-        _programRunner.Exec(execResult, program);
+        _programExecutor.Exec(result, program);
 
-        return execResult;
+        return result;
     }
 
     private void logger_ActivityLogEvent(object? sender, ActivityLog e)

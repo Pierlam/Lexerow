@@ -22,7 +22,7 @@ public class FileSheetProcessed
 /// <summary>
 /// Execution result insights/Informations.
 /// </summary>
-public class ExecResultInsights
+public class ResultInsights
 {
     public List<FileSheetProcessed> ListFileSheetProcessed { get; set; } = new List<FileSheetProcessed>();
 

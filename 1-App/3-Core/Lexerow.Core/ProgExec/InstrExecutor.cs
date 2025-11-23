@@ -15,6 +15,10 @@ public class InstrExecutor
 
     private InstrOnExcelExecutor _instrOnExcelExecutor;
 
+    private InstrOnSheetExecutor _instrOnSheetExecutor;
+
+    private InstrRowExecutor _instrRowExecutor;
+
     private InstrIfThenElseExecutor _instrIfThenElseExecutor;
 
     private InstrComparisonExecutor _instrComparisonExecutor;
@@ -28,6 +32,8 @@ public class InstrExecutor
         _logger = activityLogger;
         _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger);
         _instrOnExcelExecutor = new InstrOnExcelExecutor(_logger, excelProcessor);
+        _instrOnSheetExecutor= new InstrOnSheetExecutor(_logger, excelProcessor);
+        _instrRowExecutor = new InstrRowExecutor(_logger, excelProcessor);
         _instrIfThenElseExecutor = new InstrIfThenElseExecutor(_logger);
         _instrComparisonExecutor = new InstrComparisonExecutor(_logger, excelProcessor);
         _instrSetColCellFuncExecutor = new InstrSetColCellFuncExecutor(_logger, excelProcessor);
@@ -38,12 +44,12 @@ public class InstrExecutor
     /// Execute instruction and dependent instructions, until the stack becomes empty.
     /// InstrRunner
     /// </summary>
-    /// <param name="execResult"></param>
+    /// <param name="result"></param>
     /// <param name="listInstr"></param>
     /// <param name="listVar"></param>
     /// <param name="instr"></param>
     /// <returns></returns>
-    public bool ExecInstr(ExecResult execResult, ProgExecVarMgr progExecVarMgr, InstrBase instr)
+    public bool ExecInstr(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr)
     {
         ProgExecContext ctx = new ProgExecContext();
 
@@ -62,77 +68,77 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.SetVar)
             {
-                res = _instrSetVarExecutor.Exec(execResult, ctx, progExecVarMgr, instr as InstrSetVar);
+                res = _instrSetVarExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrSetVar);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.SelectFiles)
             {
-                res = _instrSelectFilesExecutor.Exec(execResult, ctx, progExecVarMgr, instr as InstrSelectFiles);
+                res = _instrSelectFilesExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrSelectFiles);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.OnExcel)
             {
-                res = _instrOnExcelExecutor.ExecInstrOnExcel(execResult, ctx, progExecVarMgr, instr as InstrOnExcel);
+                res = _instrOnExcelExecutor.ExecInstrOnExcel(result, ctx, progExecVarMgr, instr as InstrOnExcel);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.ProcessSheets)
             {
-                res = _instrOnExcelExecutor.ExecInstrProcessSheets(execResult, ctx, progExecVarMgr, instr as InstrProcessSheets);
+                res = _instrOnSheetExecutor.ExecInstrProcessSheets(result, ctx, progExecVarMgr, instr as InstrProcessSheets);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.OnSheet)
             {
-                res = _instrOnExcelExecutor.ExecInstrOnSheet(execResult, ctx, progExecVarMgr, instr as InstrOnSheet);
+                res = _instrOnSheetExecutor.ExecInstrOnSheet(result, ctx, progExecVarMgr, instr as InstrOnSheet);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.ProcessRow)
             {
-                res = _instrOnExcelExecutor.ExecInstrProcessRow(execResult, ctx, progExecVarMgr, instr as InstrProcessRow);
+                res = _instrRowExecutor.ExecInstrProcessRow(result, ctx, progExecVarMgr, instr as InstrProcessRow);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.ProcessInstrForEachRow)
             {
-                res = _instrOnExcelExecutor.ExecProcessInstrForEachRow(execResult, ctx, progExecVarMgr, instr as InstrProcessInstrForEachRow);
+                res = _instrRowExecutor.ExecProcessInstrForEachRow(result, ctx, progExecVarMgr, instr as InstrProcessInstrForEachRow);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.IfThenElse)
             {
-                res = _instrIfThenElseExecutor.ExecInstrIfThenElse(execResult, ctx, progExecVarMgr, instr as InstrIfThenElse);
+                res = _instrIfThenElseExecutor.ExecInstrIfThenElse(result, ctx, progExecVarMgr, instr as InstrIfThenElse);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.If)
             {
-                res = _instrIfThenElseExecutor.ExecInstrIf(execResult, ctx, progExecVarMgr, instr as InstrIf);
+                res = _instrIfThenElseExecutor.ExecInstrIf(result, ctx, progExecVarMgr, instr as InstrIf);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.Comparison)
             {
-                res = _instrComparisonExecutor.ExecInstrComparison(execResult, ctx, progExecVarMgr, instr as InstrComparison);
+                res = _instrComparisonExecutor.ExecInstrComparison(result, ctx, progExecVarMgr, instr as InstrComparison);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.Then)
             {
-                res = _instrIfThenElseExecutor.ExecInstrThen(execResult, ctx, progExecVarMgr, instr as InstrThen);
+                res = _instrIfThenElseExecutor.ExecInstrThen(result, ctx, progExecVarMgr, instr as InstrThen);
                 if (!res) return false;
                 continue;
             }
@@ -140,7 +146,7 @@ public class InstrExecutor
             // string concatenation, exp: "data" + ".xlsx"
             // TODO:
 
-            execResult.AddError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
             return false;
         }
     }

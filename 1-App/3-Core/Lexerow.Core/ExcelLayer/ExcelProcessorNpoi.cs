@@ -9,12 +9,12 @@ namespace Lexerow.Core.ExcelLayer;
 /// </summary>
 public class ExcelProcessorNpoi : IExcelProcessor
 {
-    public bool Open(string fileName, out IExcelFile excelFile, out ExecResultError error)
+    public bool Open(string fileName, out IExcelFile excelFile, out ResultError error)
     {
         if (!File.Exists(fileName))
         {
             excelFile = null;
-            error = new ExecResultError(ErrorCode.FileNotFound, fileName);
+            error = new ResultError(ErrorCode.FileNotFound, fileName);
             return false;
         }
 
@@ -30,12 +30,12 @@ public class ExcelProcessorNpoi : IExcelProcessor
         catch (Exception ex)
         {
             excelFile = null;
-            error = new ExecResultError(ErrorCode.ExcelUnableOpenFile, ex.Message);
+            error = new ResultError(ErrorCode.ExcelUnableOpenFile, ex.Message);
             return false;
         }
     }
 
-    public bool Close(IExcelFile excelFile, out ExecResultError error)
+    public bool Close(IExcelFile excelFile, out ResultError error)
     {
         try
         {
@@ -48,7 +48,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
         catch (Exception ex)
         {
             excelFile = null;
-            error = new ExecResultError(ErrorCode.ExcelUnableCloseFile, ex.Message);
+            error = new ResultError(ErrorCode.ExcelUnableCloseFile, ex.Message);
             return false;
         }
     }

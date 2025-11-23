@@ -18,10 +18,10 @@ internal class SetVarDecoder
     /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
-    /// <param name="listExecTok"></param>
+    /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSetVarEqualChar(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listExecTok, out bool isToken)
+    public static bool ProcessSetVarEqualChar(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
         bool res;
@@ -55,7 +55,7 @@ internal class SetVarDecoder
         if (stackInstr.Count > 1)
         {
             // looking in the stack for Then instr or If. If not found search: ForEach Row
-            InstrBase instrResult = stackInstr.FindFirstFromTop(InstrType.If, InstrType.Then);
+            InstrBase instrResult = stackInstr.FindFirstInstrFromTop(InstrType.If, InstrType.Then);
             if (instrResult != null && instrResult.InstrType == InstrType.If)
                 // close to an If instr, it's a comparison, not a SetVar
                 return true;
@@ -73,6 +73,20 @@ internal class SetVarDecoder
         if (!res) return false;
         if (isToken)
         {
+            // allowed only in OnExcel/ForEachRow instr
+            InstrBase instrBase = stackInstr.FindInstrFromTop(InstrType.OnExcel);
+            if(instrBase==null)
+            {
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                return false;
+            }
+            InstrOnExcel instrOnExcel= (InstrOnExcel)instrBase;
+            if(instrOnExcel.BuildStage != InstrOnExcelBuildStage.If)
+            {
+                result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken());
+                return false;
+            }
+
             // the Instr Col.Cell.Function is on the top the stack
             InstrBase instrColCellFunc = stackInstr.Pop();
             // now process the SetVar instr

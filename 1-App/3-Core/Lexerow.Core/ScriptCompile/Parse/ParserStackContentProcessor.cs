@@ -193,8 +193,10 @@ internal class ParserStackContentProcessor
 
         // the right part should be null
         if (instrSetVar.InstrRight != null)
-            // TODO: to manage in a better way!
-            throw new Exception("SetVar: Right part should not yet set!");
+        {
+            result.AddError(ErrorCode.ParserVarWrongRightPart, instrSetVar.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            return false;
+        }
 
         // get the second saved item
         InstrBase instrBase = stackInstr.Pop();
@@ -231,7 +233,7 @@ internal class ParserStackContentProcessor
 
                 return true;
             }
-            result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -267,7 +269,7 @@ internal class ParserStackContentProcessor
             // check that the function return something to set to a var
             if (instrBase.ReturnType == InstrFunctionReturnType.Nothing)
             {
-                result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+                result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;
             }
 
@@ -286,7 +288,7 @@ internal class ParserStackContentProcessor
         }
 
         // other cases: unexpected so error
-        result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken());
+        result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken());
         return false;
     }
 
@@ -645,7 +647,7 @@ internal class ParserStackContentProcessor
         // check the int value, should be >= 1
         if (val < 1)
         {
-            result.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
+            result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
             return false;
         }
         // save the value into the current OnExcel sheet
@@ -672,7 +674,7 @@ internal class ParserStackContentProcessor
         }
 
         // its a final int value, check it
-        if (instrSetVar.InstrRight.InstrType== InstrType.ConstValue)
+        if (instrSetVar.InstrRight.InstrType== InstrType.Value)
         {
             var instrValue = instrSetVar.InstrRight as InstrValue;
             if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ResultError error, out int val))
@@ -684,7 +686,7 @@ internal class ParserStackContentProcessor
             // check the int value, should be >= 1
             if (val < 1)
             {
-                result.AddError(ErrorCode.ParserConstValueIntWrong, instrValue.FirstScriptToken());
+                result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
                 return false;
             }
             // save the var object

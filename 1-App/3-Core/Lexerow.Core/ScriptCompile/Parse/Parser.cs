@@ -2,6 +2,8 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
+using Lexerow.Core.Utils;
+using Org.BouncyCastle.Utilities.Collections;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -117,7 +119,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("FirstRow"))
+            if (currToken.Value.Equals("-"))
             {
                 int a = 12;
             }
@@ -134,7 +136,7 @@ public class Parser
                 return false;
             }
 
-            //--is it the SetVar equal char? SetVarDecoder
+            //--is it the SetVar equal char? 
             res = SetVarDecoder.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
             if (!res) break;
             if (isToken) continue;
@@ -209,10 +211,11 @@ public class Parser
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSpecialCases(Result result, List<InstrObjectName> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
+    private static bool ProcessSpecialCases(Result result, List<InstrObjectName> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
     {
         isToken = false;
 
+        //--instr Next
         if (instr.InstrType == InstrType.Next)
         {
             // special case? Next inline: ..Then A.Cell= 12 Next   or  ..Then fct() Next
@@ -224,6 +227,16 @@ public class Parser
             if (!res) return false;
             return true;
         }
+
+        //--a=-7, curr=7. Stack> Minus; SetVar
+        if(!ProcessNegativeValueNumber(result, stackInstr, instr, out isToken))
+            return false;
+        if(isToken)return true;
+
+        //--If a=-1; Stack IN> ??
+
+        //--Then a=-1; Stack IN> ??
+
 
         return true;
     }
@@ -264,4 +277,58 @@ public class Parser
         result.AddError(ErrorCode.ParserTokenExpected, stackInstr.Peek().FirstScriptToken());
         return false;
     }
+
+    /// <summary>
+    /// case1: a=-7, 
+    /// instr=7, Stack> Minus; SetVar
+    ///
+    /// case2: A.Cell>10
+    /// instr=10, Stack> Minus; SepComparison; ColCellFunc; If; OnExcel
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="instr"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessNegativeValueNumber(Result result, CompilStackInstr stackInstr, InstrBase instr, out bool isToken)
+    {
+        isToken = false;
+
+        // the current instr is not an int or a double?
+        if(!InstrUtils.IsValueInt(instr) && InstrUtils.IsValueDouble(instr))return true;
+
+        // not enought instr in the stack
+        if (stackInstr.Count < 2) return true;
+
+        // read the instr in the top of the stack
+        InstrCharMinus instrCharMinus = stackInstr.Peek() as InstrCharMinus;
+        if(instrCharMinus==null) return true;
+
+        //--case1: the next instr is the SetVar instr?
+        if ((stackInstr.ReadInstrBeforeTop() as InstrSetVar) != null)
+        {
+            InstrUtils.MergeInstrMinus(instrCharMinus, instr as InstrValue);
+            // remove the charMinus
+            stackInstr.Pop();
+
+            stackInstr.Push(instr);
+            isToken = true;
+            return true;
+        }
+
+        //--case2: the next instr is the SepComparison instr?
+        if ((stackInstr.ReadInstrBeforeTop() as InstrSepComparison) != null)
+        {
+            InstrUtils.MergeInstrMinus(instrCharMinus, instr as InstrValue);
+            // remove the charMinus
+            stackInstr.Pop();
+
+            stackInstr.Push(instr);
+            isToken = true;
+            return true;
+        }
+
+        return true;
+    }
+
 }

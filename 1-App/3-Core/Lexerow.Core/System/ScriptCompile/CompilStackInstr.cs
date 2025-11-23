@@ -57,19 +57,42 @@ public class CompilStackInstr
         return StackInstr.ElementAt(1);
     }
 
+    public InstrBase ReadInstrBeforeBeforeTop()
+    {
+        // need to have 3 instr on the stack
+        if (StackInstr.Count < 3) return null;
+        return StackInstr.ElementAt(2);
+    }
+
     /// <summary>
     /// Looking for an instr in the stack, starting from the top.
     /// </summary>
     /// <param name="stkInstr"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    public InstrBase FindFirstFromTop(InstrType type, InstrType type2)
+    public InstrBase FindFirstInstrFromTop(InstrType type, InstrType type2)
     {
         foreach (var instr in StackInstr)
         {
             if (instr.InstrType == type)
                 return instr;
             if (instr.InstrType == type2)
+                return instr;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Looking for an instr in the stack, starting from the top.
+    /// </summary>
+    /// <param name="stkInstr"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public InstrBase FindInstrFromTop(InstrType type)
+    {
+        foreach (var instr in StackInstr)
+        {
+            if (instr.InstrType == type)
                 return instr;
         }
         return null;

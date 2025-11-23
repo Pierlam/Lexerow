@@ -15,7 +15,7 @@ public enum InstrType
     Div,
     Percent,
 
-    ConstValue,
+    Value,
 
     ObjectName,
 

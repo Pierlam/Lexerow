@@ -53,8 +53,6 @@ public class ScriptLexerNegativeNumberTests
         Assert.AreEqual(4, lt[0].ListScriptToken.Count);
     }
 
-    /// <summary>
-    /// </summary>
     [TestMethod]
     public void IfaEquMinus1ThenOk()
     {
@@ -69,4 +67,37 @@ public class ScriptLexerNegativeNumberTests
         Assert.AreEqual(1, lt.Count);
         Assert.AreEqual(6, lt[0].ListScriptToken.Count);
     }
+
+    [TestMethod]
+    public void aMinus1Plus2Ok()
+    {
+        Script script = TestTokensBuilder.CreateScript("a-1+2");
+
+        //=>exec lexer, line by line
+        Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+
+        //=> Check the result
+        Assert.IsTrue(result.Res);
+        Assert.AreEqual(1, lt.Count);
+        Assert.AreEqual(5, lt[0].ListScriptToken.Count);
+    }
+
+    [TestMethod]
+    public void aMinusMinus1Plus2Ok()
+    {
+        //int a = 0 + - 1 - 2;
+
+        Script script = TestTokensBuilder.CreateScript("a--1+2");
+
+        //=>exec lexer, line by line
+        Result result = new Result();
+        Lexer.Process(A.Fake<IActivityLogger>(), result, script, out List<ScriptLineTokens> lt, new LexerConfig());
+
+        //=> Check the result
+        Assert.IsTrue(result.Res);
+        Assert.AreEqual(1, lt.Count);
+        Assert.AreEqual(6, lt[0].ListScriptToken.Count);
+    }
+
 }

@@ -72,7 +72,7 @@ public class InstrOnExcelBuilder
         if (instrOnExcel.BuildStage == InstrOnExcelBuildStage.OnExcel)
         {
             // filename expected. Type string const value or varname
-            if (instr.InstrType == InstrType.ConstValue)
+            if (instr.InstrType == InstrType.Value)
             {
                 // should be a string
                 if (ParserUtils.IsValueString((instr as InstrValue).ValueBase))
@@ -83,7 +83,7 @@ public class InstrOnExcelBuilder
                     return true;
                 }
                 // const value not a string, error
-                result.AddError(ErrorCode.ParserConstStringValueExpected, instr.FirstScriptToken());
+                result.AddError(ErrorCode.ParserValueStringExpected, instr.FirstScriptToken());
                 return false;
             }
             // filename is a variable, should be defined before
@@ -95,7 +95,7 @@ public class InstrOnExcelBuilder
                 return true;
             }
             // const value not a string, error
-            result.AddError(ErrorCode.ParserConstStringValueExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserValueStringExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -152,7 +152,7 @@ public class InstrOnExcelBuilder
             }
 
             // SheetNum
-            if (instr.InstrType == InstrType.ConstValue)
+            if (instr.InstrType == InstrType.Value)
             {
                 instrOnExcel.BuildStage = InstrOnExcelBuildStage.SheetNum;
 

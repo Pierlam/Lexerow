@@ -60,7 +60,7 @@ public class InstrSelectFilesExecutor
             InstrSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[instrSelectFiles.CurrParamNum];
 
             // is it a const value (string) or varname?
-            if (param.InstrType == InstrType.ConstValue || param.InstrType == InstrType.ObjectName)
+            if (param.InstrType == InstrType.Value || param.InstrType == InstrType.ObjectName)
             {
                 instrSelectFiles.RunTmpListFinalInstrParams.Add(param);
                 continue;

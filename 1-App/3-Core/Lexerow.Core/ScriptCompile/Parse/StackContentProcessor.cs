@@ -190,7 +190,7 @@ internal class StackContentProcessor
 
                 return true;
             }
-            result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+            result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
@@ -200,7 +200,7 @@ internal class StackContentProcessor
             // check that the function return something to set to a var
             if (instrBase.ReturnType == InstrFunctionReturnType.Nothing)
             {
-                result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+                result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;
             }
 
@@ -219,7 +219,7 @@ internal class StackContentProcessor
         }
 
         // other cases: unexpected so error
-        result.AddError(ErrorCode.ParserSetVarWrongRightPart, instrBase.FirstScriptToken());
+        result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken());
         return false;
     }
 

@@ -57,7 +57,55 @@ public class TestTokensBuilder
         var line = new ScriptLineTokens();
         line.AddTokenName(numLine, 1, varName);
         line.AddTokenSeparator(numLine, 10, "=");
-        line.AddTokenInteger(numLine, 1, value);
+        line.AddTokenInteger(numLine, 13, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// a=-7
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="value"></param>
+    public static void AddLineSetVarMinusInt(int numLine, List<ScriptLineTokens> script, string varName, int value)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenSeparator(numLine, 12, "-");
+        line.AddTokenInteger(numLine, 13, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// SetVar = intValue
+    /// a=10
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarVar(int numLine, List<ScriptLineTokens> script, string varName, string value)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenName(numLine, 1, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// A.Cell=10
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="colName"></param>
+    /// <param name="value"></param>
+    public static void AddLineSetVarColCellInt(int numLine, List<ScriptLineTokens> script, string colName, int value)
+    {
+        var line = new ScriptLineTokens();
+        BuidColCellOperInt(numLine++, line, colName, "=", value);
         script.Add(line);
     }
 
@@ -161,6 +209,20 @@ public class TestTokensBuilder
 
     /// <summary>
     /// Build this script line:
+    ///   If A.Cell >10 Then A.Cell=10
+    /// </summary>
+    /// <param name="script"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidIfColCellCompNegIntThenSetColCellInt(int numLine, List<ScriptLineTokens> script, string colNameIf, string compIf, int valIf, string colNameThen, int valThen)
+    {
+        var line = new ScriptLineTokens();
+        line = BuidIfColCellCompNegIntThenSetColCellNegInt(numLine, line, colNameIf, compIf, valIf, colNameThen, valThen);
+        script.Add(line);
+        return line;
+    }
+
+    /// <summary>
+    /// Build this script line:
     /// If A.Cell=9 Then A.Cell=Blank
     /// </summary>
     /// <param name="numLine"></param>
@@ -198,6 +260,21 @@ public class TestTokensBuilder
         script.Add(line);
         return line;
     }
+
+    /// <summary>
+    /// If A.Cell>-10 Then A.Cell=-10
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidIfColCellCompNegIntThenSetColCellNegInt(int numLine, ScriptLineTokens line, string colNameIf, string compIf, int valIf, string colNameThen, int valThen)
+    {
+        line.AddTokenName(numLine, 1, "If");
+        BuidColCellOperNegInt(numLine, line, colNameIf, compIf, valIf);
+        line.AddTokenName(numLine, 1, "Then");
+        BuidColCellOperNegInt(numLine, line, colNameIf, "=", valIf);
+        return line;
+    }
+
 
     /// <summary>
     /// If A.Cell>10 Then A.Cell=10
@@ -249,6 +326,23 @@ public class TestTokensBuilder
         line.AddTokenName(numLine, 1, "Cell");
         line.AddTokenSeparator(numLine, 1, compOrSet);
         line.AddTokenInteger(numLine, 1, val);
+        return line;
+    }
+
+    /// <summary>
+    /// Comparison or setvar
+    /// A.Cell>-10, A.Cell=-10
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidColCellOperNegInt(int numLine, ScriptLineTokens line, string colName, string compOrSet, int val)
+    {
+        line.AddTokenName(numLine, 1, colName);
+        line.AddTokenSeparator(numLine, 10, ".");
+        line.AddTokenName(numLine, 12, "Cell");
+        line.AddTokenSeparator(numLine, 13, compOrSet);
+        line.AddTokenSeparator(numLine, 14, "-");
+        line.AddTokenInteger(numLine, 15, val);
         return line;
     }
 

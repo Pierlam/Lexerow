@@ -14,7 +14,7 @@ Lexerow is an open source library.
 ## Problem: empty cells
 
 You have an Excel file containing a datatable in the first sheet: the first line is the header, and others are datarows of the table.
-In column B, some cells are empty, and it's a problem to do calculation. It would better to have a value in each cell.
+In column B, some cells are empty, and it's a problem. It would better to have a value in each cell.
 
 ```
 +------+-------+
@@ -54,15 +54,15 @@ So to put the value 0 in each empty cell in column B, Lexerow will help you to d
 
 To process datarow of the excel file as explained, Lexerow provide a powerful instruction which is: OnExcel ForEachRow If/Then.
 
-Let's consider the excel file to fix blank values is "MyFile.xlsx"
+Let's consider the excel file to fix blank values is "data.xlsx"
 
-Create a basic script and save it "MyScript.lxrw"
+Create a basic script and save it "script.lxrw"
 
 ```
 # process datarow of the Excel, one by one
-OnExcel "MyFile.xlsx"
+OnExcel "data.xlsx"
     ForEachRow
-	  If B.Cell=null Then B.Cell=0
+	  If B.Cell=blank Then B.Cell=0
     Next
 End OnExcel	
 ```
@@ -78,11 +78,10 @@ Create a program in C# and use the Lexerow library in this way:
 LexerowCore core = new LexerowCore();
 
 // load and execute the script   
-core.LoadExecScript("MyScript", MyScript.lxrw);   
+core.LoadExecScript("MyScript", script.lxrw);   
 ```
 
 This is the minimum C# program you have to write.
-
 
 # Project Github 
 

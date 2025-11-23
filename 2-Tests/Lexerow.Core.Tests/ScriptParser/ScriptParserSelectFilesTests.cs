@@ -8,7 +8,7 @@ using Lexerow.Core.Tests._05_Common;
 namespace Lexerow.Core.Tests.ScriptParser;
 
 /// <summary>
-/// Test script Lexer basic tests: lexical analyzer on SelectFiles instr.
+/// Test script parser basic tests: focus on SelectFiles instr.
 /// </summary>
 [TestClass]
 public class ScriptParserSelectFilesTests
@@ -35,7 +35,7 @@ public class ScriptParserSelectFilesTests
         TestTokensBuilder.AddLineSelectFiles(numLine++, scriptTokens, "file", "\"data.xlsx\"");
 
         //==>just to check the content of the script
-        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());

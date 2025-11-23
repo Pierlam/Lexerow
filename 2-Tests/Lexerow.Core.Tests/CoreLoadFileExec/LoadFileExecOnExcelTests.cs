@@ -34,11 +34,11 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -58,19 +58,46 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // C2: row1, col2: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 2, 10);
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, "C2", 10);
         Assert.IsTrue(res);
 
         // C3: row2, col2: 27
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 2, 27);
+        res = TestExcelChecker.CheckCellValue(wb, 0, "C3", 27);
         Assert.IsTrue(res);
 
         // C4: row3, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, 0, 3, 2, 10);
+        res = TestExcelChecker.CheckCellValue(wb, 0, "C4", 10);
         Assert.IsTrue(res);
 
         // C5: row4, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, 0, 4, 2, 10);
+        res = TestExcelChecker.CheckCellValue(wb, 0, "C5", 10);
+        Assert.IsTrue(res);
+    }
+
+    /// <summary>
+    /// If A.Cell < -7  Then A.Cell= -7
+    /// </summary>
+    [TestMethod]
+    public void IfACellGreaterMinus7Ok()
+    {
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "IfACellGreaterMinus7.lxrw";
+
+        // load the script, compile it and then execute it
+        Result result = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(result.Res);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "IfACellGreaterMinus7.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", -7);
+        Assert.IsTrue(res);
+
+        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", -5);
+        Assert.IsTrue(res);
+        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", 4);
         Assert.IsTrue(res);
     }
 

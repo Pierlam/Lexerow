@@ -49,7 +49,7 @@ public class ProgExecVar
         if (ObjectName.InstrType != instr.InstrType) return false;
 
         //--possible??
-        if (ObjectName.InstrType == InstrType.ConstValue)
+        if (ObjectName.InstrType == InstrType.Value)
         {
             string name = (ObjectName as InstrValue).RawValue;
             string name2 = (instr as InstrValue).RawValue;

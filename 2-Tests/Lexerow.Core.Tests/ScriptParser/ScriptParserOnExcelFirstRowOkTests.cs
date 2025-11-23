@@ -128,7 +128,7 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserValueIntWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -176,7 +176,7 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserValueIntWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -347,6 +347,6 @@ public class ScriptParserOnExcelFirstRowOkTests
 
         //==> check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserConstValueIntWrong, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserValueIntWrong, result.ListError[0].ErrorCode);
     }
 }

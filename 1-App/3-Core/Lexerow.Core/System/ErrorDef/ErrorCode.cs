@@ -173,13 +173,13 @@ public enum ErrorCode
     ParserFctParamCountWrong,
     ParserFctParamTypeWrong,
     ParserFctParamVarNotDefined,
-    ParserSetVarWrongRightPart,
     ParserFctResultNotSet,
     
-    ParserConstStringValueExpected,
-    ParserConstIntValueExpected,
-    ParserConstValueIntWrong,
+    ParserValueStringExpected,
+    ParserValueIntExpected,
+    ParserValueIntWrong,
     ParserVarNotDefined,
+    ParserVarWrongRightPart,
 
     ParserOnExcelExpected,
     ParserOnSheetExpected,

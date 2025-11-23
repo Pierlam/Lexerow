@@ -95,7 +95,7 @@ Create a program in C# and use it in this way:
 LexerowCore core = new LexerowCore();
 
 // load and execute the script   
-core.LoadExecScript("MyScript", script.lxrw);   
+core.LoadExecScript("MyScript", "script.lxrw");   
 ```
 
 This is the smallest C# program you have to write.

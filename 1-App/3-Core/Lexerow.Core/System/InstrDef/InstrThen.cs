@@ -43,4 +43,10 @@ public class InstrThen : InstrBase
     {
         RunInstrNum = -1;
     }
+
+    public override string ToString()
+    {
+        return "Then: ";
+    }
+
 }

@@ -5,6 +5,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
+using Lexerow.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,7 +159,9 @@ public class ScriptParserSetVarTests
     }
 
     /// <summary>
-    /// a=Date(2025,22,23)
+    /// SetVar a date to the var a.
+    /// exp:
+    /// a=Date(2025,11,23)
     /// </summary>
     [TestMethod]
     public void SetaEqDateOk()
@@ -166,8 +169,56 @@ public class ScriptParserSetVarTests
         int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
-        //-a=12
         TestTokensBuilder.AddLineSetVarDate(numLine++, scriptTokens, "a", 2025,11,23);
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
+
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
+
+        //==> Check the result
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, prog.ListInstr.Count);
+
+        //--SetVar a=Date()
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
+        InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
+
+        // InstrLeft: ObjectName
+        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        Assert.IsNotNull(instrObjectName);
+        Assert.AreEqual("a", instrObjectName.ObjectName);
+
+        // InstrRight: built-in fct Date
+        InstrFuncDate instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
+        Assert.IsNotNull(instrFuncDate);
+
+        Assert.AreEqual(2025, TestInstrHelper.GetValueInt(instrFuncDate.InstrYear));
+        Assert.AreEqual(11, TestInstrHelper.GetValueInt(instrFuncDate.InstrMonth));
+        Assert.AreEqual(23, TestInstrHelper.GetValueInt(instrFuncDate.InstrDay));
+    }
+
+    /// <summary>
+    /// SetVar a date to the var a.
+    /// exp:
+    /// year=2025
+    /// a=Date(y,11,23)
+    /// </summary>
+    [TestMethod]
+    public void SetaEqDateVarYearOk()
+    {
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
+
+        // y=2025
+        TestTokensBuilder.AddLineSetVarInt(numLine++, scriptTokens, "year", 2025);
+
+        // a=Date(y, 11,23)
+        TestTokensBuilder.AddLineSetVarDateVarYear(numLine++, scriptTokens, "a", "year", 11, 23);
 
         //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
@@ -182,9 +233,14 @@ public class ScriptParserSetVarTests
         Assert.IsTrue(res);
         Assert.AreEqual(2, prog.ListInstr.Count);
 
-        //--SetVar a=Date()
+
+        //--SetVar year=2025
         Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
+
+        //--SetVar a=Date()
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[1].InstrType);
+        instrSetVar = prog.ListInstr[1] as InstrSetVar;
 
         // InstrLeft: ObjectName
         InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
@@ -194,13 +250,52 @@ public class ScriptParserSetVarTests
         // InstrRight: built-in fct Date
         InstrFuncDate instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
         Assert.IsNotNull(instrFuncDate);
-        Assert.AreEqual(2025, instrFuncDate.Year);
-        Assert.AreEqual(11, instrFuncDate.Month);
-        Assert.AreEqual(23, instrFuncDate.Day);
+
+        // the year is a var
+        InstrObjectName instrObjectName1 = instrFuncDate.InstrYear as InstrObjectName;
+        Assert.IsNotNull(instrObjectName1);
+        Assert.AreEqual("year", instrObjectName1.ObjectName);
+
+        Assert.AreEqual(11, TestInstrHelper.GetValueInt(instrFuncDate.InstrMonth));
+        Assert.AreEqual(23, TestInstrHelper.GetValueInt(instrFuncDate.InstrDay));
     }
 
-    // TODO: SetVarDate wrong : not enought param, param type wrong, month or day wrong
+    [TestMethod]
+    public void SetaEqDateWrong()
+    {
+        // y="year"
+        // a=Date(y,11,23)
 
+        // TODO: SetVarDate wrong : not enought param
+        Assert.Fail("todo");
+    }
+
+    /// <summary>
+    /// SetVar a date to the var a.
+    /// exp:
+    /// a=Date(2025,25,23)
+    /// </summary>
+    [TestMethod]
+    public void SetaEqDateMonthWrongError()
+    {
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
+
+        TestTokensBuilder.AddLineSetVarDate(numLine++, scriptTokens, "a", 2025, 25, 23);
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
+
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
+
+        //==> Check the result
+        Assert.IsFalse(res);
+        Assert.AreEqual(ErrorCode.ParserFctParamWrong, result.ListError[0].ErrorCode);
+    }
 
     /// <summary>
     /// a=b

@@ -8,4 +8,10 @@ public class InstrComma : InstrBase
     {
         InstrType = InstrType.Comma;
     }
+
+    public override string ToString()
+    {
+        return ",";
+    }
+
 }

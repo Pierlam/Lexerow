@@ -43,4 +43,15 @@ public class InstrSetVar : InstrBase
     /// =sheet.Cell(A,1)  -> InstrExcelValue
     /// </summary>
     public InstrBase InstrRight { get; set; }
+
+    public override string ToString()
+    {
+        string instrLeftStr = "(null)";
+        if(InstrLeft!=null)instrLeftStr= InstrLeft.ToString();
+        string instrRightStr = "(null)";
+        if (InstrRight != null) instrRightStr = InstrRight.ToString();
+
+        return "SetVar: " + instrRightStr + "=" + instrRightStr;
+    }
+
 }

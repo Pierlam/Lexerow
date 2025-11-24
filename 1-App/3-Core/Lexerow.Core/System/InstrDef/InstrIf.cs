@@ -24,4 +24,10 @@ public class InstrIf : InstrBase
     /// Result of the execution of the if instruction.
     /// </summary>
     public bool Result { get; set; } = false;
+
+    public override string ToString()
+    {
+        return "If: ";
+    }
+
 }

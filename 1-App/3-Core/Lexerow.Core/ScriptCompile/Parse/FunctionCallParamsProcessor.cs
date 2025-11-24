@@ -3,6 +3,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
+using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -18,14 +19,13 @@ internal class FunctionCallParamsProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="listParams"></param>
     /// <returns></returns>
-    public static bool ProcessFunctionCallParams(IActivityLogger logger, Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
+    public static bool ProcessFunctionCallParams(IActivityLogger logger, Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, List<InstrBase> listParams)
     {
         // the stack is empty?
         if (stackInstr.Count == 0)
         {
             // function call name expected
             result.AddError(ErrorCode.ParserFctNameExpected, scriptToken);
-
             return false;
         }
 
@@ -35,16 +35,20 @@ internal class FunctionCallParamsProcessor
         logger.LogCompilStart(ActivityLogLevel.Important, "FunctionCallParamsProcessor.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
 
         if (instrBase.InstrType == InstrType.FuncSelectFiles)
-            return ProcessSelectFiles(logger, result, listVar, instrBase as InstrFuncSelectFiles, listInstrToExec, listParams);
+            return ProcessFuncSelectFiles(logger, result, listVar, instrBase as InstrFuncSelectFiles, program, listParams);
 
-        // get the last instr from the stack
+        if (instrBase.InstrType == InstrType.FuncDate)
+            return ProcessFuncDate(logger, result, listVar, instrBase as InstrFuncDate, program, listParams);
 
-        throw new NotImplementedException("not yet implemented, InstrType:" + instrBase.InstrType.ToString());
+        // function call name not expected
+        result.AddError(ErrorCode.ParserFctNameNotExpected, scriptToken);
+        return false;
     }
 
-    private static bool ProcessSelectFiles(IActivityLogger logger, Result result, List<InstrObjectName> listVar, InstrFuncSelectFiles instr, List<InstrBase> listInstrToExec, List<InstrBase> listParams)
+    private static bool ProcessFuncSelectFiles(IActivityLogger logger, Result result, List<InstrObjectName> listVar, InstrFuncSelectFiles instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessSelectFiles", "Param count: " + instr.ListInstrParams.Count);
+        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count IN: " + listParams.Count);
+
         // only one param expected, type should be string or an instr returning a string
         if (listParams.Count != 1)
         {
@@ -52,41 +56,54 @@ internal class FunctionCallParamsProcessor
             return false;
         }
 
-        //--is the param a string const value token?  exp: SelectFiles("MyFile.xlsx")
-        InstrValue instrValue = listParams[0] as InstrValue;
-        if (instrValue != null)
-        {
-            // the const value type should be a string
-            if (instrValue.ValueBase.ValueType == System.ValueType.String)
-            {
-                // push the string param to the instr SelectFiles
-                instr.AddParamSelect(instrValue);
-                return true;
-            }
+        //--exp: SelectFiles("MyFile.xlsx") or SelectFiles(filename) or SelectFiles(fct())
+        if (!InstrUtils.ChekInstrString(result, listVar, program, listParams[0], out _, out _))
+            return false;
 
-            // not a string, error
-            result.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+        instr.AddParamSelect(listParams[0]);
+        return true;
+    }
+
+    private static bool ProcessFuncDate(IActivityLogger logger, Result result, List<InstrObjectName> listVar, InstrFuncDate instr, Program program, List<InstrBase> listParams)
+    {
+        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count In: " + listParams.Count);
+
+        // 3 param expected, type should be an int or an instr returning an int
+        if (listParams.Count != 3)
+        {
+            result.AddError(ErrorCode.ParserFctParamCountWrong, instr.ListScriptToken[0], listParams.Count.ToString());
             return false;
         }
+        
+        // process 1st param: year
+        if (!InstrUtils.CheckInstrInt(result, program, listParams[0], out bool yearSet, out int year))
+            return false;
+        instr.InstrYear = listParams[0];
 
-        //--is the param a varName source code token?  exp: SelectFiles(fileName)
-        InstrObjectName instrObjectName = listParams[0] as InstrObjectName;
-        if (instrObjectName != null)
+        // process 2nd param: month
+        if (!InstrUtils.CheckInstrInt(result, program, listParams[1], out bool monthSet, out int month))
+            return false;
+        instr.InstrMonth = listParams[1];
+
+        // process 3rd param: day
+        if (!InstrUtils.CheckInstrInt(result, program, listParams[2], out bool daySet, out int day))
+            return false;
+        instr.InstrDay = listParams[2];
+
+        if(!yearSet ||  !monthSet || !daySet)
+            // not able to check the date here, need to wait the execution
+            return true;
+
+        // 3 values are found, check the date
+        try
         {
-            // check that the var is defined
-            if (listVar.FirstOrDefault(x => x.ObjectName.Equals(instrObjectName.ObjectName, StringComparison.InvariantCultureIgnoreCase)) == null)
-            {
-                // not a string, error
-                result.AddError(ErrorCode.ParserFctParamVarNotDefined, instr.ListScriptToken[0], listParams.Count.ToString());
-                return false;
-            }
-
-            // push the string param to the instr OpenExcel
-            instr.AddParamSelect(instrObjectName);
+            var date = new DateOnly(year, month, day);
             return true;
         }
-
-        result.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams[0].GetType().ToString());
-        return false;
+        catch (Exception ex)
+        {
+            result.AddError(ErrorCode.ParserFctParamWrong, instr.ListScriptToken[0], "year: " +year+", month: "+ month+", day:" + day);
+            return false;
+        }
     }
 }

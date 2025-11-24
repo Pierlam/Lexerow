@@ -26,13 +26,6 @@ public class InstrBuilder
                 return true;
             }
 
-            // SelectFiles
-            if (scriptToken.Value.Equals(CoreInstr.InstrSelectFiles, StringComparison.InvariantCultureIgnoreCase))
-            {
-                instrBase = new InstrFuncSelectFiles(scriptToken);
-                return true;
-            }
-
             // OnExcel
             if (scriptToken.Value.Equals(CoreInstr.InstrOnExcel, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -125,6 +118,20 @@ public class InstrBuilder
                 return true;
             }
 
+            // FuncSelectFiles
+            if (scriptToken.Value.Equals(CoreInstr.InstrFuncSelectFiles, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFuncSelectFiles(scriptToken);
+                return true;
+            }
+
+            // FuncDate
+            if (scriptToken.Value.Equals(CoreInstr.InstrFuncDate, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFuncDate(scriptToken);
+                return true;
+            }
+
             // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
             instrBase = new InstrObjectName(scriptToken);
             return true;
@@ -140,14 +147,17 @@ public class InstrBuilder
             }
             if (scriptToken.Value.Equals(")", StringComparison.InvariantCultureIgnoreCase))
             {
-                // TODO: needed?
-                //instrBase = new InstrCloseBrace(scriptToken);
                 instrBase = null;
                 return true;
             }
             if (scriptToken.Value.Equals(".", StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrDot(scriptToken);
+                return true;
+            }
+            if (scriptToken.Value.Equals(",", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrComma(scriptToken);
                 return true;
             }
 

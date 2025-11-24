@@ -74,18 +74,43 @@ public class TestTokensBuilder
     {
         var line = new ScriptLineTokens();
         line.AddTokenName(numLine, 1, varName);
-        line.AddTokenSeparator(numLine, 10, "=");
-        line.AddTokenName(numLine, 1, "Date");
+        line.AddTokenSeparator(numLine, 2, "=");
+        line.AddTokenName(numLine, 4, "Date");
         line.AddTokenSeparator(numLine, 10, "(");
-        line.AddTokenInteger(numLine, 13, year);
-        line.AddTokenSeparator(numLine, 10, ",");
-        line.AddTokenInteger(numLine, 13, month);
-        line.AddTokenSeparator(numLine, 10, ",");
-        line.AddTokenInteger(numLine, 13, day);
-        line.AddTokenSeparator(numLine, 10, ")");
+        line.AddTokenInteger(numLine, 12, year);
+        line.AddTokenSeparator(numLine, 14, ",");
+        line.AddTokenInteger(numLine, 16, month);
+        line.AddTokenSeparator(numLine, 20, ",");
+        line.AddTokenInteger(numLine, 23, day);
+        line.AddTokenSeparator(numLine, 25, ")");
         script.Add(line);
     }
 
+    
+    /// <summary>
+    /// SetVar = intValue
+    /// a=Date(y,11,23)
+    /// a=Date(year,month,day)
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarDateVarYear(int numLine, List<ScriptLineTokens> script, string varName, string yearVar, int month, int day)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 2, "=");
+        line.AddTokenName(numLine, 4, "Date");
+        line.AddTokenSeparator(numLine, 10, "(");
+        line.AddTokenName(numLine, 12, yearVar);
+        line.AddTokenSeparator(numLine, 14, ",");
+        line.AddTokenInteger(numLine, 16, month);
+        line.AddTokenSeparator(numLine, 20, ",");
+        line.AddTokenInteger(numLine, 23, day);
+        line.AddTokenSeparator(numLine, 25, ")");
+        script.Add(line);
+    }
     /// <summary>
     /// a=-7
     /// </summary>

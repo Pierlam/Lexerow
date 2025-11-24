@@ -23,4 +23,10 @@ public class InstrObjectName : InstrBase
         if (string.IsNullOrWhiteSpace(ObjectName))return false;
         return ObjectName.Equals(varname, StringComparison.InvariantCultureIgnoreCase);
     }
+
+    public override string ToString()
+    {
+        return "ObjectName: " + ObjectName;
+    }
+
 }

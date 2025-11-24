@@ -37,6 +37,7 @@ public class Program
     /// <returns></returns>
     public InstrSetVar FindLastVarSet(string varname)
     {
+        // scan instr in reverse direction starting from the last one
         for (int i = ListInstr.Count - 1; i >= 0; i--)
         {
             InstrBase instr = ListInstr[i];

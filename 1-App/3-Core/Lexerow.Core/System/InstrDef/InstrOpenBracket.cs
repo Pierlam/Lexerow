@@ -8,4 +8,10 @@ public class InstrOpenBracket : InstrBase
     {
         InstrType = InstrType.OpenBracket;
     }
+
+    public override string ToString()
+    {
+        return "(";
+    }
+
 }

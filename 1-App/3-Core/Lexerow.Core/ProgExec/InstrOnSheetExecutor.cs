@@ -119,11 +119,9 @@ internal class InstrOnSheetExecutor
         InstrValue instrValue = instrOnSheet.InstrFirstDataRow as InstrValue;
         if (instrValue != null)
         {
-            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ResultError error, out val))
-            {
-                result.AddError(error);
+            if (!InstrUtils.GetValueIntFromInstrValue(result, instrValue, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out val))
                 return false;
-            }
+
             // check the int value, should be >= 1
             if (val < 1)
             {
@@ -146,11 +144,9 @@ internal class InstrOnSheetExecutor
             }
 
             // the value of the value should be an Int value
-            if (!InstrUtils.GetValueIntFromInstrValue(progExecVar.Value, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out ResultError error, out val))
-            {
-                result.AddError(error);
+            if (!InstrUtils.GetValueIntFromInstrValue(result, progExecVar.Value, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out val))
                 return false;
-            }
+            
             // check the int value, should be >= 1
             if (val < 1)
             {

@@ -70,6 +70,6 @@ public class InstrValue : InstrBase
 
     public override string ToString()
     {
-        return "Type: Value, Val: " + RawValue;
+        return "Value: " + RawValue;
     }
 }

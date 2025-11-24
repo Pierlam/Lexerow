@@ -169,11 +169,14 @@ public enum ErrorCode
     ParserTokenNotExpected,
     ParserTokenExpected,
 
+    ParserFctNotManaged,
     ParserFctNameExpected,
+    ParserFctNameNotExpected,
+    ParserFctResultNotSet,
+    ParserFctParamWrong,
     ParserFctParamCountWrong,
     ParserFctParamTypeWrong,
     ParserFctParamVarNotDefined,
-    ParserFctResultNotSet,
     
     ParserValueStringExpected,
     ParserValueIntExpected,

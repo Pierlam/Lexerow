@@ -8,4 +8,10 @@ public class InstrDot : InstrBase
     {
         InstrType = InstrType.Dot;
     }
+
+    public override string ToString()
+    {
+        return ".";
+    }
+
 }

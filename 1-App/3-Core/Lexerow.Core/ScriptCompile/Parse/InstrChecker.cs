@@ -16,21 +16,32 @@ internal class InstrChecker
         // not a fct call, bye
         if (!instrBase.IsFunctionCall) return true;
 
-        //--is it OpenExcel?
-        InstrFuncSelectFiles instrOpenExcel = instrBase as InstrFuncSelectFiles;
-        if (instrOpenExcel != null)
+        //--is it SelectFiles?
+        InstrFuncSelectFiles instrFuncSelectFiles = instrBase as InstrFuncSelectFiles;
+        if (instrFuncSelectFiles != null)
         {
             // need at least one parameter
-            if (instrOpenExcel.ListInstrParams.Count == 0)
+            if (instrFuncSelectFiles.ListInstrParams.Count == 0)
             {
                 result.AddError(ErrorCode.ParserFctParamCountWrong, instrBase.FirstScriptToken());
                 return false;
             }
-            // isntr OpenExcel is ok
             return true;
         }
 
+        //--is it Date?
+        InstrFuncDate instrFuncDate = instrBase as InstrFuncDate;
+        if(instrFuncDate!=null)
+        {
+            if(instrFuncDate.InstrYear==null || instrFuncDate.InstrMonth==null || instrFuncDate.InstrDay==null)
+            {
+                result.AddError(ErrorCode.ParserFctParamWrong, instrBase.FirstScriptToken());
+                return false;
+            }
+            return true;
+        }
         //--fct not managed
-        throw new NotImplementedException(instrBase.ToString());
+        result.AddError(ErrorCode.ParserFctNotManaged, instrBase.FirstScriptToken());
+        return false;
     }
 }

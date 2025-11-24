@@ -8,6 +8,11 @@ namespace Lexerow.Core.Tests._05_Common;
 /// </summary>
 public class TestInstrHelper
 {
+    public static int GetValueInt(InstrBase instr)
+    {
+        return ((instr as InstrValue).ValueBase as ValueInt).Val;
+    }
+
     public static void TestInstrColCellFuncValue(string stage, InstrBase instrBase, string colName, int colNum)
     {
         InstrColCellFunc instrColCellFunc = instrBase as InstrColCellFunc;

@@ -13,4 +13,9 @@ public class InstrNext : InstrBase
     {
         InstrType = InstrType.Next;
     }
+    public override string ToString()
+    {
+        return "Next";
+    }
+
 }

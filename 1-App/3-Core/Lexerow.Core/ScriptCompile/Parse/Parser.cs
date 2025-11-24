@@ -120,7 +120,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("-"))
+            if (currToken.Value.Equals(","))
             {
                 int a = 12;
             }
@@ -157,12 +157,12 @@ public class Parser
             if (isToken) continue;
 
             //--is the token the char ) ?  pop the stack until found ( et traite l'expression. parametre d'une fonction/méthode.
-            res = TokenCloseBracketProcessor.Do(result, listVar, stackInstr, currToken, program.ListInstr, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
+            res = TokenCloseBracketProcessor.Process(result, listVar, stackInstr, currToken, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
             if (!res) break;
             if (isListOfParams)
             {
                 // process the fct call, check and set parameters, error saved
-                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, result, listVar, stackInstr, currToken, program.ListInstr, listItem);
+                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, result, listVar, stackInstr, currToken, program, listItem);
                 if (!res) break;
                 continue;
             }

@@ -1,9 +1,7 @@
 ﻿namespace Lexerow.Core.System.GenDef;
 
 public class CoreInstr
-{
-    public const string InstrEndName = "End";
-    public const string InstrSelectFiles = "SelectFiles";
+{    
     public const string InstrOnExcel = "OnExcel";
     public const string InstrOnSheet = "OnSheet";
     public const string InstrFirstRow = "FirstRow";
@@ -25,6 +23,13 @@ public class CoreInstr
 
     public const string InstrBlank = "Blank";
     public const string InstrNull = "Null";
+    public const string InstrEndName = "End";
+
+    //--function names
+    public const string InstrFuncSelectFiles = "SelectFiles";
+    public const string InstrFuncDate = "Date";
+    public const string InstrFuncDateTime = "DateTime";
+    public const string InstrFuncTime = "Time";
 
     /// <summary>
     /// Used in OnExcel instr.

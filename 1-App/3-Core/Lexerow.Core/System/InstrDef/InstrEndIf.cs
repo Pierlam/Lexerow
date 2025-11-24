@@ -9,4 +9,10 @@ public class InstrEndIf : InstrBase
     {
         InstrType = InstrType.EndIf;
     }
+
+    public override string ToString()
+    {
+        return "EndIf: ";
+    }
+
 }

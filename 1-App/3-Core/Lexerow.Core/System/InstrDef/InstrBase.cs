@@ -79,6 +79,9 @@ public enum InstrFunctionReturnType
     ValueInt,
     ValueDouble,
     ValueString,
+    ValueDate,
+    ValueDateTime,
+    ValueTime,
 
     ExcelFile,
     ExcelSheet,

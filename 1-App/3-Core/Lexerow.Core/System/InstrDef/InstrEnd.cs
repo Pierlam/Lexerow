@@ -8,4 +8,10 @@ public class InstrEnd : InstrBase
     {
         InstrType = InstrType.End;
     }
+
+    public override string ToString()
+    {
+        return "End: ";
+    }
+
 }

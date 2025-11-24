@@ -330,7 +330,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, result.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamTypeWrong, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserValueStringExpected, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -365,7 +365,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, result.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamVarNotDefined, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserVarNotDefined, result.ListError[0].ErrorCode);
     }
 
     /// <summary>

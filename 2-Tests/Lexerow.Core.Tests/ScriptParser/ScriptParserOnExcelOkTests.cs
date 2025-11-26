@@ -94,10 +94,10 @@ public class ScriptParserOnExcelOkTests
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
 
         // check If-Operand Left
-        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right
-        TestInstrHelper.TestInstrValue("If-OperandRight", instrComparison.OperandRight, 10);
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrComparison.OperandRight, 10));
 
         // check Then, SetVar -> Left:InstrColCellFunc, Right InstrValue: 10
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -106,8 +106,8 @@ public class ScriptParserOnExcelOkTests
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
-        TestInstrHelper.TestInstrValue("Then-SetVar-OperandRIght", instrSetVar.InstrRight, 10);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, 10));
     }
 
     /// <summary>
@@ -188,10 +188,10 @@ public class ScriptParserOnExcelOkTests
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
 
         // check If-Operand Left
-        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right
-        TestInstrHelper.TestInstrValue("If-OperandRight", instrComparison.OperandRight, -12);
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrComparison.OperandRight, -12));
 
         // check Then, SetVar -> Left:InstrColCellFunc, Right InstrValue: 10
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -200,8 +200,8 @@ public class ScriptParserOnExcelOkTests
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
-        TestInstrHelper.TestInstrValue("Then-SetVar-OperandRIght", instrSetVar.InstrRight, -12);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, -12));
     }
 
     /// <summary>
@@ -370,10 +370,10 @@ public class ScriptParserOnExcelOkTests
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
 
         // check If-Operand Left
-        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right
-        TestInstrHelper.TestInstrValue("If-OperandRight", instrComparison.OperandRight, 10);
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrComparison.OperandRight, 10));
 
         // check Then, SetVar -> Left:InstrColCellFunc, Right InstrValue: 10
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -382,8 +382,8 @@ public class ScriptParserOnExcelOkTests
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
-        TestInstrHelper.TestInstrValue("Then-SetVar-OperandRIght", instrSetVar.InstrRight, 10);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, 10));
     }
 
     /// <summary>
@@ -458,10 +458,10 @@ public class ScriptParserOnExcelOkTests
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
 
         // check If-Operand Left
-        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right
-        TestInstrHelper.TestInstrValue("If-OperandRight", instrComparison.OperandRight, 10);
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrComparison.OperandRight, 10));
 
         // check Then, SetVar -> Left:InstrColCellFunc, Right InstrValue: 10
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -470,7 +470,7 @@ public class ScriptParserOnExcelOkTests
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
-        TestInstrHelper.TestInstrValue("Then-SetVar-OperandRIght", instrSetVar.InstrRight, 10);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, 10));
     }
 }

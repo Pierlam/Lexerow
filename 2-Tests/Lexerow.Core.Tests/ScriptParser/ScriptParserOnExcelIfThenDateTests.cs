@@ -112,7 +112,7 @@ public class ScriptParserOnExcelIfThenDateTests
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
 
         // check If-Operand Left:A.Cell 
-        TestInstrHelper.TestInstrColCellFuncValue("If-OperandLeft", instrComparison.OperandLeft, "A", 1);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right: Date(2020, 10,1)
         InstrFuncDate instrFuncDate = instrComparison.OperandRight as InstrFuncDate;
@@ -127,7 +127,7 @@ public class ScriptParserOnExcelIfThenDateTests
 
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
-        TestInstrHelper.TestInstrColCellFuncValue("Then-SetVar-OperandLeft", instrSetVar.InstrLeft, "A", 1);
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
 
         // SetVar InstrRight: Date(2020,2,1)
         instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;

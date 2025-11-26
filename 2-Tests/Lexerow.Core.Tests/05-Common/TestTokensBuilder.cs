@@ -86,7 +86,30 @@ public class TestTokensBuilder
         script.Add(line);
     }
 
-    
+    /// <summary>
+    /// SetVar = intValue
+    /// a=Date(2025,11)
+    /// a=Date(year,month)
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarDateDayMissing(int numLine, List<ScriptLineTokens> script, string varName, int year, int month)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 2, "=");
+        line.AddTokenName(numLine, 4, "Date");
+        line.AddTokenSeparator(numLine, 10, "(");
+        line.AddTokenInteger(numLine, 12, year);
+        line.AddTokenSeparator(numLine, 14, ",");
+        line.AddTokenInteger(numLine, 16, month);
+        line.AddTokenSeparator(numLine, 25, ")");
+        script.Add(line);
+    }
+
+
     /// <summary>
     /// SetVar = intValue
     /// a=Date(y,11,23)
@@ -294,6 +317,25 @@ public class TestTokensBuilder
         return line;
     }
 
+    
+
+    /// <summary>
+    /// Build this script line:
+    ///   If A.Cell=Date(yIf,mIf,dIf) Then A.Cell=Date(yThen,mThen,dThen)
+    /// </summary>
+    /// <param name="script"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidIfColCellCompDateymdThenSetColCellDateymd(int numLine, List<ScriptLineTokens> script, string colNameIf, string compIf, int yIf, int mIf, int dIf, string colNameThen, string compThen, int yThen, int mThen, int dThen)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, "If");
+        BuidColCellOperDateYearMonthDay(numLine, line, colNameIf, compIf, yIf, mIf, dIf);
+        line.AddTokenName(numLine, 1, "Then");
+        BuidColCellOperDateYearMonthDay(numLine, line, colNameThen, compThen, yThen, mThen, dThen);
+        script.Add(line);
+        return line;
+    }
+
     /// <summary>
     /// Build this script line:
     ///   If A.Cell=blank Then A.Cell=10
@@ -361,6 +403,29 @@ public class TestTokensBuilder
     public static ScriptLineTokens BuidColCellEqualInt(int numLine, ScriptLineTokens line, string colName, int val)
     {
         return BuidColCellOperInt(numLine, line, colName, "=", val);
+    }
+
+    /// <summary>
+    /// Comparison or setvar
+    /// A.Cell>Date(year,month,day),  A.Cell=Date(year,month,day)
+    /// </summary>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    public static ScriptLineTokens BuidColCellOperDateYearMonthDay(int numLine, ScriptLineTokens line, string colName, string compOrSet, int year, int month, int day)
+    {
+        line.AddTokenName(numLine, 1, colName);
+        line.AddTokenSeparator(numLine, 10, ".");
+        line.AddTokenName(numLine, 12, "Cell");
+        line.AddTokenSeparator(numLine, 15, compOrSet);
+        line.AddTokenName(numLine, 12, "Date");
+        line.AddTokenSeparator(numLine, 17, "(");
+        line.AddTokenInteger(numLine, 20, year);
+        line.AddTokenSeparator(numLine, 22, ",");
+        line.AddTokenInteger(numLine, 25, month);
+        line.AddTokenSeparator(numLine, 28, ",");
+        line.AddTokenInteger(numLine, 30, day);
+        line.AddTokenSeparator(numLine, 35, ")");
+        return line;
     }
 
     /// <summary>

@@ -206,7 +206,7 @@ public class ScriptParserSetVarTests
     /// SetVar a date to the var a.
     /// exp:
     /// year=2025
-    /// a=Date(y,11,23)
+    /// a=Date(year,11,23)
     /// </summary>
     [TestMethod]
     public void SetaEqDateVarYearOk()
@@ -260,14 +260,31 @@ public class ScriptParserSetVarTests
         Assert.AreEqual(23, TestInstrHelper.GetValueInt(instrFuncDate.InstrDay));
     }
 
+    /// <summary>
+    /// SetVar a date to the var a.
+    /// exp:
+    /// a=Date(2025,11)
+    /// </summary>
     [TestMethod]
-    public void SetaEqDateWrong()
+    public void SetaEqDateDayMissingError()
     {
-        // y="year"
-        // a=Date(y,11,23)
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
-        // TODO: SetVarDate wrong : not enought param
-        Assert.Fail("todo");
+        TestTokensBuilder.AddLineSetVarDateDayMissing(numLine++, scriptTokens, "a", 2025, 11);
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
+
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
+
+        //==> Check the result
+        Assert.IsFalse(res);
+        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, result.ListError[0].ErrorCode);
     }
 
     /// <summary>

@@ -85,8 +85,13 @@ internal class ParserStackContentProcessor
             // TODO: fct call can be in a Then or in a ForEachRow!
             if (isToken) continue;
 
-            // case not managed, error or not yet implemented
-            result.AddError(ErrorCode.ParserTokenNotExpected, scriptLineNum.ToString());
+            // get the last instr on the stack
+            if(stackInstr.Count>0)
+                // case not managed, error or not yet implemented
+                result.AddError(ErrorCode.ParserTokenNotExpected, stackInstr.Peek().FirstScriptToken());
+            else
+                // case not managed, error or not yet implemented
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptLineNum.ToString());
             return false;
         }
     }

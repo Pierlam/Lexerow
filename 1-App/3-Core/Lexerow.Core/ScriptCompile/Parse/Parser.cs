@@ -81,9 +81,6 @@ public class Parser
         ScriptLineTokens currLineTokens = null;
         currLineTokens = listScriptLineTokens[0];
 
-        // final list of compiled instructions to execute
-        //listInstrToExec = new List<InstrBase>();
-
         //--init vars on tokens
         int currTokenIndex = -1;
         ScriptToken currToken = null;

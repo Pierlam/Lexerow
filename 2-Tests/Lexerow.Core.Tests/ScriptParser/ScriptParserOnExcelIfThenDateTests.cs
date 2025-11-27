@@ -50,23 +50,16 @@ public class ScriptParserOnExcelIfThenDateTests
         scriptTokens.Add(line);
 
         //-ForEach Row
-        line = new ScriptLineTokens();
-        TestTokensBuilder.AddTokenName(numLine++, line, "ForEach", "Row");
-        scriptTokens.Add(line);
+        TestTokensBuilder.AddLineForEachRow(numLine++,scriptTokens);
 
         // If A.Cell > Date(2020, 10,1) Then A.Cell=Date(2020,2,1)
         TestTokensBuilder.BuidIfColCellCompDateymdThenSetColCellDateymd(numLine++, scriptTokens, "A", ">", 2020, 10, 1, "A", "=", 2020, 2, 1);
 
         // Next
-        line = new ScriptLineTokens();
-        line.AddTokenName(1, 1, "Next");
-        scriptTokens.Add(line);
+        TestTokensBuilder.AddLineNext(numLine++,scriptTokens);
 
         // End OnExcel
-        line = new ScriptLineTokens();
-        line.AddTokenName(1, 1, "End");
-        line.AddTokenName(1, 1, "OnExcel");
-        scriptTokens.Add(line);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++,scriptTokens);
 
         //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);

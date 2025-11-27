@@ -153,32 +153,6 @@ public class InstrUtils
     }
 
     /// <summary>
-    /// Return the value int, if it's a case.
-    /// </summary>
-    /// <param name="instrBase"></param>
-    /// <param name="scriptLineNum"></param>
-    /// <param name="error"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static bool GetValueInt(InstrBase instrBase, int scriptLineNum, out int value)
-    {
-        value = 0;
-
-        if(instrBase==null)
-            return false;
-
-        InstrValue instrValue = instrBase as InstrValue;
-        if (instrValue == null) 
-            return false;
-
-        if (instrValue.ValueBase.ValueType != System.ValueType.Int)
-            return false;
-
-        value = (instrValue.ValueBase as ValueInt).Val;
-        return true;
-    }
-
-    /// <summary>
     /// Return the value int from the InstrValue parameter.
     /// </summary>
     /// <param name="instrBase"></param>

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.ProgExec;
+namespace Lexerow.Core.InstrProgExec;
 
 /// <summary>
 /// Instruction OnSheet Executor.

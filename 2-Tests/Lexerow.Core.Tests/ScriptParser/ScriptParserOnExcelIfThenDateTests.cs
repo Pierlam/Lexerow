@@ -3,6 +3,7 @@ using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.InstrFuncDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 using NPOI.SS.Formula.Functions;

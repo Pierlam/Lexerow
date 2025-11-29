@@ -4,7 +4,7 @@ using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using System.Diagnostics;
 
-namespace Lexerow.Core.ProgExec;
+namespace Lexerow.Core.InstrProgExec;
 
 /// <summary>
 /// Program script executor.

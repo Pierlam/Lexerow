@@ -1,9 +1,10 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.InstrFuncDef;
 using Lexerow.Core.Utils;
 
-namespace Lexerow.Core.ProgExec;
+namespace Lexerow.Core.InstrProgExec;
 
 /// <summary>
 /// Instr SelectFiles runner.
@@ -61,7 +62,7 @@ public class InstrSelectFilesExecutor
             InstrFuncSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[instrSelectFiles.CurrParamNum];
 
             // is it a const value (string) or varname?
-            if (param.InstrType == InstrType.Value || param.InstrType == InstrType.ObjectName)
+            if (param.InstrType == InstrType.Value || param.InstrType == InstrType.NameObject)
             {
                 instrSelectFiles.RunTmpListFinalInstrParams.Add(param);
                 continue;

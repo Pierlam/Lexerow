@@ -11,7 +11,7 @@ public class InstrNameObject : InstrBase
 {
     public InstrNameObject(ScriptToken scriptToken) : base(scriptToken)
     {
-        InstrType = InstrType.ObjectName;
+        InstrType = InstrType.NameObject;
         Name = scriptToken.Value;
     }
 
@@ -22,16 +22,9 @@ public class InstrNameObject : InstrBase
     /// </summary>
     public string Name { get; private set; }
 
-    public bool MatchName(string varname)
-    {
-        if(string.IsNullOrWhiteSpace(varname)) return false;
-        if (string.IsNullOrWhiteSpace(Name))return false;
-        return Name.Equals(varname, StringComparison.InvariantCultureIgnoreCase);
-    }
-
     public override string ToString()
     {
-        return "ObjectName: " + Name;
+        return "NameObject: " + Name;
     }
 
 }

@@ -2,7 +2,7 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 
-namespace Lexerow.Core.ProgExec;
+namespace Lexerow.Core.InstrProgExec;
 
 /// <summary>
 /// Execute instruction If-Then-Else.

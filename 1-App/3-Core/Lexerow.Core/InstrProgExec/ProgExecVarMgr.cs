@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.InstrDef;
 
-namespace Lexerow.Core.ProgExec;
+namespace Lexerow.Core.InstrProgExec;
 
 /// <summary>
 /// Program execution variables manager.

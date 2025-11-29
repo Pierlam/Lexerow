@@ -56,7 +56,7 @@ public class Program
             if (!instrObjectName.Name.Equals(varname, StringComparison.InvariantCultureIgnoreCase)) continue;
 
             // the right part is again a var name!
-            if (instrSetVar.InstrRight.InstrType == InstrType.ObjectName)
+            if (instrSetVar.InstrRight.InstrType == InstrType.NameObject)
                 return FindLastVarSet((instrSetVar.InstrRight as InstrNameObject).Name);
             
             // the current set var left part match the varname

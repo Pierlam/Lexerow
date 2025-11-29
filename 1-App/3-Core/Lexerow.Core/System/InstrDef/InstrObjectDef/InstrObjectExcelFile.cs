@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System.ScriptDef;
 
-namespace Lexerow.Core.System.InstrDef;
+namespace Lexerow.Core.System.InstrDef.InstrObjectDef;
 
 /// <summary>
 /// Represent a excel file instance.
@@ -10,14 +10,14 @@ public class InstrObjectExcelFile : InstrBase
 {
     public InstrObjectExcelFile(ScriptToken scriptToken, string filename, IExcelFile excelFile) : base(scriptToken)
     {
-        InstrType = InstrType.ExcelFileObject;
+        InstrType = InstrType.ObjectExcelFile;
         Filename = filename;
         ExcelFile = excelFile;
     }
 
     public InstrObjectExcelFile(ScriptToken scriptToken, string filename) : base(scriptToken)
     {
-        InstrType = InstrType.ExcelFileObject;
+        InstrType = InstrType.ObjectExcelFile;
         Filename = filename;
     }
 

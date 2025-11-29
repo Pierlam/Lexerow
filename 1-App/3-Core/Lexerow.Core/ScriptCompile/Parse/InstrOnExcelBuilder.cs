@@ -88,7 +88,7 @@ public class InstrOnExcelBuilder
                 return false;
             }
             // filename is a variable, should be defined before
-            if (instr.InstrType == InstrType.ObjectName)
+            if (instr.InstrType == InstrType.NameObject)
             {
                 // save the string filename
                 instrOnExcel.InstrFiles = instr;

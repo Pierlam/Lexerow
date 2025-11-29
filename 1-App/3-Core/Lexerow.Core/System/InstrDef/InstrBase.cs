@@ -17,7 +17,7 @@ public enum InstrType
 
     Value,
 
-    ObjectName,
+    NameObject,
 
     SetVar,
 
@@ -26,8 +26,7 @@ public enum InstrType
     ExcelFuncCell,
 
     ColCellFunc,
-    ExcelFileObject,
-
+   
     ExcelCellAddress,
 
     SepComparison,
@@ -65,6 +64,12 @@ public enum InstrType
     ProcessSheets,
     ProcessInstrForEachRow,
     ProcessRow,
+
+    //--Object
+    ObjectDate,
+    ObjectDateTime,
+    ObjectTime,
+    ObjectExcelFile,
 
     //--functions
     FuncSelectFiles,

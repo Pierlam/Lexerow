@@ -4,7 +4,7 @@ using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Utils;
 
-namespace Lexerow.Core.ProgExec;
+namespace Lexerow.Core.InstrProgExec;
 
 public class InstrComparisonExecutor
 {
@@ -33,9 +33,10 @@ public class InstrComparisonExecutor
     /// <returns></returns>
     public bool ExecInstrComparison(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrComparison instrComparison)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrComparisonRunner.RunInstrComparison", string.Empty);
-        bool res;
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrComparisonExecutor.ExecInstrComparison", string.Empty);
 
+        // manage cases when instr Left and/or Right have to be executed: fct call
+        // TODO: PB!
         if (instrComparison.LastInstrExecuted > 0)
         {
             // the left operand is a function call, so execute it and come back here
@@ -99,7 +100,7 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        //--A.Cell=blank  or A.Cell<>blank
+        //--A.Cell=blank or A.Cell<>blank
         InstrBlank instrBlankRight = instrComparison.OperandRight as InstrBlank;
         if (instrColCellFuncLeft != null && instrBlankRight != null)
         {
@@ -111,7 +112,7 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        //--A.Cell=null  or A.Cell<>null
+        //--A.Cell=null or A.Cell<>null
         InstrNull instrNullRight = instrComparison.OperandRight as InstrNull;
         if (instrColCellFuncLeft != null && instrBlankRight != null)
         {

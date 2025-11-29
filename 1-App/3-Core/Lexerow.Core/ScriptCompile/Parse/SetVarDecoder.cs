@@ -117,7 +117,7 @@ internal class SetVarDecoder
         isToken = false;
 
         // the stack contains one item which is an Object name, exp: file=
-        if (stkInstr.Peek().InstrType != InstrType.ObjectName)
+        if (stkInstr.Peek().InstrType != InstrType.NameObject)
             return true;
 
         isToken = true;

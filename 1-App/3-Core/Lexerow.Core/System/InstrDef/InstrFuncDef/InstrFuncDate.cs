@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.InstrDef;
+namespace Lexerow.Core.System.InstrDef.InstrFuncDef;
 public class InstrFuncDate : InstrBase
 {
     public InstrFuncDate(ScriptToken scriptToken) : base(scriptToken)

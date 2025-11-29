@@ -61,7 +61,7 @@ public class ProgExecVar
         }
 
         //--manage var name, exp: file
-        if (ObjectName.InstrType == InstrType.ObjectName)
+        if (ObjectName.InstrType == InstrType.NameObject)
         {
             string name = (ObjectName as InstrNameObject).Name;
             string name2 = (instr as InstrNameObject).Name;

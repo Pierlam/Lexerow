@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.InstrDef.InstrObjectDef;
+namespace Lexerow.Core.System.InstrDef.Object;
 
 /// <summary>
 /// A date only object.

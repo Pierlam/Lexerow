@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
-using Lexerow.Core.System.InstrDef.InstrObjectDef;
+using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.Object;
 
 namespace Lexerow.Core.System;
 

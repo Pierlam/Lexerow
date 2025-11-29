@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System.ScriptDef;
 
-namespace Lexerow.Core.System.InstrDef;
+namespace Lexerow.Core.System.InstrDef.Process;
 
 /// <summary>
 /// After instr OnExcel, process all sheets.

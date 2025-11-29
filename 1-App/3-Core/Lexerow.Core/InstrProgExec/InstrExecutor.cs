@@ -2,7 +2,8 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
+using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.Process;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -57,7 +58,7 @@ public class InstrExecutor
     /// <param name="listVar"></param>
     /// <param name="instr"></param>
     /// <returns></returns>
-    public bool ExecInstr(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr)
+    public bool ExecInstr(Result result, Program program, ProgExecVarMgr progExecVarMgr, InstrBase instr)
     {
         ProgExecContext ctx = new ProgExecContext();
 
@@ -97,7 +98,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.OnSheet)
             {
-                res = _instrOnSheetExecutor.ExecInstrOnSheet(result, ctx, progExecVarMgr, instr as InstrOnSheet);
+                res = _instrOnSheetExecutor.ExecInstrOnSheet(result, ctx, program, instr as InstrOnSheet);
                 if (!res) return false;
                 continue;
             }
@@ -146,7 +147,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.FuncSelectFiles)
             {
-                res = _instrSelectFilesExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrFuncSelectFiles);
+                res = _instrSelectFilesExecutor.Exec(result, ctx, program, instr as InstrFuncSelectFiles);
                 if (!res) return false;
                 continue;
             }

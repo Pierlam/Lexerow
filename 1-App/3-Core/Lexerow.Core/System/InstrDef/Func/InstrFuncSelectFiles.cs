@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System.ScriptDef;
 
-namespace Lexerow.Core.System.InstrDef.InstrFuncDef;
+namespace Lexerow.Core.System.InstrDef.Func;
 
 public enum InstrFuncSelectFilesSelector
 {

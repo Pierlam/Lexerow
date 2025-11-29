@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.System.GenDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
+using Lexerow.Core.System.InstrDef.Func;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 

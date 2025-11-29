@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System.ScriptDef;
 
-namespace Lexerow.Core.System.InstrDef.InstrObjectDef;
+namespace Lexerow.Core.System.InstrDef.Object;
 
 /// <summary>
 /// Represent a excel file instance.

@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
+using Lexerow.Core.System.InstrDef.Func;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -35,7 +35,7 @@ public class InstrSelectFilesExecutor
     /// <param name="listVar"></param>
     /// <param name="instrSelectFiles"></param>
     /// <returns></returns>
-    public bool Exec(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrFuncSelectFiles instrSelectFiles)
+    public bool Exec(Result result, ProgExecContext ctx, Program program, InstrFuncSelectFiles instrSelectFiles)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
 
@@ -80,8 +80,8 @@ public class InstrSelectFilesExecutor
             InstrBase param = instrSelectFiles.ListInstrParams[i];
             InstrFuncSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[i];
 
-            // the param is a const value or a varname, get final lsit of filename to process: apply select and unselect filters
-            if (!DecodeParam(result, progRunVarMgr, instrSelectFiles, param, selector))
+            // the param is a const value or a varname, get final list of filename to process: apply select and unselect filters
+            if (!DecodeParam(result, program, instrSelectFiles, param, selector))
                 return false;
         }
 
@@ -91,53 +91,40 @@ public class InstrSelectFilesExecutor
         return true;
     }
 
-    private bool DecodeParam(Result result, ProgExecVarMgr progRunVarMgr, InstrFuncSelectFiles instrSelectFiles, InstrBase param, InstrFuncSelectFilesSelector selector)
+    /// <summary>
+    /// Decopde the param, should contains a filename.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="program"></param>
+    /// <param name="instrSelectFiles"></param>
+    /// <param name="param"></param>
+    /// <param name="selector"></param>
+    /// <returns></returns>
+    private bool DecodeParam(Result result, Program program, InstrFuncSelectFiles instrSelectFiles, InstrBase param, InstrFuncSelectFilesSelector selector)
     {
-        InstrValue instrValue;
+        // get the filename
+        if (!InstrUtils.GetStringFromInstr(result, false, program, param, out bool isValueOrVar, out string value))
+            return false;
 
-        //--1/param is constValue type string? exp: SelectFiles("file.xlsx")
-        instrValue = param as InstrValue;
-        if (instrValue != null)
+        // not a value or var, can be: a fct call, a math expr or bool expr
+        if (!isValueOrVar) return true;
+
+        if (!SelectFiles(result, instrSelectFiles, StringUtils.RemoveStartEndDoubleQuote(value), out List<string> listFilename))
+            return false;
+
+        // no file selected
+        if (listFilename.Count == 0)
         {
-            if (!SelectFilesFromStringFilename(result, instrSelectFiles, instrValue, out List<string> listFilename))
-                return false;
-
-            // no file selected
-            if(listFilename.Count == 0)
-            {
-                result.AddWarning(ErrorCode.ExecNoFileSelected, instrSelectFiles.FirstScriptToken());
-                // just a warning but continue
-                return true;
-            }
-
+            result.AddWarning(ErrorCode.ExecNoFileSelected, instrSelectFiles.FirstScriptToken());
+            // just a warning but continue
             return true;
         }
 
-        //--2/param is a ObjectName ? exp: SelectFiles(fileName)
-        InstrNameObject instrObjectName = param as InstrNameObject;
-        if (instrObjectName != null)
-        {
-            // get the var name, should be defined before, can be a var of var, exp: a=b so return the last var (b in the sample)
-            ProgExecVar execVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.Name);
-            if (execVar == null)
-            {
-                result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
-                return false;
-            }
+        // save list of files
+        foreach (string filename in listFilename)
+            instrSelectFiles.AddFinalFilename(param, filename);
 
-            //-the value of the var is a string constValue?
-            instrValue = execVar.Value as InstrValue;
-            if (instrValue != null)
-            {
-                if (!SelectFilesFromStringFilename(result, instrSelectFiles, instrValue, out List<string> listFilename))
-                    return false;
-                return true;
-            }
-        }
-
-        // case not managed
-        result.AddError(ErrorCode.ExecInstrNotManaged, param.FirstScriptToken());
-        return false;
+        return true;
     }
 
     private bool SelectFiles(Result result, InstrBase instrBase, string filename, out List<string> listFilenameOut)
@@ -178,25 +165,5 @@ public class InstrSelectFilesExecutor
             result.AddError(ErrorCode.ExecInstrAccessFileWrong, instrBase.FirstScriptToken(), ex);
             return false;
         }
-    }
-
-    private bool SelectFilesFromStringFilename(Result result, InstrFuncSelectFiles instrSelectFiles, InstrValue instrValue, out List<string> listFilename)
-    {
-        // should be a string
-        ValueString valueString = instrValue.ValueBase as ValueString;
-        if (valueString == null)
-        {
-            listFilename = new List<string>();
-            result.AddError(ErrorCode.ExecInstrTypeStringExpected, instrValue.FirstScriptToken());
-            return false;
-        }
-
-        if (!SelectFiles(result, instrValue, StringUtils.RemoveStartEndDoubleQuote(valueString.Val), out listFilename))
-            return false;
-
-        // save list of files
-        foreach (string filename in listFilename)
-            instrSelectFiles.AddFinalFilename(instrValue, filename);
-        return true;
     }
 }

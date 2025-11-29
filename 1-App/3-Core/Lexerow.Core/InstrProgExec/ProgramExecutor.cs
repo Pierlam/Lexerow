@@ -31,22 +31,22 @@ public class ProgramExecutor
     /// Execute a program, obtained after the compilation of a script.
     /// </summary>
     /// <param name="result"></param>
-    /// <param name="programScript"></param>
+    /// <param name="program"></param>
     /// <returns></returns>
-    public bool Exec(Result result, Program programScript)
+    public bool Exec(Result result, Program program)
     {
         bool res = true;
 
-        _logger.LogExecStart(ActivityLogLevel.Important, "ProgramExecutor.Exec", "Name: " + programScript.Script.Name + ", Instr Count: " + programScript.ListInstr.Count.ToString());
+        _logger.LogExecStart(ActivityLogLevel.Important, "ProgramExecutor.Exec", "Name: " + program.Script.Name + ", Instr Count: " + program.ListInstr.Count.ToString());
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
 
         // convert program instr to instr to execute
 
         // execute instr, one by one
-        foreach (var instrBase in programScript.ListInstr)
+        foreach (var instrBase in program.ListInstr)
         {
-            res = _instrExecutor.ExecInstr(result, _progExecVarMgr, instrBase);
+            res = _instrExecutor.ExecInstr(result, program, _progExecVarMgr, instrBase);
             if (!res) return false;
         }
 

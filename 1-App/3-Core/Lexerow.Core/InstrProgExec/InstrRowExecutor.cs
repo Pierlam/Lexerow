@@ -2,6 +2,7 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.Process;
 using System;
 using System.Collections.Generic;
 using System.Linq;

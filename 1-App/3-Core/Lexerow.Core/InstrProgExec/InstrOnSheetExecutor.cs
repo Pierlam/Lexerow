@@ -2,6 +2,7 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
 using NPOI.SS.Formula.Functions;
 using System;
@@ -68,7 +69,7 @@ internal class InstrOnSheetExecutor
     /// <param name="listVar"></param>
     /// <param name="instrOnSheet"></param>
     /// <returns></returns>
-    public bool ExecInstrOnSheet(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet)
+    public bool ExecInstrOnSheet(Result result, ProgExecContext ctx, Program program, InstrOnSheet instrOnSheet)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", string.Empty);
         bool res;
@@ -83,7 +84,7 @@ internal class InstrOnSheetExecutor
             InstrProcessRow instrProcessRow = new InstrProcessRow(instrOnSheet.FirstScriptToken(), instrOnSheet.ListInstrForEachRow);
 
             // get the FirstRow value, can be an instrValue, a var or a fct call.
-            if(!GetFirstRowValue(result, ctx, progRunVarMgr, instrOnSheet, out int val))
+            if(!GetFirstRowValue(result, ctx, program, instrOnSheet.InstrFirstDataRow, out int val))
                 return false;
 
             // translate in base0 from human readable base1
@@ -101,66 +102,33 @@ internal class InstrOnSheetExecutor
     }
 
     /// <summary>
-    /// get FirstRow value
-    /// can be a InstrValue, InstrObjectName (var) of a fct call.
+    /// Get the FirsRow int value.
     /// </summary>
     /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="progRunVarMgr"></param>
     /// <param name="instrOnSheet"></param>
-    /// <param name="instrProcessRow"></param>
     /// <param name="val"></param>
     /// <returns></returns>
-    private bool GetFirstRowValue(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnSheet instrOnSheet, out int val)
+    private bool GetFirstRowValue(Result result, ProgExecContext ctx, Program program, InstrBase instrFirstDataRow, out int value)
     {
-        val = 1;
+        value = 1;
 
-        //--is it a Value?
-        InstrValue instrValue = instrOnSheet.InstrFirstDataRow as InstrValue;
-        if (instrValue != null)
+        //--check the instr value, should be an int
+        if (!InstrUtils.GetIntFromInstr(result, true, program, instrFirstDataRow, out bool valueSet, out value))
+            return false;
+
+        if (valueSet)
         {
-            if (!InstrUtils.GetValueIntFromInstrValue(result, instrValue, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out val))
-                return false;
-
             // check the int value, should be >= 1
-            if (val < 1)
+            if (value < 1)
             {
-                result.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
+                result.AddError(ErrorCode.ParserValueIntWrong, instrFirstDataRow.FirstScriptToken());
                 return false;
             }
-
             return true;
         }
 
-        //--is it a Var (ObjectName) ?
-        InstrNameObject instrObjectName = instrOnSheet.InstrFirstDataRow as InstrNameObject;
-        if (instrObjectName != null) 
-        {
-            ProgExecVar progExecVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.Name);
-            if(progExecVar == null)
-            {
-                result.AddError(ErrorCode.ExecInstrVarNotFound, instrValue.FirstScriptToken());
-                return false;
-            }
-
-            // the value of the value should be an Int value
-            if (!InstrUtils.GetValueIntFromInstrValue(result, progExecVar.Value, instrOnSheet.InstrFirstDataRow.FirstScriptToken().LineNum, out val))
-                return false;
-            
-            // check the int value, should be >= 1
-            if (val < 1)
-            {
-                result.AddError(ErrorCode.ExecValueIntWrong, instrValue.FirstScriptToken());
-                return false;
-            }
-
-            return true;
-        }
-
-        //--is it a fct call?
-        // TODO:
-
-        result.AddError(ErrorCode.ExecInstrNotManaged, instrOnSheet.InstrFirstDataRow.FirstScriptToken());
-        return false;
+        return true;
     }
 }

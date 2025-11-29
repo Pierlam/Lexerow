@@ -3,7 +3,7 @@ using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
+using Lexerow.Core.System.InstrDef.Func;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 
@@ -339,7 +339,7 @@ public class ScriptParserSelectFilesTests
     /// error -> param f is not defined before
     /// </summary>
     [TestMethod]
-    public void FileEqSelectFilesParamvarFWrong()
+    public void FileEqSelectFilesParamVarWrong()
     {
         //-build one line of tokens
         ScriptLineTokens line = new ScriptLineTokens();

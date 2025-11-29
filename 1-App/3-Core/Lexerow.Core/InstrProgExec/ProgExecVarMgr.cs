@@ -18,11 +18,6 @@ public class ProgExecVarMgr
         ListExecVar.Add(progExecVar);
     }
 
-    public ProgExecVar FindVarByName(string varname)
-    {
-        return ListExecVar.FirstOrDefault(v => v.NameEquals(varname));
-    }
-
     /// <summary>
     /// Find the last var. Usefull if the value of the var is a var.
     /// exp a=b

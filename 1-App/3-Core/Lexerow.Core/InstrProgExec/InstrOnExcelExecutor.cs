@@ -2,8 +2,9 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
-using Lexerow.Core.System.InstrDef.InstrObjectDef;
+using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.Object;
+using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -168,11 +169,11 @@ internal class InstrOnExcelExecutor
         if (ctx.PrevInstrExecuted != null) return true;
         if (instrOnExcel.InstrFiles == null) return true;
 
-        var instrObjectName = instrOnExcel.InstrFiles as InstrNameObject;
-        if (instrObjectName == null) return true;
+        var instrNameObject = instrOnExcel.InstrFiles as InstrNameObject;
+        if (instrNameObject == null) return true;
 
         // get the final value of the var
-        ProgExecVar progRunVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.Name);
+        ProgExecVar progRunVar = progRunVarMgr.FindLastInnerVarByName(instrNameObject.Name);
         if (progRunVar == null)
         {
             // var name not found, not defined before in the script

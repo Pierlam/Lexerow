@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
+using Lexerow.Core.System.InstrDef.Func;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
@@ -58,7 +58,8 @@ internal class FunctionCallParamsProcessor
         }
 
         //--exp: SelectFiles("MyFile.xlsx") or SelectFiles(filename) or SelectFiles(fct())
-        if (!InstrUtils.ChekInstrString(result, listVar, program, listParams[0], out _, out _))
+
+        if (!InstrUtils.GetStringFromInstr(result, true, program, listParams[0], out _, out _))
             return false;
 
         instr.AddParamSelect(listParams[0]);
@@ -77,17 +78,17 @@ internal class FunctionCallParamsProcessor
         }
         
         // process 1st param: year
-        if (!InstrUtils.CheckInstrInt(result, program, listParams[0], out bool yearSet, out int year))
+        if (!InstrUtils.GetIntFromInstr(result, false, program, listParams[0], out bool yearSet, out int year))
             return false;
         instr.InstrYear = listParams[0];
 
         // process 2nd param: month
-        if (!InstrUtils.CheckInstrInt(result, program, listParams[1], out bool monthSet, out int month))
+        if (!InstrUtils.GetIntFromInstr(result, true, program, listParams[1], out bool monthSet, out int month))
             return false;
         instr.InstrMonth = listParams[1];
 
         // process 3rd param: day
-        if (!InstrUtils.CheckInstrInt(result, program, listParams[2], out bool daySet, out int day))
+        if (!InstrUtils.GetIntFromInstr(result, true, program, listParams[2], out bool daySet, out int day))
             return false;
         instr.InstrDay = listParams[2];
 

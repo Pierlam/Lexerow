@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
+using Lexerow.Core.System.InstrDef.Func;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 

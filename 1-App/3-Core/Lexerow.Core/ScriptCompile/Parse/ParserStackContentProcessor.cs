@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.InstrFuncDef;
+using Lexerow.Core.System.InstrDef.Func;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.Utils;
 using NPOI.Util;
@@ -359,7 +359,7 @@ internal class ParserStackContentProcessor
         // TODO:
 
         //--check the instr value, should be an int
-        if(!InstrUtils.CheckInstrInt(result, program, instr, out bool valueSet, out int value))
+        if(!InstrUtils.GetIntFromInstr(result, true, program, instr, out bool valueSet, out int value))
             return false;
         if(valueSet)
         {
@@ -373,25 +373,6 @@ internal class ParserStackContentProcessor
             instrOnExcel.CurrOnSheet.InstrFirstDataRow = instr;
             return true;
         }
-
-        ////--the top instr on the stack is a value string?
-        //InstrValue instrValue = instr as InstrValue;
-        //if (instrValue != null)
-        //{
-        //    if (!ProcessFirstDataRowValueValue(result, scriptLineNum, instrOnExcel, instrValue))
-        //        return false;
-        //    instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrValue;
-        //    return true;
-        //}
-        ////--the top instr on the stack is a varname?
-        //InstrObjectName instrObjectName = instr as InstrObjectName;
-        //if (instrObjectName != null)
-        //{
-        //    if (!ProcessFirstDataRowValueVar(result, listVar, scriptLineNum, program, instrOnExcel, instrObjectName))
-        //        return false;
-        //    instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrObjectName;
-        //    return true;
-        //}
 
         //--the top instr on the stack is a fctcall?
         // TODO:

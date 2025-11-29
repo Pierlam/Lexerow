@@ -203,6 +203,9 @@ public enum ErrorCode
     ExecInstrTypeStringExpected,
     ExecInstrVarNotFound,
     ExecInstrVarTypeNotExpected,
+    ExecValueStringExpected,
+    ExecValueIntExpected,
+
     ExecInstrMissing,
     ExecInstrAccessFileWrong,
     ExecInstrFilenameWrong,

@@ -28,7 +28,7 @@ internal class TokenCloseBracketProcessor
     /// <param name="listInstr">list of instr param (fct call) or instr operand (math expr)</param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool Process(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listInstr)
+    public static bool Process(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listInstr)
     {
         isListOfParams = false;
         isMathExpr = false;
@@ -169,7 +169,7 @@ internal class TokenCloseBracketProcessor
             instr = stackInstr.Pop();
 
             // the current stack item should be an item, a string, a number or an instruction
-            if (instr is InstrObjectName || instr is InstrValue || instr.IsFunctionCall)
+            if (instr is InstrNameObject || instr is InstrValue || instr.IsFunctionCall)
             {
                 // save the item in the fct param list
                 listInstr.Add(instr);

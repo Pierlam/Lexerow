@@ -26,7 +26,7 @@ public class InstrUtils
     /// <param name="instr"></param>
     /// <param name="instrToCheck"></param>
     /// <returns></returns>
-    public static bool ChekInstrString(Result result, List<InstrObjectName> listVar, Program program, InstrBase instrToCheck, out bool valueSet, out string value)
+    public static bool ChekInstrString(Result result, List<InstrNameObject> listVar, Program program, InstrBase instrToCheck, out bool valueSet, out string value)
     {
         valueSet = false;
         value = string.Empty;
@@ -43,11 +43,11 @@ public class InstrUtils
         }
 
         //--is it an var?
-        InstrObjectName instrObjectName = instrToCheck as InstrObjectName;
+        InstrNameObject instrObjectName = instrToCheck as InstrNameObject;
         if (instrObjectName != null)
         {
             // check the final value of the var, can be a value, a fct call or a math expr
-            InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.ObjectName);
+            InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.Name);
             if (instrSetVar == null)
             {
                 result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
@@ -110,11 +110,11 @@ public class InstrUtils
         }
 
         //--is it an var?
-        InstrObjectName instrObjectName = instrToCheck as InstrObjectName;
+        InstrNameObject instrObjectName = instrToCheck as InstrNameObject;
         if (instrObjectName != null)
         {
             // check the final value of the var, can be a value, a fct call or a math expr
-            InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.ObjectName);
+            InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.Name);
             if (instrSetVar == null)
             {
                 result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());

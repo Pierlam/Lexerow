@@ -22,7 +22,7 @@ internal class SetVarDecoder
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessSetVarEqualChar(Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstrToExec, out bool isToken)
+    public static bool ProcessSetVarEqualChar(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
         bool res;
@@ -112,7 +112,7 @@ internal class SetVarDecoder
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessVarName(Result result, List<InstrObjectName> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
+    private static bool ProcessVarName(Result result, List<InstrNameObject> listVar, CompilStackInstr stkInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
@@ -122,7 +122,7 @@ internal class SetVarDecoder
 
         isToken = true;
 
-        InstrObjectName instrObjectName = stkInstr.Peek() as InstrObjectName;
+        InstrNameObject instrObjectName = stkInstr.Peek() as InstrNameObject;
         InstrSetVar instrSetVar = new InstrSetVar(instrObjectName.FirstScriptToken());
         instrSetVar.InstrLeft = instrObjectName;
 

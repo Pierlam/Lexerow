@@ -12,8 +12,6 @@ public class InstrExecutor
 {
     private IActivityLogger _logger;
 
-    private InstrSelectFilesExecutor _instrSelectFilesExecutor;
-
     private InstrOnExcelExecutor _instrOnExcelExecutor;
 
     private InstrOnSheetExecutor _instrOnSheetExecutor;
@@ -28,10 +26,14 @@ public class InstrExecutor
 
     private InstrSetVarExecutor _instrSetVarExecutor;
 
+    private InstrSelectFilesExecutor _instrSelectFilesExecutor;
+
+    private InstrFuncDateExecutor _instrFuncDateExecutor;
+
     public InstrExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
-        _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger);
+
         _instrOnExcelExecutor = new InstrOnExcelExecutor(_logger, excelProcessor);
         _instrOnSheetExecutor= new InstrOnSheetExecutor(_logger, excelProcessor);
         _instrRowExecutor = new InstrRowExecutor(_logger, excelProcessor);
@@ -39,6 +41,10 @@ public class InstrExecutor
         _instrComparisonExecutor = new InstrComparisonExecutor(_logger, excelProcessor);
         _instrSetColCellFuncExecutor = new InstrSetColCellFuncExecutor(_logger, excelProcessor);
         _instrSetVarExecutor = new InstrSetVarExecutor(_logger, _instrSetColCellFuncExecutor);
+
+
+        _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger);
+        _instrFuncDateExecutor = new InstrFuncDateExecutor(_logger);
     }
 
     /// <summary>
@@ -70,13 +76,6 @@ public class InstrExecutor
             if (instr.InstrType == InstrType.SetVar)
             {
                 res = _instrSetVarExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrSetVar);
-                if (!res) return false;
-                continue;
-            }
-
-            if (instr.InstrType == InstrType.FuncSelectFiles)
-            {
-                res = _instrSelectFilesExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrFuncSelectFiles);
                 if (!res) return false;
                 continue;
             }
@@ -140,6 +139,20 @@ public class InstrExecutor
             if (instr.InstrType == InstrType.Then)
             {
                 res = _instrIfThenElseExecutor.ExecInstrThen(result, ctx, progExecVarMgr, instr as InstrThen);
+                if (!res) return false;
+                continue;
+            }
+
+            if (instr.InstrType == InstrType.FuncSelectFiles)
+            {
+                res = _instrSelectFilesExecutor.Exec(result, ctx, progExecVarMgr, instr as InstrFuncSelectFiles);
+                if (!res) return false;
+                continue;
+            }
+
+            if (instr.InstrType == InstrType.FuncDate)
+            {
+                res = _instrFuncDateExecutor.ExecFuncDate(result, ctx, progExecVarMgr, instr as InstrFuncDate);
                 if (!res) return false;
                 continue;
             }

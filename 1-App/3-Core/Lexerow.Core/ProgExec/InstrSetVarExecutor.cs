@@ -49,7 +49,7 @@ public class InstrSetVarExecutor
             return ExecSetToColCellFunc(result, ctx, progExecVarMgr, instrSetVar, instrColCellFunc);
 
         // the left part should be an objectName (varname), exp: a=xx
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         if (instrObjectName == null)
         {
             result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, "Instr Left: " + instrSetVar.InstrLeft.FirstScriptToken());
@@ -67,7 +67,7 @@ public class InstrSetVarExecutor
         }
 
         //--case a=b, the right instr is a a var too
-        instrObjectName = instrSetVar.InstrRight as InstrObjectName;
+        instrObjectName = instrSetVar.InstrRight as InstrNameObject;
         if (instrObjectName != null)
         {
             // get the var on the right to catch the result

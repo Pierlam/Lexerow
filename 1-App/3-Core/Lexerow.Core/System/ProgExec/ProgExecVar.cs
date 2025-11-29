@@ -29,10 +29,10 @@ public class ProgExecVar
 
     public bool NameEquals(string name)
     {
-        InstrObjectName instrObjectName = ObjectName as InstrObjectName;
+        InstrNameObject instrObjectName = ObjectName as InstrNameObject;
         if (instrObjectName != null)
         {
-            if (instrObjectName.ObjectName.Equals(name, StringComparison.InvariantCultureIgnoreCase)) return true;
+            if (instrObjectName.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) return true;
         }
         return false;
     }
@@ -63,8 +63,8 @@ public class ProgExecVar
         //--manage var name, exp: file
         if (ObjectName.InstrType == InstrType.ObjectName)
         {
-            string name = (ObjectName as InstrObjectName).ObjectName;
-            string name2 = (instr as InstrObjectName).ObjectName;
+            string name = (ObjectName as InstrNameObject).Name;
+            string name2 = (instr as InstrNameObject).Name;
             if (name.Equals(name2)) return true;
 
             return false;

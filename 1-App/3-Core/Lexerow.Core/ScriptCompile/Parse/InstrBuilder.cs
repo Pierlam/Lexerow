@@ -133,7 +133,7 @@ public class InstrBuilder
             }
 
             // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
-            instrBase = new InstrObjectName(scriptToken);
+            instrBase = new InstrNameObject(scriptToken);
             return true;
         }
 

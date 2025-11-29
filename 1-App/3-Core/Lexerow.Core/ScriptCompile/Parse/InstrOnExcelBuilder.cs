@@ -20,7 +20,7 @@ public class InstrOnExcelBuilder
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool OnExcelBuildOngoing(Result result, List<InstrObjectName> listVar, CompilStackInstr stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
+    public static bool OnExcelBuildOngoing(Result result, List<InstrNameObject> listVar, CompilStackInstr stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
         InstrOnExcel instrOnExcel;

@@ -28,26 +28,32 @@ public class TestExcelChecker
         return new XSSFWorkbook(stream);
     }
 
-    public static void CloseExcel(FileStream stream)
-    {
-        stream.Close();
-    }
-
-    public static bool CheckCellValueColRow(XSSFWorkbook workbook, int sheetNum, int colNum, int rowNum, double expectedValue)
-    {
-        return CheckCellValue(workbook, sheetNum, rowNum, colNum, expectedValue);
-    }
-
-    public static bool CheckCellValueColRow(XSSFWorkbook workbook, int sheetNum, int colNum, int rowNum, string expectedValue)
-    {
-        return CheckCellValue(workbook, sheetNum, rowNum, colNum, expectedValue);
-    }
-
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, double expectedValue)
     {
         if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
             return false;
         return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, expectedValue);
+    }
+
+    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, DateOnly dateOnly)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, dateOnly);
+    }
+
+    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, TimeOnly timeOnly)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, timeOnly);
+    }
+
+    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, DateTime dateTime)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, dateTime);
     }
 
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, double expectedValue)

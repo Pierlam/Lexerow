@@ -39,10 +39,10 @@ internal class ParserUtils
                 return false;
             }
 
-            res = IsInstrColDot(result, stackInstr, out InstrObjectName instrObjectName);
+            res = IsInstrColDot(result, stackInstr, out InstrNameObject instrObjectName);
 
             // get the colNum based on the col name
-            int colNum = ExcelUtils.ColumnNameToNumber(instrObjectName.ObjectName);
+            int colNum = ExcelUtils.ColumnNameToNumber(instrObjectName.Name);
             if (colNum < 1)
             {
                 result.AddError(ErrorCode.ParserColNumWrong, instrObjectName.FirstScriptToken());
@@ -50,7 +50,7 @@ internal class ParserUtils
             }
 
             // ok create the Column address instr and push into the stack
-            InstrColCellFunc instrColCellFunc = new InstrColCellFunc(instrObjectName.FirstScriptToken(), InstrColCellFuncType.Value, instrObjectName.ObjectName, colNum);
+            InstrColCellFunc instrColCellFunc = new InstrColCellFunc(instrObjectName.FirstScriptToken(), InstrColCellFuncType.Value, instrObjectName.Name, colNum);
             stackInstr.Push(instrColCellFunc);
             return true;
         }
@@ -98,7 +98,7 @@ internal class ParserUtils
         return false;
     }
 
-    static bool IsInstrColDot(Result result, CompilStackInstr stkInstr, out InstrObjectName instrObjectName)
+    static bool IsInstrColDot(Result result, CompilStackInstr stkInstr, out InstrNameObject instrObjectName)
     {
         instrObjectName = null;
 
@@ -113,7 +113,7 @@ internal class ParserUtils
 
         // the last saved should be column address, exp: A
         var instrBaseColAddr = stkInstr.Pop();
-        instrObjectName = instrBaseColAddr as InstrObjectName;
+        instrObjectName = instrBaseColAddr as InstrNameObject;
         if (instrObjectName == null)
         {
             result.AddError(ErrorCode.ParserColAddressExpected, instrBaseDot.FirstScriptToken());

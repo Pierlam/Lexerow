@@ -22,7 +22,7 @@ public class ProgExecContext
     /// <summary>
     /// The current excel file object to process.
     /// </summary>
-    public InstrExcelFileObject ExcelFileObject { get; set; } = null;
+    public InstrObjectExcelFile ExcelFileObject { get; set; } = null;
 
     /// <summary>
     /// The current excel sheet to process.

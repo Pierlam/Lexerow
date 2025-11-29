@@ -20,7 +20,7 @@ public class Parser
     /// list of defined variables.
     /// A variable can be created and set several times.
     /// </summary>
-    private List<InstrObjectName> _listVar = new List<InstrObjectName>();
+    private List<InstrNameObject> _listVar = new List<InstrNameObject>();
 
     public Parser(IActivityLogger activityLogger)
     {
@@ -71,7 +71,7 @@ public class Parser
     /// <param name="listScriptLineTokens"></param>
     /// <param name="listInstrToExec"></param>
     /// <returns></returns>
-    private bool LoopOnTokens(Result result, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
+    private bool LoopOnTokens(Result result, List<InstrNameObject> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
         bool res;
         bool isToken = false;
@@ -209,7 +209,7 @@ public class Parser
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessSpecialCases(Result result, List<InstrObjectName> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
+    private static bool ProcessSpecialCases(Result result, List<InstrNameObject> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
     {
         isToken = false;
 

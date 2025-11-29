@@ -257,9 +257,9 @@ public class ScriptParserOnExcelOkTests
         Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
         // left:  InstrObjectName -> file
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("file", instrObjectName.ObjectName);
+        Assert.AreEqual("file", instrObjectName.Name);
         // right:  InstrOpenExcel
         InstrFuncSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrFuncSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
@@ -271,8 +271,8 @@ public class ScriptParserOnExcelOkTests
 
         // OnExcel.ListFiles: OnExcel file -> InstrObjectName
         Assert.IsNotNull(instrOnExcel.InstrFiles);
-        instrObjectName = instrOnExcel.InstrFiles as InstrObjectName;
-        Assert.AreEqual("file", instrObjectName.ObjectName);
+        instrObjectName = instrOnExcel.InstrFiles as InstrNameObject;
+        Assert.AreEqual("file", instrObjectName.Name);
 
         // no need to test further
     }

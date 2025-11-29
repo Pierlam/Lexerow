@@ -28,7 +28,7 @@ public class Result
     /// <summary>
     /// list of warning occured.
     /// </summary>
-    public List<ResultWarning> ListWarning { get; private set; } = new List<ResultWarning>();
+    public List<ResultError> ListWarning { get; private set; } = new List<ResultError>();
 
     /// <summary>
     /// execution result insights/informations: how many datarow are modified, created or removed.
@@ -89,6 +89,17 @@ public class Result
         Res = false;
     }
 
+    public void AddWarning(ErrorCode errorCode, ScriptToken scriptToken)
+    {
+        ResultError resultError;
+        if (scriptToken != null)
+            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value);
+        else
+            resultError = new ResultError(errorCode, 0, 0, string.Empty);
+        ListWarning.Add(resultError);
+        Res = false;
+    }
+
     /// <summary>
     /// Error occurs during script compilation.
     /// </summary>
@@ -130,7 +141,7 @@ public class Result
     /// <param name="colNum"></param>
     /// <param name="cellValueType"></param>
     /// <returns></returns>
-    public ResultWarning? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public ResultError? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
     {
         if (fileName == null) fileName = string.Empty;
         return ListWarning.Find(x => x.ErrorCode == errorCode && x.FileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase) && x.SheetNum == sheetNum && x.ColNum == colNum && x.CellValueType == cellValueType);
@@ -141,14 +152,13 @@ public class Result
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
 
         // is there a warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
-        ResultWarning? warning = FindWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
+        ResultError? warning = FindWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
         if (warning != null)
         {
             warning.IncCounter();
             return;
         }
-
-        warning = new ResultWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
+        warning = new ResultError(errorCode, fileName, sheetNum, colNum, cellValueType);
         ListWarning.Add(warning);
     }
 }

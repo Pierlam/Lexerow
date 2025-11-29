@@ -29,7 +29,7 @@ internal class ParserStackContentProcessor
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public static bool ScriptEndLineReached(Result result, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
+    public static bool ScriptEndLineReached(Result result, List<InstrNameObject> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
     {
         bool res, isToken;
 
@@ -174,7 +174,7 @@ internal class ParserStackContentProcessor
     /// <param name="stackInstr"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    private static bool GatherSetVar(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherSetVar(Result result, List<InstrNameObject> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -224,11 +224,11 @@ internal class ParserStackContentProcessor
         }
 
         //--case a=b
-        InstrObjectName instrObjectName = instrBase as InstrObjectName;
+        InstrNameObject instrObjectName = instrBase as InstrNameObject;
         if (instrObjectName != null)
         {
             // Check that right var exists
-            if (listVar.FirstOrDefault(x => x.ObjectName.Equals(instrObjectName.ObjectName, StringComparison.InvariantCultureIgnoreCase)) != null)
+            if (listVar.FirstOrDefault(x => x.Name.Equals(instrObjectName.Name, StringComparison.InvariantCultureIgnoreCase)) != null)
             {
                 instrSetVar.InstrRight = instrObjectName;
                 if (stackInstr.Count == 0)
@@ -312,7 +312,7 @@ internal class ParserStackContentProcessor
     /// <param name="stackInstr"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessFirstDataRowValue(Result result, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program, out bool isToken)
+    private static bool ProcessFirstDataRowValue(Result result, List<InstrNameObject> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program, out bool isToken)
     {
         isToken = false;
 
@@ -399,7 +399,7 @@ internal class ParserStackContentProcessor
         return false;
     }
 
-    private static bool GatherForEachRow(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherForEachRow(Result result, List<InstrNameObject> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -446,7 +446,7 @@ internal class ParserStackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherThen(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherThen(Result result, List<InstrNameObject> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 

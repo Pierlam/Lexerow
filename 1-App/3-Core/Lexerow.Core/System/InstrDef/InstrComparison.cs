@@ -20,6 +20,13 @@ public class InstrComparison : InstrBase
     public InstrSepComparison Operator { get; set; } = null;
 
     /// <summary>
+    /// 0: nothing
+    /// 1: Instr Left
+    /// 2: Instr Right
+    /// </summary>
+    public int LastInstrExecuted { get; set; } = 0;
+
+    /// <summary>
     /// Execution, Result of the comparison.
     /// </summary>
     public bool Result { get; set; } = false;

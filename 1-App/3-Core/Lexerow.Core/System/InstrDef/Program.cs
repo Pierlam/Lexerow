@@ -47,17 +47,17 @@ public class Program
             InstrSetVar instrSetVar = instr as InstrSetVar;
 
             // the left part should be a basic varname
-            InstrObjectName instrObjectName= instrSetVar.InstrLeft as InstrObjectName;
+            InstrNameObject instrObjectName= instrSetVar.InstrLeft as InstrNameObject;
 
             // not a basic varname
             if(instrObjectName== null) continue;
 
             // the current setVar left part does not match the var name
-            if (!instrObjectName.ObjectName.Equals(varname, StringComparison.InvariantCultureIgnoreCase)) continue;
+            if (!instrObjectName.Name.Equals(varname, StringComparison.InvariantCultureIgnoreCase)) continue;
 
             // the right part is again a var name!
             if (instrSetVar.InstrRight.InstrType == InstrType.ObjectName)
-                return FindLastVarSet((instrSetVar.InstrRight as InstrObjectName).ObjectName);
+                return FindLastVarSet((instrSetVar.InstrRight as InstrNameObject).Name);
             
             // the current set var left part match the varname
             return instrSetVar;

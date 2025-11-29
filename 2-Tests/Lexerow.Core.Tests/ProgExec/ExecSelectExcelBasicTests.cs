@@ -28,7 +28,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         //    InstrRight: OpenExcel, p="data.xlsx"
 
         //-instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //-instr right
         InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "data1.xlsx"));
@@ -62,7 +62,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         //      InstrRight:  OpenExcel, p="data.xlsx"
 
         //-instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //-instr right
         InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote("blabla.xlsx"));
@@ -94,7 +94,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         //      InstrRight:  ConstValue: "data.xlsx"
 
         //-instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("name");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("name");
 
         //-instr right
         InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));
@@ -144,7 +144,7 @@ public class ExecSelectExcelBasicTests : BaseTests
         //      InstrRight:  ConstValue: "data.xlsx"
 
         //-instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("f");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("f");
 
         //-instr right
         InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataName.xlsx"));

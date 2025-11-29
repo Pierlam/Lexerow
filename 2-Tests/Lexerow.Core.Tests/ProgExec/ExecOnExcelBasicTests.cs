@@ -141,7 +141,7 @@ public class ExecOnExcelBasicTests : BaseTests
         //    InstrRight: OpenExcel, p="data.xlsx"
 
         // instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //instr right
         InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcel2.xlsx"));
@@ -201,7 +201,7 @@ public class ExecOnExcelBasicTests : BaseTests
         //    InstrRight: OpenExcel, p="data.xlsx"
 
         // instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //instr right
         InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcelJokerB*.xlsx"));
@@ -270,7 +270,7 @@ public class ExecOnExcelBasicTests : BaseTests
         //    InstrLeft:  OpenExcel, p="dataOnExcel3.xlsx"
 
         // instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         // instr right
         InstrFuncSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "dataOnExcel3.xlsx"));

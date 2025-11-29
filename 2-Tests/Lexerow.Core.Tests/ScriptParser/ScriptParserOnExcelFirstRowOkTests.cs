@@ -246,9 +246,9 @@ public class ScriptParserOnExcelFirstRowOkTests
         Assert.AreEqual(1, instrOnSheet.ListInstrForEachRow.Count);
 
         // check the firstrow value, it's a var
-        InstrObjectName instrObjectName = instrOnExcel.ListSheets[0].InstrFirstDataRow as InstrObjectName;
+        InstrNameObject instrObjectName = instrOnExcel.ListSheets[0].InstrFirstDataRow as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("r", instrObjectName.ObjectName);
+        Assert.AreEqual("r", instrObjectName.Name);
     }
 
     /// <summary>

@@ -50,9 +50,9 @@ public class ScriptParserSetVarTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("a", instrObjectName.ObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
 
         // InstrRight: Value
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -90,9 +90,9 @@ public class ScriptParserSetVarTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("a", instrObjectName.ObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
 
         // InstrRight: Value
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -134,9 +134,9 @@ public class ScriptParserSetVarTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("a", instrObjectName.ObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
 
         // InstrRight: Value
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -148,14 +148,14 @@ public class ScriptParserSetVarTests
         instrSetVar = prog.ListInstr[1] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("b", instrObjectName.ObjectName);
+        Assert.AreEqual("b", instrObjectName.Name);
 
         // InstrRight: Value
-        instrObjectName = instrSetVar.InstrRight as InstrObjectName;
+        instrObjectName = instrSetVar.InstrRight as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("a", instrObjectName.ObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
     }
 
     /// <summary>
@@ -189,9 +189,9 @@ public class ScriptParserSetVarTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("a", instrObjectName.ObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
 
         // InstrRight: built-in fct Date
         InstrFuncDate instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
@@ -243,18 +243,18 @@ public class ScriptParserSetVarTests
         instrSetVar = prog.ListInstr[1] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("a", instrObjectName.ObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
 
         // InstrRight: built-in fct Date
         InstrFuncDate instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
         Assert.IsNotNull(instrFuncDate);
 
         // the year is a var
-        InstrObjectName instrObjectName1 = instrFuncDate.InstrYear as InstrObjectName;
+        InstrNameObject instrObjectName1 = instrFuncDate.InstrYear as InstrNameObject;
         Assert.IsNotNull(instrObjectName1);
-        Assert.AreEqual("year", instrObjectName1.ObjectName);
+        Assert.AreEqual("year", instrObjectName1.Name);
 
         Assert.AreEqual(11, TestInstrHelper.GetValueInt(instrFuncDate.InstrMonth));
         Assert.AreEqual(23, TestInstrHelper.GetValueInt(instrFuncDate.InstrDay));

@@ -63,7 +63,7 @@ internal class InstrOnExcelExecutor
         }
         // run the instr OnExcel on the selected excel file
         var selectedFilename = ctx.ListSelectedFilename[ctx.FileToProcessNum];
-        ctx.ExcelFileObject = new InstrExcelFileObject(selectedFilename.InstrBase.FirstScriptToken(), selectedFilename.Filename);
+        ctx.ExcelFileObject = new InstrObjectExcelFile(selectedFilename.InstrBase.FirstScriptToken(), selectedFilename.Filename);
 
         // update insights
         result.Insights.StartNewFile(selectedFilename.Filename);
@@ -166,11 +166,11 @@ internal class InstrOnExcelExecutor
         if (ctx.PrevInstrExecuted != null) return true;
         if (instrOnExcel.InstrFiles == null) return true;
 
-        var instrObjectName = instrOnExcel.InstrFiles as InstrObjectName;
+        var instrObjectName = instrOnExcel.InstrFiles as InstrNameObject;
         if (instrObjectName == null) return true;
 
         // get the final value of the var
-        ProgExecVar progRunVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
+        ProgExecVar progRunVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.Name);
         if (progRunVar == null)
         {
             // var name not found, not defined before in the script
@@ -215,7 +215,7 @@ internal class InstrOnExcelExecutor
     /// <param name="instrValue"></param>
     /// <param name="instrExcelFileObject"></param>
     /// <returns></returns>
-    private bool OpenExcelFile(Result result, InstrExcelFileObject instrExcelFileObject)
+    private bool OpenExcelFile(Result result, InstrObjectExcelFile instrExcelFileObject)
     {
         // execute the instr OpenExcel(fileName)
         if (!_excelProcessor.Open(instrExcelFileObject.Filename, out IExcelFile excelFile, out ResultError error))

@@ -36,6 +36,25 @@ public class InstrComparisonExecutor
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrComparisonRunner.RunInstrComparison", string.Empty);
         bool res;
 
+        if (instrComparison.LastInstrExecuted > 0)
+        {
+            // the left operand is a function call, so execute it and come back here
+            if (instrComparison.OperandLeft.IsFunctionCall)
+            {
+                ctx.StackInstr.Push(instrComparison.OperandLeft);
+                instrComparison.LastInstrExecuted = 1;
+                return true;
+            }
+
+            // the right operand is a function call, so execute it and come back here
+            if (instrComparison.OperandRight.IsFunctionCall)
+            {
+                ctx.StackInstr.Push(instrComparison.OperandRight);
+                instrComparison.LastInstrExecuted = 2;
+                return true;
+            }
+        }
+
         InstrColCellFunc instrColCellFuncLeft = instrComparison.OperandLeft as InstrColCellFunc;
         InstrValue instrValueRight = instrComparison.OperandRight as InstrValue;
 
@@ -110,6 +129,8 @@ public class InstrComparisonExecutor
         //--a=b
         // TODO:
 
+        // A.Cell>Date(y,m,d)
+
         result.AddError(ErrorCode.ExecInstrNotManaged, instrComparison.OperandLeft.FirstScriptToken());
         return false;
     }
@@ -140,7 +161,7 @@ public class InstrComparisonExecutor
         if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrValueRight.ValueBase))
         {
             // is there an warning already existing?
-            result.AddWarning(ErrorCode.IfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellType);
+            result.AddWarning(ErrorCode.ExecIfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellType);
             // just a warning stop here but return true
             return true;
         }
@@ -180,7 +201,7 @@ public class InstrComparisonExecutor
         if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellTypeLeft, cellTypeRight))
         {
             // is there an warning already existing?
-            result.AddWarning(ErrorCode.IfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellTypeLeft);
+            result.AddWarning(ErrorCode.ExecIfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellTypeLeft);
             // just a warning stop here but return true
             return true;
         }

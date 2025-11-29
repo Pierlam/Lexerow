@@ -19,7 +19,7 @@ internal class FunctionCallParamsProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="listParams"></param>
     /// <returns></returns>
-    public static bool ProcessFunctionCallParams(IActivityLogger logger, Result result, List<InstrObjectName> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, List<InstrBase> listParams)
+    public static bool ProcessFunctionCallParams(IActivityLogger logger, Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, List<InstrBase> listParams)
     {
         // the stack is empty?
         if (stackInstr.Count == 0)
@@ -45,7 +45,7 @@ internal class FunctionCallParamsProcessor
         return false;
     }
 
-    private static bool ProcessFuncSelectFiles(IActivityLogger logger, Result result, List<InstrObjectName> listVar, InstrFuncSelectFiles instr, Program program, List<InstrBase> listParams)
+    private static bool ProcessFuncSelectFiles(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncSelectFiles instr, Program program, List<InstrBase> listParams)
     {
         logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count IN: " + listParams.Count);
 
@@ -64,7 +64,7 @@ internal class FunctionCallParamsProcessor
         return true;
     }
 
-    private static bool ProcessFuncDate(IActivityLogger logger, Result result, List<InstrObjectName> listVar, InstrFuncDate instr, Program program, List<InstrBase> listParams)
+    private static bool ProcessFuncDate(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncDate instr, Program program, List<InstrBase> listParams)
     {
         logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count In: " + listParams.Count);
 

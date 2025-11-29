@@ -100,15 +100,24 @@ public class InstrSelectFilesExecutor
         {
             if (!SelectFilesFromStringFilename(result, instrSelectFiles, instrValue, out List<string> listFilename))
                 return false;
+
+            // no file selected
+            if(listFilename.Count == 0)
+            {
+                result.AddWarning(ErrorCode.ExecNoFileSelected, instrSelectFiles.FirstScriptToken());
+                // just a warning but continue
+                return true;
+            }
+
             return true;
         }
 
         //--2/param is a ObjectName ? exp: SelectFiles(fileName)
-        InstrObjectName instrObjectName = param as InstrObjectName;
+        InstrNameObject instrObjectName = param as InstrNameObject;
         if (instrObjectName != null)
         {
             // get the var name, should be defined before, can be a var of var, exp: a=b so return the last var (b in the sample)
-            ProgExecVar execVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
+            ProgExecVar execVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.Name);
             if (execVar == null)
             {
                 result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());

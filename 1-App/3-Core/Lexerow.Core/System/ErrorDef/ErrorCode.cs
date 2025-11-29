@@ -138,7 +138,7 @@ public enum ErrorCode
     InstrNotAllowed,
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
-    IfCondTypeMismatch,
+    ExecIfCondTypeMismatch,
 
     ItemsShouldBeNotNullAndUnique,
 
@@ -212,6 +212,7 @@ public enum ErrorCode
 
     ExecFuncOneParamExpected,
     ExecValueIntWrong,
+    ExecNoFileSelected,
 
     InstrNotExpected,
     IntMustBePositive

@@ -275,11 +275,11 @@ public class LoadFileExecOnExcelTests : BaseTests
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "onExcelFirstRowVarVar.lxrw";
 
-        // load the script, compile it and then execute it
+        //=> load the script, compile it and then execute it
         result = core.LoadExecScript("script", scriptfile);
         Assert.IsTrue(result.Res);
 
-        //--check the content of excel file
+        //=> check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "onExcelFirstRowVarVar.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
@@ -293,6 +293,43 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
 
         res = TestExcelChecker.CheckCellValue(wb, 0, "A4", 27);
+        Assert.IsTrue(res);
+    }
+
+    /// <summary>
+    /// If A.Cell <= Date(2023,11,14) Then A.Cell=Date(2025,3, 12)
+    /// </summary>
+    [TestMethod]
+    public void OnExcelIfThenDateOk()
+    {
+        Result result;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "OnExcelIfThenDateOk.lxrw";
+
+        // load the script, compile it and then execute it
+        result = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(result.Res);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfThenDate.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        //==>check some cell value
+
+        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", new DateOnly(2023,11,14));
+        Assert.IsTrue(res);
+
+        // 03/05/2025
+        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", new DateOnly(2025,05,03));
+        Assert.IsTrue(res);
+
+        // A4: 03:40:25
+        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", new TimeOnly(03,40,25));
+        Assert.IsTrue(res);
+
+        // A5: 03/05/2018  12:30:45
+        res = TestExcelChecker.CheckCellValue(wb, 0, "A5", new DateTime(2018, 05, 03,03, 40, 25));
         Assert.IsTrue(res);
     }
 

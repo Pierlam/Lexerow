@@ -133,10 +133,10 @@ internal class InstrOnSheetExecutor
         }
 
         //--is it a Var (ObjectName) ?
-        InstrObjectName instrObjectName = instrOnSheet.InstrFirstDataRow as InstrObjectName;
+        InstrNameObject instrObjectName = instrOnSheet.InstrFirstDataRow as InstrNameObject;
         if (instrObjectName != null) 
         {
-            ProgExecVar progExecVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.ObjectName);
+            ProgExecVar progExecVar = progRunVarMgr.FindLastInnerVarByName(instrObjectName.Name);
             if(progExecVar == null)
             {
                 result.AddError(ErrorCode.ExecInstrVarNotFound, instrValue.FirstScriptToken());

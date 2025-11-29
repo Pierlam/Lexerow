@@ -40,11 +40,11 @@ public class ProgExecVarMgr
             currProgExecVar = ListExecVar.FirstOrDefault(v => v.NameEquals(varname));
             if (currProgExecVar == null) return null;
 
-            var v = currProgExecVar.Value as InstrObjectName;
+            var v = currProgExecVar.Value as InstrNameObject;
             if (v == null) return currProgExecVar;
 
             // now find the var value
-            varname = v.ObjectName;
+            varname = v.Name;
         }
     }
 }

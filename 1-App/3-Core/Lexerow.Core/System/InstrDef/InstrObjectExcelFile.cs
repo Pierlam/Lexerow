@@ -6,16 +6,16 @@ namespace Lexerow.Core.System.InstrDef;
 /// Represent a excel file instance.
 /// opened or closed.
 /// </summary>
-public class InstrExcelFileObject : InstrBase
+public class InstrObjectExcelFile : InstrBase
 {
-    public InstrExcelFileObject(ScriptToken scriptToken, string filename, IExcelFile excelFile) : base(scriptToken)
+    public InstrObjectExcelFile(ScriptToken scriptToken, string filename, IExcelFile excelFile) : base(scriptToken)
     {
         InstrType = InstrType.ExcelFileObject;
         Filename = filename;
         ExcelFile = excelFile;
     }
 
-    public InstrExcelFileObject(ScriptToken scriptToken, string filename) : base(scriptToken)
+    public InstrObjectExcelFile(ScriptToken scriptToken, string filename) : base(scriptToken)
     {
         InstrType = InstrType.ExcelFileObject;
         Filename = filename;

@@ -1,4 +1,6 @@
-﻿namespace Lexerow.Core.System;
+﻿using System.Diagnostics.Metrics;
+
+namespace Lexerow.Core.System;
 
 /// <summary>
 /// Execution (load, save, compilation or execution) result error.
@@ -56,6 +58,16 @@ public class ResultError
         ColNum = colNum;
     }
 
+    public ResultError(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    {
+        if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
+        ErrorCode = errorCode;
+        FileName = fileName;
+        SheetNum = sheetNum;
+        ColNum = colNum;
+        CellValueType = cellValueType;
+    }
+
     /// <summary>
     /// When the error was created.
     /// </summary>
@@ -66,8 +78,14 @@ public class ResultError
     /// </summary>
     public ErrorCode ErrorCode { get; set; }
 
+    public string FileName { get; set; } = string.Empty;
+
+    public int SheetNum { get; set; }
+
     public int LineNum { get; set; } = 0;
     public int ColNum { get; set; } = 0;
+
+    public CellRawValueType CellValueType { get; set; } = CellRawValueType.Unknow;
 
     public Exception? Exception { get; set; } = null;
 
@@ -80,4 +98,13 @@ public class ResultError
     /// Parameter 2 of the error.
     /// </summary>
     public string Param2 { get; set; } = string.Empty;
+
+    public int Counter { get; set; } = 1;
+
+    public int IncCounter()
+    {
+        Counter++;
+        return Counter;
+    }
+
 }

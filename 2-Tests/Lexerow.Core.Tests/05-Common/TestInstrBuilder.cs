@@ -58,7 +58,7 @@ public class TestInstrBuilder
         InstrOnExcel instrOnExcel = new InstrOnExcel(token);
 
         // OnExcel file  (varname)
-        InstrObjectName instrObjectName = CreateInstrObjectName(fileName);
+        InstrNameObject instrObjectName = CreateInstrObjectName(fileName);
         instrOnExcel.InstrFiles = instrObjectName;
 
         // OnSheet
@@ -169,10 +169,10 @@ public class TestInstrBuilder
     /// </summary>
     /// <param name="val"></param>
     /// <returns></returns>
-    public static InstrObjectName CreateInstrObjectName(string val)
+    public static InstrNameObject CreateInstrObjectName(string val)
     {
         var script = CreateScriptTokenName(val);
-        return new InstrObjectName(script);
+        return new InstrNameObject(script);
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ public class TestInstrBuilder
     {
         // ObjectName
         var token = CreateScriptTokenName(val);
-        var instrObjectName = new InstrObjectName(token);
+        var instrObjectName = new InstrNameObject(token);
 
         // OpenExcel
         InstrFuncSelectFiles instrOpenExcel = new InstrFuncSelectFiles(instrObjectName.FirstScriptToken());
@@ -255,7 +255,7 @@ public class TestInstrBuilder
     public static InstrSetVar CreateInstrSetVarNameValueInt(string varname, int value)
     {
         //-instr left
-        InstrObjectName instrObjectName = CreateInstrObjectName(varname);
+        InstrNameObject instrObjectName = CreateInstrObjectName(varname);
 
         //-instr right
         InstrValue instrValue = CreateInstrValueInt(value);
@@ -266,10 +266,10 @@ public class TestInstrBuilder
     public static InstrSetVar CreateInstrSetVarNameVarName(string varname, string value)
     {
         //-instr left
-        InstrObjectName instrObjectName = CreateInstrObjectName(varname);
+        InstrNameObject instrObjectName = CreateInstrObjectName(varname);
 
         //-instr right
-        InstrObjectName instrObjectName2 = CreateInstrObjectName(varname);
+        InstrNameObject instrObjectName2 = CreateInstrObjectName(varname);
 
         return CreateInstrSetVar(instrObjectName, instrObjectName2);
     }

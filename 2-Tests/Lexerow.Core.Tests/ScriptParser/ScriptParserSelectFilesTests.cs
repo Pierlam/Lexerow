@@ -53,9 +53,9 @@ public class ScriptParserSelectFilesTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("file", instrObjectName.ObjectName);
+        Assert.AreEqual("file", instrObjectName.Name);
 
         // InstrRight: SelectFiles
         InstrFuncSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrFuncSelectFiles;
@@ -128,9 +128,9 @@ public class ScriptParserSelectFilesTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("name", instrObjectName.ObjectName);
+        Assert.AreEqual("name", instrObjectName.Name);
 
         // InstrRight: ConstValue
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -143,9 +143,9 @@ public class ScriptParserSelectFilesTests
         instrSetVar = prog.ListInstr[1] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("file", instrObjectName.ObjectName);
+        Assert.AreEqual("file", instrObjectName.Name);
 
         // InstrRight: SelectFiles
         var instrOpenExcel = instrSetVar.InstrRight as InstrFuncSelectFiles;
@@ -153,9 +153,9 @@ public class ScriptParserSelectFilesTests
 
         // OpenExcel Param -> object name
         Assert.AreEqual(1, instrOpenExcel.ListInstrParams.Count);
-        instrObjectName = instrOpenExcel.ListInstrParams[0] as InstrObjectName;
+        instrObjectName = instrOpenExcel.ListInstrParams[0] as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("name", instrObjectName.ObjectName);
+        Assert.AreEqual("name", instrObjectName.Name);
     }
 
     /// <summary>

@@ -13,11 +13,17 @@ namespace Lexerow.Core.System.InstrDef.Object;
 /// </summary>
 public class InstrObjectDate : InstrBase
 {
-    public InstrObjectDate(ScriptToken scriptToken, DateOnly dateOnly) : base(scriptToken)
+    public InstrObjectDate(ScriptToken scriptToken, ValueDateOnly valueDateOnly) : base(scriptToken)
     {
         InstrType = InstrType.ObjectExcelFile;
-        DateOnly = dateOnly;
+        //DateOnly = dateOnly;
+        ValueDateOnly = valueDateOnly;
     }
 
-    public DateOnly DateOnly { get; set; }  
+    public ValueDateOnly ValueDateOnly { get; set; }
+
+    public override string ToString()
+    {
+        return "ObjectDate( " + ValueDateOnly.Val.Year + "," + ValueDateOnly.Val.Month+ "," + ValueDateOnly.Val.Day + ")";
+    }
 }

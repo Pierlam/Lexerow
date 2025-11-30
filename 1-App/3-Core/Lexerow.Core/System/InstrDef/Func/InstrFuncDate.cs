@@ -31,7 +31,7 @@ public class InstrFuncDate : InstrBase
         string day = "(null)";
         if (InstrDay != null) day = InstrDay.ToString();
 
-        return "Date( " + year +"," + month +"," + month+")";
+        return "FuncDate( " + year +"," + month +"," + day+")";
     }
 
 }

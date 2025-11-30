@@ -2,8 +2,10 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
 using NPOI.OpenXmlFormats.Spreadsheet;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,27 +32,57 @@ public class InstrFuncDateExecutor
     /// <param name="progExecVarMgr"></param>
     /// <param name="instrFuncDate"></param>
     /// <returns></returns>
-    public bool ExecFuncDate(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncDate instrFuncDate)
+    public bool ExecFuncDate(Result result, ProgExecContext ctx, Program program, InstrFuncDate instrFuncDate)
     {
-        // check the year instr, can be a Value, a var or a fctcall
-        if(instrFuncDate.InstrYear.IsFunctionCall)
+        // the year param is not a value or a var?
+        if (InstrUtils.NeedToBeExecuted(instrFuncDate.InstrYear))
         {
             ctx.StackInstr.Push(instrFuncDate.InstrYear);
-            //instrFuncDate.LastInstrExecuted = 2;
             return true;
         }
-        // same for month and day
-        // TODO:
+        // same for month 
+        if (InstrUtils.NeedToBeExecuted(instrFuncDate.InstrMonth))
+        {
+            ctx.StackInstr.Push(instrFuncDate.InstrMonth);
+            return true;
+        }
+        // same for day
+        if (InstrUtils.NeedToBeExecuted(instrFuncDate.InstrDay))
+        {
+            ctx.StackInstr.Push(instrFuncDate.InstrDay);
+            return true;
+        }
 
+        // get the year int value 
+        if (!InstrUtils.GetIntFromInstr(result, false, program, instrFuncDate.InstrYear, out bool _, out int year))
+            return false;
 
-        // get int value from instr if ist a value or a var (funcCall: not possible, not concerned)
-        //if(!InstrUtils.GetValueIntFromInstrValueOrVar(result, progExecVarMgr, instrFuncDate.InstrYear, out bool isConcerned))
-        //    return false;
+        // get the month int value 
+        if (!InstrUtils.GetIntFromInstr(result, false, program, instrFuncDate.InstrMonth, out bool _, out int month))
+            return false;
 
-        //InstrObjectDate
+        // get the day int value 
+        if (!InstrUtils.GetIntFromInstr(result, false, program, instrFuncDate.InstrDay, out bool _, out int day))
+            return false;
 
-        // manage cases when instr Left and/or Right have to be executed: fct call
-        //if (instrFuncDate.LastInstrExecuted > 0)
+        // create a dateOnly object 
+        try
+        {
+            DateOnly dateOnly = new DateOnly(year, month, day);
+            ValueDateOnly valueDateOnly=new ValueDateOnly(dateOnly);
+            InstrObjectDate instrObjectDate= new InstrObjectDate(instrFuncDate.FirstScriptToken(), valueDateOnly);
+
+            // remove the instr FuncDate from the stack
+            ctx.StackInstr.Pop();
+            ctx.PrevInstrExecuted=instrObjectDate;
+            return true;
+        }
+        catch (Exception ex) 
+        {
+            result.AddError(ErrorCode.ExecValueDateWrong, instrFuncDate.FirstScriptToken());
+            return false;
+        }
+
         return false;
     }
 }

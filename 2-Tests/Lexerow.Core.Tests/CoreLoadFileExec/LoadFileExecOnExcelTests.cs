@@ -34,11 +34,11 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 10);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -58,19 +58,19 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // C2: row1, col2: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "C2", 10);
+        bool res = TestExcelChecker.CheckCellValue(wb, "C2", 10);
         Assert.IsTrue(res);
 
         // C3: row2, col2: 27
-        res = TestExcelChecker.CheckCellValue(wb, 0, "C3", 27);
+        res = TestExcelChecker.CheckCellValue(wb, "C3", 27);
         Assert.IsTrue(res);
 
         // C4: row3, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, 0, "C4", 10);
+        res = TestExcelChecker.CheckCellValue(wb, "C4", 10);
         Assert.IsTrue(res);
 
         // C5: row4, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, 0, "C5", 10);
+        res = TestExcelChecker.CheckCellValue(wb, "C5", 10);
         Assert.IsTrue(res);
     }
 
@@ -92,12 +92,12 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", -7);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", -7);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", -5);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", -5);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", 4);
+        res = TestExcelChecker.CheckCellValue(wb, "A4", 4);
         Assert.IsTrue(res);
     }
 
@@ -117,7 +117,7 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // A2: row1, col0: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", "Bonjour");
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", "Bonjour");
         Assert.IsTrue(res);
     }
 
@@ -137,15 +137,15 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         // A2: row1, col0: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 10);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 10);
         Assert.IsTrue(res);
 
         // A3: row2, col0: 13
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 13.1);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 13.1);
         Assert.IsTrue(res);
 
         // A4: row3, col0: 13
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", 13.1);
+        res = TestExcelChecker.CheckCellValue(wb, "A4", 13.1);
         Assert.IsTrue(res);
     }
 
@@ -165,19 +165,19 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         //--line2: A=12, B=Y, C=10
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 12);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 12);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, 0, "B2", "Y");
+        res = TestExcelChecker.CheckCellValue(wb, "B2", "Y");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, 0, "C2", 10);
+        res = TestExcelChecker.CheckCellValue(wb, "C2", 10);
         Assert.IsTrue(res);
 
         //--line3: A = 34, B = blank, C = 13
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 34);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 34);
         Assert.IsTrue(res);
         res = TestExcelChecker.CheckCellValueBlank(wb, 0, "B3");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, 0, "C3", 13);
+        res = TestExcelChecker.CheckCellValue(wb, "C3", 13);
         Assert.IsTrue(res);
     }
 
@@ -197,19 +197,19 @@ public class LoadFileExecOnExcelTests : BaseTests
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         //--line2: A=12.3, B=blank , C=Y
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 12.3);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 12.3);
         Assert.IsTrue(res);
         res = TestExcelChecker.CheckCellValueBlank(wb, 0, "B2");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, 0, "C2", "Y");
+        res = TestExcelChecker.CheckCellValue(wb, "C2", "Y");
         Assert.IsTrue(res);
 
         //--line3: A=34, B=hello, C=567
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 34);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 34);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, 0, "B3", "hello");
+        res = TestExcelChecker.CheckCellValue(wb, "B3", "hello");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, 0, "C3", 567);
+        res = TestExcelChecker.CheckCellValue(wb, "C3", 567);
         Assert.IsTrue(res);
     }
 
@@ -230,13 +230,13 @@ public class LoadFileExecOnExcelTests : BaseTests
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 12);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", 27);
+        res = TestExcelChecker.CheckCellValue(wb, "A4", 27);
         Assert.IsTrue(res);
     }
 
@@ -258,13 +258,13 @@ public class LoadFileExecOnExcelTests : BaseTests
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 12);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", 27);
+        res = TestExcelChecker.CheckCellValue(wb, "A4", 27);
         Assert.IsTrue(res);
     }
 
@@ -286,13 +286,49 @@ public class LoadFileExecOnExcelTests : BaseTests
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 12);
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", 27);
+        res = TestExcelChecker.CheckCellValue(wb, "A4", 27);
+        Assert.IsTrue(res);
+    }
+
+    /// <summary>
+    /// If A.Cell <= Date(2023,11,14) Then B.Cell="yes"
+    /// </summary>
+    [TestMethod]
+    public void OnExcelIfDateThenYesOk()
+    {
+        Result result;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "OnExcelIfDateThenYesOk.lxrw";
+
+        // load the script, compile it and then execute it
+        result = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(result.Res);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfDateThenYesOk.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        //==>check some cell value
+
+        bool res = TestExcelChecker.CheckCellValue(wb, "B2", "yes");
+        Assert.IsTrue(res);
+
+        res = TestExcelChecker.CheckCellValue(wb, "B3", "no");
+        Assert.IsTrue(res);
+
+        // A4: 03:40:25
+        res = TestExcelChecker.CheckCellValue(wb, "B4", "no");
+        Assert.IsTrue(res);
+
+        // A5: special case!! 03/05/2018  12:30:45   -> compare DateTime with DateOnly -> ok
+        res = TestExcelChecker.CheckCellValue(wb, "B5", "yes");
         Assert.IsTrue(res);
     }
 
@@ -317,19 +353,19 @@ public class LoadFileExecOnExcelTests : BaseTests
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", new DateOnly(2023,11,14));
+        bool res = TestExcelChecker.CheckCellValue(wb, "A2", new DateOnly(2023, 11, 14));
         Assert.IsTrue(res);
 
         // 03/05/2025
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", new DateOnly(2025,05,03));
+        res = TestExcelChecker.CheckCellValue(wb, "A3", new DateOnly(2025, 05, 03));
         Assert.IsTrue(res);
 
         // A4: 03:40:25
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A4", new TimeOnly(03,40,25));
+        res = TestExcelChecker.CheckCellValue(wb, "A4", new TimeOnly(03, 40, 25));
         Assert.IsTrue(res);
 
         // A5: 03/05/2018  12:30:45
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A5", new DateTime(2018, 05, 03,03, 40, 25));
+        res = TestExcelChecker.CheckCellValue(wb, "A5", new DateTime(2018, 05, 03, 03, 40, 25));
         Assert.IsTrue(res);
     }
 

@@ -200,11 +200,15 @@ public enum ErrorCode
     //--run program, instructions
     ExecInstrNotManaged,
 
-    ExecInstrTypeStringExpected,
     ExecInstrVarNotFound,
     ExecInstrVarTypeNotExpected,
+
+    ExecInstrTypeStringExpected,
     ExecValueStringExpected,
     ExecValueIntExpected,
+
+    ExecValueIntWrong,
+    ExecValueDateWrong,
 
     ExecInstrMissing,
     ExecInstrAccessFileWrong,
@@ -214,7 +218,8 @@ public enum ErrorCode
     ExecFuncNotExists,
 
     ExecFuncOneParamExpected,
-    ExecValueIntWrong,
+
+
     ExecNoFileSelected,
 
     InstrNotExpected,

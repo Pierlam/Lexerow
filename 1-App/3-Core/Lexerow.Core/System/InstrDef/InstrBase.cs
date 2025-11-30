@@ -74,6 +74,10 @@ public enum InstrType
     //--functions
     FuncSelectFiles,
     FuncDate,
+
+    // expression
+    MathExpr,
+    BoolExpr
 }
 
 public enum InstrFunctionReturnType

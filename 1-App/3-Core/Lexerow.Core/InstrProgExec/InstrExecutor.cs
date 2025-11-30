@@ -133,7 +133,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.Comparison)
             {
-                res = _instrComparisonExecutor.ExecInstrComparison(result, ctx, progExecVarMgr, instr as InstrComparison);
+                res = _instrComparisonExecutor.ExecInstrComparison(result, ctx, program, instr as InstrComparison);
                 if (!res) return false;
                 continue;
             }
@@ -154,7 +154,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.FuncDate)
             {
-                res = _instrFuncDateExecutor.ExecFuncDate(result, ctx, progExecVarMgr, instr as InstrFuncDate);
+                res = _instrFuncDateExecutor.ExecFuncDate(result, ctx, program, instr as InstrFuncDate);
                 if (!res) return false;
                 continue;
             }

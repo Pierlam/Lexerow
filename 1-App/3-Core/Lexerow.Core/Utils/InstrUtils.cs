@@ -200,6 +200,23 @@ public class InstrUtils
     }
 
     /// <summary>
+    /// Is the instruction need to be executed?
+    /// It's the case for: function call, math expr and bool expression.
+    /// </summary>
+    /// <param name="instrBase"></param>
+    /// <returns></returns>
+    public static bool NeedToBeExecuted(InstrBase instrBase)
+    {
+        if(instrBase == null) return false;
+        if (instrBase.IsFunctionCall)return true;
+
+        if(instrBase.InstrType== InstrType.MathExpr)return true;
+        if (instrBase.InstrType == InstrType.BoolExpr) return true;
+        // no
+        return false;
+    }
+
+    /// <summary>
     /// Merge the Minus char with the number, int or double.
     /// </summary>
     /// <param name="instrCharMinus"></param>

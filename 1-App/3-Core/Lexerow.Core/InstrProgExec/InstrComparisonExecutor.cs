@@ -2,7 +2,9 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
+using NPOI.OpenXmlFormats.Spreadsheet;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -31,79 +33,111 @@ public class InstrComparisonExecutor
     /// <param name="listVar"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    public bool ExecInstrComparison(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrComparison instrComparison)
+    public bool ExecInstrComparison(Result result, ProgExecContext ctx, Program program, InstrComparison instrComparison)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrComparisonExecutor.ExecInstrComparison", string.Empty);
 
-        // manage cases when instr Left and/or Right have to be executed: fct call
-        // TODO: PB!
-        if (instrComparison.LastInstrExecuted > 0)
-        {
-            // the left operand is a function call, so execute it and come back here
-            if (instrComparison.OperandLeft.IsFunctionCall)
-            {
-                ctx.StackInstr.Push(instrComparison.OperandLeft);
-                instrComparison.LastInstrExecuted = 1;
-                return true;
-            }
+        InstrBase instrOperandLeft = instrComparison.OperandLeft;
+        InstrBase instrOperandRight = instrComparison.OperandRight;
 
-            // the right operand is a function call, so execute it and come back here
-            if (instrComparison.OperandRight.IsFunctionCall)
+        // a prev instr
+        if (ctx.PrevInstrExecuted!=null)
+        {
+            // left instr executed before?
+            if(instrComparison.LastInstrExecuted==1)
             {
-                ctx.StackInstr.Push(instrComparison.OperandRight);
-                instrComparison.LastInstrExecuted = 2;
-                return true;
+                instrOperandLeft= ctx.PrevInstrExecuted;
+                instrComparison.LastInstrExecuted = 0;
+                ctx.PrevInstrExecuted = null;
+            }
+            // right instr executed before?
+            if (instrComparison.LastInstrExecuted == 2)
+            {
+                instrOperandRight = ctx.PrevInstrExecuted;
+                instrComparison.LastInstrExecuted = 0;
+                ctx.PrevInstrExecuted = null;
             }
         }
 
-        InstrColCellFunc instrColCellFuncLeft = instrComparison.OperandLeft as InstrColCellFunc;
-        InstrValue instrValueRight = instrComparison.OperandRight as InstrValue;
-
-        //--A.Cell>10
-        if (instrColCellFuncLeft != null && instrValueRight != null)
+        // the left operand is a function call, so execute it and come back here
+        if (InstrUtils.NeedToBeExecuted(instrOperandLeft))
         {
-            if (!Compare(result, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrValueRight, out bool resultComp))
-                return false;
-
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
+            ctx.StackInstr.Push(instrOperandLeft);
+            instrComparison.LastInstrExecuted = 1;
             return true;
         }
 
-        InstrValue instrValueLeft = instrComparison.OperandLeft as InstrValue;
-        InstrColCellFunc instrColCellFuncRight = instrComparison.OperandRight as InstrColCellFunc;
-
-        //--10<A.Cell
-        if (instrValueLeft != null && instrColCellFuncRight != null)
+        // the right operand is a function call, so execute it and come back here
+        if (InstrUtils.NeedToBeExecuted(instrOperandRight))
         {
-            // revert the operator,exp: < becomes >
+            ctx.StackInstr.Push(instrOperandRight);
+            instrComparison.LastInstrExecuted = 2;
+            return true;
+        }
+
+        //--A.Cell > xxx 
+        if (!CompareColCellFuncWith(result, _excelProcessor, ctx, program, instrComparison, instrOperandLeft, instrOperandRight, out bool isCase))
+            return false;
+        if (isCase) return true;
+
+        //--xxx<A.Cell, reverse both operands
+        InstrColCellFunc instrColCellFuncRight = instrOperandRight as InstrColCellFunc;
+        if (instrColCellFuncRight != null) 
+        {
             InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
-            if (!Compare(result, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, sepCompRevert, instrValueRight, out bool resultComp))
+            if (!CompareColCellFuncWith(result, _excelProcessor, ctx, program, instrComparison, instrOperandRight, instrOperandLeft, out isCase))
                 return false;
-
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
-            return true;
+            if (isCase) return true;
         }
 
-        //--A.Cell>B.Cell
-        if (instrColCellFuncLeft != null && instrColCellFuncRight != null)
-        {
-            if (!Compare(result, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrColCellFuncRight, out bool resultComp))
-                return false;
+        //--a=b
+        // TODO:
 
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
-            return true;
+        // case not managed
+        result.AddError(ErrorCode.ExecInstrNotManaged, instrComparison.OperandLeft.FirstScriptToken());
+        return false;
+    }
+
+    /// <summary>
+    /// A.Cell>xxx
+    /// Compare InstrColCellFucn to something: value, var, blank, null, Date.
+    /// manage also the special case: A.Cell>B.Cell
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="excelProcessor"></param>
+    /// <param name="ctx"></param>
+    /// <param name="instrComparison"></param>
+    /// <param name="instrOperandLeft"></param>
+    /// <param name="instrOperandRight"></param>
+    /// <param name="isCase"></param>
+    /// <returns></returns>
+    private bool CompareColCellFuncWith(Result result, IExcelProcessor excelProcessor, ProgExecContext ctx, Program program, InstrComparison instrComparison, InstrBase instrOperandLeft, InstrBase instrOperandRight, out bool isCase)
+    {
+        isCase = false; 
+
+        InstrColCellFunc instrColCellFuncLeft = instrOperandLeft as InstrColCellFunc;
+        if (instrColCellFuncLeft == null) return true;
+
+        //--right operand is a var?
+        InstrNameObject instrNameObject = instrOperandRight as InstrNameObject;
+        if (instrNameObject != null)
+        {
+            // get the value of the var, the inner one if the value is a var
+            InstrSetVar instrSetVar = program.FindLastVarSet(instrNameObject.Name);
+            if (instrSetVar == null)
+            {
+                result.AddError(ErrorCode.ExecInstrVarNotFound, instrOperandRight.FirstScriptToken());
+                return false;
+            }
+            // update the right operand with the (last) value of the var
+            instrOperandRight = instrSetVar.InstrRight;
         }
 
         //--A.Cell=blank or A.Cell<>blank
-        InstrBlank instrBlankRight = instrComparison.OperandRight as InstrBlank;
-        if (instrColCellFuncLeft != null && instrBlankRight != null)
+        InstrBlank instrBlankRight = instrOperandRight as InstrBlank;
+        if (instrBlankRight != null)
         {
+            isCase = true;
             if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
                 return false;
             instrComparison.Result = resultComp;
@@ -113,9 +147,10 @@ public class InstrComparisonExecutor
         }
 
         //--A.Cell=null or A.Cell<>null
-        InstrNull instrNullRight = instrComparison.OperandRight as InstrNull;
-        if (instrColCellFuncLeft != null && instrBlankRight != null)
+        InstrNull instrNullRight = instrOperandRight as InstrNull;
+        if (instrBlankRight != null)
         {
+            isCase = true;
             if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
                 return false;
             instrComparison.Result = resultComp;
@@ -124,16 +159,118 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        //--A.Cell>val
-        // TODO:
+        //--special case: A.Cell>B.Cell
+        InstrColCellFunc instrColCellFuncRight = instrOperandRight as InstrColCellFunc;
+        if (instrColCellFuncRight != null)
+        {
+            isCase = true;
+            if (!Compare(result, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrColCellFuncRight, out bool resultComp))
+                return false;
 
-        //--a=b
-        // TODO:
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
 
-        // A.Cell>Date(y,m,d)
+        // right operand is basic value?
+        InstrValue instrValueRight = instrOperandRight as InstrValue;
 
-        result.AddError(ErrorCode.ExecInstrNotManaged, instrComparison.OperandLeft.FirstScriptToken());
-        return false;
+        //--A.Cell> value
+        if (instrValueRight != null)
+        {
+            isCase = true;
+            if (!Compare(result, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrValueRight.ValueBase, out bool resultComp))
+                return false;
+
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
+
+        //--A.Cell>Date(y,m,d)
+        InstrObjectDate instrObjectDate = instrOperandRight as InstrObjectDate;
+        if(instrObjectDate!=null)
+        {
+            isCase = true;
+            if (!Compare(result, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrObjectDate.ValueDateOnly, out bool resultComp))
+                return false;
+
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
+
+        // not the case
+        isCase = false;
+        return true;
+    }
+
+    // TODO: keep it?
+    private bool CompareColCellFuncWithBlankOrNull(Result result, IExcelProcessor excelProcessor, ProgExecContext ctx, InstrComparison instrComparison, InstrBase instrOperandLeft, InstrBase instrOperandRight, out bool isCase)
+    {
+        InstrColCellFunc instrColCellFuncLeft= instrOperandLeft as InstrColCellFunc;
+
+        //--A.Cell=blank or A.Cell<>blank
+        InstrBlank instrBlankRight = instrOperandRight as InstrBlank;
+        if (instrColCellFuncLeft != null && instrBlankRight != null)
+        {
+            isCase = true;
+            if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
+                return false;
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
+
+        //--A.Cell=null or A.Cell<>null
+        InstrNull instrNullRight = instrOperandRight as InstrNull;
+        if (instrColCellFuncLeft != null && instrBlankRight != null)
+        {
+            isCase = true;
+            if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
+                return false;
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
+
+        InstrColCellFunc instrColCellFuncRight = instrOperandRight as InstrColCellFunc;
+
+        //--blank=A.Cell or blank<>A.Cell
+        InstrBlank instrBlankLeft = instrOperandLeft as InstrBlank;
+        if (instrColCellFuncRight != null && instrBlankLeft != null)
+        {
+            isCase = true;
+            InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
+            if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, sepCompRevert, out bool resultComp))
+                return false;
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
+
+        //--null=A.Cell or null<>A.Cell
+        InstrNull instrNullLeft = instrOperandLeft as InstrNull;
+        if (instrColCellFuncRight != null && instrBlankLeft != null)
+        {
+            isCase = true;
+            InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
+            if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, sepCompRevert, out bool resultComp))
+                return false;
+            instrComparison.Result = resultComp;
+            ctx.PrevInstrExecuted = instrComparison;
+            ctx.StackInstr.Pop();
+            return true;
+        }
+        // not the case
+        isCase = false;
+        return true;
     }
 
     /// <summary>
@@ -149,7 +286,7 @@ public class InstrComparisonExecutor
     /// <param name="resultComp"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    private bool Compare(Result result, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, InstrValue instrValueRight, out bool resultComp)
+    private bool Compare(Result result, IExcelProcessor excelProcessor, string fileName, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFuncLeft, InstrSepComparison compOperator, ValueBase valueRight, out bool resultComp)
     {
         resultComp = false;
 
@@ -159,7 +296,7 @@ public class InstrComparisonExecutor
         CellRawValueType cellType = excelProcessor.GetCellValueType(excelSheet, cell);
 
         // does the cell type match the If-Comparison cell.Value type?
-        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrValueRight.ValueBase))
+        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, valueRight))
         {
             // is there an warning already existing?
             result.AddWarning(ErrorCode.ExecIfCondTypeMismatch, fileName, excelSheet.Index, instrColCellFuncLeft.ColNum, cellType);
@@ -168,7 +305,7 @@ public class InstrComparisonExecutor
         }
 
         // execute the If part: comparison condition
-        return CompareValues(result, excelProcessor, cell, compOperator, instrValueRight.ValueBase, out resultComp);
+        return CompareValues(result, excelProcessor, cell, compOperator, valueRight, out resultComp);
     }
 
     /// <summary>

@@ -19,6 +19,10 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
 {
     /// <summary>
     /// Test SelectFiles + OnExcel
+    /// 
+    /// files= SelectFiles(".\10-ExcelFiles\execSelectFilesOnExcel.xlsx")
+    /// OnExcel files  
+    ///    ...
     /// </summary>
     [TestMethod]
     public void SelectFilesOnExcelBasicOk()

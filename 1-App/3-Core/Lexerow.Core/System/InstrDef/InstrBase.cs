@@ -66,6 +66,7 @@ public enum InstrType
     ProcessRow,
 
     //--Object
+    ObjectFilenamesSelected,
     ObjectDate,
     ObjectDateTime,
     ObjectTime,

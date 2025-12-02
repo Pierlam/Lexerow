@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
@@ -31,6 +32,13 @@ public enum InstrOnExcelBuildStage
     EndOfExcel,
 }
 
+public enum InstrOnExcelExecStage
+{
+    Init,
+    FilesAreSelected,
+    ProcessFile,
+}
+
 /// <summary>
 /// Main instruction model: OnExcel
 /// Exp:
@@ -53,6 +61,8 @@ public class InstrOnExcel : InstrBase
     /// </summary>
     public InstrOnExcelBuildStage BuildStage { get; set; } = InstrOnExcelBuildStage.OnExcel;
 
+    public InstrOnExcelExecStage ExecStage { get; set; } = InstrOnExcelExecStage.Init;
+
     /// <summary>
     /// instr, coming  from script.
     /// Convert to the InstrSelectFiles during the execution.
@@ -71,7 +81,9 @@ public class InstrOnExcel : InstrBase
     /// the file name (or var or instr selectFiles) is processed and converted to an instrSelectFiles,
     /// specially the member ListFinalFilename, which the final list of files to process.
     /// </summary>
-    public InstrFuncSelectFiles InstrSelectFiles { get; set; } = null;
+    //public InstrFuncSelectFiles InstrSelectFiles { get; set; } = null;
+    // TODO: to REMOVE!
+    public InstrObjectFilenamesSelected InstrObjectFilenamesSelected { get; set; } = null;
 
     public List<InstrOnSheet> ListSheets { get; private set; } = new List<InstrOnSheet>();
 
@@ -79,6 +91,14 @@ public class InstrOnExcel : InstrBase
     /// Used by the parser to build the instr.
     /// </summary>
     public InstrOnSheet CurrOnSheet { get; set; } = null;
+
+    /// <summary>
+    /// Init to -1 which is not started.
+    /// Used in execution.
+    /// base0.
+    /// </summary>
+    public int FileToProcessNum { get; set; } = -1;
+
 
     /// <summary>
     /// Create a new OnSheet instr, becomes the default one.

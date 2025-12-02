@@ -2,6 +2,7 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -14,11 +15,11 @@ namespace Lexerow.Core.InstrProgExec;
 /// 2/ with joker: SelectFiles("*.xlsx")  select several files.
 /// 3/ with var: SelectFiles(filename)
 /// </summary>
-public class InstrSelectFilesExecutor
+public class InstrFuncSelectFilesExecutor
 {
     private IActivityLogger _logger;
 
-    public InstrSelectFilesExecutor(IActivityLogger activityLogger)
+    public InstrFuncSelectFilesExecutor(IActivityLogger activityLogger)
     {
         _logger = activityLogger;
     }
@@ -37,7 +38,7 @@ public class InstrSelectFilesExecutor
     /// <returns></returns>
     public bool Exec(Result result, ProgExecContext ctx, Program program, InstrFuncSelectFiles instrSelectFiles)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSelectFilesRunner.Run", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrFuncSelectFilesExecutor.Exec", string.Empty);
 
         // a param (fct call or string concatenation) was processed before
         if (instrSelectFiles.CurrParamNum > -1 && ctx.PrevInstrExecuted != null)
@@ -73,6 +74,8 @@ public class InstrSelectFilesExecutor
             return true;
         }
 
+        InstrObjectFilenamesSelected instrObjectFilenamesSelected = new InstrObjectFilenamesSelected(instrSelectFiles.FirstScriptToken());
+
         //--list of params have been all decoded, contains only constValue or varname
         for (int i = 0; i < instrSelectFiles.RunTmpListFinalInstrParams.Count; i++)
         {
@@ -81,18 +84,25 @@ public class InstrSelectFilesExecutor
             InstrFuncSelectFilesSelector selector = instrSelectFiles.ListFilesSelectors[i];
 
             // the param is a const value or a varname, get final list of filename to process: apply select and unselect filters
-            if (!DecodeParam(result, program, instrSelectFiles, param, selector))
+            if (!DecodeParam(result, program, instrSelectFiles, param, selector, out List<string> listFilename))
                 return false;
+
+            // save list of files
+            foreach (string filename in listFilename)
+                instrObjectFilenamesSelected.AddFinalFilename(param, filename);
         }
 
-        // save the instr and remove it from the stack
-        ctx.PrevInstrExecuted = instrSelectFiles;
+        // remove the instr FuncSelectFiles from the stack
         ctx.StackInstr.Pop();
+
+        // save the instr and remove it from the stack
+        //ctx.PrevInstrExecuted = instrSelectFiles;
+        ctx.PrevInstrExecuted = instrObjectFilenamesSelected;
         return true;
     }
 
     /// <summary>
-    /// Decopde the param, should contains a filename.
+    /// Decode the param, should contains a filename.
     /// </summary>
     /// <param name="result"></param>
     /// <param name="program"></param>
@@ -100,8 +110,10 @@ public class InstrSelectFilesExecutor
     /// <param name="param"></param>
     /// <param name="selector"></param>
     /// <returns></returns>
-    private bool DecodeParam(Result result, Program program, InstrFuncSelectFiles instrSelectFiles, InstrBase param, InstrFuncSelectFilesSelector selector)
+    private bool DecodeParam(Result result, Program program, InstrFuncSelectFiles instrSelectFiles, InstrBase param, InstrFuncSelectFilesSelector selector, out List<string> listFilename)
     {
+        listFilename = new List<string>();
+
         // get the filename
         if (!InstrUtils.GetStringFromInstr(result, false, program, param, out bool isValueOrVar, out string value))
             return false;
@@ -109,7 +121,7 @@ public class InstrSelectFilesExecutor
         // not a value or var, can be: a fct call, a math expr or bool expr
         if (!isValueOrVar) return true;
 
-        if (!SelectFiles(result, instrSelectFiles, StringUtils.RemoveStartEndDoubleQuote(value), out List<string> listFilename))
+        if (!SelectFiles(result, instrSelectFiles, StringUtils.RemoveStartEndDoubleQuote(value), out listFilename))
             return false;
 
         // no file selected
@@ -120,9 +132,9 @@ public class InstrSelectFilesExecutor
             return true;
         }
 
-        // save list of files
-        foreach (string filename in listFilename)
-            instrSelectFiles.AddFinalFilename(param, filename);
+        //// save list of files
+        //foreach (string filename in listFilename)
+        //    instrSelectFiles.AddFinalFilename(param, filename);
 
         return true;
     }

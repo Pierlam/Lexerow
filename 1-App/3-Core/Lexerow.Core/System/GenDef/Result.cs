@@ -78,7 +78,7 @@ public class Result
     /// </summary>
     /// <param name="errorCode"></param>
     /// <param name="scriptToken"></param>
-    public void AddError(ErrorCode errorCode, ScriptToken scriptToken)
+    public bool AddError(ErrorCode errorCode, ScriptToken scriptToken)
     {
         ResultError resultError;
         if (scriptToken != null)
@@ -87,6 +87,7 @@ public class Result
             resultError = new ResultError(errorCode, 0, 0, string.Empty);
         ListError.Add(resultError);
         Res = false;
+        return false;
     }
 
     public void AddWarning(ErrorCode errorCode, ScriptToken scriptToken)

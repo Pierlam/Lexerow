@@ -19,7 +19,7 @@ public class ProgExecContext
     /// Used in execution.
     /// base0.
     /// </summary>
-    public int FileToProcessNum { get; set; } = -1;
+    //public int FileToProcessNum { get; set; } = -1;
 
     /// <summary>
     /// The current excel file object to process.

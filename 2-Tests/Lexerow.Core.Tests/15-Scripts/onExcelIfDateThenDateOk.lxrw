@@ -1,0 +1,7 @@
+﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
+
+OnExcel ".\10-ExcelFiles\onExcelIfThenDateOk.xlsx"
+	ForEachRow
+		If A.Cell <= Date(2023,11,14) Then A.Cell=Date(2025,3, 12)
+	Next
+End OnExcel

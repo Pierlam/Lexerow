@@ -40,7 +40,7 @@ public class InstrComparisonExecutor
         InstrBase instrOperandLeft = instrComparison.OperandLeft;
         InstrBase instrOperandRight = instrComparison.OperandRight;
 
-        // a prev instr
+        //--a previous instr exists
         if (ctx.PrevInstrExecuted!=null)
         {
             // left instr executed before?
@@ -203,71 +203,6 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        // not the case
-        isCase = false;
-        return true;
-    }
-
-    // TODO: keep it?
-    private bool CompareColCellFuncWithBlankOrNull(Result result, IExcelProcessor excelProcessor, ProgExecContext ctx, InstrComparison instrComparison, InstrBase instrOperandLeft, InstrBase instrOperandRight, out bool isCase)
-    {
-        InstrColCellFunc instrColCellFuncLeft= instrOperandLeft as InstrColCellFunc;
-
-        //--A.Cell=blank or A.Cell<>blank
-        InstrBlank instrBlankRight = instrOperandRight as InstrBlank;
-        if (instrColCellFuncLeft != null && instrBlankRight != null)
-        {
-            isCase = true;
-            if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
-                return false;
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
-            return true;
-        }
-
-        //--A.Cell=null or A.Cell<>null
-        InstrNull instrNullRight = instrOperandRight as InstrNull;
-        if (instrColCellFuncLeft != null && instrBlankRight != null)
-        {
-            isCase = true;
-            if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
-                return false;
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
-            return true;
-        }
-
-        InstrColCellFunc instrColCellFuncRight = instrOperandRight as InstrColCellFunc;
-
-        //--blank=A.Cell or blank<>A.Cell
-        InstrBlank instrBlankLeft = instrOperandLeft as InstrBlank;
-        if (instrColCellFuncRight != null && instrBlankLeft != null)
-        {
-            isCase = true;
-            InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
-            if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, sepCompRevert, out bool resultComp))
-                return false;
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
-            return true;
-        }
-
-        //--null=A.Cell or null<>A.Cell
-        InstrNull instrNullLeft = instrOperandLeft as InstrNull;
-        if (instrColCellFuncRight != null && instrBlankLeft != null)
-        {
-            isCase = true;
-            InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
-            if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, sepCompRevert, out bool resultComp))
-                return false;
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
-            return true;
-        }
         // not the case
         isCase = false;
         return true;

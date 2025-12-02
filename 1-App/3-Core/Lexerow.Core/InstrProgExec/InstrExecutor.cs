@@ -28,7 +28,7 @@ public class InstrExecutor
 
     private InstrSetVarExecutor _instrSetVarExecutor;
 
-    private InstrSelectFilesExecutor _instrSelectFilesExecutor;
+    private InstrFuncSelectFilesExecutor _instrFuncSelectFilesExecutor;
 
     private InstrFuncDateExecutor _instrFuncDateExecutor;
 
@@ -45,7 +45,7 @@ public class InstrExecutor
         _instrSetVarExecutor = new InstrSetVarExecutor(_logger, _instrSetColCellFuncExecutor);
 
 
-        _instrSelectFilesExecutor = new InstrSelectFilesExecutor(_logger);
+        _instrFuncSelectFilesExecutor = new InstrFuncSelectFilesExecutor(_logger);
         _instrFuncDateExecutor = new InstrFuncDateExecutor(_logger);
     }
 
@@ -84,7 +84,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.OnExcel)
             {
-                res = _instrOnExcelExecutor.ExecInstrOnExcel(result, ctx, progExecVarMgr, instr as InstrOnExcel);
+                res = _instrOnExcelExecutor.ExecInstrOnExcel(result, ctx, program, instr as InstrOnExcel);
                 if (!res) return false;
                 continue;
             }
@@ -147,7 +147,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.FuncSelectFiles)
             {
-                res = _instrSelectFilesExecutor.Exec(result, ctx, program, instr as InstrFuncSelectFiles);
+                res = _instrFuncSelectFilesExecutor.Exec(result, ctx, program, instr as InstrFuncSelectFiles);
                 if (!res) return false;
                 continue;
             }

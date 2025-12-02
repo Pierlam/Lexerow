@@ -6,6 +6,10 @@ using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.InstrProgExec;
 
+/// <summary>
+/// Execute instr set value to a ColCellFunc.
+/// exp: A.Cell=10, A.Cell=null, A.Cell=a,...
+/// </summary>
 public class InstrSetColCellFuncExecutor
 {
     private IActivityLogger _logger;
@@ -20,7 +24,6 @@ public class InstrSetColCellFuncExecutor
 
     /// <summary>
     /// A.Cell= 12
-    /// TODO: see ExecInstrSetCellMgr
     /// </summary>
     /// <param name="result"></param>
     /// <param name="instrColCellFunc"></param>

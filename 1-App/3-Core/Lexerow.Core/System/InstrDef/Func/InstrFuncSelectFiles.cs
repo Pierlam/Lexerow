@@ -90,9 +90,9 @@ public class InstrFuncSelectFiles : InstrBase
         ListFilesSelectors.Add(InstrFuncSelectFilesSelector.Unselect);
     }
 
-    public void AddFinalFilename(InstrBase instrSource, string filename)
-    {
-        InstrFuncSelectedFilename instrSelectFilesFilename = new InstrFuncSelectedFilename(instrSource, filename);
-        ListSelectedFilename.Add(instrSelectFilesFilename);
-    }
+    //public void AddFinalFilename(InstrBase instrSource, string filename)
+    //{
+    //    InstrFuncSelectedFilename instrSelectFilesFilename = new InstrFuncSelectedFilename(instrSource, filename);
+    //    ListSelectedFilename.Add(instrSelectFilesFilename);
+    //}
 }

@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System;
+﻿using FakeItEasy;
+using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
 
@@ -101,6 +102,13 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
     }
 
+    /// <summary>
+    /// OnExcel ".\10-ExcelFiles\IfACellEqString.xlsx"
+	///   ForEachRow
+    ///     If A.Cell="Hello" Then A.Cell="Bonjour"
+	///   Next
+    ///   End OnExcel
+    /// </summary>
     [TestMethod]
     public void IfACellEqStringOk()
     {
@@ -333,7 +341,7 @@ public class LoadFileExecOnExcelTests : BaseTests
     }
 
     /// <summary>
-    /// If A.Cell <= Date(2023,11,14) Then A.Cell=Date(2025,3, 12)
+    /// If A.Cell <= 10 Then A.Cell=Date(2025, 11, 30)
     /// </summary>
     [TestMethod]
     public void OnExcelIfThenDateOk()
@@ -348,6 +356,41 @@ public class LoadFileExecOnExcelTests : BaseTests
 
         //--check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfThenDate.xlsx");
+        Assert.IsNotNull(fileStream);
+        var wb = TestExcelChecker.GetWorkbook(fileStream);
+
+        //==>check some cell value
+
+        // only one cell updated
+        bool res = TestExcelChecker.CheckCellValue(wb, "B2", new DateOnly(2025, 11, 30));
+        Assert.IsTrue(res);
+
+        res = TestExcelChecker.CheckCellValue(wb, "B3", "greater");
+        Assert.IsTrue(res);
+
+        res = TestExcelChecker.CheckCellValue(wb, "B4", "hour");
+        Assert.IsTrue(res);
+
+        res = TestExcelChecker.CheckCellValue(wb, "B5", "dateTime");
+        Assert.IsTrue(res);
+    }
+
+    /// <summary>
+    /// If A.Cell <= Date(2023,11,14) Then A.Cell=Date(2025,3, 12)
+    /// </summary>
+    [TestMethod]
+    public void OnExcelIfDateThenDateOk()
+    {
+        Result result;
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "OnExcelIfDateThenDateOk.lxrw";
+
+        // load the script, compile it and then execute it
+        result = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(result.Res);
+
+        //--check the content of excel file
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfDateThenDate.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 

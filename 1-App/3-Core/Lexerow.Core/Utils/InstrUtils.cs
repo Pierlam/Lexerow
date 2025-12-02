@@ -36,12 +36,12 @@ public class InstrUtils
         value = string.Empty;
 
         //--is it an instr value?
-        if (!GetValueStringFromInstrValue(result, isParser, instr, out isValueOrVar, out value))
+        if (!GetStringFromInstrValue(result, isParser, instr, out isValueOrVar, out value))
             return false;
         if (isValueOrVar) return true;
 
         //--is it an instr var?
-        if (!GetValueStringFromInstrVar(result, isParser, program, instr, out isValueOrVar, out value))
+        if (!GetStringFromInstrVar(result, isParser, program, instr, out isValueOrVar, out value))
             return false;
 
         return true;
@@ -63,18 +63,18 @@ public class InstrUtils
         value = 0;
 
         //--is it an instr value?
-        if (!GetValueIntFromInstrValue(result, isParser, instr, out isValueOrVar, out value))
+        if (!GetIntFromInstrValue(result, isParser, instr, out isValueOrVar, out value))
             return false;
         if (isValueOrVar) return true;
 
         //--is it an instr var?
-        if (!GetValueIntFromInstrVar(result, isParser, program, instr, out isValueOrVar, out value))
+        if (!GetIntFromInstrVar(result, isParser, program, instr, out isValueOrVar, out value))
             return false;
         
         return true;
     }
 
-    public static bool GetValueIntFromInstrVar(Result result, bool isParser, Program program, InstrBase instr, out bool isVar, out int value)
+    public static bool GetIntFromInstrVar(Result result, bool isParser, Program program, InstrBase instr, out bool isVar, out int value)
     {
         isVar=false;
         value = 0;
@@ -99,18 +99,18 @@ public class InstrUtils
             return true;
 
         //--is the instr right part a value?
-        if (!GetValueIntFromInstrValue(result, isParser, instrSetVar.InstrRight, out isVar, out value))
+        if (!GetIntFromInstrValue(result, isParser, instrSetVar.InstrRight, out isVar, out value))
             return false;
 
         return true;
     }
 
-    public static bool GetValueStringFromInstrVar(Result result, bool isParser, Program program, InstrBase instr, out bool isVar, out string value)
+    public static bool GetStringFromInstrVar(Result result, bool isParser, Program program, InstrBase instr, out bool isVar, out string value)
     {
         isVar = false;
         value = string.Empty;
 
-        //--is it an var?
+        //--is it a var?
         InstrNameObject instrObjectName = instr as InstrNameObject;
         if (instrObjectName == null) return true;
 
@@ -120,8 +120,7 @@ public class InstrUtils
         {
             ErrorCode error = ErrorCode.ParserVarNotDefined;
             if(!isParser) error= ErrorCode.ExecInstrVarNotFound;
-            result.AddError(error, instrObjectName.FirstScriptToken());
-            return false;
+            return result.AddError(error, instrObjectName.FirstScriptToken());
         }
         isVar = true;
 
@@ -130,7 +129,7 @@ public class InstrUtils
             return true;
 
         //--is the instr right part a value?
-        if (!GetValueStringFromInstrValue(result, isParser, instrSetVar.InstrRight, out isVar, out value))
+        if (!GetStringFromInstrValue(result, isParser, instrSetVar.InstrRight, out isVar, out value))
             return false;
 
         return true;
@@ -144,7 +143,7 @@ public class InstrUtils
     /// <param name="isValue"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool GetValueIntFromInstrValue(Result result, bool isParser, InstrBase instr, out bool isValue, out int value)
+    public static bool GetIntFromInstrValue(Result result, bool isParser, InstrBase instr, out bool isValue, out int value)
     {
         value = 0;
         isValue = false;
@@ -175,7 +174,7 @@ public class InstrUtils
     /// <param name="isValue"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool GetValueStringFromInstrValue(Result result, bool isParser, InstrBase instr, out bool isValue, out string value)
+    public static bool GetStringFromInstrValue(Result result, bool isParser, InstrBase instr, out bool isValue, out string value)
     {
         value = string.Empty;
         isValue = false;

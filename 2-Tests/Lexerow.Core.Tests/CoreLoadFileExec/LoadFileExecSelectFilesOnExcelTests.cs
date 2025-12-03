@@ -55,4 +55,10 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
         Assert.IsTrue(res);
     }
 
+    // TODO: add others tests!
+    ///   1/ OnExcel "dat.xslx"
+    ///   1/ OnExcel SelectFiles()
+    ///   2/ files=SelectFiles(), OnExcel files
+    ///   3/ files="dat.xslx", OnExcel files
+    ///   4/ files "dat*" + ".xlsx", OnExcel files  stringConcat case
 }

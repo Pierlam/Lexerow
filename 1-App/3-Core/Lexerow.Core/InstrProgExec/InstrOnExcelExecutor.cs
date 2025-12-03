@@ -53,9 +53,6 @@ internal class InstrOnExcelExecutor
 
         InstrBase prevInstrExecuted = ctx.PrevInstrExecuted;
 
-        // if it's a var, replace the prev by the right value
-        // TODO:
-
         //-- stage filenames are selected
         if (instrOnExcel.ExecStage == InstrOnExcelExecStage.FilesAreSelected)
         {
@@ -73,6 +70,8 @@ internal class InstrOnExcelExecutor
             ctx.ListSelectedFilename.AddRange(instrObjectFilenamesSelected.ListSelectedFilename);
             instrOnExcel.ExecStage = InstrOnExcelExecStage.ProcessFile;
         }
+
+        // can continue only if Stage is ProcessFile
 
         // save and close the current excel file
         if (ctx.ExcelFileObject != null)
@@ -159,51 +158,89 @@ internal class InstrOnExcelExecutor
         return true;
     }
 
-
+    /// <summary>
+    /// several cases:
+    ///   1/ OnExcel "dat.xslx"
+    ///   1/ OnExcel SelectFiles()
+    ///   2/ files=SelectFiles(), OnExcel files
+    ///   3/ files="dat.xslx", OnExcel files
+    ///   4/ files "dat*" + ".xlsx", OnExcel files  stringConcat case
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="ctx"></param>
+    /// <param name="program"></param>
+    /// <param name="instrOnExcel"></param>
+    /// <param name="exitStack"></param>
+    /// <returns></returns>
     private bool ExecInitInstrOnExcel(Result result, ProgExecContext ctx, Program program, InstrOnExcel instrOnExcel, out bool exitStack)
     {
         exitStack = false;
 
-        //--the filename to process is a value, exp: OnExcel "dat*.xlsx"
-        if(!GetStringFromInstrValue(result, ctx, program, instrOnExcel.InstrFiles, out bool isValue))
-            return false;
+        InstrBase instrFiles = instrOnExcel.InstrFiles;
 
-        // XXX rework code below
-
-        //XXXXXXXXXXX
-        if (!InstrUtils.GetStringFromInstrValue(result, false, instrOnExcel.InstrFiles, out bool isValue, out string value))
-            return false;
-
-        if (isValue)
-        {
-            // create an adhoc selectFiles to execute right now
-            InstrFuncSelectFiles instrFuncSelectFiles = new InstrFuncSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());
-            instrFuncSelectFiles.AddParamSelect(instrOnExcel.InstrFiles);
-
-            ctx.StackInstr.Push(instrFuncSelectFiles);
-            exitStack = true;
-            instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesAreSelected;
-            return true;
-        }
-
-        //--the filename instr to process is a var?
+        //--case-2,3,4: is it OnExcel files, a var?
         InstrNameObject instrNameObject = instrOnExcel.InstrFiles as InstrNameObject;
-        if (instrNameObject != null) 
+        if (instrNameObject != null)
         {
-            InstrSetVar instrSetVar= program.FindLastVarSet(instrNameObject.Name);
-            if(instrSetVar==null)
+            InstrSetVar instrSetVar = program.FindLastVarSet(instrNameObject.Name);
+            if (instrSetVar == null)
             {
                 result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.InstrFiles.FirstScriptToken());
                 return false;
             }
-            // get the setVar right instr
-            //instrSetVar.InstrRight;
+
+            // it's a var, so get the value of th evar
+            instrFiles = instrSetVar.InstrRight;
+        }
+
+        //--case-1: The filename to process is a value, exp: OnExcel "dat*.xlsx"
+        if (!ManageFilenameIsValue(result, ctx, program, instrOnExcel, instrFiles, out exitStack))
+            return false;
+        if (exitStack) return true;
+
+        //--The files param is the SelectFiles instr?
+        InstrFuncSelectFiles instrFuncSelectFiles= instrFiles as InstrFuncSelectFiles;
+        if (instrFuncSelectFiles != null) 
+        {
+            ctx.StackInstr.Push(instrFuncSelectFiles);
+            instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesAreSelected;
+            exitStack = true;
+            return true;
         }
 
         //--the filename instr to process is a string concat?
         // TODO:
 
         return result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.InstrFiles.FirstScriptToken());
+    }
+
+    /// <summary>
+    ///  The filename to process is a value, exp: OnExcel "dat*.xlsx"
+    ///  Create an adhoc instr to process the raw filename.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="ctx"></param>
+    /// <param name="program"></param>
+    /// <param name="instrOnExcel"></param>
+    /// <param name="isValue"></param>
+    /// <returns></returns>
+    private bool ManageFilenameIsValue(Result result, ProgExecContext ctx, Program program, InstrOnExcel instrOnExcel, InstrBase instrBase, out bool isValue)
+    {
+        isValue = false;
+
+        // the value is a string? a raw filename
+        if (!InstrUtils.GetStringFromInstrValue(result, false, instrBase, out isValue, out string value))
+            return false;
+
+        if (!isValue)return true;
+        
+        // create an adhoc selectFiles to execute right now
+        InstrFuncSelectFiles instrFuncSelectFiles = new InstrFuncSelectFiles(instrBase.FirstScriptToken());
+        instrFuncSelectFiles.AddParamSelect(instrBase);
+
+        ctx.StackInstr.Push(instrFuncSelectFiles);
+        instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesAreSelected;
+        return true;
     }
 
     private bool CheckInitOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)

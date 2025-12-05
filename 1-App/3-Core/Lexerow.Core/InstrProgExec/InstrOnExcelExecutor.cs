@@ -2,7 +2,7 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
@@ -36,42 +36,53 @@ internal class InstrOnExcelExecutor
     /// <param name="listVar"></param>
     /// <param name="instrOnExcel"></param>
     /// <returns></returns>
-    public bool ExecInstrOnExcel(Result result, ProgExecContext ctx, Program program, InstrOnExcel instrOnExcel)
+    public bool ExecInstrOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrOnExcel instrOnExcel)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
+
+        InstrObjectSelectedFiles instrObjectSelectedFiles = null;
 
         //--starting, init stage
         if (instrOnExcel.ExecStage == InstrOnExcelExecStage.Init)
         {
-            if (!ExecInitInstrOnExcel(result, ctx, program, instrOnExcel, out bool exitStack))
+            if (!ExecInitInstrOnExcel(result, ctx, progExecVarMgr, instrOnExcel, out bool exitStack, out instrObjectSelectedFiles))
                 return false;
 
             // have to execute the instr pushed on the stack
             if (exitStack) return true;
-            instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesAreSelected;
         }
 
-        InstrBase prevInstrExecuted = ctx.PrevInstrExecuted;
-
-        //-- stage filenames are selected
-        if (instrOnExcel.ExecStage == InstrOnExcelExecStage.FilesAreSelected)
+        //--files have to be selected
+        if (instrOnExcel.ExecStage == InstrOnExcelExecStage.FilesToSelect)
         {
+            InstrBase prevInstrExecuted = ctx.PrevInstrExecuted;
+
             // check the previous instr executed
-            if(prevInstrExecuted==null)
+            if (prevInstrExecuted==null)
                 return result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.InstrFiles.FirstScriptToken());
 
             // the prev instr executed type should be FilesSelected
-            InstrObjectFilenamesSelected instrObjectFilenamesSelected= prevInstrExecuted as InstrObjectFilenamesSelected;
+            instrObjectSelectedFiles= prevInstrExecuted as InstrObjectSelectedFiles;
 
-            if(instrObjectFilenamesSelected==null)
+            if(instrObjectSelectedFiles==null)
                 return result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.InstrFiles.FirstScriptToken());
 
             // get the list of filename to process
-            ctx.ListSelectedFilename.AddRange(instrObjectFilenamesSelected.ListSelectedFilename);
+            ctx.ListObjectSelectedFiles.AddRange(instrObjectSelectedFiles.ListObjectSelectedFile);
+            instrOnExcel.ExecStage = InstrOnExcelExecStage.ProcessFile;
+        }
+
+        //--files are selected
+        if (instrOnExcel.ExecStage == InstrOnExcelExecStage.FilesAreSelected)
+        {
+            // todo: recup data dans ExecInitInstrOnExcel()
+            ctx.ListObjectSelectedFiles.AddRange(instrObjectSelectedFiles.ListObjectSelectedFile);
             instrOnExcel.ExecStage = InstrOnExcelExecStage.ProcessFile;
         }
 
         // can continue only if Stage is ProcessFile
+        if(instrOnExcel.ExecStage != InstrOnExcelExecStage.ProcessFile)
+            return result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.InstrFiles.FirstScriptToken());
 
         // save and close the current excel file
         if (ctx.ExcelFileObject != null)
@@ -84,14 +95,14 @@ internal class InstrOnExcelExecutor
         instrOnExcel.FileToProcessNum++;
 
         //no more file to process
-        if (instrOnExcel.FileToProcessNum >= ctx.ListSelectedFilename.Count)
+        if (instrOnExcel.FileToProcessNum >= ctx.ListObjectSelectedFiles.Count)
         {
             // remove the instr OnExcel from the stack
             ctx.StackInstr.Pop();
             return true;
         }
         // run the instr OnExcel on the selected excel file
-        var selectedFilename = ctx.ListSelectedFilename[instrOnExcel.FileToProcessNum];
+        var selectedFilename = ctx.ListObjectSelectedFiles[instrOnExcel.FileToProcessNum];
         ctx.ExcelFileObject = new InstrObjectExcelFile(selectedFilename.InstrBase.FirstScriptToken(), selectedFilename.Filename);
 
         // update insights
@@ -108,63 +119,13 @@ internal class InstrOnExcelExecutor
         return true;
     }
 
-    public bool ExecInstrOnExcel_OLD(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel)
-    {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
-        bool res;
-
-        //// check the init, several cases to manage
-        //if (!CheckInitOnExcel(result, ctx, progRunVarMgr, instrOnExcel, out bool exitStack))
-        //    return false;
-
-        //if (exitStack) return true;
-
-        // save and close the current excel file
-        if (ctx.ExcelFileObject != null)
-        {
-            if (!CloseFileExecutor.Exec(result, _excelProcessor, ctx.ExcelFileObject.ExcelFile))
-                return false;
-        }
-
-        // next file to process now
-        instrOnExcel.FileToProcessNum++;
-
-        // PB: OnExcel ObjectFilenames, ctx.ListSelectedFilename est vide!! jamais setté
-        // revoir ctx.FileToProcessNum  et ctx.ListSelectedFilename   
-        // instrOnExcel.InstrObjectFilenamesSelected  contient la liste des noms de fichiers
-        //ici();
-
-        //no more file to process
-        if (instrOnExcel.FileToProcessNum >= ctx.ListSelectedFilename.Count)
-        {
-            // remove the instr OnExcel from the stack
-            ctx.StackInstr.Pop();
-            return true;
-        }
-        // run the instr OnExcel on the selected excel file
-        var selectedFilename = ctx.ListSelectedFilename[instrOnExcel.FileToProcessNum];
-        ctx.ExcelFileObject = new InstrObjectExcelFile(selectedFilename.InstrBase.FirstScriptToken(), selectedFilename.Filename);
-
-        // update insights
-        result.Insights.StartNewFile(selectedFilename.Filename);
-
-        // load the excel file
-        if (!OpenExcelFile(result, ctx.ExcelFileObject))
-            return false;
-
-        // process all sheets, one by one
-        InstrProcessSheets instrProcessSheets = new InstrProcessSheets(instrOnExcel.FirstScriptToken(), instrOnExcel.ListSheets);
-        ctx.StackInstr.Push(instrProcessSheets);
-        return true;
-    }
-
     /// <summary>
     /// several cases:
     ///   1/ OnExcel "dat.xslx"
-    ///   1/ OnExcel SelectFiles()
-    ///   2/ files=SelectFiles(), OnExcel files
-    ///   3/ files="dat.xslx", OnExcel files
-    ///   4/ files "dat*" + ".xlsx", OnExcel files  stringConcat case
+    ///   2/ OnExcel SelectFiles()
+    ///   3/ files=SelectFiles(), OnExcel files
+    ///   4/ files="dat.xslx", OnExcel files
+    ///   5/ files "dat*" + ".xlsx", OnExcel files  stringConcat case
     /// </summary>
     /// <param name="result"></param>
     /// <param name="ctx"></param>
@@ -172,9 +133,10 @@ internal class InstrOnExcelExecutor
     /// <param name="instrOnExcel"></param>
     /// <param name="exitStack"></param>
     /// <returns></returns>
-    private bool ExecInitInstrOnExcel(Result result, ProgExecContext ctx, Program program, InstrOnExcel instrOnExcel, out bool exitStack)
+    private bool ExecInitInstrOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrOnExcel instrOnExcel, out bool exitStack, out InstrObjectSelectedFiles instrObjectSelectedFiles)
     {
         exitStack = false;
+        instrObjectSelectedFiles = null;
 
         InstrBase instrFiles = instrOnExcel.InstrFiles;
 
@@ -182,28 +144,33 @@ internal class InstrOnExcelExecutor
         InstrNameObject instrNameObject = instrOnExcel.InstrFiles as InstrNameObject;
         if (instrNameObject != null)
         {
-            InstrSetVar instrSetVar = program.FindLastVarSet(instrNameObject.Name);
-            if (instrSetVar == null)
-            {
-                result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.InstrFiles.FirstScriptToken());
-                return false;
-            }
+            ProgExecVar progExecVar= progExecVarMgr.FindVarByName(instrNameObject.Name);
+            if (progExecVar == null)
+                return result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.InstrFiles.FirstScriptToken());
 
             // it's a var, so get the value of th evar
-            instrFiles = instrSetVar.InstrRight;
+            instrFiles = progExecVar.Value;
+        }
+
+        //--selected files are defined ?
+        instrObjectSelectedFiles= instrFiles as InstrObjectSelectedFiles;
+        if (instrObjectSelectedFiles != null)
+        {
+            instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesAreSelected;
+            return true;
         }
 
         //--case-1: The filename to process is a value, exp: OnExcel "dat*.xlsx"
-        if (!ManageFilenameIsValue(result, ctx, program, instrOnExcel, instrFiles, out exitStack))
+        if (!ManageFilenameIsValue(result, ctx, instrOnExcel, instrFiles, out exitStack))
             return false;
         if (exitStack) return true;
 
         //--The files param is the SelectFiles instr?
-        InstrFuncSelectFiles instrFuncSelectFiles= instrFiles as InstrFuncSelectFiles;
+        InstrFuncCallSelectFiles instrFuncSelectFiles= instrFiles as InstrFuncCallSelectFiles;
         if (instrFuncSelectFiles != null) 
         {
             ctx.StackInstr.Push(instrFuncSelectFiles);
-            instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesAreSelected;
+            instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesToSelect;
             exitStack = true;
             return true;
         }
@@ -224,7 +191,7 @@ internal class InstrOnExcelExecutor
     /// <param name="instrOnExcel"></param>
     /// <param name="isValue"></param>
     /// <returns></returns>
-    private bool ManageFilenameIsValue(Result result, ProgExecContext ctx, Program program, InstrOnExcel instrOnExcel, InstrBase instrBase, out bool isValue)
+    private bool ManageFilenameIsValue(Result result, ProgExecContext ctx, InstrOnExcel instrOnExcel, InstrBase instrBase, out bool isValue)
     {
         isValue = false;
 
@@ -235,47 +202,11 @@ internal class InstrOnExcelExecutor
         if (!isValue)return true;
         
         // create an adhoc selectFiles to execute right now
-        InstrFuncSelectFiles instrFuncSelectFiles = new InstrFuncSelectFiles(instrBase.FirstScriptToken());
+        InstrFuncCallSelectFiles instrFuncSelectFiles = new InstrFuncCallSelectFiles(instrBase.FirstScriptToken());
         instrFuncSelectFiles.AddParamSelect(instrBase);
 
         ctx.StackInstr.Push(instrFuncSelectFiles);
-        instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesAreSelected;
-        return true;
-    }
-
-    private bool CheckInitOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
-    {
-        exitStack = false;
-
-        //if (ctx.FileToProcessNum > -1)
-        //    // not the init stage, continue
-        //    return true;
-
-        //--init-0, case OnExcel "data.xslx"
-        if (!IsOnExcelInitFilenameString(result, ctx, instrOnExcel, out exitStack))
-            return false;
-        if (exitStack) return true;
-
-        //--init-0, case OnExcel files, files can be a string, varname or a selectFiles fctcall
-        if (!IsOnExcelInitFilenameVar(result, ctx, progRunVarMgr, instrOnExcel, out exitStack))
-            return false;
-        if (exitStack) return true;
-
-        //--init-0, case OnExcel "data.xslx", +"file.xlsx", ..
-        // instrOnExcel.RunInstrSelectFiles -> stack.Push() -> ctx.PrevInstr=InstrSelectFiles
-
-        //--init-0, all cases checked
-        if (instrOnExcel.InstrObjectFilenamesSelected == null)
-        {
-            result.AddError(ErrorCode.ExecInstrNotManaged, instrOnExcel.FirstScriptToken());
-            return false;
-        }
-
-        // clear the prev instr executed
-        ctx.PrevInstrExecuted = null;
-
-        //--set list of excel files to process
-        //ctx.ListSelectedFilename.AddRange(instrOnExcel.InstrSelectFiles.ListSelectedFilename);
+        instrOnExcel.ExecStage = InstrOnExcelExecStage.FilesToSelect;
         return true;
     }
 
@@ -304,81 +235,11 @@ internal class InstrOnExcelExecutor
         }
 
         // create an adhoc SelectFiles instr
-        //instrOnExcel.InstrSelectFiles = new InstrFuncSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());
-        //instrOnExcel.InstrSelectFiles.AddParamSelect(instrOnExcel.InstrFiles);
-
-        InstrFuncSelectFiles instrFuncSelectFiles = new InstrFuncSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());
+        InstrFuncCallSelectFiles instrFuncSelectFiles = new InstrFuncCallSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());
         instrFuncSelectFiles.AddParamSelect(instrOnExcel.InstrFiles);
 
-        //ctx.StackInstr.Push(instrOnExcel.InstrSelectFiles);
         ctx.StackInstr.Push(instrFuncSelectFiles);
         exitStack = true;
-        return true;
-    }
-
-    /// <summary>
-    /// Init, OnExcel files
-    /// files varname can be:
-    /// 1/ a string, exp: "data.xlsx"
-    /// 2/ a selectFiles fct call. exp: files=SelectFiles(...)
-    /// 3/ a another var, exp: files= myfiles
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="ctx"></param>
-    /// <param name="progRunVarMgr"></param>
-    /// <param name="instrOnExcel"></param>
-    /// <param name="exitStack"></param>
-    /// <returns></returns>
-    private bool IsOnExcelInitFilenameVar(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrOnExcel instrOnExcel, out bool exitStack)
-    {
-        exitStack = false;
-        if (ctx.PrevInstrExecuted != null) return true;
-        if (instrOnExcel.InstrFiles == null) return true;
-
-        var instrNameObject = instrOnExcel.InstrFiles as InstrNameObject;
-        if (instrNameObject == null) return true;
-
-        // get the final value of the var
-        ProgExecVar progRunVar = progRunVarMgr.FindLastInnerVarByName(instrNameObject.Name);
-        if (progRunVar == null)
-        {
-            // var name not found, not defined before in the script
-            result.AddError(ErrorCode.ExecInstrVarNotFound, instrOnExcel.InstrFiles.FirstScriptToken());
-            return false;
-        }
-
-        //--1/ var value is a ConstValue string?
-        InstrValue instrValue = progRunVar.Value as InstrValue;
-        if (instrValue != null)
-        {
-            if (instrValue.ValueBase.ValueType != System.ValueType.String)
-            {
-                // value should be string, a filename
-                result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
-                return false;
-            }
-
-            // create an adhoc SelectFiles instr
-            //instrOnExcel.InstrSelectFiles = new InstrFuncSelectFiles(instrValue.FirstScriptToken());
-            //instrOnExcel.InstrSelectFiles.AddParamSelect(instrValue);
-            InstrFuncSelectFiles instrFuncSelectFiles = new InstrFuncSelectFiles(instrValue.FirstScriptToken());
-            instrFuncSelectFiles.AddParamSelect(instrValue);
-
-            //ctx.StackInstr.Push(instrOnExcel.InstrSelectFiles);
-            ctx.StackInstr.Push(instrFuncSelectFiles);
-            exitStack = true;
-            return true;
-        }
-
-        //--2/ var value is a SelectFiles fct call ?
-        InstrObjectFilenamesSelected instrObjectFilenamesSelected= progRunVar.Value as InstrObjectFilenamesSelected;
-        if (instrObjectFilenamesSelected != null)
-        {
-            // Should be already executed before
-            //instrOnExcel.InstrSelectFiles = instrObjectFilenamesSelected;
-            instrOnExcel.InstrObjectFilenamesSelected = instrObjectFilenamesSelected;
-        }
-
         return true;
     }
 

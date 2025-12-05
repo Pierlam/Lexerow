@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.Utils;
 using NPOI.Util;
@@ -359,7 +359,7 @@ internal class ParserStackContentProcessor
         // TODO:
 
         //--check the instr value, should be an int
-        if(!InstrUtils.GetIntFromInstr(result, true, program, instr, out bool valueSet, out int value))
+        if(!InstrUtils.GetIntFromInstrParser(result, program, instr, out bool valueSet, out int value))
             return false;
         if(valueSet)
         {
@@ -637,7 +637,7 @@ internal class ParserStackContentProcessor
         // TODO:
 
         //--is it the fct SelectFiles ?
-        InstrFuncSelectFiles instrOpenExcel = instrBase as InstrFuncSelectFiles;
+        InstrFuncCallSelectFiles instrOpenExcel = instrBase as InstrFuncCallSelectFiles;
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!

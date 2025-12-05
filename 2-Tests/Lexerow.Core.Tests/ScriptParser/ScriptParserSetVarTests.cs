@@ -3,7 +3,7 @@ using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Utils;
@@ -195,7 +195,7 @@ public class ScriptParserSetVarTests
         Assert.AreEqual("a", instrObjectName.Name);
 
         // InstrRight: built-in fct Date
-        InstrFuncDate instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
+        InstrFuncCallDate instrFuncDate = instrSetVar.InstrRight as InstrFuncCallDate;
         Assert.IsNotNull(instrFuncDate);
 
         Assert.AreEqual(2025, TestInstrHelper.GetValueInt(instrFuncDate.InstrYear));
@@ -249,7 +249,7 @@ public class ScriptParserSetVarTests
         Assert.AreEqual("a", instrObjectName.Name);
 
         // InstrRight: built-in fct Date
-        InstrFuncDate instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
+        InstrFuncCallDate instrFuncDate = instrSetVar.InstrRight as InstrFuncCallDate;
         Assert.IsNotNull(instrFuncDate);
 
         // the year is a var

@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
 
@@ -36,15 +36,17 @@ public class InstrFuncSelectFilesExecutor
     /// <param name="listVar"></param>
     /// <param name="instrSelectFiles"></param>
     /// <returns></returns>
-    public bool Exec(Result result, ProgExecContext ctx, Program program, InstrFuncSelectFiles instrSelectFiles)
+    public bool Exec(Result result, ProgExecContext ctx, Program program, InstrFuncCallSelectFiles instrSelectFiles)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrFuncSelectFilesExecutor.Exec", string.Empty);
+
+        List<InstrBase> listTmp = new List<InstrBase>();
 
         // a param (fct call or string concatenation) was processed before
         if (instrSelectFiles.CurrParamNum > -1 && ctx.PrevInstrExecuted != null)
         {
             // save the decoded param
-            instrSelectFiles.RunTmpListFinalInstrParams.Add(ctx.PrevInstrExecuted);
+            listTmp.Add(ctx.PrevInstrExecuted);
             ctx.PrevInstrExecuted = null;
         }
 
@@ -65,7 +67,7 @@ public class InstrFuncSelectFilesExecutor
             // is it a const value (string) or varname?
             if (param.InstrType == InstrType.Value || param.InstrType == InstrType.NameObject)
             {
-                instrSelectFiles.RunTmpListFinalInstrParams.Add(param);
+                listTmp.Add(param);
                 continue;
             }
 
@@ -74,10 +76,10 @@ public class InstrFuncSelectFilesExecutor
             return true;
         }
 
-        InstrObjectFilenamesSelected instrObjectFilenamesSelected = new InstrObjectFilenamesSelected(instrSelectFiles.FirstScriptToken());
+        InstrObjectSelectedFiles instrObjectFilenamesSelected = new InstrObjectSelectedFiles(instrSelectFiles.FirstScriptToken());
 
         //--list of params have been all decoded, contains only constValue or varname
-        for (int i = 0; i < instrSelectFiles.RunTmpListFinalInstrParams.Count; i++)
+        for (int i = 0; i < listTmp.Count; i++)
         {
             // get the current param and selector
             InstrBase param = instrSelectFiles.ListInstrParams[i];
@@ -110,12 +112,12 @@ public class InstrFuncSelectFilesExecutor
     /// <param name="param"></param>
     /// <param name="selector"></param>
     /// <returns></returns>
-    private bool DecodeParam(Result result, Program program, InstrFuncSelectFiles instrSelectFiles, InstrBase param, InstrFuncSelectFilesSelector selector, out List<string> listFilename)
+    private bool DecodeParam(Result result, Program program, InstrFuncCallSelectFiles instrSelectFiles, InstrBase param, InstrFuncSelectFilesSelector selector, out List<string> listFilename)
     {
         listFilename = new List<string>();
 
         // get the filename
-        if (!InstrUtils.GetStringFromInstr(result, false, program, param, out bool isValueOrVar, out string value))
+        if (!InstrUtils.GetStringFromInstrParser(result, program, param, out bool isValueOrVar, out string value))
             return false;
 
         // not a value or var, can be: a fct call, a math expr or bool expr
@@ -131,10 +133,6 @@ public class InstrFuncSelectFilesExecutor
             // just a warning but continue
             return true;
         }
-
-        //// save list of files
-        //foreach (string filename in listFilename)
-        //    instrSelectFiles.AddFinalFilename(param, filename);
 
         return true;
     }

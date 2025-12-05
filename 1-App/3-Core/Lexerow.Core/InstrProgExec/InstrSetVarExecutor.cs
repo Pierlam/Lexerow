@@ -273,6 +273,7 @@ public class InstrSetVarExecutor
     {
         // get or create the var, set the value
         CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrRight);
+        ctx.PrevInstrExecuted = null;
         ctx.StackInstr.Pop();
         return true;
 
@@ -294,18 +295,23 @@ public class InstrSetVarExecutor
 
     private bool CreateVar(ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrBase instrName, InstrBase instrtValue)
     {
-        // the var already defined ?
-        ProgExecVar execVar = progExecVarMgr.ListExecVar.FirstOrDefault(v => v.AreSame(instrName));
 
-        if (execVar == null)
-        {
-            // create the var
-            execVar = new ProgExecVar(instrName, instrtValue);
-            progExecVarMgr.Add(execVar);
-        }
-        else
-            execVar.Value = instrtValue;
+        if(progExecVarMgr.CreateOrUpdateVar(instrName, instrtValue)==null)
+            return false;
 
         return true;
+        //// the var already defined ?
+        //ProgExecVar execVar = progExecVarMgr.ListExecVar.FirstOrDefault(v => v.AreEqual(instrName));
+
+        //if (execVar == null)
+        //{
+        //    // create the var
+        //    execVar = new ProgExecVar(instrName, instrtValue);
+        //    progExecVarMgr.Add(execVar);
+        //}
+        //else
+        //    execVar.Value = instrtValue;
+
+        //return true;
     }
 }

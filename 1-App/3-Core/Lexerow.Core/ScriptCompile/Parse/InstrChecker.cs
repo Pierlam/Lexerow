@@ -1,6 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -18,7 +18,7 @@ internal class InstrChecker
         if (!instrBase.IsFunctionCall) return true;
 
         //--is it SelectFiles?
-        InstrFuncSelectFiles instrFuncSelectFiles = instrBase as InstrFuncSelectFiles;
+        InstrFuncCallSelectFiles instrFuncSelectFiles = instrBase as InstrFuncCallSelectFiles;
         if (instrFuncSelectFiles != null)
         {
             // need at least one parameter
@@ -31,7 +31,7 @@ internal class InstrChecker
         }
 
         //--is it Date?
-        InstrFuncDate instrFuncDate = instrBase as InstrFuncDate;
+        InstrFuncCallDate instrFuncDate = instrBase as InstrFuncCallDate;
         if(instrFuncDate!=null)
         {
             if(instrFuncDate.InstrYear==null || instrFuncDate.InstrMonth==null || instrFuncDate.InstrDay==null)

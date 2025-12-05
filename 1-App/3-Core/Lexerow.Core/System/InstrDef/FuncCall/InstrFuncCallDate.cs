@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lexerow.Core.System.InstrDef.Func;
-public class InstrFuncDate : InstrBase
+namespace Lexerow.Core.System.InstrDef.FuncCall;
+public class InstrFuncCallDate : InstrBase
 {
-    public InstrFuncDate(ScriptToken scriptToken) : base(scriptToken)
+    public InstrFuncCallDate(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.FuncDate;
         IsFunctionCall = true;

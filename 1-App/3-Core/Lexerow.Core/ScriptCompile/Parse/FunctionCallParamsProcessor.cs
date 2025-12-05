@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
@@ -36,17 +36,17 @@ internal class FunctionCallParamsProcessor
         logger.LogCompilStart(ActivityLogLevel.Important, "FunctionCallParamsProcessor.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
 
         if (instrBase.InstrType == InstrType.FuncSelectFiles)
-            return ProcessFuncSelectFiles(logger, result, listVar, instrBase as InstrFuncSelectFiles, program, listParams);
+            return ProcessFuncSelectFiles(logger, result, listVar, instrBase as InstrFuncCallSelectFiles, program, listParams);
 
         if (instrBase.InstrType == InstrType.FuncDate)
-            return ProcessFuncDate(logger, result, listVar, instrBase as InstrFuncDate, program, listParams);
+            return ProcessFuncDate(logger, result, listVar, instrBase as InstrFuncCallDate, program, listParams);
 
         // function call name not expected
         result.AddError(ErrorCode.ParserFctNameNotExpected, scriptToken);
         return false;
     }
 
-    private static bool ProcessFuncSelectFiles(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncSelectFiles instr, Program program, List<InstrBase> listParams)
+    private static bool ProcessFuncSelectFiles(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallSelectFiles instr, Program program, List<InstrBase> listParams)
     {
         logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count IN: " + listParams.Count);
 
@@ -59,14 +59,14 @@ internal class FunctionCallParamsProcessor
 
         //--exp: SelectFiles("MyFile.xlsx") or SelectFiles(filename) or SelectFiles(fct())
 
-        if (!InstrUtils.GetStringFromInstr(result, true, program, listParams[0], out _, out _))
+        if (!InstrUtils.GetStringFromInstrParser(result, program, listParams[0], out _, out _))
             return false;
 
         instr.AddParamSelect(listParams[0]);
         return true;
     }
 
-    private static bool ProcessFuncDate(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncDate instr, Program program, List<InstrBase> listParams)
+    private static bool ProcessFuncDate(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallDate instr, Program program, List<InstrBase> listParams)
     {
         logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count In: " + listParams.Count);
 
@@ -78,17 +78,17 @@ internal class FunctionCallParamsProcessor
         }
         
         // process 1st param: year
-        if (!InstrUtils.GetIntFromInstr(result, false, program, listParams[0], out bool yearSet, out int year))
+        if (!InstrUtils.GetIntFromInstrParser(result, program, listParams[0], out bool yearSet, out int year))
             return false;
         instr.InstrYear = listParams[0];
 
         // process 2nd param: month
-        if (!InstrUtils.GetIntFromInstr(result, true, program, listParams[1], out bool monthSet, out int month))
+        if (!InstrUtils.GetIntFromInstrParser(result, program, listParams[1], out bool monthSet, out int month))
             return false;
         instr.InstrMonth = listParams[1];
 
         // process 3rd param: day
-        if (!InstrUtils.GetIntFromInstr(result, true, program, listParams[2], out bool daySet, out int day))
+        if (!InstrUtils.GetIntFromInstrParser(result, program, listParams[2], out bool daySet, out int day))
             return false;
         instr.InstrDay = listParams[2];
 

@@ -69,7 +69,7 @@ internal class InstrOnSheetExecutor
     /// <param name="listVar"></param>
     /// <param name="instrOnSheet"></param>
     /// <returns></returns>
-    public bool ExecInstrOnSheet(Result result, ProgExecContext ctx, Program program, InstrOnSheet instrOnSheet)
+    public bool ExecInstrOnSheet(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrOnSheet instrOnSheet)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", string.Empty);
         bool res;
@@ -84,7 +84,7 @@ internal class InstrOnSheetExecutor
             InstrProcessRow instrProcessRow = new InstrProcessRow(instrOnSheet.FirstScriptToken(), instrOnSheet.ListInstrForEachRow);
 
             // get the FirstRow value, can be an instrValue, a var or a fct call.
-            if(!GetFirstRowValue(result, ctx, program, instrOnSheet.InstrFirstDataRow, out int val))
+            if(!GetFirstRowValue(result, ctx, progExecVarMgr, instrOnSheet.InstrFirstDataRow, out int val))
                 return false;
 
             // translate in base0 from human readable base1
@@ -110,12 +110,12 @@ internal class InstrOnSheetExecutor
     /// <param name="instrOnSheet"></param>
     /// <param name="val"></param>
     /// <returns></returns>
-    private bool GetFirstRowValue(Result result, ProgExecContext ctx, Program program, InstrBase instrFirstDataRow, out int value)
+    private bool GetFirstRowValue(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrBase instrFirstDataRow, out int value)
     {
         value = 1;
 
         //--check the instr value, should be an int
-        if (!InstrUtils.GetIntFromInstr(result, true, program, instrFirstDataRow, out bool valueSet, out value))
+        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFirstDataRow, out bool valueSet, out value))
             return false;
 
         if (valueSet)

@@ -32,6 +32,9 @@ public class Program
     /// a=b
     /// 
     /// Not managed here, varname: A.Cell=12
+    /// 
+    /// !! To use only by the parser, not during execution!
+    /// (in exec stage, use ProgExecVarMgr)
     /// </summary>
     /// <param name="varname"></param>
     /// <returns></returns>

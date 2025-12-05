@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.System.GenDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
@@ -35,6 +35,7 @@ public enum InstrOnExcelBuildStage
 public enum InstrOnExcelExecStage
 {
     Init,
+    FilesToSelect,
     FilesAreSelected,
     ProcessFile,
 }
@@ -83,7 +84,7 @@ public class InstrOnExcel : InstrBase
     /// </summary>
     //public InstrFuncSelectFiles InstrSelectFiles { get; set; } = null;
     // TODO: to REMOVE!
-    public InstrObjectFilenamesSelected InstrObjectFilenamesSelected { get; set; } = null;
+    //public InstrObjectSelectedFiles InstrObjectSelectedFiles { get; set; } = null;
 
     public List<InstrOnSheet> ListSheets { get; private set; } = new List<InstrOnSheet>();
 

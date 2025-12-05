@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System.InstrDef;
+using System.Security.AccessControl;
 
 namespace Lexerow.Core.System;
 
@@ -27,6 +28,11 @@ public class ProgExecVar
     /// </summary>
     public InstrBase Value { get; set; }
 
+    /// <summary>
+    /// Check only if the var name is basic.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public bool NameEquals(string name)
     {
         InstrNameObject instrObjectName = ObjectName as InstrNameObject;
@@ -46,19 +52,29 @@ public class ProgExecVar
         return string.Empty;
     }
 
-    public bool AreSame(InstrBase instr)
+    /// <summary>
+    /// Return true is var are equals/same.
+    /// The var can be 
+    /// a basic name, exp: A=12
+    /// A.Cell=12
+    /// 
+    /// </summary>
+    /// <param name="instr"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public bool AreEqual(InstrBase instr)
     {
         if (ObjectName.InstrType != instr.InstrType) return false;
 
         //--possible??
-        if (ObjectName.InstrType == InstrType.Value)
-        {
-            string name = (ObjectName as InstrValue).RawValue;
-            string name2 = (instr as InstrValue).RawValue;
-            if (name.Equals(name2)) return true;
+        //if (ObjectName.InstrType == InstrType.Value)
+        //{
+        //    string name = (ObjectName as InstrValue).RawValue;
+        //    string name2 = (instr as InstrValue).RawValue;
+        //    if (name.Equals(name2)) return true;
 
-            return false;
-        }
+        //    return false;
+        //}
 
         //--manage var name, exp: file
         if (ObjectName.InstrType == InstrType.NameObject)
@@ -73,12 +89,17 @@ public class ProgExecVar
         //--Manage A.Cell format
         if (ObjectName.InstrType == InstrType.ColCellFunc)
         {
+            InstrColCellFunc instrColCellFuncThis = ObjectName as InstrColCellFunc;
+            InstrColCellFunc instrColCellFunc = instr as InstrColCellFunc;
+
             // compare col name first
-            // TODO:
+            if (instrColCellFuncThis.ColNum != instrColCellFunc.ColNum)
+                return false;
 
             // then compare function
-            // TODO:
-            throw new Exception("Not yet implemented");
+            if (instrColCellFuncThis.InstrColCellFuncType != instrColCellFunc.InstrColCellFuncType)
+                return false;
+            return true;
         }
 
         return false;

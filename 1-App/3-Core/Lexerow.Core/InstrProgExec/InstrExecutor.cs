@@ -2,7 +2,7 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Process;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -84,7 +84,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.OnExcel)
             {
-                res = _instrOnExcelExecutor.ExecInstrOnExcel(result, ctx, program, instr as InstrOnExcel);
+                res = _instrOnExcelExecutor.ExecInstrOnExcel(result, ctx, progExecVarMgr, instr as InstrOnExcel);
                 if (!res) return false;
                 continue;
             }
@@ -98,7 +98,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.OnSheet)
             {
-                res = _instrOnSheetExecutor.ExecInstrOnSheet(result, ctx, program, instr as InstrOnSheet);
+                res = _instrOnSheetExecutor.ExecInstrOnSheet(result, ctx, progExecVarMgr, instr as InstrOnSheet);
                 if (!res) return false;
                 continue;
             }
@@ -133,7 +133,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.Comparison)
             {
-                res = _instrComparisonExecutor.ExecInstrComparison(result, ctx, program, instr as InstrComparison);
+                res = _instrComparisonExecutor.ExecInstrComparison(result, ctx, progExecVarMgr, instr as InstrComparison);
                 if (!res) return false;
                 continue;
             }
@@ -147,14 +147,14 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.FuncSelectFiles)
             {
-                res = _instrFuncSelectFilesExecutor.Exec(result, ctx, program, instr as InstrFuncSelectFiles);
+                res = _instrFuncSelectFilesExecutor.Exec(result, ctx, program, instr as InstrFuncCallSelectFiles);
                 if (!res) return false;
                 continue;
             }
 
             if (instr.InstrType == InstrType.FuncDate)
             {
-                res = _instrFuncDateExecutor.ExecFuncDate(result, ctx, program, instr as InstrFuncDate);
+                res = _instrFuncDateExecutor.ExecFuncDate(result, ctx, progExecVarMgr, instr as InstrFuncCallDate);
                 if (!res) return false;
                 continue;
             }

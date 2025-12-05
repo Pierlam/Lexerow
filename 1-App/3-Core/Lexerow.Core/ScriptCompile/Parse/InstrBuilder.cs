@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
@@ -122,14 +122,14 @@ public class InstrBuilder
             // FuncSelectFiles
             if (scriptToken.Value.Equals(CoreInstr.InstrFuncSelectFiles, StringComparison.InvariantCultureIgnoreCase))
             {
-                instrBase = new InstrFuncSelectFiles(scriptToken);
+                instrBase = new InstrFuncCallSelectFiles(scriptToken);
                 return true;
             }
 
             // FuncDate
             if (scriptToken.Value.Equals(CoreInstr.InstrFuncDate, StringComparison.InvariantCultureIgnoreCase))
             {
-                instrBase = new InstrFuncDate(scriptToken);
+                instrBase = new InstrFuncCallDate(scriptToken);
                 return true;
             }
 

@@ -33,7 +33,7 @@ public class InstrComparisonExecutor
     /// <param name="listVar"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    public bool ExecInstrComparison(Result result, ProgExecContext ctx, Program program, InstrComparison instrComparison)
+    public bool ExecInstrComparison(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrComparison instrComparison)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrComparisonExecutor.ExecInstrComparison", string.Empty);
 
@@ -76,7 +76,7 @@ public class InstrComparisonExecutor
         }
 
         //--A.Cell > xxx 
-        if (!CompareColCellFuncWith(result, _excelProcessor, ctx, program, instrComparison, instrOperandLeft, instrOperandRight, out bool isCase))
+        if (!CompareColCellFuncWith(result, _excelProcessor, ctx, progExecVarMgr, instrComparison, instrOperandLeft, instrOperandRight, out bool isCase))
             return false;
         if (isCase) return true;
 
@@ -85,7 +85,7 @@ public class InstrComparisonExecutor
         if (instrColCellFuncRight != null) 
         {
             InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
-            if (!CompareColCellFuncWith(result, _excelProcessor, ctx, program, instrComparison, instrOperandRight, instrOperandLeft, out isCase))
+            if (!CompareColCellFuncWith(result, _excelProcessor, ctx, progExecVarMgr, instrComparison, instrOperandRight, instrOperandLeft, out isCase))
                 return false;
             if (isCase) return true;
         }
@@ -111,7 +111,7 @@ public class InstrComparisonExecutor
     /// <param name="instrOperandRight"></param>
     /// <param name="isCase"></param>
     /// <returns></returns>
-    private bool CompareColCellFuncWith(Result result, IExcelProcessor excelProcessor, ProgExecContext ctx, Program program, InstrComparison instrComparison, InstrBase instrOperandLeft, InstrBase instrOperandRight, out bool isCase)
+    private bool CompareColCellFuncWith(Result result, IExcelProcessor excelProcessor, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrComparison instrComparison, InstrBase instrOperandLeft, InstrBase instrOperandRight, out bool isCase)
     {
         isCase = false; 
 
@@ -123,14 +123,14 @@ public class InstrComparisonExecutor
         if (instrNameObject != null)
         {
             // get the value of the var, the inner one if the value is a var
-            InstrSetVar instrSetVar = program.FindLastVarSet(instrNameObject.Name);
-            if (instrSetVar == null)
+            ProgExecVar progExecVar= progExecVarMgr.FindVarByName(instrNameObject.Name);
+            if (progExecVar == null)
             {
                 result.AddError(ErrorCode.ExecInstrVarNotFound, instrOperandRight.FirstScriptToken());
                 return false;
             }
             // update the right operand with the (last) value of the var
-            instrOperandRight = instrSetVar.InstrRight;
+            instrOperandRight = progExecVar.Value;
         }
 
         //--A.Cell=blank or A.Cell<>blank

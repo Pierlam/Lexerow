@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 
 namespace Lexerow.Core.System;
@@ -39,5 +39,5 @@ public class ProgExecContext
     /// <summary>
     /// list of selected excel filename to process
     /// </summary>
-    public List<InstrFuncSelectedFilename> ListSelectedFilename { get; private set; } = new List<InstrFuncSelectedFilename>();
+    public List<ObjectSelectedFile> ListObjectSelectedFiles { get; private set; } = new List<ObjectSelectedFile>();
 }

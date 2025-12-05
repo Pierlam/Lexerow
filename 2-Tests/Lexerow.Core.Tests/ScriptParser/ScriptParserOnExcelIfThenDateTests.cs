@@ -3,7 +3,7 @@ using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 using NPOI.SS.Formula.Functions;
@@ -111,7 +111,7 @@ public class ScriptParserOnExcelIfThenDateTests
         Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right: Date(2020, 10,1)
-        InstrFuncDate instrFuncDate = instrComparison.OperandRight as InstrFuncDate;
+        InstrFuncCallDate instrFuncDate = instrComparison.OperandRight as InstrFuncCallDate;
         Assert.IsNotNull(instrFuncDate);
         Assert.AreEqual(2020, TestInstrHelper.GetValueInt(instrFuncDate.InstrYear));
         Assert.AreEqual(10, TestInstrHelper.GetValueInt(instrFuncDate.InstrMonth));
@@ -126,7 +126,7 @@ public class ScriptParserOnExcelIfThenDateTests
         Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
 
         // SetVar InstrRight: Date(2020,2,1)
-        instrFuncDate = instrSetVar.InstrRight as InstrFuncDate;
+        instrFuncDate = instrSetVar.InstrRight as InstrFuncCallDate;
         Assert.IsNotNull(instrFuncDate);
         Assert.AreEqual(2020, TestInstrHelper.GetValueInt(instrFuncDate.InstrYear));
         Assert.AreEqual(2, TestInstrHelper.GetValueInt(instrFuncDate.InstrMonth));

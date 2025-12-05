@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Func;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
 using NPOI.OpenXmlFormats.Spreadsheet;
@@ -32,7 +32,7 @@ public class InstrFuncDateExecutor
     /// <param name="progExecVarMgr"></param>
     /// <param name="instrFuncDate"></param>
     /// <returns></returns>
-    public bool ExecFuncDate(Result result, ProgExecContext ctx, Program program, InstrFuncDate instrFuncDate)
+    public bool ExecFuncDate(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncCallDate instrFuncDate)
     {
         // the year param is not a value or a var?
         if (InstrUtils.NeedToBeExecuted(instrFuncDate.InstrYear))
@@ -54,15 +54,15 @@ public class InstrFuncDateExecutor
         }
 
         // get the year int value 
-        if (!InstrUtils.GetIntFromInstr(result, false, program, instrFuncDate.InstrYear, out bool _, out int year))
+        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncDate.InstrYear, out bool _, out int year))
             return false;
 
         // get the month int value 
-        if (!InstrUtils.GetIntFromInstr(result, false, program, instrFuncDate.InstrMonth, out bool _, out int month))
+        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncDate.InstrMonth, out bool _, out int month))
             return false;
 
         // get the day int value 
-        if (!InstrUtils.GetIntFromInstr(result, false, program, instrFuncDate.InstrDay, out bool _, out int day))
+        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncDate.InstrDay, out bool _, out int day))
             return false;
 
         // create a dateOnly object 

@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.Utils;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -28,9 +29,23 @@ public class TestExcelChecker
         return new XSSFWorkbook(stream);
     }
 
+    public static bool CheckCellStyleDataFormat(XSSFWorkbook workbook, string cell, int dataFormat)
+    {
+        // cell.cellStyle.DataFormat=14
+        return CheckCellValueDataFormat(workbook, 0, cell, dataFormat);
+    }
+
     public static bool CheckCellValue(XSSFWorkbook workbook, string cell, double expectedValue)
     {
         return CheckCellValue(workbook, 0, cell, expectedValue);
+    }
+
+    public static bool CheckCellValueDataFormat(XSSFWorkbook workbook, int sheetNum, string cell, int dataFormat)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        // cell.cellStyle.DataFormat=14
+        return CheckCellValueDataFormat(workbook, sheetNum, rowIndex - 1, colIndex - 1, dataFormat);
     }
 
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, double expectedValue)
@@ -74,6 +89,19 @@ public class TestExcelChecker
         if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
             return false;
         return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, dateTime);
+    }
+
+            // cell.cellStyle.DataFormat=14
+    public static bool CheckCellValueDataFormat(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, int dataFormat)
+    {
+        var sheet = workbook.GetSheetAt(sheetNum);
+        var row = sheet.GetRow(rowNum);
+        var cell = row.GetCell(colNum);
+        if (cell == null) return false;
+
+
+        if (cell.CellStyle.DataFormat != dataFormat) return false;
+        return true;
     }
 
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, double expectedValue)

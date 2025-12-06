@@ -189,20 +189,6 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        //--A.Cell>Date(y,m,d)
-        InstrObjectDate instrObjectDate = instrOperandRight as InstrObjectDate;
-        if(instrObjectDate!=null)
-        {
-            isCase = true;
-            if (!Compare(result, _excelProcessor, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, instrObjectDate.ValueDateOnly, out bool resultComp))
-                return false;
-
-            instrComparison.Result = resultComp;
-            ctx.PrevInstrExecuted = instrComparison;
-            ctx.StackInstr.Pop();
-            return true;
-        }
-
         // not the case
         isCase = false;
         return true;

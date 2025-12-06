@@ -341,7 +341,7 @@ public class LoadFileExecOnExcelTests : BaseTests
     }
 
     /// <summary>
-    /// If A.Cell <= 10 Then A.Cell=Date(2025, 11, 30)
+    /// If A.Cell <= 10 Then B.Cell=Date(2025, 11, 30)
     /// </summary>
     [TestMethod]
     public void OnExcelIfThenDateOk()
@@ -355,14 +355,28 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfThenDate.xlsx");
+        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfThenDateOk.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
         //==>check some cell value
+        bool res;
+
+        // NOT modified
+        res = TestExcelChecker.CheckCellValue(wb, "A2", 10);
+        Assert.IsTrue(res);
+
+        // cell.cellStyle.DataFormat=14!!! in place of 0!
+        res= TestExcelChecker.CheckCellStyleDataFormat(wb, "A2", 0);
+        Assert.IsTrue(res);
+
+        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
+        Assert.IsTrue(res);
+        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "A3", 0);
+        Assert.IsTrue(res);
 
         // only one cell updated
-        bool res = TestExcelChecker.CheckCellValue(wb, "B2", new DateOnly(2025, 11, 30));
+        res = TestExcelChecker.CheckCellValue(wb, "B2", new DateOnly(2025, 11, 30));
         Assert.IsTrue(res);
 
         res = TestExcelChecker.CheckCellValue(wb, "B3", "greater");

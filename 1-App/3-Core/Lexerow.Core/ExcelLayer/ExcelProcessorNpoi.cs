@@ -310,6 +310,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
         ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
 
         // force the type: 14 -> "m/d/yy" by default
+        // TODO: PROBLEME!! all get the style !!!
         excelCellNpoi.Cell.CellStyle.DataFormat = 14;
         excelCellNpoi.Cell.SetCellValue(value.ToDouble());
         return true;

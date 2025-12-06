@@ -30,39 +30,39 @@ public class InstrFuncDateExecutor
     /// <param name="result"></param>
     /// <param name="ctx"></param>
     /// <param name="progExecVarMgr"></param>
-    /// <param name="instrFuncDate"></param>
+    /// <param name="instrFuncCallDate"></param>
     /// <returns></returns>
-    public bool ExecFuncDate(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncCallDate instrFuncDate)
+    public bool ExecFuncDate(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncCallDate instrFuncCallDate)
     {
         // the year param is not a value or a var?
-        if (InstrUtils.NeedToBeExecuted(instrFuncDate.InstrYear))
+        if (InstrUtils.NeedToBeExecuted(instrFuncCallDate.InstrYear))
         {
-            ctx.StackInstr.Push(instrFuncDate.InstrYear);
+            ctx.StackInstr.Push(instrFuncCallDate.InstrYear);
             return true;
         }
         // same for month 
-        if (InstrUtils.NeedToBeExecuted(instrFuncDate.InstrMonth))
+        if (InstrUtils.NeedToBeExecuted(instrFuncCallDate.InstrMonth))
         {
-            ctx.StackInstr.Push(instrFuncDate.InstrMonth);
+            ctx.StackInstr.Push(instrFuncCallDate.InstrMonth);
             return true;
         }
         // same for day
-        if (InstrUtils.NeedToBeExecuted(instrFuncDate.InstrDay))
+        if (InstrUtils.NeedToBeExecuted(instrFuncCallDate.InstrDay))
         {
-            ctx.StackInstr.Push(instrFuncDate.InstrDay);
+            ctx.StackInstr.Push(instrFuncCallDate.InstrDay);
             return true;
         }
 
         // get the year int value 
-        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncDate.InstrYear, out bool _, out int year))
+        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncCallDate.InstrYear, out bool _, out int year))
             return false;
 
         // get the month int value 
-        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncDate.InstrMonth, out bool _, out int month))
+        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncCallDate.InstrMonth, out bool _, out int month))
             return false;
 
         // get the day int value 
-        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncDate.InstrDay, out bool _, out int day))
+        if (!InstrUtils.GetIntFromInstrExec(result, progExecVarMgr, instrFuncCallDate.InstrDay, out bool _, out int day))
             return false;
 
         // create a dateOnly object 
@@ -70,16 +70,15 @@ public class InstrFuncDateExecutor
         {
             DateOnly dateOnly = new DateOnly(year, month, day);
             ValueDateOnly valueDateOnly=new ValueDateOnly(dateOnly);
-            InstrObjectDate instrObjectDate= new InstrObjectDate(instrFuncDate.FirstScriptToken(), valueDateOnly);
-
+            InstrValue instrValue = new InstrValue(instrFuncCallDate.FirstScriptToken(), dateOnly);
             // remove the instr FuncDate from the stack
             ctx.StackInstr.Pop();
-            ctx.PrevInstrExecuted=instrObjectDate;
+            ctx.PrevInstrExecuted= instrValue;
             return true;
         }
         catch (Exception ex) 
         {
-            result.AddError(ErrorCode.ExecValueDateWrong, instrFuncDate.FirstScriptToken());
+            result.AddError(ErrorCode.ExecValueDateWrong, instrFuncCallDate.FirstScriptToken());
             return false;
         }
 

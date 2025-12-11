@@ -15,6 +15,12 @@
     <None Update="Input\BasicDataTable.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Input\TestNpoi.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Input\TestWriteDates.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Input\TestFuncInListOfItems.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

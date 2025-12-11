@@ -39,4 +39,9 @@ public class CoreInstr
     /// value in base1 (human readable).
     /// </summary>
     public static int FirstDataRowNum = 2;
+
+    //-system/builtin var
+    public static string SysVarDateFormatName = "$DateFormat";
+
+    public static string SysVarForceDateFormatName = "$ForceDateFormat";
 }

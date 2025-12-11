@@ -17,7 +17,7 @@ public class ExcelProcessorOpenCloseFileTests : BaseTests
         // Use the lib NPOI
         IExcelProcessor proc = new ExcelProcessorNpoi();
 
-        string fileName = PathExcelFilesExec + "OpenClose.xlsx";
+        string fileName = PathExcelProcessorFiles + "OpenClose.xlsx";
 
         bool res = proc.Open(fileName, out IExcelFile excelFile, out ResultError coreError);
         Assert.IsTrue(res);

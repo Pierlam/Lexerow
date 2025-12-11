@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 
 namespace Lexerow.Core.ExcelLayer;
@@ -91,6 +92,8 @@ public class ExcelProcessorNpoi : IExcelProcessor
         var row = excelSheetNpoi.Sheet.GetRow(rowNum);
         if (row == null) return null;
         var cell = row.GetCell(colNum);
+
+        // no cell
         if (cell == null) return null;
 
         ExcelCellNpoi excelCellNpoi = new ExcelCellNpoi(cell);
@@ -175,7 +178,9 @@ public class ExcelProcessorNpoi : IExcelProcessor
     }
 
     /// <summary>
+    /// Create a new cell in a row.
     /// The row should exists.
+    /// The type of the cell is blank.
     /// </summary>
     /// <param name="excelSheet"></param>
     /// <param name="rowNum"></param>
@@ -188,61 +193,10 @@ public class ExcelProcessorNpoi : IExcelProcessor
         var row = excelSheetNpoi.Sheet.GetRow(rowNum);
         if (row == null) return null;
 
+        // Type=blank, create a default style
         var cell = row.CreateCell(colNum);
         IExcelCell excelCell = new ExcelCellNpoi(cell);
         return excelCell;
-    }
-
-    /// <summary>
-    /// The row should exists.
-    /// </summary>
-    /// <param name="excelSheet"></param>
-    /// <param name="rowNum"></param>
-    /// <param name="colNum"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, string value)
-    {
-        ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
-        var row = excelSheetNpoi.Sheet.GetRow(rowNum);
-        if (row == null) return false;
-
-        var cell = row.CreateCell(colNum);
-        cell.SetCellValue(value);
-        return true;
-    }
-
-    public bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, int value)
-    {
-        ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
-        var row = excelSheetNpoi.Sheet.GetRow(rowNum);
-        if (row == null) return false;
-
-        var cell = row.CreateCell(colNum);
-        cell.SetCellValue(value);
-        return true;
-    }
-
-    public bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, double value)
-    {
-        ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
-        var row = excelSheetNpoi.Sheet.GetRow(rowNum);
-        if (row == null) return false;
-
-        var cell = row.CreateCell(colNum);
-        cell.SetCellValue(value);
-        return true;
-    }
-
-    public bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, DateTime value)
-    {
-        ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
-        var row = excelSheetNpoi.Sheet.GetRow(rowNum);
-        if (row == null) return false;
-
-        var cell = row.CreateCell(colNum);
-        cell.SetCellValue(value);
-        return true;
     }
 
     public bool DeleteCell(IExcelSheet excelSheet, int rowNum, int colNum)
@@ -258,50 +212,145 @@ public class ExcelProcessorNpoi : IExcelProcessor
         return true;
     }
 
-    // set the new value to the cell
+    /// <summary>
+    /// Set the new double/int value to the cell.
+    /// </summary>
+    /// <param name="excelCell"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public bool SetCellValue(IExcelCell excelCell, double value)
     {
+        if (excelCell == null) return false;
         ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
+        if(excelCellNpoi.Cell==null) return false;
+
+        // is it the cell contains a formula?
+        if (excelCellNpoi.Cell.CellType == CellType.Formula)
+            excelCellNpoi.Cell.SetCellType(CellType.Numeric);
 
         excelCellNpoi.Cell.SetCellValue(value);
         return true;
     }
 
+    /// <summary>
+    /// Set a string value to a cell.
+    /// Replace the previous value/type.
+    /// </summary>
+    /// <param name="excelCell"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public bool SetCellValue(IExcelCell excelCell, string value)
     {
+        if (excelCell == null) return false;
         ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
+        if (excelCellNpoi.Cell == null) return false;
+
+        // is it the cell contains a formula?
+        if (excelCellNpoi.Cell.CellType== CellType.Formula) 
+            excelCellNpoi.Cell.SetCellType(CellType.String);
 
         excelCellNpoi.Cell.SetCellValue(value);
         return true;
     }
 
-    public bool SetCellValueString(IExcelCell excelCell, string value)
+    /// <summary>
+    /// Set a date value to a cell.
+    /// Replace the previous value/type.
+    /// More complex than basic cases.
+    /// </summary>
+    /// <param name="excelFile"></param>
+    /// <param name="excelCell"></param>
+    /// <param name="value"></param>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    public bool SetCellValue(IExcelFile excelFile, IExcelSheet excelSheet, IExcelCell excelCell, DateOnly value, string format)
     {
+        if (excelCell == null) return false;
         ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
+        if (excelCellNpoi.Cell == null) return false;
 
-        // force the string type: 0 'General'
-        excelCellNpoi.Cell.CellStyle.DataFormat = 0;
+
+        // get the type of the cell
+        var cellType = GetCellValueType(excelSheet, excelCell);
+
+        //--is date only, same format
+        if (cellType == CellRawValueType.DateOnly)
+        {
+            short dataFormat = excelCellNpoi.Cell.CellStyle.DataFormat;
+            ExcelSheetNpoi excelSheetNpoi = excelSheet as ExcelSheetNpoi;
+            string currFormat = excelSheetNpoi.Sheet.Workbook.CreateDataFormat().GetFormat(dataFormat);
+            if(currFormat.Equals(format))
+            {
+                excelCellNpoi.Cell.SetCellValue(value);
+                return true;
+            }
+        }
+
+        //--is the style date-Format already defined?
+        ExcelFileNpoi excelFileNpoi = excelFile as ExcelFileNpoi;
+        ICellStyle style = excelFileNpoi.GetStyle(CellRawValueType.DateOnly, format);
+        if(style == null) 
+        {
+            // create a new style+Format and save it            
+            style= excelFileNpoi.CreateStyle(excelCellNpoi.Cell, CellRawValueType.DateOnly, format);
+        }
+
+
+        // TODO:
+        // is it the cell contains a formula?
+        //if (excelCellNpoi.Cell.CellType == CellType.Formula)
+        //    excelCellNpoi.Cell.SetCellType(CellType.);
+
+        // apply the new/existing style
+        excelCellNpoi.Cell.CellStyle = style;
+
         excelCellNpoi.Cell.SetCellValue(value);
         return true;
     }
 
-    public bool SetCellValueInt(IExcelCell excelCell, int value)
+    public bool SetCellValue_BAK(IExcelFile excelFile, IExcelCell excelCell, DateOnly value, string format)
     {
         ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
+        if(excelCellNpoi.Cell == null) return false;
 
-        // force the int type: 1 '0'
-        excelCellNpoi.Cell.CellStyle.DataFormat = 1;
-        excelCellNpoi.Cell.SetCellValue(value);
+        ExcelFileNpoi excelFileNpoi= excelFile as ExcelFileNpoi;
+
+        //-new style + new DataFormat
+        ICellStyle style = excelFileNpoi.XssWorkbook.CreateCellStyle();
+        IDataFormat dataFormat = excelFileNpoi.XssWorkbook.CreateDataFormat();
+        style.DataFormat = dataFormat.GetFormat(format);
+        excelCellNpoi.Cell.CellStyle = style;
+
+        //-use existing style  -> doesn't work!
+        //excelCellNpoi.Cell.CellStyle.DataFormat = dataFormat.GetFormat(format);
+
+        DateTime val = value.ToDateTime(TimeOnly.MinValue);
+        excelCellNpoi.Cell.SetCellValue(val.ToOADate());
         return true;
     }
 
-    public bool SetCellValueDouble(IExcelCell excelCell, double value)
+    public bool SetCellValue_TEST(IExcelFile excelFile, IExcelCell excelCell, DateOnly value, string format)
     {
         ExcelCellNpoi excelCellNpoi = excelCell as ExcelCellNpoi;
+        if (excelCellNpoi.Cell == null) return false;
 
-        // force the double type: 2 '0.00'
-        excelCellNpoi.Cell.CellStyle.DataFormat = 2;
-        excelCellNpoi.Cell.SetCellValue(value);
+        ExcelFileNpoi excelFileNpoi = excelFile as ExcelFileNpoi;
+
+        //-new style
+        ICellStyle style = excelFileNpoi.XssWorkbook.CreateCellStyle();
+        // clone the style to keep it
+        style.CloneStyleFrom(excelCellNpoi.Cell.CellStyle);
+
+        //-new DataFormat
+        IDataFormat dataFormat = excelFileNpoi.XssWorkbook.CreateDataFormat();
+        style.DataFormat = dataFormat.GetFormat(format);
+        excelCellNpoi.Cell.CellStyle = style;
+
+        //-use existing style  -> doesn't work!
+        //excelCellNpoi.Cell.CellStyle.DataFormat = dataFormat.GetFormat(format);
+
+        DateTime val = value.ToDateTime(TimeOnly.MinValue);
+        excelCellNpoi.Cell.SetCellValue(val.ToOADate());
         return true;
     }
 
@@ -311,7 +360,7 @@ public class ExcelProcessorNpoi : IExcelProcessor
 
         // force the type: 14 -> "m/d/yy" by default
         // TODO: PROBLEME!! all get the style !!!
-        excelCellNpoi.Cell.CellStyle.DataFormat = 14;
+        //excelCellNpoi.Cell.CellStyle.DataFormat = 14;
         excelCellNpoi.Cell.SetCellValue(value.ToDouble());
         return true;
     }

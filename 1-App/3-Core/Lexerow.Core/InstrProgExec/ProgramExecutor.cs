@@ -24,7 +24,7 @@ public class ProgramExecutor
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
 
-        _instrExecutor = new InstrExecutor(activityLogger, _excelProcessor);
+        _instrExecutor = new InstrExecutor(activityLogger, _excelProcessor, _progExecVarMgr);
     }
 
     /// <summary>

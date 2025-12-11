@@ -8,6 +8,12 @@ public abstract class BaseTests
     public string PathExcelFilesExec = @".\10-ExcelFiles\";
 
     /// <summary>
+    /// Path where excel files are saved.
+    /// Used by tests on ExcelProcessor.
+    /// </summary>
+    public string PathExcelProcessorFiles = @".\12-ExcelProcessorFiles\";
+
+    /// <summary>
     /// Path where script are saved.
     /// </summary>
     public string PathScriptFiles = @"..\..\..\15-Scripts\";

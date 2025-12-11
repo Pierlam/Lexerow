@@ -379,6 +379,10 @@ public class LoadFileExecOnExcelTests : BaseTests
         res = TestExcelChecker.CheckCellValue(wb, "B2", new DateOnly(2025, 11, 30));
         Assert.IsTrue(res);
 
+        // TODO: keep it??
+        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "B2", 14);
+        Assert.IsTrue(res);
+
         res = TestExcelChecker.CheckCellValue(wb, "B3", "greater");
         Assert.IsTrue(res);
 

@@ -1,5 +1,8 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.ProgExec;
+using Lexerow.Core.System.ScriptDef;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -8,16 +11,20 @@ namespace Lexerow.Core.InstrProgExec;
 /// </summary>
 public class ProgExecVarMgr
 {
-    /// <summary>
-    /// List of defined execution variables.
-    /// </summary>
-    public List<ProgExecVar> ListExecVar { get; private set; } = new List<ProgExecVar>();
-
-    public void Add(ProgExecVar progExecVar)
+    public ProgExecVarMgr()
     {
-        ListExecVar.Add(progExecVar);
+        BuildSysVar();
     }
 
+    /// <summary>
+    /// List of system/built-in variables.
+    /// </summary>
+    public List<ProgExecSysVar> ListSysExecVar { get; private set; } = new List<ProgExecSysVar>();
+
+    /// <summary>
+    /// List of user defined execution variables.
+    /// </summary>
+    public List<ProgExecVar> ListExecVar { get; private set; } = new List<ProgExecVar>();
 
     /// <summary>
     /// Create a new var, or update if the var already exists (left part).
@@ -84,4 +91,51 @@ public class ProgExecVarMgr
             varname = v.Name;
         }
     }
+
+    public string GetProgExecSysVarAsString(string name)
+    {
+        ProgExecSysVar progExecSysVar = GetProgExecSysVar(name);
+        if (progExecSysVar == null) return string.Empty;
+
+        if(progExecSysVar.ValueBase.ValueType!= System.ValueType.String)return string.Empty;
+        return (progExecSysVar.ValueBase as ValueString).Val;
+    }
+
+    public int GetProgExecSysVarAsInt(string name)
+    {
+        ProgExecSysVar progExecSysVar = GetProgExecSysVar(name);
+        if (progExecSysVar == null) return 0;
+
+        if (progExecSysVar.ValueBase.ValueType != System.ValueType.Int) return 0;
+        return (progExecSysVar.ValueBase as ValueInt).Val;
+    }
+    public bool GetProgExecSysVarAsBool(string name)
+    {
+        ProgExecSysVar progExecSysVar = GetProgExecSysVar(name);
+        if (progExecSysVar == null) return false;
+
+        if (progExecSysVar.ValueBase.ValueType != System.ValueType.Bool) return false;
+        return (progExecSysVar.ValueBase as ValueBool).Val;
+    }
+
+
+    public ProgExecSysVar GetProgExecSysVar(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return null;
+        return ListSysExecVar.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    void BuildSysVar()
+    {
+        ProgExecSysVar progExecSysVar;
+
+        //--$DateFormat="dd/MM/yyyy"
+        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarDateFormatName, new ValueString("dd/MM/yyyy"));
+        ListSysExecVar.Add(progExecSysVar);
+
+        //--$ForceDateFormat=false
+        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarForceDateFormatName, new ValueBool(false));
+        ListSysExecVar.Add(progExecSysVar);
+    }
+
 }

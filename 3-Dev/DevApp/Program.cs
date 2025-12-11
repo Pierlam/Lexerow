@@ -79,6 +79,11 @@ if (a <= 10) { }
 
 //TestGetFiles();
 
-DateSandBox.TestDates();
+//DateSandBox.TestReadDates();
+
+//DateSandBox.TestWriteDate();
+
+
+DevExcelProcessorNpoi.Test();
 
 Console.WriteLine("\n=> ends.");

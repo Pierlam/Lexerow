@@ -16,16 +16,8 @@ public interface IExcelProcessor
 
     int GetLastRowNum(IExcelSheet excelSheet);
 
-    public IExcelCell CreateCell(IExcelSheet excelSheet, int rowNum, int colNum);
-
     // create a cell
-    bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, string value);
-
-    bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, int value);
-
-    bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, double value);
-
-    bool CreateCell(IExcelSheet excelSheet, int rowNum, int colNum, DateTime value);
+    public IExcelCell CreateCell(IExcelSheet excelSheet, int rowNum, int colNum);
 
     bool DeleteCell(IExcelSheet excelSheet, int rowNum, int colNum);
 
@@ -33,12 +25,6 @@ public interface IExcelProcessor
     bool SetCellValue(IExcelCell excelCell, double value);
 
     bool SetCellValue(IExcelCell excelCell, string value);
-
-    bool SetCellValueString(IExcelCell cell, string value);
-
-    bool SetCellValueInt(IExcelCell cell, int value);
-
-    bool SetCellValueDouble(IExcelCell cell, double value);
 
     bool SetCellValueDateOnly(IExcelCell excelCell, ValueDateOnly value);
 

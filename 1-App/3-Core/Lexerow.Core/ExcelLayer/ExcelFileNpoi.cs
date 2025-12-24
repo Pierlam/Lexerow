@@ -13,7 +13,7 @@ public class ExcelFileNpoi : IExcelFile
         XssWorkbook = new XSSFWorkbook(stream);
         FileName = fileName;
     }
-    public List<ICellStyle> ListCellStyle { get; set; } = new List<ICellStyle>();
+    public List<CellStyleNpoi> ListCellStyle { get; set; } = new List<CellStyleNpoi>();
 
     public string FileName { get; set; }
 
@@ -25,11 +25,12 @@ public class ExcelFileNpoi : IExcelFile
 
     public XSSFWorkbook XssWorkbook { get; }
 
-    public ICellStyle GetStyle(CellRawValueType type, string dateFormat)
+    public XSSFCellStyle GetStyle(CellRawValueType type, string dataFormat, int bgColor, int fgColor)
     {
-        foreach (ICellStyle style in ListCellStyle) 
+        foreach (CellStyleNpoi cellStyle in ListCellStyle) 
         {
-            //if(style.DataFormat)
+            if (cellStyle.ValueType == type && cellStyle.DataFormat.Equals(dataFormat) && cellStyle.BgColor==bgColor && cellStyle.FgColor==fgColor)
+                return cellStyle.CellStyle;
         }
         return null;
     }
@@ -40,19 +41,19 @@ public class ExcelFileNpoi : IExcelFile
     /// </summary>
     /// <param name="cellInit"></param>
     /// <param name="type"></param>
-    /// <param name="format"></param>
+    /// <param name="DataFormat"></param>
     /// <returns></returns>
-    public ICellStyle CreateStyle(ICell cellInit, CellRawValueType type, string format)
+    public XSSFCellStyle CreateStyle(ICell cellInit, CellRawValueType valueType, string DataFormat, int bgColor, int fgColor)
     {
-        var style = XssWorkbook.CreateCellStyle();
+        XSSFCellStyle style = (XSSFCellStyle)XssWorkbook.CreateCellStyle();
         // clone the style to keep it
         style.CloneStyleFrom(cellInit.CellStyle);
         IDataFormat dataFormat = XssWorkbook.CreateDataFormat();
-        style.DataFormat = dataFormat.GetFormat(format);
+        style.DataFormat = dataFormat.GetFormat(DataFormat);
 
         // save the new style
-        // TODO:
-
+        CellStyleNpoi cellStyleNpoi= new CellStyleNpoi(valueType, DataFormat, style, bgColor, fgColor);
+        ListCellStyle.Add(cellStyleNpoi);
         return style;
     }
 }

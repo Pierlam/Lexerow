@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.Utils;
+﻿using Lexerow.Core.ExcelLayer;
+using Lexerow.Core.Utils;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -35,6 +36,23 @@ public class TestExcelChecker
         return CheckCellValueDataFormat(workbook, 0, cell, dataFormat);
     }
 
+    public static bool CheckCellStyleDataFormat(XSSFWorkbook workbook, string cell, string dataFormat)
+    {
+        // cell.cellStyle.DataFormat=14
+        return CheckCellValueDataFormat(workbook, 0, cell, dataFormat);
+    }
+
+    
+    public static bool CheckCellBgColor(XSSFWorkbook workbook, string cell, int colorCode)
+    {
+        return CheckCellBgColor(workbook, 0, cell, colorCode);
+    }
+
+    public static bool CheckCellFgColor(XSSFWorkbook workbook, string cell, int colorCode)
+    {
+        return CheckCellFgColor(workbook, 0, cell, colorCode);
+    }
+
     public static bool CheckCellValue(XSSFWorkbook workbook, string cell, double expectedValue)
     {
         return CheckCellValue(workbook, 0, cell, expectedValue);
@@ -46,6 +64,28 @@ public class TestExcelChecker
             return false;
         // cell.cellStyle.DataFormat=14
         return CheckCellValueDataFormat(workbook, sheetNum, rowIndex - 1, colIndex - 1, dataFormat);
+    }
+
+    public static bool CheckCellValueDataFormat(XSSFWorkbook workbook, int sheetNum, string cell, string dataFormat)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        // cell.cellStyle.DataFormat=14
+        return CheckCellValueDataFormat(workbook, sheetNum, rowIndex - 1, colIndex - 1, dataFormat);
+    }
+
+    public static bool CheckCellBgColor(XSSFWorkbook workbook, int sheetNum, string cell, int colorCode)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellBgColor(workbook, sheetNum, rowIndex - 1, colIndex - 1, colorCode);
+    }
+
+    public static bool CheckCellFgColor(XSSFWorkbook workbook, int sheetNum, string cell, int colorCode)
+    {
+        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
+            return false;
+        return CheckCellFgColor(workbook, sheetNum, rowIndex - 1, colIndex - 1, colorCode);
     }
 
     public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, double expectedValue)
@@ -101,6 +141,53 @@ public class TestExcelChecker
 
 
         if (cell.CellStyle.DataFormat != dataFormat) return false;
+        return true;
+    }
+
+    public static bool CheckCellValueDataFormat(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, string dataFormat)
+    {
+        var sheet = workbook.GetSheetAt(sheetNum);
+        var row = sheet.GetRow(rowNum);
+        var cell = row.GetCell(colNum);
+        if (cell == null) return false;
+
+        ICellStyle cellStyle = cell.CellStyle;
+
+        string currFormat = sheet.Workbook.CreateDataFormat().GetFormat(cellStyle.DataFormat);
+
+        if (currFormat != dataFormat) return false;
+        return true;
+    }
+
+    public static bool CheckCellBgColor(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, int colorCode)
+    {
+        var sheet = workbook.GetSheetAt(sheetNum);
+        var row = sheet.GetRow(rowNum);
+        var cell = row.GetCell(colNum);
+        if (cell == null) return false;
+
+        ICellStyle cellStyle = cell.CellStyle;
+
+        IColor col = cellStyle.FillBackgroundColorColor;
+        if(col==null) return false;
+
+        if (col.Indexed != colorCode) return false;
+        return true;
+    }
+
+    public static bool CheckCellFgColor(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, int colorCode)
+    {
+        var sheet = workbook.GetSheetAt(sheetNum);
+        var row = sheet.GetRow(rowNum);
+        var cell = row.GetCell(colNum);
+        if (cell == null) return false;
+
+        ICellStyle cellStyle = cell.CellStyle;
+
+        IColor col = cellStyle.FillForegroundColorColor;
+        if (col == null) return false;
+
+        if (col.Indexed != colorCode) return false;
         return true;
     }
 

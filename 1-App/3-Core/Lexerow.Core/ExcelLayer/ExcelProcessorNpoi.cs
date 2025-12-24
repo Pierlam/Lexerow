@@ -288,18 +288,19 @@ public class ExcelProcessorNpoi : IExcelProcessor
 
         //--is the style date-Format already defined?
         ExcelFileNpoi excelFileNpoi = excelFile as ExcelFileNpoi;
-        ICellStyle style = excelFileNpoi.GetStyle(CellRawValueType.DateOnly, format);
+        int bgColor = excelCellNpoi.GetBgColor();
+        int fgColor = excelCellNpoi.GetFgColor();
+        ICellStyle style = excelFileNpoi.GetStyle(CellRawValueType.DateOnly, format, bgColor, fgColor);
         if(style == null) 
         {
             // create a new style+Format and save it            
-            style= excelFileNpoi.CreateStyle(excelCellNpoi.Cell, CellRawValueType.DateOnly, format);
+            style= excelFileNpoi.CreateStyle(excelCellNpoi.Cell, CellRawValueType.DateOnly, format, bgColor, fgColor);
         }
 
 
-        // TODO:
         // is it the cell contains a formula?
-        //if (excelCellNpoi.Cell.CellType == CellType.Formula)
-        //    excelCellNpoi.Cell.SetCellType(CellType.);
+        if (excelCellNpoi.Cell.CellType == CellType.Formula)
+            excelCellNpoi.Cell.SetCellType(CellType.Numeric);
 
         // apply the new/existing style
         excelCellNpoi.Cell.CellStyle = style;

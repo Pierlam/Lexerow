@@ -1,5 +1,8 @@
 ﻿using Lexerow.Core.System;
+using NPOI.HSSF.Util;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Lexerow.Core.ExcelLayer;
 
@@ -26,10 +29,10 @@ public class ExcelCellNpoi : IExcelCell
             return CellRawValueType.String;
         if (Cell.CellType == CellType.Numeric)
             return CellRawValueType.Numeric;
-        //if (Cell.CellType == CellType.Formula)
-        //    return CellRawValueType.Formula;
-        //if (Cell.CellType == CellType.Blank)
-        //    return CellRawValueType.Blank;
+        if (Cell.CellType == CellType.Formula)
+            return CellRawValueType.Formula;
+        if (Cell.CellType == CellType.Blank)
+            return CellRawValueType.Blank;
 
         return CellRawValueType.Unknow;
     }
@@ -50,5 +53,24 @@ public class ExcelCellNpoi : IExcelCell
             return Cell.NumericCellValue.ToString();
 
         return string.Empty;
+    }
+
+    public int GetBgColor()
+    {
+        // BUG: return 0 if nothing or always 64 if a color is set!!
+        XSSFCellStyle style = (XSSFCellStyle)Cell.CellStyle;
+        XSSFColor color= style.FillBackgroundXSSFColor;
+        
+        if (color == null) return 0;
+        return color.Indexed;
+    }
+    public int GetFgColor()
+    {
+        // BUG: return 0 if nothing or always 64 if a color is set!!
+        XSSFCellStyle style = (XSSFCellStyle)Cell.CellStyle;
+        XSSFColor color = style.FillForegroundXSSFColor;
+
+        if (color == null) return 0;
+        return color.Indexed;
     }
 }

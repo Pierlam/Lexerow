@@ -3,6 +3,7 @@ using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
+using NPOI.SS.Formula;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,28 +119,89 @@ public class ExcelProcessorSetCellStringTests : BaseTests
         res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2011, 3, 1), "DD/MM/yyyy");
         Assert.IsTrue(res);
 
-        //--B3: blank -> 08/10/2012
+        //--B3: blank Bg:yellow -> 08/10/2012
         cell = proc.GetCellAt(sheet, 2, 1);
         res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2012, 10, 8), "DD/MM/yyyy");
         Assert.IsTrue(res);
+
+        //--B4: string -> 2013-11-17
+        cell = proc.GetCellAt(sheet, 3, 1);
+        res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2013, 11, 17), "yyyy-MM-DD");
+        Assert.IsTrue(res);
+
+        //--B5: B6: B7:
+
 
         //--B7: date -> 18/05/2017
         cell = proc.GetCellAt(sheet, 6, 1);
         res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2017, 5, 18), "m/d/yy");
         Assert.IsTrue(res);
 
+        //--B8: string+bgcolor  -> 23/09/1987
+        cell = proc.GetCellAt(sheet, 7, 1);
+        res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(1987, 9, 23), "m/d/yy");
+        Assert.IsTrue(res);
+
+        //--B9: int+bg+fg+border -> 28/02/2013
+        cell = proc.GetCellAt(sheet, 8, 1);
+        res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2013, 2, 28), "m/d/yy");
+        Assert.IsTrue(res);
+
+        //--B10: formula -> 23/11/2019
+        cell = proc.GetCellAt(sheet, 9, 1);
+        res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2019, 11, 23), "m/d/yy");
+        Assert.IsTrue(res);
+
+        //--B11: datetime -> 17/8/2018
+        cell = proc.GetCellAt(sheet, 10, 1);
+        res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2018, 8, 17), "m/d/yy");
+        Assert.IsTrue(res);
+
+        //--B12: time  -> 16/7/2015
+        cell = proc.GetCellAt(sheet, 11, 1);
+        res = proc.SetCellValue(excelFile, sheet, cell, new DateOnly(2015, 7, 16), "m/d/yy");
+        Assert.IsTrue(res);
+
 
         //-save the excel file
         proc.Save(excelFile);
 
-        //--check the content of excel file
+        //==>check the content of excel file
         var fileStream = TestExcelChecker.OpenExcel(PathExcelProcessorFiles + "SetCellDate.xlsx");
         Assert.IsNotNull(fileStream);
         var wb = TestExcelChecker.GetWorkbook(fileStream);
 
-        //--B2
-        res = TestExcelChecker.CheckCellValue(wb, "B2", "hello");
+        //--B2:
+        res = TestExcelChecker.CheckCellValue(wb, "B2", new DateOnly(2011, 3, 1));
         Assert.IsTrue(res);
+        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "B2", "DD/MM/yyyy");
+        Assert.IsTrue(res);
+
+        //--B3:
+        res = TestExcelChecker.CheckCellValue(wb, "B3", new DateOnly(2012, 10, 8));
+        Assert.IsTrue(res);
+        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "B3", "DD/MM/yyyy");
+        Assert.IsTrue(res);
+        // 64= yellow
+        res = TestExcelChecker.CheckCellBgColor(wb, "B3", 64);
+        Assert.IsTrue(res);
+ 
+        //--B4:
+        res = TestExcelChecker.CheckCellValue(wb, "B4", new DateOnly(2013, 11, 17));
+        Assert.IsTrue(res);
+        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "B4", "yyyy-MM-DD");
+        Assert.IsTrue(res);
+
+        //--B8: string+bgcolor  -> 23/09/1987
+        res = TestExcelChecker.CheckCellValue(wb, "B8", new DateOnly(1987, 9, 23));
+        Assert.IsTrue(res);
+        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "B8", "m/d/yy");
+        Assert.IsTrue(res);
+        // 64= yellow
+        res = TestExcelChecker.CheckCellBgColor(wb, "B8", 64);
+        Assert.IsTrue(res);
+
+        //--B9: int+bg+fg+border -> ???
 
     }
 }

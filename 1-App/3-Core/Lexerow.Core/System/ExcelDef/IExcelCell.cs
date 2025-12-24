@@ -16,8 +16,7 @@ public enum CellRawValueType
     // cell exists but the content is empty
     Blank,
 
-    // TODO: gérer +tard
-    //Formula,
+    Formula,
 }
 
 public interface IExcelCell

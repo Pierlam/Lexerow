@@ -2,6 +2,7 @@
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
+using OpenExcelSdk;
 using System.Diagnostics;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -13,13 +14,13 @@ public class ProgramExecutor
 {
     private IActivityLogger _logger;
 
-    private IExcelProcessor _excelProcessor;
+    private ExcelProcessor _excelProcessor;
 
     private ProgExecVarMgr _progExecVarMgr = new ProgExecVarMgr();
 
     private InstrExecutor _instrExecutor;
 
-    public ProgramExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public ProgramExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;

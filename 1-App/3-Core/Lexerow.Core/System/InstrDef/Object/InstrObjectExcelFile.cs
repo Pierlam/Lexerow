@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System.ScriptDef;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.System.InstrDef.Object;
 
@@ -8,7 +9,7 @@ namespace Lexerow.Core.System.InstrDef.Object;
 /// </summary>
 public class InstrObjectExcelFile : InstrBase
 {
-    public InstrObjectExcelFile(ScriptToken scriptToken, string filename, IExcelFile excelFile) : base(scriptToken)
+    public InstrObjectExcelFile(ScriptToken scriptToken, string filename, ExcelFile excelFile) : base(scriptToken)
     {
         InstrType = InstrType.ObjectExcelFile;
         Filename = filename;
@@ -27,5 +28,5 @@ public class InstrObjectExcelFile : InstrBase
     ///  the excel file object.
     ///  Can be loaded at the last time, just before it will be used.
     /// </summary>
-    public IExcelFile? ExcelFile { get; set; } = null;
+    public ExcelFile? ExcelFile { get; set; } = null;
 }

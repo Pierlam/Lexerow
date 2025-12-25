@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System.ScriptDef;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.System;
 
@@ -90,23 +91,12 @@ public class Result
         return false;
     }
 
-    public void AddWarning(ErrorCode errorCode, ScriptToken scriptToken)
-    {
-        ResultError resultError;
-        if (scriptToken != null)
-            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value);
-        else
-            resultError = new ResultError(errorCode, 0, 0, string.Empty);
-        ListWarning.Add(resultError);
-        Res = false;
-    }
-
     /// <summary>
     /// Error occurs during script compilation.
     /// </summary>
     /// <param name="errorCode"></param>
     /// <param name="scriptToken"></param>
-    public void AddError(ErrorCode errorCode, ScriptToken scriptToken, string param)
+    public bool AddError(ErrorCode errorCode, ScriptToken scriptToken, string param)
     {
         ResultError resultError;
         if (scriptToken != null)
@@ -115,6 +105,7 @@ public class Result
             resultError = new ResultError(errorCode, 0, 0, string.Empty, param);
         ListError.Add(resultError);
         Res = false;
+        return false;
     }
 
     /// <summary>
@@ -122,7 +113,7 @@ public class Result
     /// </summary>
     /// <param name="errorCode"></param>
     /// <param name="scriptToken"></param>
-    public void AddError(ErrorCode errorCode, ScriptToken scriptToken, Exception exception)
+    public bool AddError(ErrorCode errorCode, ScriptToken scriptToken, Exception exception)
     {
         ResultError resultError;
         if (scriptToken != null)
@@ -131,6 +122,7 @@ public class Result
             resultError = new ResultError(errorCode, 0, 0, exception, string.Empty);
         ListError.Add(resultError);
         Res = false;
+        return false;
     }
 
     /// <summary>
@@ -142,13 +134,24 @@ public class Result
     /// <param name="colNum"></param>
     /// <param name="cellValueType"></param>
     /// <returns></returns>
-    public ResultError? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public ResultError? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)
     {
         if (fileName == null) fileName = string.Empty;
         return ListWarning.Find(x => x.ErrorCode == errorCode && x.FileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase) && x.SheetNum == sheetNum && x.ColNum == colNum && x.CellValueType == cellValueType);
     }
 
-    public void AddWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public void AddWarning(ErrorCode errorCode, ScriptToken scriptToken)
+    {
+        ResultError resultError;
+        if (scriptToken != null)
+            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value);
+        else
+            resultError = new ResultError(errorCode, 0, 0, string.Empty);
+        ListWarning.Add(resultError);
+        Res = false;
+    }
+
+    public void AddWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
 

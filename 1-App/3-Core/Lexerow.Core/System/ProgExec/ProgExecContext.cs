@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.System;
 
@@ -29,7 +30,7 @@ public class ProgExecContext
     /// <summary>
     /// The current excel sheet to process.
     /// </summary>
-    public IExcelSheet? ExcelSheet { get; set; } = null;
+    public ExcelSheet? ExcelSheet { get; set; } = null;
 
     /// <summary>
     /// The current excel sheet row num to process.

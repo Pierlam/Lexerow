@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesExec;
 
@@ -38,20 +39,19 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesACellEqualBlankOk.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "datLinesACellEqualBlankOk.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // A2: r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // A3: r2, c0: 123 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 123);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 123);
         Assert.IsTrue(res);
 
         // A6: r5, c0: 123 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 5, 0, 123);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A6", 123);
         Assert.IsTrue(res);
     }
 
@@ -82,16 +82,15 @@ public class LoadLinesExecOnExcelBlankNullTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesThenACellBlankOk.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "datLinesThenACellBlankOk.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // A2: r1, c0: blank  -> modified
-        bool res = TestExcelChecker.CheckCellValueBlank(wb, 0, 1, 0);
+        bool res = TestExcelChecker.CheckCellValueEmpty(excelFile, "A2");
         Assert.IsTrue(res);
 
         // A4: r3, c0: blank  -> modified
-        res = TestExcelChecker.CheckCellValueBlank(wb, 0, 3, 0);
+        res = TestExcelChecker.CheckCellValueEmpty(excelFile, "A4");
         Assert.IsTrue(res);
     }
 }

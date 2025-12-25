@@ -6,6 +6,8 @@ using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
+using OpenExcelSdk;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -16,9 +18,9 @@ internal class InstrOnExcelExecutor
 {
     private IActivityLogger _logger;
 
-    private IExcelProcessor _excelProcessor;
+    private ExcelProcessor _excelProcessor;
 
-    public InstrOnExcelExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrOnExcelExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -253,8 +255,10 @@ internal class InstrOnExcelExecutor
     private bool OpenExcelFile(Result result, InstrObjectExcelFile instrExcelFileObject)
     {
         // execute the instr OpenExcel(fileName)
-        if (!_excelProcessor.Open(instrExcelFileObject.Filename, out IExcelFile excelFile, out ResultError error))
+        if (!_excelProcessor.Open(instrExcelFileObject.Filename, out ExcelFile excelFile, out ExcelError excelError))
         {
+            // convert the excel error to a result error
+            ResultError error = ErrorUtils.Convert(excelError);
             result.AddError(error);
             return false;
         }

@@ -1,5 +1,8 @@
 ﻿namespace Lexerow.Core.System.Excel;
 
+/// <summary>
+/// TO-REMOVE:
+/// </summary>
 public interface IExcelProcessor
 {
     bool Open(string fileName, out IExcelFile excelFile, out ResultError coreError);

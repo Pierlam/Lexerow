@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.Utils;
 
@@ -11,30 +12,30 @@ public class ExcelExtendedUtils : ExcelUtils
     /// <param name="cellType"></param>
     /// <param name="instr"></param>
     /// <returns></returns>
-    public static bool MatchCellTypeAndIfComparison(CellRawValueType cellType, ValueBase value)
+    public static bool MatchCellTypeAndIfComparison(ExcelCellType cellType, ValueBase value)
     {
-        if (cellType == CellRawValueType.String && value.ValueType == System.ValueType.String)
+        if (cellType == ExcelCellType.String && value.ValueType == System.ValueType.String)
             return true;
 
-        if (cellType == CellRawValueType.Numeric && value.ValueType == System.ValueType.Double)
+        if (cellType == ExcelCellType.Double && value.ValueType == System.ValueType.Double)
             return true;
 
-        if (cellType == CellRawValueType.Numeric && value.ValueType == System.ValueType.Int)
+        if (cellType == ExcelCellType.Integer && value.ValueType == System.ValueType.Int)
             return true;
 
-        if (cellType == CellRawValueType.DateOnly && value.ValueType == System.ValueType.DateOnly)
+        if (cellType == ExcelCellType.DateOnly && value.ValueType == System.ValueType.DateOnly)
             return true;
 
-        if (cellType == CellRawValueType.DateTime && value.ValueType == System.ValueType.DateTime)
+        if (cellType == ExcelCellType.DateTime && value.ValueType == System.ValueType.DateTime)
             return true;
 
-        if (cellType == CellRawValueType.TimeOnly && value.ValueType == System.ValueType.TimeOnly)
+        if (cellType == ExcelCellType.TimeOnly && value.ValueType == System.ValueType.TimeOnly)
             return true;
 
         // specific cases
-        if (cellType == CellRawValueType.DateTime && value.ValueType == System.ValueType.DateOnly)
+        if (cellType == ExcelCellType.DateTime && value.ValueType == System.ValueType.DateOnly)
             return true;
-        if (cellType == CellRawValueType.DateOnly && value.ValueType == System.ValueType.DateTime)
+        if (cellType == ExcelCellType.DateOnly && value.ValueType == System.ValueType.DateTime)
             return true;
 
         return false;
@@ -47,27 +48,32 @@ public class ExcelExtendedUtils : ExcelUtils
     /// <param name="cellType"></param>
     /// <param name="instr"></param>
     /// <returns></returns>
-    public static bool MatchCellTypeAndIfComparison(CellRawValueType cellType, CellRawValueType cellTypeB)
+    public static bool MatchCellTypeAndIfComparison(ExcelCellType cellType, ExcelCellType cellTypeB)
     {
-        if (cellType == CellRawValueType.String && cellTypeB == CellRawValueType.String)
+        if (cellType == ExcelCellType.String && cellTypeB == ExcelCellType.String)
             return true;
 
-        if (cellType == CellRawValueType.Numeric && cellTypeB == CellRawValueType.Numeric)
+        if (cellType == ExcelCellType.Double && cellTypeB == ExcelCellType.Double)
+            return true;
+        if (cellType == ExcelCellType.Integer && cellTypeB == ExcelCellType.Integer)
             return true;
 
-        if (cellType == CellRawValueType.DateOnly && cellTypeB == CellRawValueType.DateOnly)
+        // int and double ??
+        // TODO: to be defined
+
+        if (cellType == ExcelCellType.DateOnly && cellTypeB == ExcelCellType.DateOnly)
             return true;
 
-        if (cellType == CellRawValueType.DateTime && cellTypeB == CellRawValueType.DateTime)
+        if (cellType == ExcelCellType.DateTime && cellTypeB == ExcelCellType.DateTime)
             return true;
 
-        if (cellType == CellRawValueType.TimeOnly && cellTypeB == CellRawValueType.TimeOnly)
+        if (cellType == ExcelCellType.TimeOnly && cellTypeB == ExcelCellType.TimeOnly)
             return true;
 
         // specific cases
-        if (cellType == CellRawValueType.DateTime && cellTypeB == CellRawValueType.DateOnly)
+        if (cellType == ExcelCellType.DateTime && cellTypeB == ExcelCellType.DateOnly)
             return true;
-        if (cellType == CellRawValueType.DateOnly && cellTypeB == CellRawValueType.DateTime)
+        if (cellType == ExcelCellType.DateOnly && cellTypeB == ExcelCellType.DateTime)
             return true;
 
         return false;

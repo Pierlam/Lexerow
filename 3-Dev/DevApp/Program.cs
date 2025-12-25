@@ -1,5 +1,4 @@
-﻿using DevApp;
-using Lexerow.Core;
+﻿using Lexerow.Core;
 using Lexerow.Core.System.ActivLog;
 
 Console.WriteLine("==>Lexerow Dev:");
@@ -53,20 +52,6 @@ void TestGetFiles()
 ///  In /CI -> In case Insensitive
 ///  In    -> In case Sensitive
 
-//XXXXXXXXXXXXXXXXXXXX-MAIN:
-
-//DevNpoi devNpoi = new DevNpoi();
-
-//string fileName = @"Input\Test1.xlsx";
-//devNpoi.TestTypes(fileName);
-
-//string fileName = @"Input\TestTypes.xlsx";
-//devNpoi.TestTypes();
-
-//string fileName = @"Input\TestDate.xlsx";
-//devNpoi.TestDateTime(fileName);
-
-//devNpoi.TestBlankNull();
 
 //TestCore();
 
@@ -84,6 +69,5 @@ if (a <= 10) { }
 //DateSandBox.TestWriteDate();
 
 
-DevExcelProcessorNpoi.Test();
 
 Console.WriteLine("\n=> ends.");

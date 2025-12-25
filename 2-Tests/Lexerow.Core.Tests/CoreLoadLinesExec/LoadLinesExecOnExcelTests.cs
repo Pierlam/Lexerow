@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesExec;
 
@@ -35,16 +36,15 @@ public class LoadLinesExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A1", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 10);
         Assert.IsTrue(res);
     }
 
@@ -68,16 +68,15 @@ public class LoadLinesExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesRunOnExcel2.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "datLinesRunOnExcel2.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -101,24 +100,23 @@ public class LoadLinesExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datLinesIfACellGreaterBCell2.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "datLinesIfACellGreaterBCell2.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // C2: row1, col2: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, 1, 2, 10);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "C2", 10);
         Assert.IsTrue(res);
 
         // C3: row2, col2: 27
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 2, 27);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C3", 27);
         Assert.IsTrue(res);
 
         // C4: row3, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, 0, 3, 2, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C4", 10);
         Assert.IsTrue(res);
 
         // C5: row4, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, 0, 4, 2, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C5", 10);
         Assert.IsTrue(res);
     }
 }

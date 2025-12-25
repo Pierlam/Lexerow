@@ -2,6 +2,7 @@
 using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.Tests.CoreLoadFileExec;
 
@@ -16,6 +17,7 @@ public class LoadFileExecOnExcelTests : BaseTests
     [TestMethod]
     public void OnExcelBasicOk()
     {
+        bool res;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "execOnExcel1.lxrw";
 
@@ -30,22 +32,20 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.AreEqual(1, result.Insights.IfCondMatchTotalCount);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "datScriptOnExcel1.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "datScriptOnExcel1.xlsx");
+        Assert.IsNotNull(excelFile);
 
-        // r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
-        // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
     }
 
     [TestMethod]
     public void IfACellGreaterBCellOk()
     {
+        bool res;
         LexerowCore core = new LexerowCore();
         string scriptfile = PathScriptFiles + "IfACellGreaterBCell.lxrw";
 
@@ -54,24 +54,23 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "IfACellGreaterBCell2.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "IfACellGreaterBCell2.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // C2: row1, col2: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, "C2", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C2", 10);
         Assert.IsTrue(res);
 
         // C3: row2, col2: 27
-        res = TestExcelChecker.CheckCellValue(wb, "C3", 27);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C3", 27);
         Assert.IsTrue(res);
 
         // C4: row3, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, "C4", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C4", 10);
         Assert.IsTrue(res);
 
         // C5: row4, col2: 10
-        res = TestExcelChecker.CheckCellValue(wb, "C5", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C5", 10);
         Assert.IsTrue(res);
     }
 
@@ -89,16 +88,15 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "IfACellGreaterMinus7.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "IfACellGreaterMinus7.xlsx");
+        Assert.IsNotNull(excelFile);
 
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", -7);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", -7);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A3", -5);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", -5);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, "A4", 4);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A4", 4);
         Assert.IsTrue(res);
     }
 
@@ -120,12 +118,11 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "IfACellEqString.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "IfACellEqString.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // A2: row1, col0: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", "Bonjour");
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", "Bonjour");
         Assert.IsTrue(res);
     }
 
@@ -140,20 +137,19 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "IfACellGreaterDouble.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "IfACellGreaterDouble.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // A2: row1, col0: 10
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 10);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 10);
         Assert.IsTrue(res);
 
         // A3: row2, col0: 13
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 13.1);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 13.1);
         Assert.IsTrue(res);
 
         // A4: row3, col0: 13
-        res = TestExcelChecker.CheckCellValue(wb, "A4", 13.1);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A4", 13.1);
         Assert.IsTrue(res);
     }
 
@@ -168,24 +164,23 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "onExcelManyIf.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "onExcelManyIf.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //--line2: A=12, B=Y, C=10
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 12);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 12);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, "B2", "Y");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B2", "Y");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, "C2", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C2", 10);
         Assert.IsTrue(res);
 
         //--line3: A = 34, B = blank, C = 13
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 34);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 34);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValueBlank(wb, 0, "B3");
+        res = TestExcelChecker.CheckCellValueEmpty(excelFile, "B3");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, "C3", 13);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C3", 13);
         Assert.IsTrue(res);
     }
 
@@ -200,24 +195,23 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "onExcelManyThen.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "onExcelManyThen.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //--line2: A=12.3, B=blank , C=Y
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 12.3);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 12.3);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValueBlank(wb, 0, "B2");
+        res = TestExcelChecker.CheckCellValueEmpty(excelFile, "B2");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, "C2", "Y");
+        res = TestExcelChecker.CheckCellValue(excelFile, "C2", "Y");
         Assert.IsTrue(res);
 
         //--line3: A=34, B=hello, C=567
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 34);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 34);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, "B3", "hello");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B3", "hello");
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellValue(wb, "C3", 567);
+        res = TestExcelChecker.CheckCellValue(excelFile, "C3", 567);
         Assert.IsTrue(res);
     }
 
@@ -232,19 +226,18 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "onExcelFirstRowValue.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "onExcelFirstRowValue.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 12);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A4", 27);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A4", 27);
         Assert.IsTrue(res);
     }
 
@@ -260,19 +253,18 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "onExcelFirstRowVar.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "onExcelFirstRowVar.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 12);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A4", 27);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A4", 27);
         Assert.IsTrue(res);
     }
 
@@ -288,19 +280,18 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //=> check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "onExcelFirstRowVarVar.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "onExcelFirstRowVarVar.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 12);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A4", 27);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A4", 27);
         Assert.IsTrue(res);
     }
 
@@ -319,24 +310,23 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfDateThenYesOk.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "OnExcelIfDateThenYesOk.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, "B2", "yes");
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "B2", "yes");
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "B3", "no");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B3", "no");
         Assert.IsTrue(res);
 
         // A4: 03:40:25
-        res = TestExcelChecker.CheckCellValue(wb, "B4", "no");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B4", "no");
         Assert.IsTrue(res);
 
         // A5: special case!! 03/05/2018  12:30:45   -> compare DateTime with DateOnly -> ok
-        res = TestExcelChecker.CheckCellValue(wb, "B5", "yes");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B5", "yes");
         Assert.IsTrue(res);
     }
 
@@ -355,41 +345,40 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfThenDateOk.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "OnExcelIfThenDateOk.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //==>check some cell value
         bool res;
 
         // NOT modified
-        res = TestExcelChecker.CheckCellValue(wb, "A2", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 10);
         Assert.IsTrue(res);
 
         // cell.cellStyle.DataFormat=14!!! in place of 0!
-        res= TestExcelChecker.CheckCellStyleDataFormat(wb, "A2", 0);
+        res= TestExcelChecker.CheckCellStyleDataFormat(excelFile, "A2", 0);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "A3", 12);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 12);
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "A3", 0);
+        res = TestExcelChecker.CheckCellStyleDataFormat(excelFile, "A3", 0);
         Assert.IsTrue(res);
 
         // only one cell updated
-        res = TestExcelChecker.CheckCellValue(wb, "B2", new DateOnly(2025, 11, 30));
+        res = TestExcelChecker.CheckCellValue(excelFile, "B2", new DateOnly(2025, 11, 30));
         Assert.IsTrue(res);
 
         // TODO: keep it??
-        res = TestExcelChecker.CheckCellStyleDataFormat(wb, "B2", 14);
+        res = TestExcelChecker.CheckCellStyleDataFormat(excelFile, "B2", 14);
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "B3", "greater");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B3", "greater");
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "B4", "hour");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B4", "hour");
         Assert.IsTrue(res);
 
-        res = TestExcelChecker.CheckCellValue(wb, "B5", "dateTime");
+        res = TestExcelChecker.CheckCellValue(excelFile, "B5", "dateTime");
         Assert.IsTrue(res);
     }
 
@@ -408,25 +397,24 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "OnExcelIfDateThenDate.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "OnExcelIfDateThenDate.xlsx");
+        Assert.IsNotNull(excelFile);
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(wb, "A2", new DateOnly(2023, 11, 14));
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", new DateOnly(2023, 11, 14));
         Assert.IsTrue(res);
 
         // 03/05/2025
-        res = TestExcelChecker.CheckCellValue(wb, "A3", new DateOnly(2025, 05, 03));
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", new DateOnly(2025, 05, 03));
         Assert.IsTrue(res);
 
         // A4: 03:40:25
-        res = TestExcelChecker.CheckCellValue(wb, "A4", new TimeOnly(03, 40, 25));
+        res = TestExcelChecker.CheckCellValue(excelFile, "A4", new TimeOnly(03, 40, 25));
         Assert.IsTrue(res);
 
         // A5: 03/05/2018  12:30:45
-        res = TestExcelChecker.CheckCellValue(wb, "A5", new DateTime(2018, 05, 03, 03, 40, 25));
+        res = TestExcelChecker.CheckCellValue(excelFile, "A5", new DateTime(2018, 05, 03, 03, 40, 25));
         Assert.IsTrue(res);
     }
 

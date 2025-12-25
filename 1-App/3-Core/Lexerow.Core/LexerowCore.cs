@@ -1,5 +1,4 @@
-﻿using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.InstrProgExec;
+﻿using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.ScriptCompile;
 using Lexerow.Core.ScriptLoad;
 using Lexerow.Core.System;
@@ -7,6 +6,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
+using OpenExcelSdk;
 
 namespace Lexerow.Core;
 
@@ -15,7 +15,7 @@ namespace Lexerow.Core;
 /// </summary>
 public class LexerowCore
 {
-    private IExcelProcessor _excelProcessor;
+    private ExcelProcessor _excelProcessor;
 
     private CoreData _coreData = new CoreData();
 
@@ -35,7 +35,7 @@ public class LexerowCore
         _logger = new ActivityLogger();
         _logger.ActivityLogEvent += logger_ActivityLogEvent;
 
-        _excelProcessor = new ExcelProcessorNpoi();
+        _excelProcessor = new ExcelProcessor();
 
         _scriptLoader = new ScriptLoader();
         _scriptCompiler = new ScriptCompiler(_logger, _coreData);

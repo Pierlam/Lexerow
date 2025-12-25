@@ -1,17 +1,20 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.Excel;
+using Lexerow.Core.Utils;
+using OpenExcelSdk;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.InstrProgExec;
 
 internal class CloseFileExecutor
 {
-    public static bool Exec(Result result, IExcelProcessor excelProcessor, IExcelFile excelFile)
+    public static bool Exec(Result result, ExcelProcessor excelProcessor, ExcelFile excelFile)
     {
-        excelProcessor.Save(excelFile);
 
         if (!excelProcessor.Close(excelFile, out var error))
         {
-            result.ListError.Add(error);
+            
+            result.ListError.Add(ErrorUtils.Convert(error));
             return false;
         }
         return true;

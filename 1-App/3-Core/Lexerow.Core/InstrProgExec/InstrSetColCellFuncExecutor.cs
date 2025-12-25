@@ -1,12 +1,13 @@
-﻿using Lexerow.Core.System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Utils;
 using Microsoft.VisualBasic;
-using NPOI.SS.Formula.Functions;
-using NPOI.SS.UserModel;
+using OpenExcelSdk;
+using OpenExcelSdk.System;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -18,11 +19,11 @@ public class InstrSetColCellFuncExecutor
 {
     private IActivityLogger _logger;
 
-    private IExcelProcessor _excelProcessor;
+    private ExcelProcessor _excelProcessor;
 
     private ProgExecVarMgr _progExecVarMgr;
 
-    public InstrSetColCellFuncExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor, ProgExecVarMgr progExecVarMgr)
+    public InstrSetColCellFuncExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor, ProgExecVarMgr progExecVarMgr)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -37,16 +38,17 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instr"></param>
     /// <param name="excelFile"></param>
     /// <returns></returns>
-    public bool ExecSetCellNull(Result result, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
+    public bool ExecSetCellNull(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
+        //IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
+        _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
 
         if (cell == null)
             return true;
 
         // create a new cell object
-        _excelProcessor.DeleteCell(sheet, rowNum, instrColCellFunc.ColNum - 1);
+        _excelProcessor.RemoveCell(sheet, instrColCellFunc.ColNum, rowNum, out error);
         return true;
     }
 
@@ -59,16 +61,18 @@ public class InstrSetColCellFuncExecutor
     /// <param name="rowNum"></param>
     /// <param name="instrColCellFunc"></param>
     /// <returns></returns>
-    public bool ExecSetCellBlank(Result result, IExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
+    public bool ExecSetCellBlank(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
+        //IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
+        _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
 
         if (cell == null)
             return true;
 
         // create a new cell object
-        _excelProcessor.SetCellValueBlank(cell);
+        //_excelProcessor.SetCellValueBlank(cell);
+        throw new Exception("TODO: SetCellEmpty()");
         return true;
     }
 
@@ -80,28 +84,30 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instrColCellFunc"></param>
     /// <param name="instrRight"></param>
     /// <returns></returns>
-    public bool ExecSetCellValue(Result result, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
+    public bool ExecSetCellValue(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
         // get the cell
-        IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
+        //IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
+        _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
 
-        if (cell == null)
-            // create a new cell object
-            cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
+        //if (cell == null)
+        //    // create a new cell object
+        //    cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
-        // get the cell value type
-        CellRawValueType cellType = _excelProcessor.GetCellValueType(excelSheet, cell);
+        //// get the cell value type
+        //CellRawValueType cellType = _excelProcessor.GetCellValueType(excelSheet, cell);
 
-        // does the setCellVal and cell value match?
-        bool res = ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrValue.ValueBase);
+        //// does the setCellVal and cell value match?
+        //bool res = ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrValue.ValueBase);
 
-        // yes
-        if (res)
-            return ApplySetCellVal(result, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
+        //// yes
+        //if (res)
+        //    return ApplySetCellVal(result, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
 
-        return ApplySetCellValAndType(result, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
+        //return ApplySetCellValAndType(result, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
+        return false;
     }
 
     /// <summary>
@@ -114,7 +120,7 @@ public class InstrSetColCellFuncExecutor
     /// <param name="instrColCellFunc"></param>
     /// <param name="instrValue"></param>
     /// <returns></returns>
-    public bool ExecSetCellValue_REWORK(Result result, IExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
+    public bool ExecSetCellValue_REWORK(Result result, ExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
     {
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
@@ -122,19 +128,19 @@ public class InstrSetColCellFuncExecutor
         // TODO:
 
         // get the cell
-        IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
+        //IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
-        if(cell == null)
-            // create a new cell, type is blank, a default style is created and set
-            cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
+        //if(cell == null)
+        //    // create a new cell, type is blank, a default style is created and set
+        //    cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
 
 
-        // get the cell value type
-        CellRawValueType cellType = _excelProcessor.GetCellValueType(excelSheet, cell);
+        //// get the cell value type
+        //CellRawValueType cellType = _excelProcessor.GetCellValueType(excelSheet, cell);
 
-        // the value to set is a string, exp: A.Cell="hello"
-        if (instrValue.ValueBase.ValueType == System.ValueType.String)
-            return SetCellValueString(result, _excelProcessor, excelSheet, rowNum, instrColCellFunc.ColNum - 1, cell, cellType, (instrValue.ValueBase as ValueString).Val);
+        //// the value to set is a string, exp: A.Cell="hello"
+        //if (instrValue.ValueBase.ValueType == System.ValueType.String)
+        //    return SetCellValueString(result, _excelProcessor, excelSheet, rowNum, instrColCellFunc.ColNum - 1, cell, cellType, (instrValue.ValueBase as ValueString).Val);
 
         // TODO: Number: Int/Double
 
@@ -156,11 +162,11 @@ public class InstrSetColCellFuncExecutor
     /// <param name="cellType"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    private bool SetCellValueString(Result result, IExcelProcessor excelProcessor, IExcelSheet sheet, int rowNum, int colNum, IExcelCell cell, CellRawValueType cellType, string value)
+    private bool SetCellValueString(Result result, ExcelProcessor excelProcessor, ExcelSheet sheet, int rowNum, int colNum, IExcelCell cell, CellRawValueType cellType, string value)
     {
-        // cell type and value type are identical
-        if(cellType == CellRawValueType.String)
-            return excelProcessor.SetCellValue(cell, value);
+        //// cell type and value type are identical
+        //if(cellType == CellRawValueType.String)
+        //    return excelProcessor.SetCellValue(cell, value);
 
         // type are differents, clone the style of the cell
         // TODO:

@@ -4,6 +4,7 @@ using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Process;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -34,7 +35,7 @@ public class InstrExecutor
 
     private ProgExecVarMgr _progExecVarMgr;
 
-    public InstrExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor, ProgExecVarMgr progExecVarMgr)
+    public InstrExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor, ProgExecVarMgr progExecVarMgr)
     {
         _logger = activityLogger;
         _progExecVarMgr= progExecVarMgr;

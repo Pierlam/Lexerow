@@ -4,7 +4,6 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
-using NPOI.OpenXmlFormats.Spreadsheet;
 
 /// <summary>
 /// InstrSetVar executor.

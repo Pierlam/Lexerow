@@ -2,6 +2,7 @@
 using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
+using OpenExcelSdk.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,16 +53,16 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
         Assert.AreEqual(1, result.Insights.IfCondMatchTotalCount);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "execSelectFilesOnExcel.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "execSelectFilesOnExcel.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // 9 -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // 13 -> 10: modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        //res = TestExcelChecker.CheckCellValue(excelFile, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -93,16 +94,15 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
         Assert.AreEqual(1, result.Insights.IfCondMatchTotalCount);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "varfilesStringOnExcelOk.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "varfilesStringOnExcelOk.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -135,16 +135,15 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
         Assert.AreEqual(1, result.Insights.IfCondMatchTotalCount);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "varAfilesStringOnExcelOk.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "varAfilesStringOnExcelOk.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // -> not modified
-        bool res = TestExcelChecker.CheckCellValue(wb, 0, "A2", 9);
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, "A3", 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 

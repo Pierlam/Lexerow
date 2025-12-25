@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0-Docs", "0-Docs", "{96A9E906-462C-4FD0-BD06-54C810FEB6EE}"
 EndProject
@@ -10,10 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2-Tests", "2-Tests", "{5C076BEC-6D0A-4DCA-A3D6-7D8E7DF7BA65}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Dev", "3-Dev", "{5A0618B3-A696-48B2-A415-B1A24EC493F8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4-Analysis", "4-Analysis", "{FFA7531F-5FB2-4F15-B375-A42A25AB5219}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "7-Pub", "7-Pub", "{A98458A2-991D-41D3-AD45-231AF49CC449}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Core", "3-Core", "{439A6630-3A95-4252-8296-BB2C0F11387D}"
 EndProject

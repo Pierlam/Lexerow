@@ -4,7 +4,8 @@ using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
-using NPOI.SS.Formula.Functions;
+using OpenExcelSdk;
+using OpenExcelSdk.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,9 @@ internal class InstrOnSheetExecutor
 {
     private IActivityLogger _logger;
 
-    private IExcelProcessor _excelProcessor;
+    private ExcelProcessor _excelProcessor;
 
-    public InstrOnSheetExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrOnSheetExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -78,7 +79,12 @@ internal class InstrOnSheetExecutor
         if (ctx.ExcelSheet == null)
         {
             // get the sheet from excel
-            ctx.ExcelSheet = _excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum - 1);
+            //ctx.ExcelSheet = _excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum - 1);
+            if(!_excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum, out ExcelSheet excelSheet, out ExcelError excelError))
+            {
+                return result.AddError(ErrorCode.UnableFindSheetByNum, instrOnSheet.FirstScriptToken(), excelError.Exception);
+            }
+            ctx.ExcelSheet= excelSheet;
 
             // process datarow of the current sheet
             InstrProcessRow instrProcessRow = new InstrProcessRow(instrOnSheet.FirstScriptToken(), instrOnSheet.ListInstrForEachRow);

@@ -3,9 +3,6 @@ using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.Utils;
-using NPOI.Util;
-using Org.BouncyCastle.Utilities.Collections;
-using System.Collections.Generic;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 

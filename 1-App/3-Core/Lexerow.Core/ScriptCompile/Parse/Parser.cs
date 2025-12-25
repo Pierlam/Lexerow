@@ -4,7 +4,6 @@ using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
-using Org.BouncyCastle.Utilities.Collections;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 

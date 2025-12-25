@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Metrics;
+﻿using OpenExcelSdk.System;
+using System.Diagnostics.Metrics;
 
 namespace Lexerow.Core.System;
 
@@ -58,7 +59,7 @@ public class ResultError
         ColNum = colNum;
     }
 
-    public ResultError(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public ResultError(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
         ErrorCode = errorCode;
@@ -85,7 +86,7 @@ public class ResultError
     public int LineNum { get; set; } = 0;
     public int ColNum { get; set; } = 0;
 
-    public CellRawValueType CellValueType { get; set; } = CellRawValueType.Unknow;
+    public ExcelCellType CellValueType { get; set; } = ExcelCellType.Undefined;
 
     public Exception? Exception { get; set; } = null;
 

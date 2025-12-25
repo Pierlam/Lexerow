@@ -3,6 +3,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Process;
+using OpenExcelSdk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,9 @@ public class InstrRowExecutor
 {
     private IActivityLogger _logger;
 
-    private IExcelProcessor _excelProcessor;
+    private ExcelProcessor _excelProcessor;
 
-    public InstrRowExecutor(IActivityLogger activityLogger, IExcelProcessor excelProcessor)
+    public InstrRowExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor)
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
@@ -38,7 +39,7 @@ public class InstrRowExecutor
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrRowExecutor.ExecInstrProcessRow", string.Empty);
 
         // next data row exists?
-        int lastRowNum = _excelProcessor.GetLastRowNum(ctx.ExcelSheet);
+        int lastRowNum = _excelProcessor.GetLastRowIndex(ctx.ExcelSheet);
         if (instrProcessRow.RowNum > lastRowNum)
         {
             // no more datarow to process, go back to OnSheet instr

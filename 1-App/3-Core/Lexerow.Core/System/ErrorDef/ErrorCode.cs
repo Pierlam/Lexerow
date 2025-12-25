@@ -107,30 +107,29 @@ public enum ErrorCode
     FileNotFound,
 
     //-----Excel errors
-    ExcelCellIsEmpty,
-
-    ExcelCellTypeNotManaged,
+    ExcelError,
 
     ExcelUnableOpenFile,
     ExcelUnableCloseFile,
     ExcelUnableGetSheet,
+
+    ExcelCellIsEmpty,
+
+    ExcelCellTypeNotManaged,
 
     ExcelCellNotUnique,
     ExcelFuncNameIsEmpty,
     ExcelColNameIsWrong,
     ExcelFuncNameIsWrong,
 
-    CompOperatorIsEmpty,
-    CompOperatorIsWrong,
-
     ExcelWrongListCols,
-
     ExcelColNameIsEmpty,
 
     /// <summary>
     /// All cells of a row are empty.
     /// </summary>
     ExcelRowIsEmpty,
+
 
     AtLeastOneInstrThenExpected,
     AtLeastOneInstrIfColThenExpected,
@@ -139,6 +138,9 @@ public enum ErrorCode
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
     ExecIfCondTypeMismatch,
+
+    CompOperatorIsEmpty,
+    CompOperatorIsWrong,
 
     ItemsShouldBeNotNullAndUnique,
 

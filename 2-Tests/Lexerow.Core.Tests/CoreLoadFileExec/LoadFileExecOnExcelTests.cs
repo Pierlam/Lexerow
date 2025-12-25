@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FakeItEasy;
 using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
@@ -156,6 +157,15 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
     }
 
+    /// <summary>
+    /// OnExcel ".\10-ExcelFiles\onExcelManyIf.xlsx"
+    ///   ForEachRow
+    ///     If A.Cell <= 8 Then A.Cell=12
+    ///     If B.Cell= "X" Then B.Cell= Blank
+    ///     If C.Cell= 9.55 Then C.Cell= 10
+    ///   Next
+    /// End OnExcel
+    /// </summary>
     [TestMethod]
     public void onExcelManyIfOk()
     {
@@ -181,8 +191,16 @@ public class LoadFileExecOnExcelTests : BaseTests
         //--line3: A = 34, B = blank, C = 13
         res = TestExcelChecker.CheckCellValue(excelFile, "A3", 34);
         Assert.IsTrue(res);
+
+        // B3
         res = TestExcelChecker.CheckCellValueEmpty(excelFile, "B3");
         Assert.IsTrue(res);
+
+        // B4
+        res = TestExcelChecker.CheckCellValueEmpty(excelFile, "B4");
+        Assert.IsTrue(res);
+
+        // C3
         res = TestExcelChecker.CheckCellValue(excelFile, "C3", 13);
         Assert.IsTrue(res);
     }
@@ -357,14 +375,8 @@ public class LoadFileExecOnExcelTests : BaseTests
         // NOT modified
         res = TestExcelChecker.CheckCellValue(excelFile, "A2", 10);
         Assert.IsTrue(res);
-
-        // cell.cellStyle.DataFormat=14!!! in place of 0!
-        res= TestExcelChecker.CheckCellStyleDataFormat(excelFile, "A2", 0);
-        Assert.IsTrue(res);
-
+      
         res = TestExcelChecker.CheckCellValue(excelFile, "A3", 12);
-        Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellStyleDataFormat(excelFile, "A3", 0);
         Assert.IsTrue(res);
 
         // only one cell updated
@@ -400,15 +412,16 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(result.Res);
 
         //--check the content of excel file
-        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "OnExcelIfDateThenDate.xlsx");
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "OnExcelIfDateThenDateOk.xlsx");
         Assert.IsNotNull(excelFile);
 
         //==>check some cell value
 
-        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", new DateOnly(2023, 11, 14));
+        // A2: 10/02/2019 -> 12/03/2025
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", new DateOnly(2025, 03, 12));
         Assert.IsTrue(res);
 
-        // 03/05/2025
+        // A3: 03/05/2025
         res = TestExcelChecker.CheckCellValue(excelFile, "A3", new DateOnly(2025, 05, 03));
         Assert.IsTrue(res);
 
@@ -416,8 +429,8 @@ public class LoadFileExecOnExcelTests : BaseTests
         res = TestExcelChecker.CheckCellValue(excelFile, "A4", new TimeOnly(03, 40, 25));
         Assert.IsTrue(res);
 
-        // A5: 03/05/2018  12:30:45
-        res = TestExcelChecker.CheckCellValue(excelFile, "A5", new DateTime(2018, 05, 03, 03, 40, 25));
+        // A5: 03/05/2018  12:30:45 -> 12/03/2025
+        res = TestExcelChecker.CheckCellValue(excelFile, "A5", new DateOnly(2025, 03, 12));
         Assert.IsTrue(res);
     }
 

@@ -40,7 +40,6 @@ public class InstrSetColCellFuncExecutor
     public bool ExecSetCellNull(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        //IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
         _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
 
         if (cell == null)
@@ -63,16 +62,13 @@ public class InstrSetColCellFuncExecutor
     public bool ExecSetCellBlank(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        //IExcelCell cell = _excelProcessor.GetCellAt(sheet, rowNum, instrColCellFunc.ColNum - 1);
         _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
 
         if (cell == null)
             return true;
 
-        // create a new cell object
-        //_excelProcessor.SetCellValueBlank(cell);
-        throw new Exception("TODO: SetCellEmpty()");
-        return true;
+        // clear the cell value
+        return _excelProcessor.SetCellValue(sheet, cell, string.Empty, out error); 
     }
 
     /// <summary>
@@ -88,71 +84,12 @@ public class InstrSetColCellFuncExecutor
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
         // get the cell
-        //IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
         _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
         if (cell == null)
             _excelProcessor.CreateCell(sheet, instrColCellFunc.ColNum, rowNum, out cell, out error);
 
         return ApplySetCellVal(result, _excelProcessor, sheet, cell, instrValue.ValueBase);
-        //_excelProcessor.SetCellValue(sheet, cell, )
-
-        //if (cell == null)
-        //    // create a new cell object
-        //    cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-
-        //// get the cell value type
-        //CellRawValueType cellType = _excelProcessor.GetCellValueType(excelSheet, cell);
-
-        //// does the setCellVal and cell value match?
-        //bool res = ExcelExtendedUtils.MatchCellTypeAndIfComparison(cellType, instrValue.ValueBase);
-
-        //// yes
-        //if (res)
-        //    return ApplySetCellVal(result, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
-
-        //return ApplySetCellValAndType(result, _excelProcessor, excelSheet, cell, instrValue.ValueBase);
-        return false;
     }
-
-    /// <summary>
-    /// Under construction!
-    /// next version to use.
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="excelSheet"></param>
-    /// <param name="rowNum"></param>
-    /// <param name="instrColCellFunc"></param>
-    /// <param name="instrValue"></param>
-    /// <returns></returns>
-    public bool ExecSetCellValue_REWORK(Result result, ExcelSheet excelSheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
-    {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
-
-        // if the row doesn't exists!!
-        // TODO:
-
-        // get the cell
-        //IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-
-        //if(cell == null)
-        //    // create a new cell, type is blank, a default style is created and set
-        //    cell = _excelProcessor.CreateCell(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-
-
-        //// get the cell value type
-        //CellRawValueType cellType = _excelProcessor.GetCellValueType(excelSheet, cell);
-
-        //// the value to set is a string, exp: A.Cell="hello"
-        //if (instrValue.ValueBase.ValueType == System.ValueType.String)
-        //    return SetCellValueString(result, _excelProcessor, excelSheet, rowNum, instrColCellFunc.ColNum - 1, cell, cellType, (instrValue.ValueBase as ValueString).Val);
-
-        // TODO: Number: Int/Double
-
-        // TODO: Date
-
-        return true;
-    }
-
 
     /// <summary>
     /// Set a value into a cell that exists.

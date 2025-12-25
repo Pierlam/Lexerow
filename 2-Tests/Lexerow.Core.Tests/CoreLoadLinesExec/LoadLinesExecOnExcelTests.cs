@@ -39,12 +39,12 @@ public class LoadLinesExecOnExcelTests : BaseTests
         ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "datLinesRunOnExcel1.xlsx");
         Assert.IsNotNull(excelFile);
 
-        // r1, c0: 9  -> not modified
-        bool res = TestExcelChecker.CheckCellValue(excelFile, "A1", 9);
+        // A2: 9  -> not modified
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
-        // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 10);
+        // A3: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 

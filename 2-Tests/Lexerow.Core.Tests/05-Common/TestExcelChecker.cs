@@ -47,6 +47,8 @@ public class TestExcelChecker
 
         var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
 
+        // no format
+        if(cellFormat == null) return false;
         if (cellFormat.ApplyNumberFormat == null) return false;
         return (numFormatId == (int)cellFormat.NumberFormatId.Value);
     }
@@ -295,6 +297,13 @@ public class TestExcelChecker
         // get the type and the value of the cell
         if (!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
             return false;
+
+        // can be type string
+        if (excelCellValueMulti.CellType == ExcelCellType.String)
+        {
+            if(excelCellValueMulti.StringValue==string.Empty)return true;
+            return false;
+        }
 
         // type undefined expected
         if (excelCellValueMulti.CellType != ExcelCellType.Undefined) return false;

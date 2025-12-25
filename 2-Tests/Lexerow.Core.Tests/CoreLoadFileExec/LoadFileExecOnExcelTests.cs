@@ -42,6 +42,9 @@ public class LoadFileExecOnExcelTests : BaseTests
         Assert.IsTrue(res);
     }
 
+    /// <summary>
+    /// If A.Cell>B.Cell Then C.Cell=10
+    /// </summary>
     [TestMethod]
     public void IfACellGreaterBCellOk()
     {

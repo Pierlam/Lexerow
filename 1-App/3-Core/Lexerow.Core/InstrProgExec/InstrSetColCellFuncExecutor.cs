@@ -1,7 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Utils;
@@ -91,6 +90,11 @@ public class InstrSetColCellFuncExecutor
         // get the cell
         //IExcelCell cell = _excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
         _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
+        if (cell == null)
+            _excelProcessor.CreateCell(sheet, instrColCellFunc.ColNum, rowNum, out cell, out error);
+
+        return ApplySetCellVal(result, _excelProcessor, sheet, cell, instrValue.ValueBase);
+        //_excelProcessor.SetCellValue(sheet, cell, )
 
         //if (cell == null)
         //    // create a new cell object
@@ -149,29 +153,6 @@ public class InstrSetColCellFuncExecutor
         return true;
     }
 
-    /// <summary>
-    /// Set a string value to a cell.
-    /// exp: A.Cell="hello"
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="excelProcessor"></param>
-    /// <param name="sheet"></param>
-    /// <param name="rowNum"></param>
-    /// <param name="colNum"></param>
-    /// <param name="cell"></param>
-    /// <param name="cellType"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    private bool SetCellValueString(Result result, ExcelProcessor excelProcessor, ExcelSheet sheet, int rowNum, int colNum, IExcelCell cell, CellRawValueType cellType, string value)
-    {
-        //// cell type and value type are identical
-        //if(cellType == CellRawValueType.String)
-        //    return excelProcessor.SetCellValue(cell, value);
-
-        // type are differents, clone the style of the cell
-        // TODO:
-        return true;
-    }
 
     /// <summary>
     /// Set a value into a cell that exists.
@@ -182,105 +163,68 @@ public class InstrSetColCellFuncExecutor
     /// <param name="cell"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    private bool ApplySetCellVal(Result result, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
+    private bool ApplySetCellVal(Result result, ExcelProcessor excelProcessor, ExcelSheet sheet, ExcelCell cell, ValueBase value)
     {
+        ExcelError error;
+
         if (value.ValueType == System.ValueType.Int)
         {
             // set the new value to the cell
-            excelProcessor.SetCellValue(cell, (value as ValueInt).Val);
+            if(!excelProcessor.SetCellValue(sheet, cell, (value as ValueInt).Val, out error))
+                return result.AddError(ErrorUtils.Convert(error));
             return true;
         }
 
         if (value.ValueType == System.ValueType.Double)
         {
             // set the new value to the cell
-            excelProcessor.SetCellValue(cell, (value as ValueDouble).Val);
+            if(!excelProcessor.SetCellValue(sheet, cell, (value as ValueDouble).Val, out error))
+                return result.AddError(ErrorUtils.Convert(error));
             return true;
         }
 
         if (value.ValueType == System.ValueType.String)
         {
             // set the new value to the cell
-            excelProcessor.SetCellValue(cell, (value as ValueString).Val);
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.DateOnly)
-        {
-            // set the new value to the cell
-            excelProcessor.SetCellValue(cell, (value as ValueDateOnly).ToDouble());
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.TimeOnly)
-        {
-            // set the new value to the cell
-            excelProcessor.SetCellValue(cell, (value as ValueTimeOnly).ToDouble());
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.DateTime)
-        {
-            double dbVal = (value as ValueDateTime).ToDouble();
-
-            CellRawValueType cellType = excelProcessor.GetCellValueType(sheet, cell);
-            if (cellType == CellRawValueType.DateOnly)
-                // the cell is a dataOnly but the value to set is a DateTime -> remove the hour before set.
-                dbVal = Math.Truncate(dbVal);
-
-            // set the new value to the cell
-            excelProcessor.SetCellValue(cell, dbVal);
-            return true;
-        }
-
-        // type not managed
-        result.AddError(new ResultError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
-        return false;
-    }
-
-    private bool ApplySetCellValAndType(Result result, IExcelProcessor excelProcessor, IExcelSheet sheet, IExcelCell cell, ValueBase value)
-    {
-        if (value.ValueType == System.ValueType.String)
-        {
-            excelProcessor.SetCellValue(cell, (value as ValueString).Val);
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.Int)
-        {
-            excelProcessor.SetCellValue(cell, (value as ValueInt).Val);
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.Double)
-        {
-            excelProcessor.SetCellValue(cell, (value as ValueDouble).Val);
+            if(!excelProcessor.SetCellValue(sheet, cell, (value as ValueString).Val, out error))
+                return result.AddError(ErrorUtils.Convert(error));
             return true;
         }
 
         if (value.ValueType == System.ValueType.DateOnly)
         {
             string sysVarDateFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateFormatName);
-            bool sysVarForceDateFormat = _progExecVarMgr.GetProgExecSysVarAsBool(CoreInstr.SysVarForceDateFormatName);
 
-            excelProcessor.SetCellValueDateOnly(cell, value as ValueDateOnly);
+            // set the new value to the cell
+            if (!excelProcessor.SetCellValue(sheet, cell, (value as ValueDateOnly).Val, sysVarDateFormat, out error))
+                return result.AddError(ErrorUtils.Convert(error));
+
             return true;
         }
 
         if (value.ValueType == System.ValueType.DateTime)
         {
-            excelProcessor.SetCellValueDateTime(cell, value as ValueDateTime);
+            string sysVarDateTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
+
+            // set the new value to the cell
+            if (!excelProcessor.SetCellValue(sheet, cell, (value as ValueDateTime).Val, sysVarDateTimeFormat, out error))
+                return result.AddError(ErrorUtils.Convert(error));
+
             return true;
         }
 
         if (value.ValueType == System.ValueType.TimeOnly)
         {
-            excelProcessor.SetCellValueTimeOnly(cell, value as ValueTimeOnly);
+            string sysVarTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
+            // set the new value to the cell
+            if (!excelProcessor.SetCellValue(sheet, cell, (value as ValueTimeOnly).Val, sysVarTimeFormat, out error))
+                return result.AddError(ErrorUtils.Convert(error));
+
             return true;
         }
 
         // type not managed
-        result.AddError(ErrorCode.ExcelCellTypeNotManaged, value.ValueType.ToString());
+        result.AddError(new ResultError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
         return false;
     }
 }

@@ -130,11 +130,22 @@ public class TestExcelChecker
         if(!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
             return false;
 
-        // type double expected
-        if(excelCellValueMulti.CellType != ExcelCellType.Double)return false;
+        // can be a double value
+        if(excelCellValueMulti.CellType == ExcelCellType.Double)
+        {
+            // compare values
+            if (expectedValue != excelCellValueMulti.DoubleValue) return false;
+            return true;
+        }
 
-        // compare values
-        if(expectedValue != excelCellValueMulti.DoubleValue) return false;
+        // can be an int value
+        if (excelCellValueMulti.CellType == ExcelCellType.Integer)
+        {
+            // compare values
+            if (expectedValue != excelCellValueMulti.IntegerValue) return false;
+            return true;
+        }
+
 
         return true;
     }

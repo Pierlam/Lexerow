@@ -1,6 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Process;

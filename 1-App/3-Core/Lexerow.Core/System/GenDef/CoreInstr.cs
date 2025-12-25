@@ -38,10 +38,17 @@ public class CoreInstr
     /// 
     /// value in base1 (human readable).
     /// </summary>
-    public static int FirstDataRowNum = 2;
+    public static int FirstDataRowIndex = 2;
 
     //-system/builtin var
     public static string SysVarDateFormatName = "$DateFormat";
+
+    public static string SysVarDateTimeFormatName = "$DateTimeFormat";
+
+    public static string SysVarTimeFormatName = "$TimeFormat";
+
+    //--$CurrencyFormat
+    public static string SysVarCurrencyFormatName = "$CurrencyFormat";
 
     public static string SysVarForceDateFormatName = "$ForceDateFormat";
 }

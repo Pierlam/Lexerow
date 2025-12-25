@@ -1,4 +1,6 @@
-﻿namespace Lexerow.Core.System;
+﻿using OpenExcelSdk.System;
+
+namespace Lexerow.Core.System;
 
 /// <summary>
 ///  Result warning.
@@ -17,7 +19,7 @@ public class ResultWarning
         ErrorCode = errorCode;
     }
 
-    public ResultWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public ResultWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
         ErrorCode = errorCode;
@@ -49,7 +51,7 @@ public class ResultWarning
 
     public int ColNum { get; set; }
 
-    public CellRawValueType CellValueType { get; set; } = CellRawValueType.Unknow;
+    public ExcelCellType CellValueType { get; set; } = ExcelCellType.Undefined;
 
     public int Counter { get; set; } = 1;
 

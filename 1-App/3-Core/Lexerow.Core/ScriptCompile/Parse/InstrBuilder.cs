@@ -37,7 +37,7 @@ public class InstrBuilder
             // OnSheet
             if (scriptToken.Value.Equals(CoreInstr.InstrOnSheet, StringComparison.InvariantCultureIgnoreCase))
             {
-                InstrValue value= InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
+                InstrValue value= InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowIndex);
                 instrBase = new InstrOnSheet(scriptToken, value);
                 return true;
             }

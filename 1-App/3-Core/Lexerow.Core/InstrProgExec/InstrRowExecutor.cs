@@ -1,6 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Process;
 using OpenExcelSdk;
@@ -40,7 +39,7 @@ public class InstrRowExecutor
 
         // next data row exists?
         int lastRowNum = _excelProcessor.GetLastRowIndex(ctx.ExcelSheet);
-        if (instrProcessRow.RowNum > lastRowNum)
+        if (instrProcessRow.RowIndex > lastRowNum)
         {
             // no more datarow to process, go back to OnSheet instr
             ctx.StackInstr.Pop();
@@ -48,9 +47,9 @@ public class InstrRowExecutor
             return true;
         }
 
-        ctx.RowNum = instrProcessRow.RowNum;
+        ctx.RowNum = instrProcessRow.RowIndex;
         // prepare the next one
-        instrProcessRow.RowNum++;
+        instrProcessRow.RowIndex++;
 
         // update insights
         result.Insights.NewRowProcessed();
@@ -60,7 +59,7 @@ public class InstrRowExecutor
 
         ctx.StackInstr.Push(instrForEachRow);
 
-        _logger.LogExecEnd(ActivityLogLevel.Info, "InstrRowExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowNum);
+        _logger.LogExecEnd(ActivityLogLevel.Info, "InstrRowExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowIndex);
         return true;
     }
 

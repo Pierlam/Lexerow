@@ -1,6 +1,5 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Excel;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
@@ -79,8 +78,7 @@ internal class InstrOnSheetExecutor
         if (ctx.ExcelSheet == null)
         {
             // get the sheet from excel
-            //ctx.ExcelSheet = _excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum - 1);
-            if(!_excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum, out ExcelSheet excelSheet, out ExcelError excelError))
+            if(!_excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum-1, out ExcelSheet excelSheet, out ExcelError excelError))
             {
                 return result.AddError(ErrorCode.UnableFindSheetByNum, instrOnSheet.FirstScriptToken(), excelError.Exception);
             }
@@ -93,9 +91,10 @@ internal class InstrOnSheetExecutor
             if(!GetFirstRowValue(result, ctx, progExecVarMgr, instrOnSheet.InstrFirstDataRow, out int val))
                 return false;
 
-            // translate in base0 from human readable base1
-            instrProcessRow.RowNum = val - 1;
-            instrProcessRow.ColNum = instrOnSheet.FirstColNum - 1;
+            instrProcessRow.RowIndex = val;
+            instrProcessRow.ColIndex = instrOnSheet.FirstColIndex;
+
+            _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", "RowIndex: " + val + ", ColIndex:" + instrOnSheet.FirstColIndex.ToString());
 
             // set to the first datarow
             ctx.StackInstr.Push(instrProcessRow);
@@ -126,7 +125,7 @@ internal class InstrOnSheetExecutor
 
         if (valueSet)
         {
-            // check the int value, should be >= 1
+            // check the int value, should be >= 0
             if (value < 1)
             {
                 result.AddError(ErrorCode.ParserValueIntWrong, instrFirstDataRow.FirstScriptToken());

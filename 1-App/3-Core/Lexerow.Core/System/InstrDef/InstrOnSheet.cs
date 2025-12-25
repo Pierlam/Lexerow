@@ -29,12 +29,6 @@ public class InstrOnSheet : InstrBase
     public string SheetName { get; set; } = string.Empty;
 
     /// <summary>
-    /// First row
-    /// Human readable, base1
-    /// </summary>
-    //public int FirstRowNum { get; set; } = 2;
-
-    /// <summary>
     /// First data row value or var or fct call.
     /// Human readable, base1
     /// </summary>
@@ -44,7 +38,7 @@ public class InstrOnSheet : InstrBase
     /// <summary>
     /// Human readable, base1
     /// </summary>
-    public int FirstColNum { get; set; } = 1;
+    public int FirstColIndex { get; set; } = 1;
 
     /// <summary>
     /// List of instr to apply on each row.

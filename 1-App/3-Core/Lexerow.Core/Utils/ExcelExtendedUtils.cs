@@ -23,6 +23,14 @@ public class ExcelExtendedUtils : ExcelUtils
         if (cellType == ExcelCellType.Integer && value.ValueType == System.ValueType.Int)
             return true;
 
+        // int - double
+        if (cellType == ExcelCellType.Integer && value.ValueType == System.ValueType.Double)
+            return true;
+
+        // double - int
+        if (cellType == ExcelCellType.Double && value.ValueType == System.ValueType.Int)
+            return true;
+
         if (cellType == ExcelCellType.DateOnly && value.ValueType == System.ValueType.DateOnly)
             return true;
 
@@ -58,8 +66,11 @@ public class ExcelExtendedUtils : ExcelUtils
         if (cellType == ExcelCellType.Integer && cellTypeB == ExcelCellType.Integer)
             return true;
 
-        // int and double ??
-        // TODO: to be defined
+        // int and double cases
+        if (cellType == ExcelCellType.Integer && cellTypeB == ExcelCellType.Double)
+            return true;
+        if (cellType == ExcelCellType.Double && cellTypeB == ExcelCellType.Integer)
+            return true;
 
         if (cellType == ExcelCellType.DateOnly && cellTypeB == ExcelCellType.DateOnly)
             return true;

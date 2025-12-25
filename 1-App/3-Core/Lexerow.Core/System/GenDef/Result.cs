@@ -44,10 +44,11 @@ public class Result
         Res = false;
     }
 
-    public void AddError(ResultError error)
+    public bool AddError(ResultError error)
     {
         this.ListError.Add(error);
         Res = false;
+        return false;
     }
 
     public ResultError AddError(ErrorCode errorCode, Exception exception, string msg)

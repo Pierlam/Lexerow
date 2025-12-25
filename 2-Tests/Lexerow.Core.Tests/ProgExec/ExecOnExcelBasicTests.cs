@@ -51,11 +51,11 @@ public class ExecOnExcelBasicTests : BaseTests
         ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcel1.xlsx");
         Assert.IsNotNull(excelFile);
 
-        // r1, c0: 9  -> not modified
+        // A2: 9  -> not modified
         res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
-        // r2, c0: 10 -> modified!
+        // A3: 10 -> modified!
         res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }

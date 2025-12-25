@@ -129,8 +129,20 @@ public class ProgExecVarMgr
     {
         ProgExecSysVar progExecSysVar;
 
-        //--$DateFormat="dd/MM/yyyy"
-        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarDateFormatName, new ValueString("dd/MM/yyyy"));
+        //--$DateFormat
+        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarDateFormatName, new ValueString("d/m/yyyy"));
+        ListSysExecVar.Add(progExecSysVar);
+
+        //--$DateTimeFormat
+        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarDateTimeFormatName, new ValueString("dd/mm/yyyy\\ hh:mm"));
+        ListSysExecVar.Add(progExecSysVar);
+
+        //--$TimeFormat
+        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarTimeFormatName, new ValueString("hh:mm:ss"));
+        ListSysExecVar.Add(progExecSysVar);
+
+        //--$CurrencyFormat
+        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarCurrencyFormatName, new ValueString("#,##0.00\\ \"€\""));
         ListSysExecVar.Add(progExecSysVar);
 
         //--$ForceDateFormat=false

@@ -108,7 +108,7 @@ public class InstrOnExcel : InstrBase
     /// <param name="sheetNum"></param>
     public void CreateOnSheet(ScriptToken scriptToken, int sheetNum)
     {
-        InstrValue value = InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
+        InstrValue value = InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowIndex);
 
         InstrOnSheet instrOnSheet = new InstrOnSheet(scriptToken, value);
         instrOnSheet.SheetNum = sheetNum;

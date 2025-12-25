@@ -80,8 +80,8 @@ public class InstrIfThenElseExecutor
             var instrComparison = ctx.PrevInstrExecuted as InstrComparison;
             if (instrComparison != null)
             {
-                _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseExecutor.ExecInstrIf", "Prev was If comparison, result: " + instrIf.Result.ToString());
                 instrIf.Result = instrComparison.Result;
+                _logger.LogExecStart(ActivityLogLevel.Info, "InstrIfThenElseExecutor.ExecInstrIf", "Prev was If comparison, result: " + instrIf.Result.ToString());
 
                 // remove the if from the stack
                 ctx.StackInstr.Pop();

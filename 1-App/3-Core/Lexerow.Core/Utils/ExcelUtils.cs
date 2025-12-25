@@ -11,75 +11,6 @@ public class ExcelUtils
     public const int ExcelRowNumMax = 1048576;
 
     /// <summary>
-    /// Split a list of excel columns or range of columns.
-    /// Check the validity.
-    /// exp: A;B-D,G;H
-    /// </summary>
-    /// <param name="str"></param>
-    /// <param name="listRangeCols"></param>
-    /// <returns></returns>
-    public static bool DecodeListRangeCols(string str, out ExcelListColsOrRangeCols listRangeCols)
-    {
-        listRangeCols = new ExcelListColsOrRangeCols();
-
-        if (string.IsNullOrEmpty(str))
-            // empty, not an error
-            return true;
-
-        string[] arrColRange = str.Split(';');
-        // scan each item
-        foreach (string s in arrColRange)
-        {
-            string item = s.Trim();
-
-            // is it a col or a range of col?
-            if (item.Contains("-"))
-            {
-                // decode the range
-                if (!DecodeRangeCols(item, out ExcelRangeCols excelRangeCols))
-                    return false;
-                listRangeCols.ListRangeCols.Add(excelRangeCols);
-                continue;
-            }
-            // its a unique column, decode it
-            int colIdx = ColumnNameToNumber(item);
-            if (colIdx < 0) return false;
-
-            // save
-            ExcelCol col = new ExcelCol(item, colIdx);
-            listRangeCols.ListRangeCols.Add(col);
-        }
-
-        // check the content, columns should ordered
-        if (!CheckExcelListRangeColsIsOrdered(listRangeCols))
-            return false;
-
-        return true;
-    }
-
-    public static bool DecodeRangeCols(string item, out ExcelRangeCols excelRangeCols)
-    {
-        excelRangeCols = null;
-        string[] arrItems = item.Split("-");
-
-        // should have 3 parts
-        if (arrItems.Count() != 2)
-            return false;
-
-        // decode the col start
-        int colStartIdx = ColumnNameToNumber(arrItems[0]);
-        if (colStartIdx < 0) return false;
-
-        // decode the col end
-        int colEndIdx = ColumnNameToNumber(arrItems[1]);
-        if (colEndIdx < 0) return false;
-
-        // save the range
-        excelRangeCols = new ExcelRangeCols(arrItems[0], colStartIdx, arrItems[1], colEndIdx);
-        return true;
-    }
-
-    /// <summary>
     /// Convert an Excel column name (letter) to a number.
     ///
     /// Return the value of the column in base1.
@@ -231,45 +162,5 @@ public class ExcelUtils
             return false;
 
         return CheckMaxColAndRowValue(colIndex, rowIndex);
-    }
-
-    /// <summary>
-    /// check the content, columns should ordered.
-    /// </summary>
-    /// <param name="listRangeCells"></param>
-    /// <returns></returns>
-    public static bool CheckExcelListRangeColsIsOrdered(ExcelListColsOrRangeCols listRangeCells)
-    {
-        int currCol = 0;
-
-        foreach (var colsBase in listRangeCells.ListRangeCols)
-        {
-            // its a Col
-            ExcelCol excelCol = colsBase as ExcelCol;
-            if (excelCol != null)
-            {
-                if (excelCol.ColumnInt < currCol)
-                    // error, should be greater
-                    return false;
-                currCol = excelCol.ColumnInt;
-                continue;
-            }
-
-            // its a range of cols
-            ExcelRangeCols excelRangeCols = colsBase as ExcelRangeCols;
-            if (excelRangeCols != null)
-            {
-                // greater
-                if (excelRangeCols.ColumnStartInt < currCol)
-                    return false;
-                currCol = excelRangeCols.ColumnStartInt;
-
-                if (excelRangeCols.ColumnEndInt < currCol)
-                    return false;
-                currCol = excelRangeCols.ColumnEndInt;
-            }
-        }
-
-        return true;
     }
 }

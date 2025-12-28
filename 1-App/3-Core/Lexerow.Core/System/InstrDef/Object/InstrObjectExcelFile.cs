@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using OpenExcelSdk.System;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.System.InstrDef.Object;
 

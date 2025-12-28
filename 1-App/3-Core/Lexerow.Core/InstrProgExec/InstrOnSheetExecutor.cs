@@ -4,12 +4,6 @@ using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
 using OpenExcelSdk;
-using OpenExcelSdk.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.InstrProgExec;
 

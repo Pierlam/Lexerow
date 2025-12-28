@@ -1,5 +1,5 @@
 ﻿using Lexerow.Core.System;
-using OpenExcelSdk.System;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.Utils;
 

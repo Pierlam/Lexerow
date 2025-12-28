@@ -1,7 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
-using OpenExcelSdk.System;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.Tests.CoreLoadLinesExec;
 

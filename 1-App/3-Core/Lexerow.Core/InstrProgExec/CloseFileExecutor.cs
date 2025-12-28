@@ -1,7 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.Utils;
 using OpenExcelSdk;
-using OpenExcelSdk.System;
 
 namespace Lexerow.Core.InstrProgExec;
 

@@ -1,4 +1,4 @@
-﻿using OpenExcelSdk.System;
+﻿using OpenExcelSdk;
 
 namespace Lexerow.Core.System;
 

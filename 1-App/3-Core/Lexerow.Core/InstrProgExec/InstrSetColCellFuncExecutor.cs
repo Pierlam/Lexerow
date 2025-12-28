@@ -4,9 +4,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Utils;
-using Microsoft.VisualBasic;
 using OpenExcelSdk;
-using OpenExcelSdk.System;
 
 namespace Lexerow.Core.InstrProgExec;
 

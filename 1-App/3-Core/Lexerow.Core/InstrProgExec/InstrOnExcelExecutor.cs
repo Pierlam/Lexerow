@@ -6,7 +6,6 @@ using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.System.InstrDef.Process;
 using Lexerow.Core.Utils;
 using OpenExcelSdk;
-using OpenExcelSdk.System;
 
 namespace Lexerow.Core.InstrProgExec;
 

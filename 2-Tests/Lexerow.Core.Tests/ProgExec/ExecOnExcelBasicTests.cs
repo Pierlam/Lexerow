@@ -7,7 +7,7 @@ using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
-using OpenExcelSdk.System;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.Tests.ProgExec;
 

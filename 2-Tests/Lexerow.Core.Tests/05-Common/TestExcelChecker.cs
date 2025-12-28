@@ -2,7 +2,6 @@
 using Lexerow.Core.Utils;
 using Microsoft.Testing.Platform.OutputDevice;
 using OpenExcelSdk;
-using OpenExcelSdk.System;
 
 namespace Lexerow.Core.Tests._20_Utils;
 

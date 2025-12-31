@@ -22,9 +22,9 @@ public class ExecOnExcelBasicTests : BaseTests
     /// End OnExcel
     ///
     ///--excel content:
-    ///  age
-    ///   9
-    ///  13  -> 10
+    ///  A1: age
+    ///  A2: 9
+    ///  A3: 13  -> modified to: 10
     ///
     /// </summary>
     [TestMethod]

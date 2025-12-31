@@ -63,7 +63,6 @@ public class TestExcelChecker
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
@@ -82,7 +81,6 @@ public class TestExcelChecker
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
@@ -116,16 +114,13 @@ public class TestExcelChecker
     {
         // get the first sheet
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
         ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
-            return false;
 
         // can be a double value
         if(excelCellValue.CellType == ExcelCellType.Double)
@@ -158,16 +153,13 @@ public class TestExcelChecker
     {
         // get the first sheet
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
         ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
-            return false;
 
         // type string expected
         if (excelCellValue.CellType != ExcelCellType.String) return false;
@@ -189,16 +181,13 @@ public class TestExcelChecker
     {
         // get the first sheet
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
         ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
-            return false;
 
         // type dateOnly expected
         if (excelCellValue.CellType != ExcelCellType.DateOnly) return false;
@@ -220,16 +209,13 @@ public class TestExcelChecker
     {
         // get the first sheet
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
         ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
-            return false;
 
         // type dateTime expected
         if (excelCellValue.CellType != ExcelCellType.DateTime) return false;
@@ -251,16 +237,13 @@ public class TestExcelChecker
     {
         // get the first sheet
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
         ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
-            return false;
 
         // type TimeOnly expected
         if (excelCellValue.CellType != ExcelCellType.TimeOnly) return false;
@@ -282,16 +265,13 @@ public class TestExcelChecker
     {
         // get the first sheet
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
-            return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
         ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
-            return false;
 
         // can be type string
         if (excelCellValue.CellType == ExcelCellType.String)

@@ -190,12 +190,13 @@ https://github.com/Pierlam/Lexerow/wiki
 
 # Dependency
 
-To access Excel content file, Lexerow uses the great NPOI library available on Nuget here:
+To access Excel content file, Lexerow uses now the OpenExcelSdk library available on Nuget here:
 
-https://www.nuget.org/packages/NPOI
+https://www.nuget.org/packages/OpenExcelSdk 
 
-NPOI source code is hosted on github here:
+Source code is hosted on github here:
 
-https://github.com/nissl-lab/npoi
+https://github.com/Pierlam/OpenExcelSdk
+
 
 

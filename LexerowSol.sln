@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0-Docs", "0-Docs", "{96A9E906-462C-4FD0-BD06-54C810FEB6EE}"
+	ProjectSection(SolutionItems) = preProject
+		0-Docs\Readmemd\datarow_cells_empty_2025-04-13.jpg = 0-Docs\Readmemd\datarow_cells_empty_2025-04-13.jpg
+		0-Docs\Readmemd\datarow_cells_set_zero_2025-04-13.jpg = 0-Docs\Readmemd\datarow_cells_set_zero_2025-04-13.jpg
+		0-Docs\Readmemd\datatable1.xlsx = 0-Docs\Readmemd\datatable1.xlsx
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-App", "1-App", "{506E1A7E-8425-4392-859A-2F37B0ADF159}"
 EndProject

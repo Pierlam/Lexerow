@@ -164,6 +164,7 @@ public enum ErrorCode
 
     LexerFoundSgtringBadFormatted,
     LexerFoundCharUndefined,
+    LexerFoundSystNameWrong,
 
     //--syntax analyzer error codes
     ParserCaseNotManaged,

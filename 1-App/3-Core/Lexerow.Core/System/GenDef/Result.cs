@@ -68,7 +68,7 @@ public class Result
 
     public ResultError AddError(ErrorCode errorCode, int numLine, int colLine, string msg)
     {
-        var resultError = new ResultError(errorCode, numLine, 0, msg);
+        var resultError = new ResultError(errorCode, numLine, colLine, msg);
         ListError.Add(resultError);
         Res = false;
         return resultError;

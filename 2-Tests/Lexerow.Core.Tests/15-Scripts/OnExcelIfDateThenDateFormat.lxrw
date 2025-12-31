@@ -1,4 +1,4 @@
-﻿# check the col A but modify the colB!
+﻿# modify a system var
 
 $DateFormat="yyyy-mm-dd"
 

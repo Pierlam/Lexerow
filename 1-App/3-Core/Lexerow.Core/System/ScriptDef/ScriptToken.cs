@@ -19,6 +19,13 @@ public enum ScriptTokenType
     Name,
 
     /// <summary>
+    /// An item can be: a system variable or something like that.
+    /// </summary>
+    SystName,
+
+    WrongSystName,
+
+    /// <summary>
     /// Separator
     /// exp: =,;.< >()+-*/  ...
     /// </summary>

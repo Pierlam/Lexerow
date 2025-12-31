@@ -26,28 +26,42 @@ public class Lexer
 
         listScriptLineTokens = new List<ScriptLineTokens>();
 
-        int i = -1;
+        int lineIdx = -1;
         foreach (ScriptLine scriptLine in script.ScriptLines)
         {
-            i++;
+            lineIdx++;
 
             // parse the line, split in tokens
-            if (!stringParser.Split(i, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType))
+            if (!stringParser.Split(lineIdx, scriptLine.Line, lac.Separators, lac.StringSep, lac.CommentTag, lac.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType))
             {
+                // get the column index in the script line where the error occurs
+                int colIdx = 0;
+                if (listScriptTokens.Count>0)
+                    colIdx = listScriptTokens[listScriptTokens.Count - 1].ColNum;
+                
                 if (lastTokenType == ScriptTokenType.WrongNumber)
                 {
-                    var error = result.AddError(ErrorCode.LexerFoundDoubleWrong, scriptLine.NumLine, 0, scriptLine.Line);
+                    var error = result.AddError(ErrorCode.LexerFoundDoubleWrong, lineIdx, colIdx, scriptLine.Line);
                     logger.LogCompilEndError(error, "Lexer.Process", script.Name);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.StringBadFormed)
                 {
-                    result.AddError(new ResultError(ErrorCode.LexerFoundSgtringBadFormatted, scriptLine.Line));
+                    var error = result.AddError(ErrorCode.LexerFoundSgtringBadFormatted, lineIdx, colIdx, scriptLine.Line);
+                    logger.LogCompilEndError(error, "Lexer.Process", script.Name);
                     return false;
                 }
+                if (lastTokenType == ScriptTokenType.WrongSystName)
+                {
+                    var error = result.AddError(ErrorCode.LexerFoundSystNameWrong, lineIdx, colIdx, scriptLine.Line);
+                    logger.LogCompilEndError(error, "Lexer.Process", script.Name);
+                    return false;
+                }
+
                 if (lastTokenType == ScriptTokenType.Undefined)
                 {
-                    result.AddError(new ResultError(ErrorCode.LexerFoundCharUndefined, scriptLine.Line));
+                    var error = result.AddError(ErrorCode.LexerFoundCharUndefined, lineIdx, colIdx, scriptLine.Line);
+                    logger.LogCompilEndError(error, "Lexer.Process", script.Name);
                     return false;
                 }
             }
@@ -58,7 +72,7 @@ public class Lexer
 
             ScriptLineTokens scriptLineTokens = new ScriptLineTokens();
             scriptLineTokens.ScriptLine = scriptLine.Line;
-            scriptLineTokens.Numline = i;
+            scriptLineTokens.Numline = lineIdx;
             scriptLineTokens.ListScriptToken.AddRange(listScriptTokens);
             listScriptLineTokens.Add(scriptLineTokens);
         }

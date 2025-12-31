@@ -11,4 +11,9 @@ public class LexerConfig
     public char StringSep = '\"';
 
     public string CommentTag = "#";
+
+    /// <summary>
+    /// Used to define system variable like: $DateFormat
+    /// </summary>
+    public char SystVarStartTag = '$';
 }

@@ -15,7 +15,6 @@ public class InstrNameObject : InstrBase
         Name = scriptToken.Value;
     }
 
-
     /// <summary>
     /// The name of the object.
     /// Coming from the script token.
@@ -26,5 +25,4 @@ public class InstrNameObject : InstrBase
     {
         return "NameObject: " + Name;
     }
-
 }

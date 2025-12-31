@@ -1,6 +1,4 @@
 ﻿using Lexerow.Core.System.GenDef;
-using Lexerow.Core.System.InstrDef.FuncCall;
-using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
@@ -99,7 +97,6 @@ public class InstrOnExcel : InstrBase
     /// base0.
     /// </summary>
     public int FileToProcessNum { get; set; } = -1;
-
 
     /// <summary>
     /// Create a new OnSheet instr, becomes the default one.

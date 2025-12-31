@@ -1,7 +1,7 @@
 ﻿namespace Lexerow.Core.System.GenDef;
 
 public class CoreInstr
-{    
+{
     public const string InstrOnExcel = "OnExcel";
     public const string InstrOnSheet = "OnSheet";
     public const string InstrFirstRow = "FirstRow";
@@ -27,6 +27,7 @@ public class CoreInstr
 
     //--function names
     public const string InstrFuncSelectFiles = "SelectFiles";
+
     public const string InstrFuncDate = "Date";
     public const string InstrFuncDateTime = "DateTime";
     public const string InstrFuncTime = "Time";
@@ -35,7 +36,7 @@ public class CoreInstr
     /// Used in OnExcel instr.
     /// The first data row to process.
     /// (after the header row)
-    /// 
+    ///
     /// value in base1 (human readable).
     /// </summary>
     public static int FirstDataRowIndex = 2;

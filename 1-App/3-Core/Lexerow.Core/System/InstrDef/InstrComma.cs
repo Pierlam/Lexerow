@@ -13,5 +13,4 @@ public class InstrComma : InstrBase
     {
         return ",";
     }
-
 }

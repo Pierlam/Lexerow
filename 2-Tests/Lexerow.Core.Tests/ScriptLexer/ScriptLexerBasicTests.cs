@@ -245,6 +245,5 @@ public class ScriptLexerBasicTests
         Assert.IsTrue(TestTokensHelper.TestSep(lineTokens, idx++, ","));
         Assert.IsTrue(TestTokensHelper.TestNumberInt(lineTokens, idx++, 23));
         Assert.IsTrue(TestTokensHelper.TestSep(lineTokens, idx++, ")"));
-
     }
 }

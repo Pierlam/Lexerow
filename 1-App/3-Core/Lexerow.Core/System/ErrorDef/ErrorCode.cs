@@ -1,6 +1,5 @@
 ﻿namespace Lexerow.Core.System;
 
-
 /// <summary>
 /// Error/warning code.
 /// </summary>
@@ -132,7 +131,6 @@ public enum ErrorCode
     /// </summary>
     ExcelRowIsEmpty,
 
-
     AtLeastOneInstrThenExpected,
     AtLeastOneInstrIfColThenExpected,
 
@@ -181,7 +179,7 @@ public enum ErrorCode
     ParserFctParamCountWrong,
     ParserFctParamTypeWrong,
     ParserFctParamVarNotDefined,
-    
+
     ParserValueStringExpected,
     ParserValueIntExpected,
     ParserValueIntWrong,
@@ -203,6 +201,7 @@ public enum ErrorCode
 
     //--run program, instructions
     ExecUnableOpenFile,
+
     ExecUnableCloseFile,
 
     ExecInstrNotManaged,
@@ -225,7 +224,6 @@ public enum ErrorCode
     ExecFuncNotExists,
 
     ExecFuncOneParamExpected,
-
 
     ExecNoFileSelected,
 

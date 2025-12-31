@@ -52,7 +52,6 @@ void TestGetFiles()
 ///  In /CI -> In case Insensitive
 ///  In    -> In case Sensitive
 
-
 //TestCore();
 
 //Test2();
@@ -67,7 +66,5 @@ if (a <= 10) { }
 //DateSandBox.TestReadDates();
 
 //DateSandBox.TestWriteDate();
-
-
 
 Console.WriteLine("\n=> ends.");

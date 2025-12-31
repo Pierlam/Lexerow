@@ -1,6 +1,4 @@
-﻿using Lexerow.Core.System;
-
-namespace Lexerow.Core.Utils;
+﻿namespace Lexerow.Core.Utils;
 
 /// <summary>
 /// Excel low-level fct utilities.

@@ -84,7 +84,7 @@ internal class ParserStackContentProcessor
             if (isToken) continue;
 
             // get the last instr on the stack
-            if(stackInstr.Count>0)
+            if (stackInstr.Count > 0)
                 // case not managed, error or not yet implemented
                 result.AddError(ErrorCode.ParserTokenNotExpected, stackInstr.Peek().FirstScriptToken());
             else
@@ -300,7 +300,7 @@ internal class ParserStackContentProcessor
     /// is previous instr on stack FirstRow ?
     /// Stack  IN => ValueInt/VarName/FctCall; FirstRow, OnExcel
     /// Stack OUT => OnExcel
-    /// 
+    ///
     /// OnExcel
     ///   [OnSheet sheetNum]
     ///   [FirstRow val/var]
@@ -336,7 +336,7 @@ internal class ParserStackContentProcessor
         stackInstr.Pop();
 
         // the stack should contains one instr: OnExcel
-        if(stackInstr.Count != 1)
+        if (stackInstr.Count != 1)
         {
             // Instr OnExcel expected
             result.AddError(ErrorCode.ParserOnExcelExpected, scriptLineNum.ToString());
@@ -352,13 +352,13 @@ internal class ParserStackContentProcessor
             return false;
         }
 
-        // expected now/here -> check stage in OnExcel 
+        // expected now/here -> check stage in OnExcel
         // TODO:
 
         //--check the instr value, should be an int
-        if(!InstrUtils.GetIntFromInstrParser(result, program, instr, out bool valueSet, out int value))
+        if (!InstrUtils.GetIntFromInstrParser(result, program, instr, out bool valueSet, out int value))
             return false;
-        if(valueSet)
+        if (valueSet)
         {
             // check the int value, should be >= 1
             if (value < 1)
@@ -465,7 +465,6 @@ internal class ParserStackContentProcessor
         instrThen.ListInstr.Add(instrBase);
         return true;
     }
-
 
     /// <summary>
     /// is the last instr on the stack is Then?
@@ -702,7 +701,7 @@ internal class ParserStackContentProcessor
     //    }
 
     //    // can be fct call, a math expr
-    //    // TODO: 
+    //    // TODO:
 
     //    result.AddError(ErrorCode.ParserCaseNotManaged, instrSetVar.InstrRight.FirstScriptToken());
     //    return false;

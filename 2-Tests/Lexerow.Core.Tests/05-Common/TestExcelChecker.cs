@@ -1,20 +1,15 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Lexerow.Core.Utils;
-using Microsoft.Testing.Platform.OutputDevice;
-using OpenExcelSdk;
+﻿using OpenExcelSdk;
 
 namespace Lexerow.Core.Tests._20_Utils;
 
-
 public class TestExcelChecker
 {
-    static OpenExcelSdk.ExcelProcessor excelProcessor= new OpenExcelSdk.ExcelProcessor();
-    static StyleMgr styleMgr= new StyleMgr();
-
+    private static OpenExcelSdk.ExcelProcessor excelProcessor = new OpenExcelSdk.ExcelProcessor();
+    private static StyleMgr styleMgr = new StyleMgr();
 
     public static ExcelFile Open(string filename)
     {
-        ExcelFile excelFile= excelProcessor.OpenExcelFile(filename);
+        ExcelFile excelFile = excelProcessor.OpenExcelFile(filename);
         return excelFile;
     }
 
@@ -32,7 +27,7 @@ public class TestExcelChecker
     /// <param name="cellReference"></param>
     /// <param name="numFormatId"></param>
     /// <returns></returns>
-    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference,  int numFormatId)
+    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference, int numFormatId)
     {
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
 
@@ -43,7 +38,7 @@ public class TestExcelChecker
         var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
 
         // no format
-        if(cellFormat == null) return false;
+        if (cellFormat == null) return false;
         if (cellFormat.ApplyNumberFormat == null) return false;
         return (numFormatId == (int)cellFormat.NumberFormatId.Value);
     }
@@ -56,10 +51,10 @@ public class TestExcelChecker
     /// <param name="cellReference"></param>
     /// <param name="numFormat"></param>
     /// <returns></returns>
-    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference,  string numFormat)
+    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference, string numFormat)
     {
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
+        return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
@@ -68,16 +63,15 @@ public class TestExcelChecker
         var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
 
         if (cellFormat.ApplyNumberFormat == null) return false;
-        
+
         styleMgr.GetCustomNumberFormat(excelSheet, cellFormat.NumberFormatId.Value, out string numFormatGet);
         return (numFormatGet == numFormat);
     }
 
-
     public static bool CheckCellBgColor(ExcelFile excelFile, string cellReference, int colorCode)
     {
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-            return false;
+        return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
@@ -85,7 +79,7 @@ public class TestExcelChecker
 
         var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
 
-        if (cellFormat.ApplyFill== null) return false;
+        if (cellFormat.ApplyFill == null) return false;
 
         //cellFormat.FillId
 
@@ -100,7 +94,6 @@ public class TestExcelChecker
 
         return false;
     }
-
 
     /// <summary>
     /// Get the cell type and value of a cell, in the first sheet by default.
@@ -123,7 +116,7 @@ public class TestExcelChecker
         ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
 
         // can be a double value
-        if(excelCellValue.CellType == ExcelCellType.Double)
+        if (excelCellValue.CellType == ExcelCellType.Double)
         {
             // compare values
             if (expectedValue != excelCellValue.DoubleValue) return false;
@@ -137,7 +130,6 @@ public class TestExcelChecker
             if (expectedValue != excelCellValue.IntegerValue) return false;
             return true;
         }
-
 
         return true;
     }
@@ -276,7 +268,7 @@ public class TestExcelChecker
         // can be type string
         if (excelCellValue.CellType == ExcelCellType.String)
         {
-            if(excelCellValue.StringValue==string.Empty)return true;
+            if (excelCellValue.StringValue == string.Empty) return true;
             return false;
         }
 
@@ -285,5 +277,4 @@ public class TestExcelChecker
 
         return true;
     }
-
 }

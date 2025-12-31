@@ -47,11 +47,10 @@ public class InstrSetVar : InstrBase
     public override string ToString()
     {
         string instrLeftStr = "(null)";
-        if(InstrLeft!=null)instrLeftStr= InstrLeft.ToString();
+        if (InstrLeft != null) instrLeftStr = InstrLeft.ToString();
         string instrRightStr = "(null)";
         if (InstrRight != null) instrRightStr = InstrRight.ToString();
 
         return "SetVar: " + instrRightStr + "=" + instrRightStr;
     }
-
 }

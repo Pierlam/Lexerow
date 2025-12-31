@@ -46,7 +46,6 @@ public class ScriptParserOnExcelErrorTests
 
         // End OnExcel not present!
 
-
         //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 

@@ -1,9 +1,6 @@
-﻿using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Vml;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
 using OpenExcelSdk;
 
@@ -42,12 +39,12 @@ public class InstrComparisonExecutor
         InstrBase instrOperandRight = instrComparison.OperandRight;
 
         //--a previous instr exists
-        if (ctx.PrevInstrExecuted!=null)
+        if (ctx.PrevInstrExecuted != null)
         {
             // left instr executed before?
-            if(instrComparison.LastInstrExecuted==1)
+            if (instrComparison.LastInstrExecuted == 1)
             {
-                instrOperandLeft= ctx.PrevInstrExecuted;
+                instrOperandLeft = ctx.PrevInstrExecuted;
                 instrComparison.LastInstrExecuted = 0;
                 ctx.PrevInstrExecuted = null;
             }
@@ -76,14 +73,14 @@ public class InstrComparisonExecutor
             return true;
         }
 
-        //--A.Cell > xxx 
+        //--A.Cell > xxx
         if (!CompareColCellFuncWith(result, _excelProcessor, ctx, progExecVarMgr, instrComparison, instrOperandLeft, instrOperandRight, out bool isCase))
             return false;
         if (isCase) return true;
 
         //--xxx<A.Cell, reverse both operands
         InstrColCellFunc instrColCellFuncRight = instrOperandRight as InstrColCellFunc;
-        if (instrColCellFuncRight != null) 
+        if (instrColCellFuncRight != null)
         {
             InstrSepComparison sepCompRevert = instrComparison.Operator.Revert();
             if (!CompareColCellFuncWith(result, _excelProcessor, ctx, progExecVarMgr, instrComparison, instrOperandRight, instrOperandLeft, out isCase))
@@ -114,7 +111,7 @@ public class InstrComparisonExecutor
     /// <returns></returns>
     private bool CompareColCellFuncWith(Result result, ExcelProcessor excelProcessor, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrComparison instrComparison, InstrBase instrOperandLeft, InstrBase instrOperandRight, out bool isCase)
     {
-        isCase = false; 
+        isCase = false;
 
         InstrColCellFunc instrColCellFuncLeft = instrOperandLeft as InstrColCellFunc;
         if (instrColCellFuncLeft == null) return true;
@@ -124,7 +121,7 @@ public class InstrComparisonExecutor
         if (instrNameObject != null)
         {
             // get the value of the var, the inner one if the value is a var
-            ProgExecVar progExecVar= progExecVarMgr.FindVarByName(instrNameObject.Name);
+            ProgExecVar progExecVar = progExecVarMgr.FindVarByName(instrNameObject.Name);
             if (progExecVar == null)
             {
                 result.AddError(ErrorCode.ExecInstrVarNotFound, instrOperandRight.FirstScriptToken());
@@ -212,7 +209,7 @@ public class InstrComparisonExecutor
     {
         resultComp = false;
 
-        ExcelCellValue excelCellValue= excelProcessor.GetCellValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum);
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum);
 
         // does the cell type match the If-Comparison cell.Value type?
         if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(excelCellValue.CellType, valueRight))
@@ -247,13 +244,13 @@ public class InstrComparisonExecutor
         resultComp = false;
 
         //var cellLeft = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncLeft.ColNum - 1);
-        ExcelCellValue excelCellValueLeft= excelProcessor.GetCellValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum);
+        ExcelCellValue excelCellValueLeft = excelProcessor.GetCellValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum);
 
         // get the cell value type
         //CellRawValueType cellTypeLeft = excelProcessor.GetCellValueType(excelSheet, cellLeft);
 
         //var cellRight = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncRight.ColNum - 1);
-        ExcelCellValue excelCellValueRight= excelProcessor.GetCellValue(excelSheet, instrColCellFuncRight.ColNum, rowNum);
+        ExcelCellValue excelCellValueRight = excelProcessor.GetCellValue(excelSheet, instrColCellFuncRight.ColNum, rowNum);
 
         // get the cell value type
         //CellRawValueType cellTypeRight = excelProcessor.GetCellValueType(excelSheet, cellRight);
@@ -289,7 +286,7 @@ public class InstrComparisonExecutor
         resultComp = false;
 
         //var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-        ExcelCell cell= excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum);
+        ExcelCell cell = excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum);
         if (cell == null)
         {
             resultComp = true;
@@ -297,9 +294,9 @@ public class InstrComparisonExecutor
         }
 
         // the cell exists but has no value
-        if(string.IsNullOrEmpty(cell.Cell.InnerText))
-        //string val = cell.GetRawValueString();
-        //if (val == string.Empty)
+        if (string.IsNullOrEmpty(cell.Cell.InnerText))
+            //string val = cell.GetRawValueString();
+            //if (val == string.Empty)
             resultComp = true;
 
         return true;
@@ -321,7 +318,7 @@ public class InstrComparisonExecutor
         resultComp = false;
 
         //var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-        ExcelCell cell= excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum);
+        ExcelCell cell = excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum);
         if (cell == null)
         {
             resultComp = true;
@@ -383,7 +380,7 @@ public class InstrComparisonExecutor
         //--dateOnly
         if (excelCellValue.CellType == ExcelCellType.DateOnly)
         {
-            // dateOnly - dateOnly 
+            // dateOnly - dateOnly
             if (valueBase.ValueType == System.ValueType.DateOnly)
             {
                 compResult = CompareDateTime(excelCellValue.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, ((ValueDateOnly)valueBase).ToDateTime());
@@ -398,7 +395,7 @@ public class InstrComparisonExecutor
         //--dateTime
         if (excelCellValue.CellType == ExcelCellType.DateTime)
         {
-            // dateTime - dateOnly 
+            // dateTime - dateOnly
             if (valueBase.ValueType == System.ValueType.DateOnly)
             {
                 compResult = CompareDateTime(excelCellValue.DateTimeValue.Value, compOperator, ((ValueDateOnly)valueBase).ToDateTime());
@@ -417,7 +414,7 @@ public class InstrComparisonExecutor
             compResult = CompareTimeOnly(excelCellValue.TimeOnlyValue.Value, compOperator, ((ValueTimeOnly)valueBase).Val);
             return true;
         }
-        
+
         compResult = false;
         return true;
     }
@@ -476,7 +473,6 @@ public class InstrComparisonExecutor
             return true;
         }
 
-
         //--Left DateOnly
         if (excelCellValueLeft.CellType == ExcelCellType.DateOnly)
         {
@@ -491,7 +487,6 @@ public class InstrComparisonExecutor
                 compResult = CompareDateTime(excelCellValueLeft.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, excelCellValueRight.DateTimeValue.Value);
                 return true;
             }
-
         }
 
         //--Left DateTime

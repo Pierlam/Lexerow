@@ -1,5 +1,4 @@
 ﻿using OpenExcelSdk;
-using System.Diagnostics.Metrics;
 
 namespace Lexerow.Core.System;
 
@@ -107,5 +106,4 @@ public class ResultError
         Counter++;
         return Counter;
     }
-
 }

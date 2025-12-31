@@ -13,5 +13,4 @@ public class InstrOpenBracket : InstrBase
     {
         return "(";
     }
-
 }

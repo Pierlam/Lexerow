@@ -2,7 +2,6 @@
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
 
 /// <summary>
@@ -63,10 +62,10 @@ public class InstrSetVarExecutor
 
         //--is the right instr a varname?
         InstrNameObject instrNameObject = instrRight as InstrNameObject;
-        if (instrNameObject != null) 
+        if (instrNameObject != null)
         {
-            ProgExecVar execVar= progExecVarMgr.FindLastInnerVarByName(instrNameObject.Name);
-            instrRight= execVar.Value;
+            ProgExecVar execVar = progExecVarMgr.FindLastInnerVarByName(instrNameObject.Name);
+            instrRight = execVar.Value;
         }
 
         //--is it A.Cell= xxx ?
@@ -76,7 +75,7 @@ public class InstrSetVarExecutor
 
         //--is it a=val/var/object?
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
-        if (instrObjectName != null) 
+        if (instrObjectName != null)
             return ExecSetToVar(result, ctx, progExecVarMgr, instrSetVar, instrObjectName, instrRight);
 
         //--is it Fct()=val/var?
@@ -87,9 +86,7 @@ public class InstrSetVarExecutor
         ctx.StackInstr.Pop();
         return true;
 
-
         //-XXXXXXXXXXXXXXXXX
-
 
         // the left part should be an objectName (varname), exp: a=xx
         //InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
@@ -149,7 +146,6 @@ public class InstrSetVarExecutor
     //public bool Exec_OLD(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrSetVar instrSetVar)
     //{
     //    _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetVarExecutor.Exec", "Token: " + instrSetVar.FirstScriptToken());
-
 
     //    //--case A.Cell= xxx ?
     //    InstrColCellFunc instrColCellFunc = instrSetVar.InstrLeft as InstrColCellFunc;
@@ -294,8 +290,7 @@ public class InstrSetVarExecutor
 
     private bool CreateVar(ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrBase instrName, InstrBase instrtValue)
     {
-
-        if(progExecVarMgr.CreateOrUpdateVar(instrName, instrtValue)==null)
+        if (progExecVarMgr.CreateOrUpdateVar(instrName, instrtValue) == null)
             return false;
 
         return true;

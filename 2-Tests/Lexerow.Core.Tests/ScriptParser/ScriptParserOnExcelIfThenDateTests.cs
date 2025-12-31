@@ -6,11 +6,6 @@ using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptParser;
 
@@ -51,16 +46,16 @@ public class ScriptParserOnExcelIfThenDateTests
         scriptTokens.Add(line);
 
         //-ForEach Row
-        TestTokensBuilder.AddLineForEachRow(numLine++,scriptTokens);
+        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell > Date(2020, 10,1) Then A.Cell=Date(2020,2,1)
         TestTokensBuilder.BuidIfColCellCompDateymdThenSetColCellDateymd(numLine++, scriptTokens, "A", ">", 2020, 10, 1, "A", "=", 2020, 2, 1);
 
         // Next
-        TestTokensBuilder.AddLineNext(numLine++,scriptTokens);
+        TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
 
         // End OnExcel
-        TestTokensBuilder.AddLineEndOnExcel(numLine++,scriptTokens);
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens);
 
         //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
@@ -87,7 +82,7 @@ public class ScriptParserOnExcelIfThenDateTests
         //--check IfThen
         Assert.AreEqual(1, instrOnSheet.ListInstrForEachRow.Count);
 
-        //--check IfThen 
+        //--check IfThen
         InstrIfThenElse instrIfThenElse = instrOnSheet.ListInstrForEachRow[0] as InstrIfThenElse;
         Assert.IsNotNull(instrIfThenElse);
 
@@ -105,7 +100,7 @@ public class ScriptParserOnExcelIfThenDateTests
         Assert.IsNotNull(instrSepComparison);
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
 
-        // check If-Operand Left:A.Cell 
+        // check If-Operand Left:A.Cell
         Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right: Date(2020, 10,1)
@@ -233,7 +228,7 @@ public class ScriptParserOnExcelIfThenDateTests
         //-ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
-        // If A.Cell > Date(2020,10,1) 
+        // If A.Cell > Date(2020,10,1)
         line = new ScriptLineTokens();
         line.AddTokenName(numLine, 1, "If");
         TestTokensBuilder.BuidColCellOperDateYearMonthDay(numLine, line, "A", ">", 2020, 10, 1);
@@ -274,5 +269,4 @@ public class ScriptParserOnExcelIfThenDateTests
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
         Assert.AreEqual("1", result.ListError[0].Param);
     }
-
 }

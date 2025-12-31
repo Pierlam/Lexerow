@@ -236,9 +236,9 @@ public class ScriptParserSelectFilesTests
     /// </summary>
     [TestMethod]
     public void i12EqSelectFilesWrong()
-    {        
+    {
         //-build one line of tokens
-        ScriptLineTokens  line = new ScriptLineTokens();
+        ScriptLineTokens line = new ScriptLineTokens();
         line.AddTokenInteger(1, 1, 12);
         line.AddTokenSeparator(1, 1, "=");
         line.AddTokenName(1, 1, "SelectFiles");

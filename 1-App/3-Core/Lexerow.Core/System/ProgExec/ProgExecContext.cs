@@ -1,5 +1,4 @@
 ﻿using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 using OpenExcelSdk;
 

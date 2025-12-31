@@ -6,12 +6,6 @@ using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
-using Lexerow.Core.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptParser;
 
@@ -170,7 +164,7 @@ public class ScriptParserSetVarTests
         int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
-        TestTokensBuilder.AddLineSetVarDate(numLine++, scriptTokens, "a", 2025,11,23);
+        TestTokensBuilder.AddLineSetVarDate(numLine++, scriptTokens, "a", 2025, 11, 23);
 
         //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
@@ -233,7 +227,6 @@ public class ScriptParserSetVarTests
         //==> Check the result
         Assert.IsTrue(res);
         Assert.AreEqual(2, prog.ListInstr.Count);
-
 
         //--SetVar year=2025
         Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
@@ -367,5 +360,4 @@ public class ScriptParserSetVarTests
         Assert.IsFalse(res);
         Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
     }
-
 }

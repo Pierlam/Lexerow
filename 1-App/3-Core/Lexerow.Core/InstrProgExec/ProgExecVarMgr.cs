@@ -2,7 +2,6 @@
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ProgExec;
-using Lexerow.Core.System.ScriptDef;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -40,7 +39,7 @@ public class ProgExecVarMgr
         // the var already defined ?
         ProgExecVar progExecVar = ListExecVar.FirstOrDefault(v => v.AreEqual(instrVarLeft));
 
-        if (progExecVar != null) 
+        if (progExecVar != null)
         {
             progExecVar.Value = instrVarRight;
             return progExecVar;
@@ -97,7 +96,7 @@ public class ProgExecVarMgr
         ProgExecSysVar progExecSysVar = GetProgExecSysVar(name);
         if (progExecSysVar == null) return string.Empty;
 
-        if(progExecSysVar.ValueBase.ValueType!= System.ValueType.String)return string.Empty;
+        if (progExecSysVar.ValueBase.ValueType != System.ValueType.String) return string.Empty;
         return (progExecSysVar.ValueBase as ValueString).Val;
     }
 
@@ -109,6 +108,7 @@ public class ProgExecVarMgr
         if (progExecSysVar.ValueBase.ValueType != System.ValueType.Int) return 0;
         return (progExecSysVar.ValueBase as ValueInt).Val;
     }
+
     public bool GetProgExecSysVarAsBool(string name)
     {
         ProgExecSysVar progExecSysVar = GetProgExecSysVar(name);
@@ -118,14 +118,13 @@ public class ProgExecVarMgr
         return (progExecSysVar.ValueBase as ValueBool).Val;
     }
 
-
     public ProgExecSysVar GetProgExecSysVar(string name)
     {
         if (string.IsNullOrWhiteSpace(name)) return null;
         return ListSysExecVar.FirstOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    void BuildSysVar()
+    private void BuildSysVar()
     {
         ProgExecSysVar progExecSysVar;
 
@@ -149,5 +148,4 @@ public class ProgExecVarMgr
         progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarForceDateFormatName, new ValueBool(false));
         ListSysExecVar.Add(progExecSysVar);
     }
-
 }

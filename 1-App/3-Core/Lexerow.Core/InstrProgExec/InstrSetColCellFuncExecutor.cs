@@ -1,9 +1,7 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
-using Lexerow.Core.Utils;
 using OpenExcelSdk;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -24,7 +22,7 @@ public class InstrSetColCellFuncExecutor
     {
         _logger = activityLogger;
         _excelProcessor = excelProcessor;
-        _progExecVarMgr= progExecVarMgr;
+        _progExecVarMgr = progExecVarMgr;
     }
 
     /// <summary>
@@ -38,7 +36,7 @@ public class InstrSetColCellFuncExecutor
     public bool ExecSetCellNull(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        ExcelCell cell= _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
+        ExcelCell cell = _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
 
         if (cell == null)
             return true;
@@ -60,13 +58,13 @@ public class InstrSetColCellFuncExecutor
     public bool ExecSetCellBlank(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        ExcelCell cell= _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
+        ExcelCell cell = _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
 
         if (cell == null)
             return true;
 
         // clear the cell value
-        return _excelProcessor.SetCellValue(sheet, cell, string.Empty); 
+        return _excelProcessor.SetCellValue(sheet, cell, string.Empty);
     }
 
     /// <summary>
@@ -82,9 +80,9 @@ public class InstrSetColCellFuncExecutor
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
         // get the cell
-        ExcelCell cell= _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
+        ExcelCell cell = _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
         if (cell == null)
-            cell= _excelProcessor.CreateCell(sheet, instrColCellFunc.ColNum, rowNum);
+            cell = _excelProcessor.CreateCell(sheet, instrColCellFunc.ColNum, rowNum);
 
         return ApplySetCellVal(result, _excelProcessor, sheet, cell, instrValue.ValueBase);
     }
@@ -142,7 +140,7 @@ public class InstrSetColCellFuncExecutor
             result.AddError(ErrorCode.ExcelUnableSetCellValue, value.ValueType.ToString());
             return false;
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             result.AddError(ErrorCode.ExcelUnableSetCellValue, ex, value.ValueType.ToString());
             return false;

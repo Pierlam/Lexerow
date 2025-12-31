@@ -4,11 +4,6 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Tests.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ProgExec;
 
@@ -16,7 +11,7 @@ namespace Lexerow.Core.Tests.ProgExec;
 /// Test execution of the instruction SetVar.
 /// </summary>
 [TestClass]
-public class ExecSetVarTests :BaseTests
+public class ExecSetVarTests : BaseTests
 {
     /// <summary>
     /// a= 12

@@ -2,7 +2,6 @@
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
-using System.Collections.Generic;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -91,12 +90,11 @@ internal class TokenCloseBracketProcessor
         // error, wrong object name
         result.AddError(ErrorCode.ParserTokenNotExpected, instBeforeOpenBracket.FirstScriptToken());
         return false;
-
     }
 
     /// <summary>
     /// fct call or math expr.
-    /// 
+    ///
     /// </summary>
     /// <param name="result"></param>
     /// <param name="stackInstr"></param>
@@ -199,7 +197,7 @@ internal class TokenCloseBracketProcessor
             if (instr is InstrComma)
             {
                 // math expr found so error
-                if(isMathExpr)
+                if (isMathExpr)
                 {
                     result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                     return false;
@@ -210,7 +208,7 @@ internal class TokenCloseBracketProcessor
             }
 
             // math operator found
-            if(instr is InstrCharPlus ||  instr is InstrCharMinus || instr is InstrCharDiv || instr is InstrCharMul)
+            if (instr is InstrCharPlus || instr is InstrCharMinus || instr is InstrCharDiv || instr is InstrCharMul)
             {
                 // list of params found so error
                 if (isListOfParams)

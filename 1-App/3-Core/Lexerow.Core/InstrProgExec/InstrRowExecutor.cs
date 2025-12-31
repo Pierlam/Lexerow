@@ -3,13 +3,9 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.Process;
 using OpenExcelSdk;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.InstrProgExec;
+
 public class InstrRowExecutor
 {
     private IActivityLogger _logger;
@@ -94,5 +90,4 @@ public class InstrRowExecutor
         _logger.LogExecEnd(ActivityLogLevel.Info, "InstrRowExecutor.RunInstrForEachRow", "InstrToProcessNum: " + instrForEachRow.InstrToProcessNum);
         return true;
     }
-
 }

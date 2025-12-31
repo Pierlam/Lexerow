@@ -71,18 +71,17 @@ internal class InstrOnSheetExecutor
         // start of the sheet processing?
         if (ctx.ExcelSheet == null)
         {
-
             // get the sheet from excel
-            ExcelSheet excelSheet= _excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum - 1);
+            ExcelSheet excelSheet = _excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum - 1);
             //    return result.AddError(ErrorCode.UnableFindSheetByNum, instrOnSheet.FirstScriptToken(), excelError.Exception);
 
-            ctx.ExcelSheet= excelSheet;
+            ctx.ExcelSheet = excelSheet;
 
             // process datarow of the current sheet
             InstrProcessRow instrProcessRow = new InstrProcessRow(instrOnSheet.FirstScriptToken(), instrOnSheet.ListInstrForEachRow);
 
             // get the FirstRow value, can be an instrValue, a var or a fct call.
-            if(!GetFirstRowValue(result, ctx, progExecVarMgr, instrOnSheet.InstrFirstDataRow, out int val))
+            if (!GetFirstRowValue(result, ctx, progExecVarMgr, instrOnSheet.InstrFirstDataRow, out int val))
                 return false;
 
             instrProcessRow.RowIndex = val;

@@ -373,7 +373,7 @@ public class LoadFileExecOnExcelTests : BaseTests
         // NOT modified
         res = TestExcelChecker.CheckCellValue(excelFile, "A2", 10);
         Assert.IsTrue(res);
-      
+
         res = TestExcelChecker.CheckCellValue(excelFile, "A3", 12);
         Assert.IsTrue(res);
 

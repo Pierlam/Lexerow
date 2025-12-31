@@ -76,7 +76,7 @@ internal class FunctionCallParamsProcessor
             result.AddError(ErrorCode.ParserFctParamCountWrong, instr.ListScriptToken[0], listParams.Count.ToString());
             return false;
         }
-        
+
         // process 1st param: year
         if (!InstrUtils.GetIntFromInstrParser(result, program, listParams[0], out bool yearSet, out int year))
             return false;
@@ -92,7 +92,7 @@ internal class FunctionCallParamsProcessor
             return false;
         instr.InstrDay = listParams[2];
 
-        if(!yearSet ||  !monthSet || !daySet)
+        if (!yearSet || !monthSet || !daySet)
             // not able to check the date here, need to wait the execution
             return true;
 
@@ -104,7 +104,7 @@ internal class FunctionCallParamsProcessor
         }
         catch (Exception ex)
         {
-            result.AddError(ErrorCode.ParserFctParamWrong, instr.ListScriptToken[0], "year: " +year+", month: "+ month+", day:" + day);
+            result.AddError(ErrorCode.ParserFctParamWrong, instr.ListScriptToken[0], "year: " + year + ", month: " + month + ", day:" + day);
             return false;
         }
     }

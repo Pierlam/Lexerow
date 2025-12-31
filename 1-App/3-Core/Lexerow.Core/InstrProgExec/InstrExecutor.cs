@@ -37,16 +37,15 @@ public class InstrExecutor
     public InstrExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor, ProgExecVarMgr progExecVarMgr)
     {
         _logger = activityLogger;
-        _progExecVarMgr= progExecVarMgr;
+        _progExecVarMgr = progExecVarMgr;
 
-         _instrOnExcelExecutor = new InstrOnExcelExecutor(_logger, excelProcessor);
-        _instrOnSheetExecutor= new InstrOnSheetExecutor(_logger, excelProcessor);
+        _instrOnExcelExecutor = new InstrOnExcelExecutor(_logger, excelProcessor);
+        _instrOnSheetExecutor = new InstrOnSheetExecutor(_logger, excelProcessor);
         _instrRowExecutor = new InstrRowExecutor(_logger, excelProcessor);
         _instrIfThenElseExecutor = new InstrIfThenElseExecutor(_logger);
         _instrComparisonExecutor = new InstrComparisonExecutor(_logger, excelProcessor);
         _instrSetColCellFuncExecutor = new InstrSetColCellFuncExecutor(_logger, excelProcessor, progExecVarMgr);
         _instrSetVarExecutor = new InstrSetVarExecutor(_logger, _instrSetColCellFuncExecutor);
-
 
         _instrFuncSelectFilesExecutor = new InstrFuncSelectFilesExecutor(_logger);
         _instrFuncDateExecutor = new InstrFuncDateExecutor(_logger);

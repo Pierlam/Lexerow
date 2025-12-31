@@ -5,6 +5,7 @@ using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
+
 internal class ParserUtils
 {
     /// <summary>
@@ -98,7 +99,7 @@ internal class ParserUtils
         return false;
     }
 
-    static bool IsInstrColDot(Result result, CompilStackInstr stkInstr, out InstrNameObject instrObjectName)
+    private static bool IsInstrColDot(Result result, CompilStackInstr stkInstr, out InstrNameObject instrObjectName)
     {
         instrObjectName = null;
 

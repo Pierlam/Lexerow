@@ -130,7 +130,7 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
         TestTokensBuilder.AddLineOnExcelFileString(numLine++, scriptTokens, "\"data.xlsx\"");
 
         // ForEach Row
-        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);  
+        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell=blank Then A.Cell=12
         TestTokensBuilder.BuidIfColCellCompKeywordThenSetColCellInt(numLine++, scriptTokens, "A", ">", "Blank", "A", 12);
@@ -169,7 +169,7 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
     [TestMethod]
     public void OnExcelThenACellEqBlankOk()
     {
-        int numLine=0;
+        int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
         // OnExcel "data.xlsx"
@@ -237,7 +237,7 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
         Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
 
         // check If-Operand Right
-        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrComparison.OperandRight, 9)); 
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrComparison.OperandRight, 9));
 
         // check Then, SetVar
         Assert.IsNotNull(instrIfThenElse.InstrThen);
@@ -279,7 +279,7 @@ public class ScriptParserOnExcelBlankNullTests : BaseTests
         TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
 
         // End OnExcel
-        TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens); 
+        TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens);
 
         //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);

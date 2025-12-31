@@ -76,13 +76,13 @@ internal class SetVarDecoder
         {
             // allowed only in OnExcel/ForEachRow instr
             InstrBase instrBase = stackInstr.FindInstrFromTop(InstrType.OnExcel);
-            if(instrBase==null)
+            if (instrBase == null)
             {
                 result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
-            InstrOnExcel instrOnExcel= (InstrOnExcel)instrBase;
-            if(instrOnExcel.BuildStage != InstrOnExcelBuildStage.If)
+            InstrOnExcel instrOnExcel = (InstrOnExcel)instrBase;
+            if (instrOnExcel.BuildStage != InstrOnExcelBuildStage.If)
             {
                 result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken());
                 return false;

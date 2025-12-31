@@ -1,5 +1,4 @@
 ﻿using Lexerow.Core.System.InstrDef;
-using System.Security.AccessControl;
 
 namespace Lexerow.Core.System;
 
@@ -54,10 +53,10 @@ public class ProgExecVar
 
     /// <summary>
     /// Return true is var are equals/same.
-    /// The var can be 
+    /// The var can be
     /// a basic name, exp: A=12
     /// A.Cell=12
-    /// 
+    ///
     /// </summary>
     /// <param name="instr"></param>
     /// <returns></returns>

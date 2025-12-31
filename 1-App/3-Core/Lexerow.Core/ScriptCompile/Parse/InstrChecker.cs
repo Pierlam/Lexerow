@@ -32,9 +32,9 @@ internal class InstrChecker
 
         //--is it Date?
         InstrFuncCallDate instrFuncDate = instrBase as InstrFuncCallDate;
-        if(instrFuncDate!=null)
+        if (instrFuncDate != null)
         {
-            if(instrFuncDate.InstrYear==null || instrFuncDate.InstrMonth==null || instrFuncDate.InstrDay==null)
+            if (instrFuncDate.InstrYear == null || instrFuncDate.InstrMonth == null || instrFuncDate.InstrDay == null)
             {
                 result.AddError(ErrorCode.ParserFctParamWrong, instrBase.FirstScriptToken());
                 return false;

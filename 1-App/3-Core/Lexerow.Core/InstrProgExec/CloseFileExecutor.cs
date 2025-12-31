@@ -1,5 +1,4 @@
 ﻿using Lexerow.Core.System;
-using Lexerow.Core.Utils;
 using OpenExcelSdk;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -13,7 +12,7 @@ internal class CloseFileExecutor
             excelProcessor.CloseExcelFile(excelFile);
             return true;
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             result.AddError(ErrorCode.ExecUnableCloseFile, ex, excelFile.Filename);
             return false;

@@ -1,10 +1,4 @@
-﻿using Lexerow.Core.System.InstrDef.FuncCall;
-using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lexerow.Core.System.ScriptDef;
 
 namespace Lexerow.Core.System.InstrDef.Object;
 
@@ -43,6 +37,7 @@ public class InstrObjectSelectedFiles : InstrBase
     {
         InstrType = InstrType.ObjectFilenamesSelected;
     }
+
     /// <summary>
     /// List of final filename obtained after decoding parameters of the function SelectFiles.
     /// exp: *.xlsx can match several files.
@@ -54,5 +49,4 @@ public class InstrObjectSelectedFiles : InstrBase
         ObjectSelectedFile objectSelectedFile = new ObjectSelectedFile(instrSource, filename);
         ListObjectSelectedFile.Add(objectSelectedFile);
     }
-
 }

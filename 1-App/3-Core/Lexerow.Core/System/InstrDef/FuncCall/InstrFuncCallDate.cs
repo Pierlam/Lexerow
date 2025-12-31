@@ -1,11 +1,7 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.System.InstrDef.FuncCall;
+
 public class InstrFuncCallDate : InstrBase
 {
     public InstrFuncCallDate(ScriptToken scriptToken) : base(scriptToken)
@@ -25,13 +21,12 @@ public class InstrFuncCallDate : InstrBase
     public override string ToString()
     {
         string year = "(null)";
-        if(InstrYear!=null)year= InstrYear.ToString();
+        if (InstrYear != null) year = InstrYear.ToString();
         string month = "(null)";
         if (InstrMonth != null) month = InstrMonth.ToString();
         string day = "(null)";
         if (InstrDay != null) day = InstrDay.ToString();
 
-        return "FuncDate( " + year +"," + month +"," + day+")";
+        return "FuncDate( " + year + "," + month + "," + day + ")";
     }
-
 }

@@ -1,11 +1,7 @@
 ﻿using Lexerow.Core.System.ScriptDef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests._05_Common;
+
 internal class TestTokensHelper
 {
     public static bool TestName(ScriptLineTokens lineTokens, int idx, string value)
@@ -21,7 +17,7 @@ internal class TestTokensHelper
     public static bool TestNumberInt(ScriptLineTokens lineTokens, int idx, int value)
     {
         if (lineTokens.ListScriptToken[idx] == null) return false;
-        if (lineTokens.ListScriptToken[idx].ValueInt== value) return true;
+        if (lineTokens.ListScriptToken[idx].ValueInt == value) return true;
         if (lineTokens.ListScriptToken[5].ScriptTokenType == ScriptTokenType.Integer) return true;
 
         return false;

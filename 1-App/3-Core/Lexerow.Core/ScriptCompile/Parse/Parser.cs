@@ -133,7 +133,7 @@ public class Parser
                 return false;
             }
 
-            //--is it the SetVar equal char? 
+            //--is it the SetVar equal char?
             res = SetVarDecoder.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
             if (!res) break;
             if (isToken) continue;
@@ -226,14 +226,13 @@ public class Parser
         }
 
         //--a=-7, curr=7. Stack> Minus; SetVar
-        if(!ProcessNegativeValueNumber(result, stackInstr, instr, out isToken))
+        if (!ProcessNegativeValueNumber(result, stackInstr, instr, out isToken))
             return false;
-        if(isToken)return true;
+        if (isToken) return true;
 
         //--If a=-1; Stack IN> ??
 
         //--Then a=-1; Stack IN> ??
-
 
         return true;
     }
@@ -276,7 +275,7 @@ public class Parser
     }
 
     /// <summary>
-    /// case1: a=-7, 
+    /// case1: a=-7,
     /// instr=7, Stack> Minus; SetVar
     ///
     /// case2: A.Cell>10
@@ -292,14 +291,14 @@ public class Parser
         isToken = false;
 
         // the current instr is not an int or a double?
-        if(!InstrUtils.IsValueInt(instr) && InstrUtils.IsValueDouble(instr))return true;
+        if (!InstrUtils.IsValueInt(instr) && InstrUtils.IsValueDouble(instr)) return true;
 
         // not enought instr in the stack
         if (stackInstr.Count < 2) return true;
 
         // read the instr in the top of the stack
         InstrCharMinus instrCharMinus = stackInstr.Peek() as InstrCharMinus;
-        if(instrCharMinus==null) return true;
+        if (instrCharMinus == null) return true;
 
         //--case1: the next instr is the SetVar instr?
         if ((stackInstr.ReadInstrBeforeTop() as InstrSetVar) != null)
@@ -327,5 +326,4 @@ public class Parser
 
         return true;
     }
-
 }

@@ -14,7 +14,7 @@ public class InstrOnSheet : InstrBase
     public InstrOnSheet(ScriptToken scriptToken, InstrValue instrValue) : base(scriptToken)
     {
         InstrType = InstrType.OnSheet;
-        InstrFirstDataRow= instrValue;
+        InstrFirstDataRow = instrValue;
     }
 
     // OnHeader instructions
@@ -33,7 +33,6 @@ public class InstrOnSheet : InstrBase
     /// Human readable, base1
     /// </summary>
     public InstrBase InstrFirstDataRow { get; set; }
-
 
     /// <summary>
     /// Human readable, base1

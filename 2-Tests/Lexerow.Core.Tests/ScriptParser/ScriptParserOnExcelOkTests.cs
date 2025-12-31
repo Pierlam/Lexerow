@@ -31,7 +31,7 @@ public class ScriptParserOnExcelOkTests
     [TestMethod]
     public void VeryShortOnExcelFileStringOk()
     {
-        int numLine=0;
+        int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
 
         // OnExcel "data.xlsx"
@@ -135,7 +135,7 @@ public class ScriptParserOnExcelOkTests
         TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell >-12 Then A.Cell=-12
-        TestTokensBuilder.BuidIfColCellCompNegIntThenSetColCellInt(numLine++, scriptTokens,"A",">",12,"A",12);
+        TestTokensBuilder.BuidIfColCellCompNegIntThenSetColCellInt(numLine++, scriptTokens, "A", ">", 12, "A", 12);
 
         // Next
         TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
@@ -230,7 +230,7 @@ public class ScriptParserOnExcelOkTests
         TestTokensBuilder.CreateOnExcelFileName(numLine++, scriptTokens, "file");
 
         // ForEach Row
-        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens); 
+        TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell >10 Then A.Cell=10
         TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, scriptTokens);

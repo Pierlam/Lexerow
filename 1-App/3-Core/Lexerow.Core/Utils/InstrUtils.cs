@@ -87,7 +87,7 @@ public class InstrUtils
         //--is it an instr var?
         if (!GetIntFromInstrVarExec(result, progExecVarMgr, instr, out isValueOrVar, out value))
             return false;
-        
+
         return true;
     }
 
@@ -120,7 +120,7 @@ public class InstrUtils
 
     public static bool GetIntFromInstrVar(Result result, bool isParser, Program program, InstrBase instr, out bool isVar, out int value)
     {
-        isVar=false;
+        isVar = false;
         value = 0;
 
         //--is it an var?
@@ -281,13 +281,13 @@ public class InstrUtils
         if (instrValue.ValueBase.ValueType != System.ValueType.String)
         {
             ErrorCode error = ErrorCode.ParserValueStringExpected;
-            if(!isParser) error= ErrorCode.ExecValueStringExpected;
+            if (!isParser) error = ErrorCode.ExecValueStringExpected;
             result.AddError(error, instrValue.FirstScriptToken().LineNum, instrValue.FirstScriptToken().ColNum, instrValue.FirstScriptToken().Value);
             return false;
         }
-        
+
         value = (instrValue.ValueBase as ValueString).Val;
-        isValue= true;
+        isValue = true;
         return true;
     }
 
@@ -299,10 +299,10 @@ public class InstrUtils
     /// <returns></returns>
     public static bool NeedToBeExecuted(InstrBase instrBase)
     {
-        if(instrBase == null) return false;
-        if (instrBase.IsFunctionCall)return true;
+        if (instrBase == null) return false;
+        if (instrBase.IsFunctionCall) return true;
 
-        if(instrBase.InstrType== InstrType.MathExpr)return true;
+        if (instrBase.InstrType == InstrType.MathExpr) return true;
         if (instrBase.InstrType == InstrType.BoolExpr) return true;
         // no
         return false;
@@ -316,7 +316,7 @@ public class InstrUtils
     /// <returns></returns>
     public static bool MergeInstrMinus(InstrCharMinus instrCharMinus, InstrValue instrValue)
     {
-        if (instrCharMinus == null)return false;
+        if (instrCharMinus == null) return false;
         if (instrValue == null) return false;
 
         if (instrValue.ValueBase.ValueType == System.ValueType.Int)
@@ -335,19 +335,18 @@ public class InstrUtils
 
     public static InstrValue CreateInstrValueInt(int initValue)
     {
-        ValueInt valueInt= new ValueInt(initValue);
-        ScriptToken scriptToken= new ScriptToken();
-        scriptToken.Value= initValue.ToString();
+        ValueInt valueInt = new ValueInt(initValue);
+        ScriptToken scriptToken = new ScriptToken();
+        scriptToken.Value = initValue.ToString();
         return new InstrValue(scriptToken, initValue);
     }
 
     public static bool IsValueInt(InstrBase instrBase)
     {
-        if(instrBase == null)return false;
+        if (instrBase == null) return false;
         if (instrBase.InstrType != InstrType.Value) return false;
 
-
-        if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.Int ) return true;
+        if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.Int) return true;
         return false;
     }
 
@@ -355,7 +354,6 @@ public class InstrUtils
     {
         if (instrBase == null) return false;
         if (instrBase.InstrType != InstrType.Value) return false;
-
 
         if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.Double) return true;
         return false;

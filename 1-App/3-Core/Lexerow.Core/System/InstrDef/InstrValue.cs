@@ -13,7 +13,7 @@ public class InstrValue : InstrBase
         InstrType = InstrType.Value;
         RawValue = rawValue;
         ValueBase = new ValueString(rawValue);
-        ValueType= ValueType.String;
+        ValueType = ValueType.String;
     }
 
     public InstrValue(ScriptToken scriptToken, int value) : base(scriptToken)
@@ -21,7 +21,7 @@ public class InstrValue : InstrBase
         InstrType = InstrType.Value;
         RawValue = value.ToString();
         ValueBase = new ValueInt(value);
-        ValueType= ValueType.Int;
+        ValueType = ValueType.Int;
     }
 
     public InstrValue(ScriptToken scriptToken, double value) : base(scriptToken)
@@ -29,7 +29,7 @@ public class InstrValue : InstrBase
         InstrType = InstrType.Value;
         RawValue = value.ToString();
         ValueBase = new ValueDouble(value);
-        ValueType= ValueType.Double;
+        ValueType = ValueType.Double;
     }
 
     public InstrValue(ScriptToken scriptToken, DateTime value) : base(scriptToken)

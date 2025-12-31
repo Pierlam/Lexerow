@@ -161,7 +161,6 @@ public class LexerowCore
         if (!result.Res)
             return result;
 
-
         // save it
         _coreData.ListProgram.Add(programInstr);
 

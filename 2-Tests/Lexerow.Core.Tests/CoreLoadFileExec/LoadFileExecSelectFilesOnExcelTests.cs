@@ -1,5 +1,4 @@
-﻿using FakeItEasy;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
 using OpenExcelSdk;
@@ -10,7 +9,7 @@ namespace Lexerow.Core.Tests.CoreLoadFileExec;
 /// Test the script load from txt file, compile and execute from the core.
 /// Focus on SelectFiles + OnExcel instruction.
 /// Need to have script and input excel files ready.
-/// 
+///
 /// All cases:
 ///   1/ OnExcel "dat.xslx"
 ///   2/ files=SelectFiles(), OnExcel files
@@ -22,7 +21,7 @@ namespace Lexerow.Core.Tests.CoreLoadFileExec;
 public class LoadFileExecSelectFilesOnExcelTests : BaseTests
 {
     /// <summary>
-    /// Case 3: 
+    /// Case 3:
     /// files= SelectFiles(".\10-ExcelFiles\execSelectFilesOnExcel.xlsx")
     /// OnExcel files
     ///    ForEachRow
@@ -63,7 +62,7 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
 
     /// <summary>
     /// Without explicit SelectFiles instr.
-    /// 
+    ///
     /// files="dat.xslx"
     /// OnExcel files
     ///    ForEachRow
@@ -103,7 +102,7 @@ public class LoadFileExecSelectFilesOnExcelTests : BaseTests
 
     /// <summary>
     /// Without explicit SelectFiles instr.
-    /// 
+    ///
     /// a="dat.xslx"
     /// files=a
     /// OnExcel files

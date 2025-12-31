@@ -1,0 +1,10 @@
+﻿# check the col A but modify the colB!
+
+a=Date(2025,12, 30)
+
+
+OnExcel ".\10-ExcelFiles\OnExcelIfDateThenVarDate.xlsx"
+	ForEachRow
+      If A.Cell <= Date(2019,11,14) Then A.Cell=a
+	Next
+End OnExcel

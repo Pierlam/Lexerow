@@ -22,12 +22,13 @@ public class TestExcelChecker
 
     /// <summary>
     /// Check the number format Id of the value of the cell.
+    /// 14: dd/mm/yyyy
     /// </summary>
     /// <param name="excelFile"></param>
     /// <param name="cellReference"></param>
     /// <param name="numFormatId"></param>
     /// <returns></returns>
-    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference, int numFormatId)
+    public static bool CheckCellStyleNumberFormatId(ExcelFile excelFile, string cellReference, int numFormatId)
     {
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
 
@@ -51,10 +52,9 @@ public class TestExcelChecker
     /// <param name="cellReference"></param>
     /// <param name="numFormat"></param>
     /// <returns></returns>
-    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference, string numFormat)
+    public static bool CheckCellStyleNumberFormat(ExcelFile excelFile, string cellReference, string numFormat)
     {
         ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
-        return false;
 
         // get the cell at the address
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);

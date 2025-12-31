@@ -14,9 +14,7 @@ public class TestExcelChecker
 
     public static ExcelFile Open(string filename)
     {
-        bool res = excelProcessor.Open(filename, out ExcelFile excelFile, out var error);
-        if (!res) return null;
-
+        ExcelFile excelFile= excelProcessor.OpenExcelFile(filename);
         return excelFile;
     }
 
@@ -31,17 +29,15 @@ public class TestExcelChecker
     /// Check the number format Id of the value of the cell.
     /// </summary>
     /// <param name="excelFile"></param>
-    /// <param name="addressName"></param>
+    /// <param name="cellReference"></param>
     /// <param name="numFormatId"></param>
     /// <returns></returns>
-    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string addressName,  int numFormatId)
+    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference,  int numFormatId)
     {
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
-            return false;
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
-            return false;
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
         if (excelCell == null) return false;
 
         var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
@@ -57,16 +53,16 @@ public class TestExcelChecker
     /// Should be a custom one, Id>163.
     /// </summary>
     /// <param name="excelFile"></param>
-    /// <param name="addressName"></param>
+    /// <param name="cellReference"></param>
     /// <param name="numFormat"></param>
     /// <returns></returns>
-    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string addressName,  string numFormat)
+    public static bool CheckCellStyleDataFormat(ExcelFile excelFile, string cellReference,  string numFormat)
     {
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
@@ -79,13 +75,13 @@ public class TestExcelChecker
     }
 
 
-    public static bool CheckCellBgColor(ExcelFile excelFile, string addressName, int colorCode)
+    public static bool CheckCellBgColor(ExcelFile excelFile, string cellReference, int colorCode)
     {
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
@@ -116,34 +112,34 @@ public class TestExcelChecker
     /// <param name="cell"></param>
     /// <param name="expectedValue"></param>
     /// <returns></returns>
-    public static bool CheckCellValue(ExcelFile excelFile, string addressName, double expectedValue)
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, double expectedValue)
     {
         // get the first sheet
-        if(!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
-        if(!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
             return false;
 
         // can be a double value
-        if(excelCellValueMulti.CellType == ExcelCellType.Double)
+        if(excelCellValue.CellType == ExcelCellType.Double)
         {
             // compare values
-            if (expectedValue != excelCellValueMulti.DoubleValue) return false;
+            if (expectedValue != excelCellValue.DoubleValue) return false;
             return true;
         }
 
         // can be an int value
-        if (excelCellValueMulti.CellType == ExcelCellType.Integer)
+        if (excelCellValue.CellType == ExcelCellType.Integer)
         {
             // compare values
-            if (expectedValue != excelCellValueMulti.IntegerValue) return false;
+            if (expectedValue != excelCellValue.IntegerValue) return false;
             return true;
         }
 
@@ -158,26 +154,26 @@ public class TestExcelChecker
     /// <param name="cell"></param>
     /// <param name="expectedValue"></param>
     /// <returns></returns>
-    public static bool CheckCellValue(ExcelFile excelFile, string addressName, string expectedValue)
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, string expectedValue)
     {
         // get the first sheet
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
-        if (!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
             return false;
 
         // type string expected
-        if (excelCellValueMulti.CellType != ExcelCellType.String) return false;
+        if (excelCellValue.CellType != ExcelCellType.String) return false;
 
         // compare values
-        if (expectedValue != excelCellValueMulti.StringValue) return false;
+        if (expectedValue != excelCellValue.StringValue) return false;
 
         return true;
     }
@@ -189,26 +185,26 @@ public class TestExcelChecker
     /// <param name="cell"></param>
     /// <param name="expectedValue"></param>
     /// <returns></returns>
-    public static bool CheckCellValue(ExcelFile excelFile, string addressName, DateOnly expectedValue)
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, DateOnly expectedValue)
     {
         // get the first sheet
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
-        if (!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
             return false;
 
         // type dateOnly expected
-        if (excelCellValueMulti.CellType != ExcelCellType.DateOnly) return false;
+        if (excelCellValue.CellType != ExcelCellType.DateOnly) return false;
 
         // compare values
-        if (expectedValue != excelCellValueMulti.DateOnlyValue) return false;
+        if (expectedValue != excelCellValue.DateOnlyValue) return false;
 
         return true;
     }
@@ -220,26 +216,26 @@ public class TestExcelChecker
     /// <param name="cell"></param>
     /// <param name="expectedValue"></param>
     /// <returns></returns>
-    public static bool CheckCellValue(ExcelFile excelFile, string addressName, DateTime expectedValue)
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, DateTime expectedValue)
     {
         // get the first sheet
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
-        if (!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
             return false;
 
         // type dateTime expected
-        if (excelCellValueMulti.CellType != ExcelCellType.DateTime) return false;
+        if (excelCellValue.CellType != ExcelCellType.DateTime) return false;
 
         // compare values
-        if (expectedValue != excelCellValueMulti.DateTimeValue) return false;
+        if (expectedValue != excelCellValue.DateTimeValue) return false;
 
         return true;
     }
@@ -251,26 +247,26 @@ public class TestExcelChecker
     /// <param name="cell"></param>
     /// <param name="expectedValue"></param>
     /// <returns></returns>
-    public static bool CheckCellValue(ExcelFile excelFile, string addressName, TimeOnly expectedValue)
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, TimeOnly expectedValue)
     {
         // get the first sheet
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
-        if (!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
             return false;
 
         // type TimeOnly expected
-        if (excelCellValueMulti.CellType != ExcelCellType.TimeOnly) return false;
+        if (excelCellValue.CellType != ExcelCellType.TimeOnly) return false;
 
         // compare values
-        if (expectedValue != excelCellValueMulti.TimeOnlyValue) return false;
+        if (expectedValue != excelCellValue.TimeOnlyValue) return false;
 
         return true;
     }
@@ -282,30 +278,30 @@ public class TestExcelChecker
     /// <param name="cell"></param>
     /// <param name="expectedValue"></param>
     /// <returns></returns>
-    public static bool CheckCellValueEmpty(ExcelFile excelFile, string addressName)
+    public static bool CheckCellValueEmpty(ExcelFile excelFile, string cellReference)
     {
         // get the first sheet
-        if (!excelProcessor.GetSheetAt(excelFile, 0, out ExcelSheet excelSheet, out ExcelError error))
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
             return false;
 
         // get the cell at the address
-        if (!excelProcessor.GetCellAt(excelSheet, addressName, out ExcelCell excelCell, out ExcelError excelError))
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
             return false;
         if (excelCell == null) return false;
 
         // get the type and the value of the cell
-        if (!excelProcessor.GetCellTypeAndValue(excelSheet, excelCell, out ExcelCellValueMulti excelCellValueMulti, out excelError))
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
             return false;
 
         // can be type string
-        if (excelCellValueMulti.CellType == ExcelCellType.String)
+        if (excelCellValue.CellType == ExcelCellType.String)
         {
-            if(excelCellValueMulti.StringValue==string.Empty)return true;
+            if(excelCellValue.StringValue==string.Empty)return true;
             return false;
         }
 
         // type undefined expected
-        if (excelCellValueMulti.CellType != ExcelCellType.Undefined) return false;
+        if (excelCellValue.CellType != ExcelCellType.Undefined) return false;
 
         return true;
     }

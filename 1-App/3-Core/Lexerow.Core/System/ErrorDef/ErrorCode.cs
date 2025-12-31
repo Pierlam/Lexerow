@@ -113,6 +113,8 @@ public enum ErrorCode
     ExcelUnableCloseFile,
     ExcelUnableGetSheet,
 
+    ExcelUnableSetCellValue,
+
     ExcelCellIsEmpty,
 
     ExcelCellTypeNotManaged,
@@ -200,6 +202,9 @@ public enum ErrorCode
     ParserThenPartIsEmpty,
 
     //--run program, instructions
+    ExecUnableOpenFile,
+    ExecUnableCloseFile,
+
     ExecInstrNotManaged,
 
     ExecInstrVarNotFound,

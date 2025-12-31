@@ -253,14 +253,17 @@ internal class InstrOnExcelExecutor
     private bool OpenExcelFile(Result result, InstrObjectExcelFile instrExcelFileObject)
     {
         // execute the instr OpenExcel(fileName)
-        if (!_excelProcessor.Open(instrExcelFileObject.Filename, out ExcelFile excelFile, out ExcelError excelError))
+
+        try
         {
-            // convert the excel error to a result error
-            ResultError error = ErrorUtils.Convert(excelError);
-            result.AddError(error);
+            ExcelFile excelFile = _excelProcessor.OpenExcelFile(instrExcelFileObject.Filename);
+            instrExcelFileObject.ExcelFile = excelFile;
+            return true;
+        }
+        catch (Exception ex) 
+        {
+            result.AddError(ErrorCode.ExecUnableOpenFile, ex, instrExcelFileObject.Filename);
             return false;
         }
-        instrExcelFileObject.ExcelFile = excelFile;
-        return true;
     }
 }

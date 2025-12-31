@@ -8,13 +8,15 @@ internal class CloseFileExecutor
 {
     public static bool Exec(Result result, ExcelProcessor excelProcessor, ExcelFile excelFile)
     {
-
-        if (!excelProcessor.Close(excelFile, out var error))
+        try
         {
-            
-            result.ListError.Add(ErrorUtils.Convert(error));
+            excelProcessor.CloseExcelFile(excelFile);
+            return true;
+        }
+        catch (Exception ex) 
+        {
+            result.AddError(ErrorCode.ExecUnableCloseFile, ex, excelFile.Filename);
             return false;
         }
-        return true;
     }
 }

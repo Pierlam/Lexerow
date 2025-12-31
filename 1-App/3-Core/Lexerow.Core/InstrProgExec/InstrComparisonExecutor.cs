@@ -212,21 +212,21 @@ public class InstrComparisonExecutor
     {
         resultComp = false;
 
-        excelProcessor.GetCellTypeAndValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum, out ExcelCell cell, out ExcelCellValueMulti excelCellValueMulti, out ExcelError error);
+        ExcelCellValue excelCellValue= excelProcessor.GetCellValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum);
 
         // does the cell type match the If-Comparison cell.Value type?
-        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(excelCellValueMulti.CellType, valueRight))
+        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(excelCellValue.CellType, valueRight))
         {
             // is there an warning already existing?
             // int sheetIndex= excelSheet.GetIndex()
-            result.AddWarning(ErrorCode.ExecIfCondTypeMismatch, fileName, 0, instrColCellFuncLeft.ColNum, excelCellValueMulti.CellType);
+            result.AddWarning(ErrorCode.ExecIfCondTypeMismatch, fileName, 0, instrColCellFuncLeft.ColNum, excelCellValue.CellType);
 
             // just a warning, stop here but return true
             return true;
         }
 
         // execute the If part: comparison condition
-        return CompareValues(result, excelProcessor, excelCellValueMulti, compOperator, valueRight, out resultComp);
+        return CompareValues(result, excelProcessor, excelCellValue, compOperator, valueRight, out resultComp);
     }
 
     /// <summary>
@@ -247,29 +247,29 @@ public class InstrComparisonExecutor
         resultComp = false;
 
         //var cellLeft = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncLeft.ColNum - 1);
-        excelProcessor.GetCellTypeAndValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum, out ExcelCell cellLeft, out ExcelCellValueMulti excelCellValueMultiLeft, out ExcelError error);
+        ExcelCellValue excelCellValueLeft= excelProcessor.GetCellValue(excelSheet, instrColCellFuncLeft.ColNum, rowNum);
 
         // get the cell value type
         //CellRawValueType cellTypeLeft = excelProcessor.GetCellValueType(excelSheet, cellLeft);
 
         //var cellRight = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFuncRight.ColNum - 1);
-        excelProcessor.GetCellTypeAndValue(excelSheet, instrColCellFuncRight.ColNum, rowNum, out ExcelCell cellRight, out ExcelCellValueMulti excelCellValueMultiRight, out ExcelError errorRight);
+        ExcelCellValue excelCellValueRight= excelProcessor.GetCellValue(excelSheet, instrColCellFuncRight.ColNum, rowNum);
 
         // get the cell value type
         //CellRawValueType cellTypeRight = excelProcessor.GetCellValueType(excelSheet, cellRight);
 
         // does the cell type match the If-Comparison cell.Value type?
-        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(excelCellValueMultiLeft.CellType, excelCellValueMultiRight.CellType))
+        if (!ExcelExtendedUtils.MatchCellTypeAndIfComparison(excelCellValueLeft.CellType, excelCellValueRight.CellType))
         {
             // is there an warning already existing?
             // int excelSheet.Index
-            result.AddWarning(ErrorCode.ExecIfCondTypeMismatch, fileName, 0, instrColCellFuncLeft.ColNum, excelCellValueMultiLeft.CellType);
+            result.AddWarning(ErrorCode.ExecIfCondTypeMismatch, fileName, 0, instrColCellFuncLeft.ColNum, excelCellValueLeft.CellType);
             // just a warning stop here but return true
             return true;
         }
 
         // execute the If part: comparison condition
-        return CompareValues(result, excelProcessor, excelCellValueMultiLeft, compOperator, excelCellValueMultiRight, out resultComp);
+        return CompareValues(result, excelProcessor, excelCellValueLeft, compOperator, excelCellValueRight, out resultComp);
     }
 
     /// <summary>
@@ -289,7 +289,7 @@ public class InstrComparisonExecutor
         resultComp = false;
 
         //var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-        excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError excelError);
+        ExcelCell cell= excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum);
         if (cell == null)
         {
             resultComp = true;
@@ -321,7 +321,7 @@ public class InstrComparisonExecutor
         resultComp = false;
 
         //var cell = excelProcessor.GetCellAt(excelSheet, rowNum, instrColCellFunc.ColNum - 1);
-        excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
+        ExcelCell cell= excelProcessor.GetCellAt(excelSheet, instrColCellFunc.ColNum, rowNum);
         if (cell == null)
         {
             resultComp = true;
@@ -346,75 +346,75 @@ public class InstrComparisonExecutor
     /// <param name="instrComp"></param>
     /// <param name="compResult"></param>
     /// <returns></returns>
-    public static bool CompareValues(Result result, ExcelProcessor excelProcessor, ExcelCellValueMulti excelCellValueMulti, InstrSepComparison compOperator, ValueBase valueBase, out bool compResult)
+    public static bool CompareValues(Result result, ExcelProcessor excelProcessor, ExcelCellValue excelCellValue, InstrSepComparison compOperator, ValueBase valueBase, out bool compResult)
     {
         //--integer
-        if (excelCellValueMulti.CellType == ExcelCellType.Integer)
+        if (excelCellValue.CellType == ExcelCellType.Integer)
         {
             if (valueBase.ValueType == System.ValueType.Int)
             {
-                compResult = CompareInt(excelCellValueMulti.IntegerValue.Value, compOperator, ((ValueInt)valueBase).Val);
+                compResult = CompareInt(excelCellValue.IntegerValue.Value, compOperator, ((ValueInt)valueBase).Val);
                 return true;
             }
-            compResult = CompareDouble(excelCellValueMulti.IntegerValue.Value, compOperator, ((ValueDouble)valueBase).Val);
+            compResult = CompareDouble(excelCellValue.IntegerValue.Value, compOperator, ((ValueDouble)valueBase).Val);
             return true;
         }
 
         //--double
-        if (excelCellValueMulti.CellType == ExcelCellType.Double)
+        if (excelCellValue.CellType == ExcelCellType.Double)
         {
             if (valueBase.ValueType == System.ValueType.Int)
             {
-                compResult = CompareDouble(excelCellValueMulti.DoubleValue.Value, compOperator, ((ValueInt)valueBase).Val);
+                compResult = CompareDouble(excelCellValue.DoubleValue.Value, compOperator, ((ValueInt)valueBase).Val);
                 return true;
             }
-            compResult = CompareDouble(excelCellValueMulti.DoubleValue.Value, compOperator, ((ValueDouble)valueBase).Val);
+            compResult = CompareDouble(excelCellValue.DoubleValue.Value, compOperator, ((ValueDouble)valueBase).Val);
             return true;
         }
 
         //--string
-        if (excelCellValueMulti.CellType == ExcelCellType.String)
+        if (excelCellValue.CellType == ExcelCellType.String)
         {
             // only Equal or NotEqual is possible
-            compResult = CompareString(excelCellValueMulti.StringValue, compOperator, ((ValueString)valueBase).Val);
+            compResult = CompareString(excelCellValue.StringValue, compOperator, ((ValueString)valueBase).Val);
             return true;
         }
 
         //--dateOnly
-        if (excelCellValueMulti.CellType == ExcelCellType.DateOnly)
+        if (excelCellValue.CellType == ExcelCellType.DateOnly)
         {
             // dateOnly - dateOnly 
             if (valueBase.ValueType == System.ValueType.DateOnly)
             {
-                compResult = CompareDateTime(excelCellValueMulti.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, ((ValueDateOnly)valueBase).ToDateTime());
+                compResult = CompareDateTime(excelCellValue.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, ((ValueDateOnly)valueBase).ToDateTime());
                 return true;
             }
 
             // dateOnly - dateTime
-            compResult = CompareDateTime(excelCellValueMulti.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, ((ValueDateTime)valueBase).Val);
+            compResult = CompareDateTime(excelCellValue.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, ((ValueDateTime)valueBase).Val);
             return true;
         }
 
         //--dateTime
-        if (excelCellValueMulti.CellType == ExcelCellType.DateTime)
+        if (excelCellValue.CellType == ExcelCellType.DateTime)
         {
             // dateTime - dateOnly 
             if (valueBase.ValueType == System.ValueType.DateOnly)
             {
-                compResult = CompareDateTime(excelCellValueMulti.DateTimeValue.Value, compOperator, ((ValueDateOnly)valueBase).ToDateTime());
+                compResult = CompareDateTime(excelCellValue.DateTimeValue.Value, compOperator, ((ValueDateOnly)valueBase).ToDateTime());
                 return true;
             }
 
             // dateTime - dateTime
-            compResult = CompareDateTime(excelCellValueMulti.DateTimeValue.Value, compOperator, ((ValueDateTime)valueBase).Val);
+            compResult = CompareDateTime(excelCellValue.DateTimeValue.Value, compOperator, ((ValueDateTime)valueBase).Val);
             return true;
         }
 
         //--TimeOnly
-        if (excelCellValueMulti.CellType == ExcelCellType.TimeOnly)
+        if (excelCellValue.CellType == ExcelCellType.TimeOnly)
         {
             // should be a value less than 0, exp: 0,354746
-            compResult = CompareTimeOnly(excelCellValueMulti.TimeOnlyValue.Value, compOperator, ((ValueTimeOnly)valueBase).Val);
+            compResult = CompareTimeOnly(excelCellValue.TimeOnlyValue.Value, compOperator, ((ValueTimeOnly)valueBase).Val);
             return true;
         }
         
@@ -435,76 +435,76 @@ public class InstrComparisonExecutor
     /// <param name="instrComp"></param>
     /// <param name="compResult"></param>
     /// <returns></returns>
-    public static bool CompareValues(Result result, ExcelProcessor excelProcessor, ExcelCellValueMulti excelCellValueMultiLeft, InstrSepComparison compOperator, ExcelCellValueMulti excelCellValueMultiRight, out bool compResult)
+    public static bool CompareValues(Result result, ExcelProcessor excelProcessor, ExcelCellValue excelCellValueLeft, InstrSepComparison compOperator, ExcelCellValue excelCellValueRight, out bool compResult)
     {
         //--left integer
-        if (excelCellValueMultiLeft.CellType == ExcelCellType.Integer)
+        if (excelCellValueLeft.CellType == ExcelCellType.Integer)
         {
-            if (excelCellValueMultiRight.CellType == ExcelCellType.Integer)
+            if (excelCellValueRight.CellType == ExcelCellType.Integer)
             {
-                compResult = CompareInt(excelCellValueMultiLeft.IntegerValue.Value, compOperator, excelCellValueMultiRight.IntegerValue.Value);
+                compResult = CompareInt(excelCellValueLeft.IntegerValue.Value, compOperator, excelCellValueRight.IntegerValue.Value);
                 return true;
             }
 
-            if (excelCellValueMultiRight.CellType == ExcelCellType.Double)
+            if (excelCellValueRight.CellType == ExcelCellType.Double)
             {
-                compResult = CompareDouble(excelCellValueMultiLeft.IntegerValue.Value, compOperator, excelCellValueMultiRight.DoubleValue.Value);
+                compResult = CompareDouble(excelCellValueLeft.IntegerValue.Value, compOperator, excelCellValueRight.DoubleValue.Value);
                 return true;
             }
         }
 
         //--left double
-        if (excelCellValueMultiLeft.CellType == ExcelCellType.Double)
+        if (excelCellValueLeft.CellType == ExcelCellType.Double)
         {
-            if (excelCellValueMultiRight.CellType == ExcelCellType.Double)
+            if (excelCellValueRight.CellType == ExcelCellType.Double)
             {
-                compResult = CompareDouble(excelCellValueMultiLeft.DoubleValue.Value, compOperator, excelCellValueMultiRight.DoubleValue.Value);
+                compResult = CompareDouble(excelCellValueLeft.DoubleValue.Value, compOperator, excelCellValueRight.DoubleValue.Value);
                 return true;
             }
 
-            if (excelCellValueMultiRight.CellType == ExcelCellType.Integer)
+            if (excelCellValueRight.CellType == ExcelCellType.Integer)
             {
-                compResult = CompareDouble(excelCellValueMultiLeft.DoubleValue.Value, compOperator, excelCellValueMultiRight.IntegerValue.Value);
+                compResult = CompareDouble(excelCellValueLeft.DoubleValue.Value, compOperator, excelCellValueRight.IntegerValue.Value);
                 return true;
             }
         }
 
         //--string
-        if (excelCellValueMultiLeft.CellType == ExcelCellType.String)
+        if (excelCellValueLeft.CellType == ExcelCellType.String)
         {
-            compResult = CompareString(excelCellValueMultiLeft.StringValue, compOperator, excelCellValueMultiRight.StringValue);
+            compResult = CompareString(excelCellValueLeft.StringValue, compOperator, excelCellValueRight.StringValue);
             return true;
         }
 
 
         //--Left DateOnly
-        if (excelCellValueMultiLeft.CellType == ExcelCellType.DateOnly)
+        if (excelCellValueLeft.CellType == ExcelCellType.DateOnly)
         {
-            if (excelCellValueMultiRight.CellType == ExcelCellType.DateOnly)
+            if (excelCellValueRight.CellType == ExcelCellType.DateOnly)
             {
-                compResult = CompareDateTime(excelCellValueMultiLeft.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, excelCellValueMultiRight.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue));
+                compResult = CompareDateTime(excelCellValueLeft.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, excelCellValueRight.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue));
                 return true;
             }
 
-            if (excelCellValueMultiRight.CellType == ExcelCellType.DateTime)
+            if (excelCellValueRight.CellType == ExcelCellType.DateTime)
             {
-                compResult = CompareDateTime(excelCellValueMultiLeft.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, excelCellValueMultiRight.DateTimeValue.Value);
+                compResult = CompareDateTime(excelCellValueLeft.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue), compOperator, excelCellValueRight.DateTimeValue.Value);
                 return true;
             }
 
         }
 
         //--Left DateTime
-        if (excelCellValueMultiLeft.CellType == ExcelCellType.DateTime)
+        if (excelCellValueLeft.CellType == ExcelCellType.DateTime)
         {
-            if (excelCellValueMultiRight.CellType == ExcelCellType.DateTime)
+            if (excelCellValueRight.CellType == ExcelCellType.DateTime)
             {
-                compResult = CompareDateTime(excelCellValueMultiLeft.DateTimeValue.Value, compOperator, excelCellValueMultiRight.DateTimeValue.Value);
+                compResult = CompareDateTime(excelCellValueLeft.DateTimeValue.Value, compOperator, excelCellValueRight.DateTimeValue.Value);
                 return true;
             }
-            if (excelCellValueMultiRight.CellType == ExcelCellType.DateOnly)
+            if (excelCellValueRight.CellType == ExcelCellType.DateOnly)
             {
-                compResult = CompareDateTime(excelCellValueMultiLeft.DateTimeValue.Value, compOperator, excelCellValueMultiRight.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue));
+                compResult = CompareDateTime(excelCellValueLeft.DateTimeValue.Value, compOperator, excelCellValueRight.DateOnlyValue.Value.ToDateTime(TimeOnly.MinValue));
                 return true;
             }
         }

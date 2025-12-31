@@ -38,13 +38,13 @@ public class InstrSetColCellFuncExecutor
     public bool ExecSetCellNull(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
+        ExcelCell cell= _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
 
         if (cell == null)
             return true;
 
         // create a new cell object
-        _excelProcessor.RemoveCell(sheet, instrColCellFunc.ColNum, rowNum, out error);
+        _excelProcessor.RemoveCell(sheet, instrColCellFunc.ColNum, rowNum);
         return true;
     }
 
@@ -60,13 +60,13 @@ public class InstrSetColCellFuncExecutor
     public bool ExecSetCellBlank(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc)
     {
         // get the cell
-        _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
+        ExcelCell cell= _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
 
         if (cell == null)
             return true;
 
         // clear the cell value
-        return _excelProcessor.SetCellValue(sheet, cell, string.Empty, out error); 
+        return _excelProcessor.SetCellValue(sheet, cell, string.Empty); 
     }
 
     /// <summary>
@@ -82,9 +82,9 @@ public class InstrSetColCellFuncExecutor
         _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
         // get the cell
-        _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum, out ExcelCell cell, out ExcelError error);
+        ExcelCell cell= _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);
         if (cell == null)
-            _excelProcessor.CreateCell(sheet, instrColCellFunc.ColNum, rowNum, out cell, out error);
+            cell= _excelProcessor.CreateCell(sheet, instrColCellFunc.ColNum, rowNum);
 
         return ApplySetCellVal(result, _excelProcessor, sheet, cell, instrValue.ValueBase);
     }
@@ -100,66 +100,52 @@ public class InstrSetColCellFuncExecutor
     /// <returns></returns>
     private bool ApplySetCellVal(Result result, ExcelProcessor excelProcessor, ExcelSheet sheet, ExcelCell cell, ValueBase value)
     {
-        ExcelError error;
-
-        if (value.ValueType == System.ValueType.Int)
+        try
         {
-            // set the new value to the cell
-            if(!excelProcessor.SetCellValue(sheet, cell, (value as ValueInt).Val, out error))
-                return result.AddError(ErrorUtils.Convert(error));
-            return true;
-        }
+            if (value.ValueType == System.ValueType.Int)
+                // set the new value to the cell
+                return excelProcessor.SetCellValue(sheet, cell, (value as ValueInt).Val);
 
-        if (value.ValueType == System.ValueType.Double)
+            if (value.ValueType == System.ValueType.Double)
+                // set the new value to the cell
+                return excelProcessor.SetCellValue(sheet, cell, (value as ValueDouble).Val);
+
+            if (value.ValueType == System.ValueType.String)
+            {
+                // set the new value to the cell
+                return excelProcessor.SetCellValue(sheet, cell, (value as ValueString).Val);
+            }
+
+            if (value.ValueType == System.ValueType.DateOnly)
+            {
+                string sysVarDateFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateFormatName);
+
+                // set the new value to the cell
+                return excelProcessor.SetCellValue(sheet, cell, (value as ValueDateOnly).Val, sysVarDateFormat);
+            }
+
+            if (value.ValueType == System.ValueType.DateTime)
+            {
+                string sysVarDateTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
+
+                // set the new value to the cell
+                return excelProcessor.SetCellValue(sheet, cell, (value as ValueDateTime).Val, sysVarDateTimeFormat);
+            }
+
+            if (value.ValueType == System.ValueType.TimeOnly)
+            {
+                string sysVarTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
+                // set the new value to the cell
+                return excelProcessor.SetCellValue(sheet, cell, (value as ValueTimeOnly).Val, sysVarTimeFormat);
+            }
+            // type not managed
+            result.AddError(ErrorCode.ExcelUnableSetCellValue, value.ValueType.ToString());
+            return false;
+        }
+        catch (Exception ex) 
         {
-            // set the new value to the cell
-            if(!excelProcessor.SetCellValue(sheet, cell, (value as ValueDouble).Val, out error))
-                return result.AddError(ErrorUtils.Convert(error));
-            return true;
+            result.AddError(ErrorCode.ExcelUnableSetCellValue, ex, value.ValueType.ToString());
+            return false;
         }
-
-        if (value.ValueType == System.ValueType.String)
-        {
-            // set the new value to the cell
-            if(!excelProcessor.SetCellValue(sheet, cell, (value as ValueString).Val, out error))
-                return result.AddError(ErrorUtils.Convert(error));
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.DateOnly)
-        {
-            string sysVarDateFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateFormatName);
-
-            // set the new value to the cell
-            if (!excelProcessor.SetCellValue(sheet, cell, (value as ValueDateOnly).Val, sysVarDateFormat, out error))
-                return result.AddError(ErrorUtils.Convert(error));
-
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.DateTime)
-        {
-            string sysVarDateTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
-
-            // set the new value to the cell
-            if (!excelProcessor.SetCellValue(sheet, cell, (value as ValueDateTime).Val, sysVarDateTimeFormat, out error))
-                return result.AddError(ErrorUtils.Convert(error));
-
-            return true;
-        }
-
-        if (value.ValueType == System.ValueType.TimeOnly)
-        {
-            string sysVarTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
-            // set the new value to the cell
-            if (!excelProcessor.SetCellValue(sheet, cell, (value as ValueTimeOnly).Val, sysVarTimeFormat, out error))
-                return result.AddError(ErrorUtils.Convert(error));
-
-            return true;
-        }
-
-        // type not managed
-        result.AddError(new ResultError(ErrorCode.ExcelUnableOpenFile, value.ValueType.ToString()));
-        return false;
     }
 }

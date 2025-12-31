@@ -71,11 +71,11 @@ internal class InstrOnSheetExecutor
         // start of the sheet processing?
         if (ctx.ExcelSheet == null)
         {
+
             // get the sheet from excel
-            if(!_excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum-1, out ExcelSheet excelSheet, out ExcelError excelError))
-            {
-                return result.AddError(ErrorCode.UnableFindSheetByNum, instrOnSheet.FirstScriptToken(), excelError.Exception);
-            }
+            ExcelSheet excelSheet= _excelProcessor.GetSheetAt(ctx.ExcelFileObject.ExcelFile, instrOnSheet.SheetNum - 1);
+            //    return result.AddError(ErrorCode.UnableFindSheetByNum, instrOnSheet.FirstScriptToken(), excelError.Exception);
+
             ctx.ExcelSheet= excelSheet;
 
             // process datarow of the current sheet

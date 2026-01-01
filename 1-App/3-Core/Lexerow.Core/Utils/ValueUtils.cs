@@ -15,6 +15,28 @@ namespace Lexerow.Core.Utils;
 public class ValueUtils
 {
     /// <summary>
+    /// Return true if value is a boolean: true or false.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool IsBoolStrValue(string value, out bool boolValue)
+    {
+        boolValue = false;
+
+        if (string.IsNullOrEmpty(value)) return false;
+        if (value.Trim().Equals("false", StringComparison.InvariantCultureIgnoreCase)) return true;
+
+        if (value.Trim().Equals("true", StringComparison.InvariantCultureIgnoreCase))
+        {
+            boolValue |= true;
+            return true;
+        }
+
+        // not a bool value
+        return false;
+    }
+
+    /// <summary>
     /// Return if both value type match.
     /// </summary>
     /// <param name="value1"></param>

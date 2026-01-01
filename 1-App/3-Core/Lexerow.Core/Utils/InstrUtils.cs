@@ -332,7 +332,6 @@ public class InstrUtils
         instrValue.RawValue = valueDouble.Val.ToString();
         return true;
     }
-
     public static InstrValue CreateInstrValueInt(int initValue)
     {
         ValueInt valueInt = new ValueInt(initValue);

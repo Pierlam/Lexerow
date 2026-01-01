@@ -16,6 +16,14 @@ public class InstrValue : InstrBase
         ValueType = ValueType.String;
     }
 
+    public InstrValue(ScriptToken scriptToken, bool rawValue) : base(scriptToken)
+    {
+        InstrType = InstrType.Value;
+        RawValue = rawValue.ToString();
+        ValueBase = new ValueBool(rawValue);
+        ValueType = ValueType.String;
+    }
+
     public InstrValue(ScriptToken scriptToken, int value) : base(scriptToken)
     {
         InstrType = InstrType.Value;

@@ -179,7 +179,11 @@ public class ProgExecVarMgr
         ListSysExecVar.Add(progExecSysVar);
 
         //--$ForceDateFormat=false
-        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarForceDateFormatName, new ValueBool(false));
+        //progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarForceDateFormatName, new ValueBool(false));
+        //ListSysExecVar.Add(progExecSysVar);
+
+        //--$StrCompareCaseSensitive=false
+        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarStrCompareCaseSensitive, new ValueBool(false));
         ListSysExecVar.Add(progExecSysVar);
     }
 }

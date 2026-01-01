@@ -255,6 +255,88 @@ public class ScriptParserSetVarTests
     }
 
     /// <summary>
+    /// SetVar set a value to system var.
+    /// a= true
+    /// </summary>
+    [TestMethod]
+    public void SetVarStrBoolOk()
+    {
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
+
+        // a=true
+        TestTokensBuilder.AddLineSetVarStrBool(numLine++, scriptTokens, "a", "true");
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
+
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
+
+        //==> Check the result
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, prog.ListInstr.Count);
+
+        //--SetVar a=true
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
+        InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
+
+        // InstrLeft: ObjectName
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
+        Assert.IsNotNull(instrObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
+
+        // InstrRight: Value bool
+        InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
+        Assert.IsNotNull(instrValue);
+        Assert.AreEqual(true, (instrValue.ValueBase as ValueBool).Val);
+    }
+
+    /// <summary>
+    /// SetVar set a value to system var.
+    /// a= true
+    /// </summary>
+    [TestMethod]
+    public void SetVarStrBoolFALSEOk()
+    {
+        int numLine = 0;
+        List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
+
+        // a=true
+        TestTokensBuilder.AddLineSetVarStrBool(numLine++, scriptTokens, "a", "FALSE");
+
+        //==>just to check the content of the script
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
+
+        //==> Parse the script tokens
+        Parser parser = new Parser(A.Fake<IActivityLogger>());
+        Result result = new Result();
+        var prog = TestInstrBuilder.CreateProgram();
+        bool res = parser.Process(result, scriptTokens, prog);
+
+        //==> Check the result
+        Assert.IsTrue(res);
+        Assert.AreEqual(1, prog.ListInstr.Count);
+
+        //--SetVar a=true
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
+        InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
+
+        // InstrLeft: ObjectName
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
+        Assert.IsNotNull(instrObjectName);
+        Assert.AreEqual("a", instrObjectName.Name);
+
+        // InstrRight: Value bool
+        InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
+        Assert.IsNotNull(instrValue);
+        Assert.AreEqual(false, (instrValue.ValueBase as ValueBool).Val);
+    }
+
+    /// <summary>
     /// SetVar a date to the var a.
     /// exp:
     /// a=Date(2025,11)

@@ -151,14 +151,31 @@ public class TestTokensBuilder
     }
 
     /// <summary>
-    /// SetVar = intValue
-    /// a=10
+    /// SetVar = varName
+    /// a=b
     /// </summary>
     /// <param name="numLine"></param>
     /// <param name="script"></param>
     /// <param name="varName"></param>
     /// <param name="fileString"></param>
     public static void AddLineSetVarVar(int numLine, List<ScriptLineTokens> script, string varName, string value)
+    {
+        var line = new ScriptLineTokens();
+        line.AddTokenName(numLine, 1, varName);
+        line.AddTokenSeparator(numLine, 10, "=");
+        line.AddTokenName(numLine, 1, value);
+        script.Add(line);
+    }
+
+    /// <summary>
+    /// SetVar = true
+    /// a=b
+    /// </summary>
+    /// <param name="numLine"></param>
+    /// <param name="script"></param>
+    /// <param name="varName"></param>
+    /// <param name="fileString"></param>
+    public static void AddLineSetVarStrBool(int numLine, List<ScriptLineTokens> script, string varName, string value)
     {
         var line = new ScriptLineTokens();
         line.AddTokenName(numLine, 1, varName);

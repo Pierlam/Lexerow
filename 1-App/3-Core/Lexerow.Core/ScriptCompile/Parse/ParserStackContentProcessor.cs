@@ -2,6 +2,7 @@
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
+using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
@@ -225,6 +226,20 @@ internal class ParserStackContentProcessor
         InstrNameObject instrObjectName = instrBase as InstrNameObject;
         if (instrObjectName != null)
         {
+            // can be a bool value: true or false, convert to a ValueBool 
+            if(ValueUtils.IsBoolStrValue(instrObjectName.Name, out bool boolValue))
+            {
+                instrSetVar.InstrRight = new InstrValue(instrObjectName.FirstScriptToken(), boolValue); 
+
+                if (stackInstr.Count == 0)
+                    // instr SetVar not included in a Then instr or ForEachRow
+                    listInstrToExec.Add(instrSetVar);
+                else
+                    stackInstr.Push(instrSetVar);
+
+                return true;
+            }
+
             // Check that right var exists
             if (listVar.FirstOrDefault(x => x.Name.Equals(instrObjectName.Name, StringComparison.InvariantCultureIgnoreCase)) != null)
             {

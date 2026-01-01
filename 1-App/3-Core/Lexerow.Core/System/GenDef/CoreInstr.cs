@@ -51,5 +51,8 @@ public class CoreInstr
     //--$CurrencyFormat
     public static string SysVarCurrencyFormatName = "$CurrencyFormat";
 
-    public static string SysVarForceDateFormatName = "$ForceDateFormat";
+    //public static string SysVarForceDateFormatName = "$ForceDateFormat";
+
+    public static string SysVarStrCompareCaseSensitive = "$StrCompareCaseSensitive";
+
 }

@@ -116,10 +116,10 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals(","))
-            {
-                int a = 12;
-            }
+            //if (currToken.Value.Equals(","))
+            //{
+            //    int a = 12;
+            //}
 
             //--is the token a comment?  dont manage it
             if (currToken.ScriptTokenType == ScriptTokenType.Comment)

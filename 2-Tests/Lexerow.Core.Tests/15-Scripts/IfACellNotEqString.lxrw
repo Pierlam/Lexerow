@@ -1,0 +1,7 @@
+﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
+
+OnExcel ".\10-ExcelFiles\IfACellNotEqString.xlsx"
+	ForEachRow
+		If A.Cell<>"Hello" Then A.Cell="Bonjour"
+	Next
+End OnExcel

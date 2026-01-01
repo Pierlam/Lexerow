@@ -9,7 +9,11 @@ By default display with the default format: dd/mm/yyyy
 -New: You can change the default display format for date
 e.g. $DateFormat="yyyy-mm-dd
 
--143 unit tests, all are green.
+-Now string comparison are by default case insensitive.
+But it's possible to change the default behavior by setting the system var to true.
+$StrCompareCaseSensitive=true
+
+-147 unit tests, all are green.
 
 -Bugs fixed
 

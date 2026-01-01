@@ -2,6 +2,7 @@
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ProgExec;
+using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -17,6 +18,8 @@ public class ProgExecVarMgr
 
     /// <summary>
     /// List of system/built-in variables.
+    /// For system var, name is simply a string.
+    /// The value is a ValueBase object.
     /// </summary>
     public List<ProgExecSysVar> ListSysExecVar { get; private set; } = new List<ProgExecSysVar>();
 
@@ -49,6 +52,37 @@ public class ProgExecVarMgr
         progExecVar = new ProgExecVar(instrVarLeft, instrVarRight);
         ListExecVar.Add(progExecVar);
         return progExecVar;
+    }
+
+    /// <summary>
+    /// Only Possible to update an existing system var.
+    /// For system var, name is simply a string.
+    /// The value is a ValueBase object.
+    /// </summary>
+    /// <param name="instrVarLeft"></param>
+    /// <param name="instrVarRight"></param>
+    /// <returns></returns>
+    public ProgExecSysVar UpdateSystemVar(string varName, ValueBase valueBase)
+    {
+        if (string.IsNullOrWhiteSpace(varName)) return null;
+        if (valueBase == null) return null;
+
+        // the var already defined ?
+        ProgExecSysVar progExecSysVar = ListSysExecVar.FirstOrDefault(v => v.Name.Equals(varName,StringComparison.InvariantCultureIgnoreCase));
+
+        if (progExecSysVar == null)
+            return null;
+
+        // check that the new value match the type
+        if (!ValueUtils.TypeMatch(progExecSysVar.ValueBase, valueBase)) return null;
+
+
+        // TODO: mettre dans un utils!  ValueUtils ?  
+        if (!ValueUtils.CopyValue(progExecSysVar.ValueBase, valueBase))
+            return null;
+
+        return progExecSysVar;
+
     }
 
     /// <summary>

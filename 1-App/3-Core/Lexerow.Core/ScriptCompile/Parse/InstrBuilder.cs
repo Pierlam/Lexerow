@@ -17,6 +17,14 @@ public class InstrBuilder
     /// <returns></returns>
     public static bool Build(Result result, ScriptToken scriptToken, out InstrBase instrBase)
     {
+        //--script token is a system name, like $DateFormat
+        if (scriptToken.ScriptTokenType == ScriptTokenType.SystName)
+        {
+            // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
+            instrBase = new InstrNameObject(scriptToken);
+            return true;
+        }
+
         //--script token is a name/id
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
         {

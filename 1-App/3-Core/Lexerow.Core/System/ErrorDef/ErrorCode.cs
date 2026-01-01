@@ -207,6 +207,8 @@ public enum ErrorCode
 
     ExecInstrNotManaged,
 
+    ExecInstrValueExpected,
+
     ExecInstrVarNotFound,
     ExecInstrVarTypeNotExpected,
 
@@ -227,7 +229,8 @@ public enum ErrorCode
     ExecFuncOneParamExpected,
 
     ExecNoFileSelected,
+    ExecUnableCreateUpdateVar,
 
     InstrNotExpected,
-    IntMustBePositive
+    IntMustBePositive,
 }

@@ -114,7 +114,7 @@ public class InstrSetVarExecutor
             //ici();
 
             // get or create the var, set the value
-            CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrObjectName);
+            CreateVar(result, ctx, progExecVarMgr, instrSetVar.InstrLeft, instrObjectName);
             ctx.StackInstr.Pop();
             return true;
         }
@@ -127,7 +127,7 @@ public class InstrSetVarExecutor
         }
 
         // get or create the var, set the value, exp: f=SelectFiles()
-        CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, ctx.PrevInstrExecuted);
+        CreateVar(result, ctx, progExecVarMgr, instrSetVar.InstrLeft, ctx.PrevInstrExecuted);
 
         // now remove the SetInstr from the stack
         ctx.PrevInstrExecuted = null;
@@ -267,45 +267,52 @@ public class InstrSetVarExecutor
     private bool ExecSetToVar(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrSetVar instrSetVar, InstrNameObject instrNameObject, InstrBase instrRight)
     {
         // get or create the var, set the value
-        CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrRight);
+        CreateVar(result, ctx, progExecVarMgr, instrSetVar.InstrLeft, instrRight);
         ctx.PrevInstrExecuted = null;
         ctx.StackInstr.Pop();
         return true;
-
-        ////--case a=12, the right instr is a const value
-        //InstrValue instrValue = instrRight as InstrValue;
-        //if (instrValue != null)
-        //{
-        //    // get or create the var, set the value
-        //    CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrValue);
-        //    ctx.StackInstr.Pop();
-        //    return true;
-        //}
-
-        //--case f=SelectFiles(..)
-
-        //result.AddError(ErrorCode.ExecInstrNotManaged, "Instr Right: " + instrRight.FirstScriptToken());
-        //return false;
     }
 
-    private bool CreateVar(ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrBase instrName, InstrBase instrtValue)
+    /// <summary>
+    /// Create or update a variable, a system one or a user defined one.
+    /// </summary>
+    /// <param name="ctx"></param>
+    /// <param name="progExecVarMgr"></param>
+    /// <param name="instrName"></param>
+    /// <param name="instrtValue"></param>
+    /// <returns></returns>
+    private bool CreateVar(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrBase instrName, InstrBase instrBase)
     {
-        if (progExecVarMgr.CreateOrUpdateVar(instrName, instrtValue) == null)
+        // is it a system var?
+        if (instrName.FirstScriptToken().ScriptTokenType == Lexerow.Core.System.ScriptDef.ScriptTokenType.SystName) 
+        {
+            // check var name
+
+            // check value
+            InstrValue instrValue = instrBase as InstrValue ;
+            if(instrValue==null)
+            {
+                result.AddError(ErrorCode.ExecInstrValueExpected, instrBase.FirstScriptToken());
+                return false;
+            }
+
+            // it's a system variable
+            if (progExecVarMgr.UpdateSystemVar(instrName.FirstScriptToken().Value, instrValue.ValueBase) == null)
+            {
+                result.AddError(ErrorCode.ExecUnableCreateUpdateVar, instrName.FirstScriptToken());
+                return false;
+            }
+
+            return true;
+        }
+
+        // it's a user defined variable
+        if (progExecVarMgr.CreateOrUpdateVar(instrName, instrBase) == null)
+        {
+            result.AddError(ErrorCode.ExecUnableCreateUpdateVar, instrName.FirstScriptToken());
             return false;
+        }
 
         return true;
-        //// the var already defined ?
-        //ProgExecVar execVar = progExecVarMgr.ListExecVar.FirstOrDefault(v => v.AreEqual(instrName));
-
-        //if (execVar == null)
-        //{
-        //    // create the var
-        //    execVar = new ProgExecVar(instrName, instrtValue);
-        //    progExecVarMgr.Add(execVar);
-        //}
-        //else
-        //    execVar.Value = instrtValue;
-
-        //return true;
     }
 }

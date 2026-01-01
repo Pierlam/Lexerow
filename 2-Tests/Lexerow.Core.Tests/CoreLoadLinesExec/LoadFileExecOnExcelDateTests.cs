@@ -310,11 +310,14 @@ public class LoadFileExecOnExcelDateTests : BaseTests
         // A3: 10/05/2020 
         res = TestExcelChecker.CheckCellValue(excelFile, "A3", new DateOnly(2020, 05, 10));
         Assert.IsTrue(res);
+        // default date format: built-in ->14
+        res = TestExcelChecker.CheckCellStyleNumberFormatId(excelFile, "A3", 14);
+        Assert.IsTrue(res);
 
         // A4: 25/09/1987 -> 30/12/2025
         res = TestExcelChecker.CheckCellValue(excelFile, "A4", new DateOnly(2025, 12, 30));
         Assert.IsTrue(res);
-        res = TestExcelChecker.CheckCellStyleNumberFormat(excelFile, "A2", "yyyy-mm-dd");
+        res = TestExcelChecker.CheckCellStyleNumberFormat(excelFile, "A4", "yyyy-mm-dd");
         Assert.IsTrue(res);
 
         // A5: hello

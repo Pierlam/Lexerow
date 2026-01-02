@@ -13,6 +13,8 @@ e.g. $DateFormat="yyyy-mm-dd
 But it's possible to change the default behavior by setting the system var to true.
 $StrCompareCaseSensitive=true
 
+-Creation of the class Diagnotics available in the core to manage easily logs/traces.
+
 -147 unit tests, all are green.
 
 -Bugs fixed

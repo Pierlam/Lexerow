@@ -17,11 +17,11 @@ internal class TestTheCore
     /// </summary>
     public static void TestCore()
     {
-
         LexerowCore core = new LexerowCore();
-        core.SetLogLevelTrace();
-
-        core.ActivityLogEvent += Core_ActivityLogEvent1;
+        core.Diagnostics.SetLogLevelTrace();
+        core.Diagnostics.LogToConsole(true);
+        core.Diagnostics.SaveLogTxt(".\\Logs\\logs.txt");
+        core.Diagnostics.SaveLogCsv(".\\Logs\\logs.csv");
 
         string scriptfile = ".\\Scripts\\test2026.lxrw";
         // load the script, compile it and then execute it
@@ -29,15 +29,5 @@ internal class TestTheCore
 
         if (result.Res) Console.WriteLine("OK.");
         else Console.WriteLine("ERROR");
-    }
-
-    private static void Core_ActivityLogEvent1(object? sender, Lexerow.Core.System.ActivLog.ActivityLog e)
-    {
-        string s=string.Empty;
-
-        s= e.When.ToString("dd/MM/yyyy HH:mm:ss fff");
-
-        s += " " + e.Level + " " + e.Module + " " + e.Stage + " " + e.Result+ " " + e.Operation + " " + e.Msg;
-        Console.WriteLine(s);
     }
 }

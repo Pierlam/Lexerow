@@ -1,4 +1,6 @@
-﻿using Lexerow.Core.InstrProgExec;
+﻿using DocumentFormat.OpenXml.Math;
+using Lexerow.Core.Diag;
+using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.ScriptCompile;
 using Lexerow.Core.ScriptLoad;
 using Lexerow.Core.System;
@@ -12,7 +14,7 @@ namespace Lexerow.Core;
 /// <summary>
 /// Lexerow core backend application.
 /// </summary>
-public class LexerowCore
+public class LexerowCore : IDisposable
 {
     private ExcelProcessor _excelProcessor;
 
@@ -35,16 +37,21 @@ public class LexerowCore
         // default activity log lelve: Info, only main information.
         _logger.ActiveLevel = ActivityLogLevel.Info;
 
+        Diagnostics = new Diagnostics(_logger);
+
         _logger.ActivityLogEvent += logger_ActivityLogEvent;
 
+        // main managers
         _excelProcessor = new ExcelProcessor();
-
         _scriptLoader = new ScriptLoader();
         _scriptCompiler = new ScriptCompiler(_logger, _coreData);
-
         _programExecutor = new ProgramExecutor(_logger, _excelProcessor);
     }
 
+    public void Dispose() 
+    {
+        Diagnostics.CloseLogs();
+    }
     public event EventHandler<ActivityLog> ActivityLogEvent;
 
     /// <summary>
@@ -96,7 +103,7 @@ public class LexerowCore
             return result;
         }
 
-        if (!_scriptLoader.LoadScriptFromLines(result, scriptName, scriptLines, out Script script))
+        if (!_scriptLoader.LoadScriptFromLines(result, scriptName, scriptLines, out System.ScriptDef.Script script))
             return result;
 
         // compile the script,  generate instructions
@@ -156,7 +163,7 @@ public class LexerowCore
             return result;
         }
 
-        if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out Script script))
+        if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out System.ScriptDef.Script script))
             return result;
 
         // compile the script,  generate instructions
@@ -207,40 +214,22 @@ public class LexerowCore
         return result;
     }
 
+    /// <summary>
+    /// Diagnostics tool.
+    /// </summary>
+    public Diagnostics Diagnostics { get;}
+
     private void logger_ActivityLogEvent(object? sender, ActivityLog e)
     {
+        // log to console is active?
+        if (Diagnostics.IsLogToConsoleActive)
+            Diagnostics.LogToConsole(e);
+
+        // log to txt file is active?
+        if (Diagnostics.IsSaveLogTxtActive)
+            Diagnostics.SaveLog(e);
+
+        // log outside
         ActivityLogEvent?.Invoke(sender, e);
-    }
-
-    /// <summary>
-    /// Stop the log activity.
-    /// </summary>
-    public void SetLogLevelOff()
-    {
-        _logger.ActiveLevel = ActivityLogLevel.Off;
-    }
-
-    /// <summary>
-    /// Autorize only the highest log lelve: Info
-    /// </summary>
-    public void SetLogLevelInfo()
-    {
-        _logger.ActiveLevel = ActivityLogLevel.Info;
-    }
-
-    /// <summary>
-    /// Authorize the activity level Info and Debug.
-    /// </summary>
-    public void SetLogLevelDebug()
-    {
-        _logger.ActiveLevel = ActivityLogLevel.Debug;
-    }
-
-    /// <summary>
-    /// Authorize all activity level Info, Debug and Trace.
-    /// </summary>
-    public void SetLogLevelTrace()
-    {
-        _logger.ActiveLevel= ActivityLogLevel.Trace;
     }
 }

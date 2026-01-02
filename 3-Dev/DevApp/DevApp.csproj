@@ -43,6 +43,9 @@
     <None Update="Input\TestMoney.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Logs\TextFile1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\test2026.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

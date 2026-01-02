@@ -47,8 +47,8 @@ public class Parser
             return false;
         }
 
-        // process, loop on tokens
-        bool res = LoopOnTokens(result, _listVar, listScriptLineTokens, program);
+        // process tokens, line by line
+        bool res = ProcessTokensLineByLine(result, _listVar, listScriptLineTokens, program);
 
         if (res)
         {
@@ -70,7 +70,7 @@ public class Parser
     /// <param name="listScriptLineTokens"></param>
     /// <param name="listInstrToExec"></param>
     /// <returns></returns>
-    private bool LoopOnTokens(Result result, List<InstrNameObject> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
+    private bool ProcessTokensLineByLine(Result result, List<InstrNameObject> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
         bool res;
         bool isToken = false;
@@ -93,7 +93,7 @@ public class Parser
 
             if (currTokenIndex >= currLineTokens.ListScriptToken.Count)
             {
-                _logger.LogCompilOnGoing(ActivityLogLevel.Info, "Parser.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
+                _logger.LogCompilOnGoing(ActivityLogLevel.Debug, "Parser.ProcessTokensLineByLine", "End Of line reached, Num: " + currLineTokensIndex.ToString() + ", Line: " + currLineTokens.ScriptLine);
 
                 // no more token in the current line tokens, process items saved in the stack
                 res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);

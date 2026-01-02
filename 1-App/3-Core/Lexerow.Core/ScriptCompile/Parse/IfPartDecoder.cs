@@ -75,6 +75,7 @@ internal class IfPartDecoder
         bool res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptToken, out bool isInstr);
         if (!res) return false;
 
+        // extract instr from the stack and put them into a list (so in the right order)
         if (!MoveInstrToListUntilReachIf(result, stackInstr, scriptToken, out InstrIf instrIf, out List<InstrBase> listInstr))
             return false;
 

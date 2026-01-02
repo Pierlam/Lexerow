@@ -1,5 +1,8 @@
 ﻿namespace Lexerow.Core.System.ActivLog;
 
+/// <summary>
+/// Module
+/// </summary>
 public enum ActivityLogType
 {
     Other,
@@ -10,12 +13,27 @@ public enum ActivityLogType
 
 public enum ActivityLogLevel
 {
-    // error log are important
-    Important,
+    /// <summary>
+    /// stop the log activiy.
+    /// </summary>
+    Off=0, 
 
-    Info,
-    Detail
-}
+    /// <summary>
+    ///  Generally useful information to log (service start/stop, configuration assumptions, etc). 
+    ///  Info I want to always have available but usually don't care about under normal circumstances.
+    /// </summary>
+    Info=1,
+
+    /// <summary>
+    /// Information that is diagnostically helpful to people more than just developers (IT, sysadmins, etc.).
+    /// </summary>
+    Debug=2,
+
+    /// <summary>
+    ///  Only when I would be "tracing" the code and trying to find one part of a function specifically.
+    /// </summary>
+    Trace=3
+}   
 
 public enum ActivityLogStage
 {
@@ -36,20 +54,20 @@ public class ActivityLog
 {
     public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string msg)
     {
-        ActivityLogBaseType = ActivityLogType.CompileScript;
+        Module = ActivityLogType.CompileScript;
         Level = level;
         Stage = stage;
         Operation = operation;
         Msg = msg;
     }
 
-    public ActivityLogType ActivityLogBaseType { get; set; } = ActivityLogType.Other;
+    public ActivityLogType Module { get; set; } = ActivityLogType.Other;
 
     public DateTime When { get; private set; } = DateTime.Now;
 
     public ActivityLogStage Stage { get; set; } = ActivityLogStage.StartEnd;
 
-    public ActivityLogLevel Level { get; set; } = ActivityLogLevel.Info;
+    public ActivityLogLevel Level { get; set; } = ActivityLogLevel.Debug;
 
     /// <summary>
     /// name of the operation/action.

@@ -24,4 +24,9 @@ public class InstrIfThenElse : InstrBase
     public InstrThen InstrThen { get; set; }
 
     public InstrBase InstrElse { get; set; }
+
+    public override string ToString()
+    {
+        return "If-Then-Else";
+    }
 }

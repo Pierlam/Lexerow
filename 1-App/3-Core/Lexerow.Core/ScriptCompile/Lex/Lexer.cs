@@ -20,7 +20,7 @@ public class Lexer
     /// <returns></returns>
     public static bool Process(IActivityLogger logger, Result result, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexerConfig lac)
     {
-        logger.LogCompilStart(ActivityLogLevel.Important, "Lexer.Process", script.Name);
+        logger.LogCompilStart(ActivityLogLevel.Info, "Lexer.Process", script.Name);
 
         ScriptSplitter stringParser = new ScriptSplitter();
 
@@ -77,7 +77,7 @@ public class Lexer
             listScriptLineTokens.Add(scriptLineTokens);
         }
 
-        logger.LogCompilEnd(ActivityLogLevel.Important, "Lexer.Process", script.Name);
+        logger.LogCompilEnd(ActivityLogLevel.Info, "Lexer.Process", script.Name);
         return true;
     }
 }

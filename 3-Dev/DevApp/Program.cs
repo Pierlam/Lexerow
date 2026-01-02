@@ -1,4 +1,6 @@
-﻿using Lexerow.Core;
+﻿using DevApp;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Lexerow.Core;
 using Lexerow.Core.System.ActivLog;
 
 Console.WriteLine("==>Lexerow Dev:");
@@ -43,14 +45,8 @@ void TestGetFiles()
     }
 }
 
-///
-/// If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
-/// by default, it is case sensitive.
-///
-/// Case insensitive:
-/// If A.Cell In [ "y", "yes", "ok" ] /I Then A.Cell= "X"
-///  In /CI -> In case Insensitive
-///  In    -> In case Sensitive
+//==================================
+Main:
 
 //TestCore();
 
@@ -66,5 +62,7 @@ if (a <= 10) { }
 //DateSandBox.TestReadDates();
 
 //DateSandBox.TestWriteDate();
+
+TestTheCore.TestCore();
 
 Console.WriteLine("\n=> ends.");

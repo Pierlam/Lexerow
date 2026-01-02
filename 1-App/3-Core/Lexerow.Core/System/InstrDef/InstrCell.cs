@@ -8,4 +8,9 @@ public class InstrCell : InstrBase
     {
         InstrType = InstrType.Cell;
     }
+
+    public override string ToString()
+    {
+        return "Cell";
+    }
 }

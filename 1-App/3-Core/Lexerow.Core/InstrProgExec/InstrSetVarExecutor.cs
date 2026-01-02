@@ -42,7 +42,7 @@ public class InstrSetVarExecutor
     /// <returns></returns>
     public bool Exec(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrSetVar instrSetVar)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetVarExecutor.Exec", "Token: " + instrSetVar.FirstScriptToken());
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrSetVarExecutor.Exec", "Token: " + instrSetVar.FirstScriptToken());
 
         InstrBase instrRight = instrSetVar.InstrRight;
 
@@ -213,7 +213,7 @@ public class InstrSetVarExecutor
     /// <returns></returns>
     private bool ExecSetToColCellFunc(Result result, ProgExecContext ctx, InstrSetVar instrSetVar, InstrColCellFunc instrColCellFunc, InstrBase instrRight)
     {
-        _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrSetVarExecutor.ExecSetToColCellFunc", "Left is InstrColCellFunc: " + instrSetVar.FirstScriptToken());
+        _logger.LogExecOnGoing(ActivityLogLevel.Debug, "InstrSetVarExecutor.ExecSetToColCellFunc", "Left is InstrColCellFunc: " + instrSetVar.FirstScriptToken());
 
         //--case A.cell=10 ?
         InstrValue instrValue = instrRight as InstrValue;

@@ -33,7 +33,7 @@ internal class InstrOnSheetExecutor
     /// <returns></returns>
     public bool ExecInstrProcessSheets(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrProcessSheets", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrProcessSheets", string.Empty);
 
         // move to next sheet num
         instrNextSheet.SheetNum++;
@@ -65,7 +65,7 @@ internal class InstrOnSheetExecutor
     /// <returns></returns>
     public bool ExecInstrOnSheet(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrOnSheet instrOnSheet)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnSheet", string.Empty);
         bool res;
 
         // start of the sheet processing?
@@ -87,7 +87,7 @@ internal class InstrOnSheetExecutor
             instrProcessRow.RowIndex = val;
             instrProcessRow.ColIndex = instrOnSheet.FirstColIndex;
 
-            _logger.LogExecOnGoing(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnSheet", "RowIndex: " + val + ", ColIndex:" + instrOnSheet.FirstColIndex.ToString());
+            _logger.LogExecOnGoing(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnSheet", "RowIndex: " + val + ", ColIndex:" + instrOnSheet.FirstColIndex.ToString());
 
             // set to the first datarow
             ctx.StackInstr.Push(instrProcessRow);

@@ -112,4 +112,9 @@ public class InstrOnExcel : InstrBase
         ListSheets.Add(instrOnSheet);
         CurrOnSheet = instrOnSheet;
     }
+
+    public override string ToString()
+    {
+        return "OnExcel";
+    }
 }

@@ -8,4 +8,9 @@ public class InstrNull : InstrBase
     {
         InstrType = InstrType.InstrNull;
     }
+
+    public override string ToString()
+    {
+        return "Null";
+    }
 }

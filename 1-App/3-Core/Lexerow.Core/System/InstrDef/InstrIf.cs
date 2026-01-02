@@ -27,6 +27,6 @@ public class InstrIf : InstrBase
 
     public override string ToString()
     {
-        return "If: ";
+        return "If";
     }
 }

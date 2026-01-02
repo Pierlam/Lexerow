@@ -46,6 +46,6 @@ public class InstrThen : InstrBase
 
     public override string ToString()
     {
-        return "Then: ";
+        return "Then";
     }
 }

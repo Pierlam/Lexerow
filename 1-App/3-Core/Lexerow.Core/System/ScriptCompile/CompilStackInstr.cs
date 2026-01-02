@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
+using System;
 
 namespace Lexerow.Core.System.ScriptCompile;
 
@@ -19,19 +20,27 @@ public class CompilStackInstr
     public int Count
     { get { return StackInstr.Count; } }
 
+    /// <summary>
+    /// Peek/read the top item on the stack.
+    /// </summary>
+    /// <returns></returns>
     public InstrBase Peek()
     {
         var instr = StackInstr.Peek();
-        _logger.LogCompilOnGoing(ActivityLogLevel.Detail, "CompilStackInstr.Peek", instr.ToString());
+        Log(_logger, "CompilStackInstr.Peek", instr);
         return instr;
     }
 
+    /// <summary>
+    /// Pop/Remove the top item on the stack.
+    /// </summary>
+    /// <returns></returns>
     public InstrBase Pop()
     {
         try
         {
             var instr = StackInstr.Pop();
-            _logger.LogCompilOnGoing(ActivityLogLevel.Detail, "CompilStackInstr.Pop", instr.ToString());
+            Log(_logger, "CompilStackInstr.Pop", instr);
             return instr;
         }
         catch (Exception e)
@@ -44,6 +53,7 @@ public class CompilStackInstr
     public void Push(InstrBase instr)
     {
         StackInstr.Push(instr);
+        Log(_logger, "CompilStackInstr.Push", instr);
     }
 
     /// <summary>
@@ -115,4 +125,12 @@ public class CompilStackInstr
     /// the stack onf isntr, is private.
     /// </summary>
     private Stack<InstrBase> StackInstr { get; set; } = new Stack<InstrBase>();
+
+    void Log(IActivityLogger logger, string msg , InstrBase instrBase)
+    {
+        int count = StackInstr.Count;
+        if(logger.IsLevelTraceActive())
+            logger.LogCompilOnGoing(ActivityLogLevel.Trace, msg, instrBase.ToString() + ", Nb=" + count.ToString() + " Top> " + Dump()) ;
+    }
+
 }

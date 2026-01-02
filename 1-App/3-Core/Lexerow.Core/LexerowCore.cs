@@ -32,6 +32,9 @@ public class LexerowCore
     public LexerowCore()
     {
         _logger = new ActivityLogger();
+        // default activity log lelve: Info, only main information.
+        _logger.ActiveLevel = ActivityLogLevel.Info;
+
         _logger.ActivityLogEvent += logger_ActivityLogEvent;
 
         _excelProcessor = new ExcelProcessor();
@@ -72,7 +75,7 @@ public class LexerowCore
     /// <returns></returns>
     public Result LoadLinesScript(string scriptName, List<string> scriptLines)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromLines", scriptName);
+        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromLines", scriptName);
 
         Result result = new Result();
 
@@ -104,7 +107,7 @@ public class LexerowCore
         // save it
         _coreData.ListProgram.Add(programScript);
 
-        _logger.LogCompilEnd(ActivityLogLevel.Important, "LoadScriptFromFile", scriptName);
+        _logger.LogCompilEnd(ActivityLogLevel.Info, "LoadScriptFromFile", scriptName);
 
         return result;
     }
@@ -132,7 +135,7 @@ public class LexerowCore
     /// <returns></returns>
     public Result LoadScript(string scriptName, string fileName)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
+        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", scriptName);
 
         Result result = new Result();
 
@@ -164,7 +167,7 @@ public class LexerowCore
         // save it
         _coreData.ListProgram.Add(programInstr);
 
-        _logger.LogCompilEnd(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
+        _logger.LogCompilEnd(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", scriptName);
 
         return result;
     }
@@ -177,7 +180,7 @@ public class LexerowCore
     /// <exception cref="Exception"></exception>
     public Result ExecuteScript(string scriptName)
     {
-        _logger.LogExecStart(ActivityLogLevel.Important, "LexerowCore.ExecuteScript", scriptName);
+        _logger.LogExecStart(ActivityLogLevel.Info, "LexerowCore.ExecuteScript", scriptName);
 
         Result result = new Result();
 
@@ -209,14 +212,35 @@ public class LexerowCore
         ActivityLogEvent?.Invoke(sender, e);
     }
 
-    //Action<AppTrace> _appTraceEvent;
+    /// <summary>
+    /// Stop the log activity.
+    /// </summary>
+    public void SetLogLevelOff()
+    {
+        _logger.ActiveLevel = ActivityLogLevel.Off;
+    }
 
-    //public Action<AppTrace> AppTraceEvent
-    //{
-    //    get { return _appTraceEvent; }
-    //    set {
-    //        //ProgBuilder.AppTraceEvent = value;
-    //        Exec.AppTraceEvent = value;
-    //    }
-    //}
+    /// <summary>
+    /// Autorize only the highest log lelve: Info
+    /// </summary>
+    public void SetLogLevelInfo()
+    {
+        _logger.ActiveLevel = ActivityLogLevel.Info;
+    }
+
+    /// <summary>
+    /// Authorize the activity level Info and Debug.
+    /// </summary>
+    public void SetLogLevelDebug()
+    {
+        _logger.ActiveLevel = ActivityLogLevel.Debug;
+    }
+
+    /// <summary>
+    /// Authorize all activity level Info, Debug and Trace.
+    /// </summary>
+    public void SetLogLevelTrace()
+    {
+        _logger.ActiveLevel= ActivityLogLevel.Trace;
+    }
 }

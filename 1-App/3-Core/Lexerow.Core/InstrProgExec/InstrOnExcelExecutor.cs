@@ -38,7 +38,7 @@ internal class InstrOnExcelExecutor
     /// <returns></returns>
     public bool ExecInstrOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrOnExcel instrOnExcel)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
 
         InstrObjectSelectedFiles instrObjectSelectedFiles = null;
 

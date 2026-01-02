@@ -16,16 +16,6 @@ public class InstrSetVar : InstrBase
     }
 
     /// <summary>
-    /// variable name. left instr.
-    /// Set only if there is a basic name.
-    /// exp: a= 12
-    /// for an instruction like this: sheet.Cell(A,1)=12 VarName is not set.
-    ///
-    /// TODO: on garde?
-    /// </summary>
-    //public string VarName { get; set; } = string.Empty;
-
-    /// <summary>
     /// The left part of the SetVar instruction.
     /// before the char equal.
     /// Used if the left part is an object.
@@ -51,6 +41,6 @@ public class InstrSetVar : InstrBase
         string instrRightStr = "(null)";
         if (InstrRight != null) instrRightStr = InstrRight.ToString();
 
-        return "SetVar: " + instrRightStr + "=" + instrRightStr;
+        return "SetVar: " + instrLeftStr + "= " + instrRightStr;
     }
 }

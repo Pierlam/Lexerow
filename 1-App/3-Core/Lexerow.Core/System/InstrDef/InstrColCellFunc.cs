@@ -35,4 +35,12 @@ public class InstrColCellFunc : InstrBase
     /// 2 for B,...
     /// </summary>
     public int ColNum { get; set; }
+
+    public override string ToString()
+    {
+        string s= "(null)";
+        if (ColName != null) s = ColName;
+
+        return ColName+"." + ColNum.ToString();
+    }
 }

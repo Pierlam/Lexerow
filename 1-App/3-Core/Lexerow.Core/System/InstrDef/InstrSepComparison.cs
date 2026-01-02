@@ -63,4 +63,17 @@ public class InstrSepComparison : InstrBase
         // equals and different doesnt change
         return instrSepComparison;
     }
+
+    public override string ToString()
+    {
+        string s = "=";
+
+        if (Operator == SepComparisonOperator.GreaterThan) s = ">";
+        if (Operator == SepComparisonOperator.GreaterEqualThan) s = ">=";
+        if (Operator == SepComparisonOperator.LessThan) s = "<";
+        if (Operator == SepComparisonOperator.LessEqualThan) s = ">=";
+
+
+        return "SepComp: " + s;
+    }
 }

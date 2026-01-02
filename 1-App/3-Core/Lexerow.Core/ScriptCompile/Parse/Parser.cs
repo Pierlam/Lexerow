@@ -37,7 +37,7 @@ public class Parser
     /// <returns></returns>
     public bool Process(Result result, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "Parser.Process", "script lines Num: " + listScriptLineTokens.Count.ToString());
+        _logger.LogCompilStart(ActivityLogLevel.Info, "Parser.Process", "script lines Num: " + listScriptLineTokens.Count.ToString());
         _listVar.Clear();
 
         // no token in the source code! -> error or warning?
@@ -52,7 +52,7 @@ public class Parser
 
         if (res)
         {
-            _logger.LogCompilEnd(ActivityLogLevel.Important, "Parser.Process", "Instr count: " + program.ListInstr.Count().ToString());
+            _logger.LogCompilEnd(ActivityLogLevel.Info, "Parser.Process", "Instr count: " + program.ListInstr.Count().ToString());
 
             // ok, no error
             return true;
@@ -93,7 +93,7 @@ public class Parser
 
             if (currTokenIndex >= currLineTokens.ListScriptToken.Count)
             {
-                _logger.LogCompilOnGoing(ActivityLogLevel.Important, "Parser.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
+                _logger.LogCompilOnGoing(ActivityLogLevel.Info, "Parser.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
 
                 // no more token in the current line tokens, process items saved in the stack
                 res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);

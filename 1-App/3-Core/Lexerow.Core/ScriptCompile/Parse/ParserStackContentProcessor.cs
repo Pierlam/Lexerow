@@ -286,7 +286,7 @@ internal class ParserStackContentProcessor
         if (instrBase.IsFunctionCall)
         {
             // check that the function return something to set to a var
-            if (instrBase.ReturnType == InstrFunctionReturnType.Nothing)
+            if (instrBase.ReturnType == InstrReturnType.Nothing)
             {
                 result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;

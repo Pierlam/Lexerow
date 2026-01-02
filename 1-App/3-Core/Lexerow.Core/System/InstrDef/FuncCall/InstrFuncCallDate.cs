@@ -9,7 +9,7 @@ public class InstrFuncCallDate : InstrBase
         InstrType = InstrType.FuncDate;
         IsFunctionCall = true;
         // return a date
-        ReturnType = InstrFunctionReturnType.ValueDate;
+        ReturnType = InstrReturnType.ValueDateOnly;
     }
 
     public InstrBase InstrYear { get; set; }

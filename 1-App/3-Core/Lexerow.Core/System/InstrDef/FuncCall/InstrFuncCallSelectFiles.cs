@@ -19,7 +19,7 @@ public class InstrFuncCallSelectFiles : InstrBase
         InstrType = InstrType.FuncSelectFiles;
         IsFunctionCall = true;
         // return a list of filename
-        ReturnType = InstrFunctionReturnType.ListString;
+        ReturnType = InstrReturnType.ListString;
     }
 
     /// <summary>

@@ -116,10 +116,10 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            //if (currToken.Value.Equals(","))
-            //{
-            //    int a = 12;
-            //}
+            if (currToken.Value.Equals("And"))
+            {
+                int a = 12;
+            }
 
             //--is the token a comment?  dont manage it
             if (currToken.ScriptTokenType == ScriptTokenType.Comment)
@@ -147,12 +147,17 @@ public class Parser
                 continue;
             }
 
+            //--Is it the And/or token?
+            res = IfPartDecoder.ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken);
+            if (!res) break;
+            if (isToken) continue;
+
             //--Is it the Then token?
             res = IfPartDecoder.ProcessStackBeforeTokenThen(result, listVar, stackInstr, currToken, out isToken);
             if (!res) break;
             if (isToken) continue;
 
-            //--is the token the char ) ?  pop the stack until found ( et traite l'expression. parametre d'une fonction/méthode.
+            //--is the token the char ) ?  pop the stack until found ( and parse the expression. parameter of a function
             res = TokenCloseBracketProcessor.Process(result, listVar, stackInstr, currToken, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
             if (!res) break;
             if (isListOfParams)

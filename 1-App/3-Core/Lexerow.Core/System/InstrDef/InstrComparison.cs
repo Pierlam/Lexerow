@@ -12,7 +12,7 @@ public class InstrComparison : InstrBase
     public InstrComparison(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.Comparison;
-        ReturnType = InstrFunctionReturnType.ValueBool;
+        ReturnType = InstrReturnType.ValueBool;
     }
 
     public InstrBase OperandLeft { get; set; } = null;

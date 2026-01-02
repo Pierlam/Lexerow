@@ -291,6 +291,23 @@ public class InstrUtils
         return true;
     }
 
+
+    /// <summary>
+    /// Create a and or Or instruction.
+    /// </summary>
+    /// <param name="scriptToken"></param>
+    /// <returns></returns>
+    public static InstrBase CreateBoolOperator(ScriptToken scriptToken)
+    {
+        if (scriptToken.Value.Equals("And", StringComparison.InvariantCultureIgnoreCase))
+            return new InstrAnd(scriptToken);
+
+        if (scriptToken.Value.Equals("Or", StringComparison.InvariantCultureIgnoreCase))
+            return new InstrOr(scriptToken);
+
+        return null;
+    }
+
     /// <summary>
     /// Is the instruction need to be executed?
     /// It's the case for: function call, math expr and bool expression.

@@ -3,6 +3,7 @@ using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
+using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -48,9 +49,46 @@ internal class IfPartDecoder
     }
 
     /// <summary>
+    /// Is it the token And or Or?  If operand And
+    /// - 2 main cases: 
+    ///   it's the first bool operator found, If Operand And
+    ///   It's the second or more bool operator foud, exp: If Operand1 And Operand2 And
+    ///   
+    /// Just check it and push the bool operator on the stack.
+    /// The content will be finally parsed when the instr Then will be found.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="scriptToken"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    public static bool ProcessTokenAndOr(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    {
+        isToken = false;
+
+        // not the token And/Or? bye
+        if (!scriptToken.Value.Equals(CoreInstr.InstrAnd, StringComparison.InvariantCultureIgnoreCase) && !scriptToken.Value.Equals(CoreInstr.InstrOr, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+
+        isToken = true;
+
+        //--case operandLeft operator B.Cell Then ? exp: If/And/Or A.Cell> B.Cell -> parse the right operand
+        bool res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptToken, out bool isInstr);
+        if (!res) return false;
+
+        // save the bool operator And/Or on the stack
+        InstrBase instrBoolOperator=InstrUtils.CreateBoolOperator(scriptToken);
+        stackInstr.Push(instrBoolOperator);
+        return true;
+    }
+
+    /// <summary>
     /// Is it the Then token?
+    /// Instructions before the comparison operator is already parsed, exp: A, ., Cell -> A.Cell
     /// The stack can contains several cases:
     /// -first part of the If condition. exp: If, A.Cell, >, 12
+    /// -first part of the If condition. exp: If, A.Cell, >, B, ., Cell
     /// -a fct call returning a bool
     /// -a bool variable
     /// </summary>
@@ -71,13 +109,17 @@ internal class IfPartDecoder
         isToken = true;
         InstrThen instrThen = new InstrThen(scriptToken);
 
-        //--case operandLeft operator B.Cell Then ? exp: If A.Cell>B.Cell
+        //--case operandLeft operator B.Cell Then ? exp: If A.Cell> B.Cell -> parse the right operand
         bool res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptToken, out bool isInstr);
         if (!res) return false;
 
         // extract instr from the stack and put them into a list (so in the right order)
         if (!MoveInstrToListUntilReachIf(result, stackInstr, scriptToken, out InstrIf instrIf, out List<InstrBase> listInstr))
             return false;
+
+        // is it a boolean expression? contains And or Or instr
+        if(!ProcessBoolExpr(result, listVar, stackInstr, listInstr, out bool isTokenExpr)) return false;
+        if(isTokenExpr) return true;
 
         // nothing between If and then
         if (listInstr.Count == 0)
@@ -86,34 +128,30 @@ internal class IfPartDecoder
             return false;
         }
 
-        //--3 instr between If and Then -> If leftOperand operator rightOperand Then
-        if (listInstr.Count == 3)
+        //--1 instr between If and Then -> If instr Then
+        if (listInstr.Count == 1)
         {
-            // build the 3 items comparison instructions: operandLeft operator operandRight
-            if (!BuildInstrComparison(result, listInstr[2], listInstr[1], listInstr[0], out InstrComparison instrComparison))
+            if (!CheckInstrReturnBoolValue(result, listInstr[0]))
                 return false;
 
-            // check the comparison, if an error occurs, continue the execution!
-            CheckInstrComparison(result, instrComparison);
-
-            instrIf.InstrBase = instrComparison;
+            instrIf.InstrBase = listInstr[0];
 
             // push the token Then on the stack
             stackInstr.Push(instrThen);
             return true;
         }
 
-        //--1 instr between If and Then -> If instr Then
-        if (listInstr.Count == 1)
+        //--3 instr between If and Then -> If leftOperand operator rightOperand Then
+        if (listInstr.Count == 3)
         {
-            // check the return type, should be a bool value
-            if (listInstr[0].ReturnType != InstrFunctionReturnType.ValueBool)
-            {
-                result.AddError(ErrorCode.ParserReturnTypeWrong, scriptToken);
+            // build the 3 items comparison instructions: operandLeft operator operandRight
+            if (!BuildInstrComparison(result, listInstr[0], listInstr[1], listInstr[2], out InstrComparison instrComparison))
                 return false;
-            }
 
-            instrIf.InstrBase = listInstr[0];
+            // check the comparison, if an error occurs, continue the execution!
+            //CheckInstrComparison(result, instrComparison);
+
+            instrIf.InstrBase = instrComparison;
 
             // push the token Then on the stack
             stackInstr.Push(instrThen);
@@ -123,6 +161,104 @@ internal class IfPartDecoder
         // wrong instr count between If and Then
         result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
         return false;
+    }
+
+    /// <summary>
+    /// Is it a boolean expression? contains And or Or instr.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="listInstr"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessBoolExpr(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, List<InstrBase> listInstr, out bool isToken)
+    {
+        isToken = false;
+
+        // contains some and?
+        int andCount= listInstr.Count(x => x.InstrType == InstrType.And);
+        int orCount = listInstr.Count(x => x.InstrType == InstrType.Or);
+
+        if (andCount == 0 & orCount == 0)
+            // not a bool expr
+            return true;
+
+        isToken = true;
+
+        // contains And and Or, not possible
+        if(andCount > 0 && orCount > 0)
+        {
+            // wrong instr count between If and Then
+            result.AddError(ErrorCode.ParserBoolExprMixAndOrNotAllowed, listInstr[0].FirstScriptToken());
+            return false;
+        }
+
+        InstrBoolExprOperator oper= InstrBoolExprOperator.And;
+        if (orCount > 0) oper = InstrBoolExprOperator.Or;
+
+        // create a bool expression
+        InstrBoolExpr instrBoolExpr = new InstrBoolExpr(listInstr[0].FirstScriptToken(), oper);
+
+        List<InstrBase> listInstrExtract = new List<InstrBase>();
+
+        // build each part of the bool expression
+        int i = 0;
+        while(i<listInstr.Count)
+        {
+            if(listInstr[i].InstrType != InstrType.And && listInstr[i].InstrType != InstrType.Or)
+            { 
+                listInstrExtract.Add(listInstr[i]); 
+                i++;
+                continue;
+            }
+
+            // only one instr? should return a bool value
+            if (listInstrExtract.Count == 1)
+            {
+                if (!CheckInstrReturnBoolValue(result, listInstrExtract[0]))
+                    return false;
+
+                instrBoolExpr.ListOperand.AddRange(listInstrExtract);
+                listInstrExtract.Clear();
+
+                // goto next instr to scan
+                i++;
+                continue;
+            }
+
+            // 3 instr? should be a comparison instr
+            if (listInstrExtract.Count == 3)
+            {
+                // build the 3 items comparison instructions: operandLeft operator operandRight
+                if (!BuildInstrComparison(result, listInstrExtract[0], listInstrExtract[1], listInstrExtract[2], out InstrComparison instrComparison))
+                    return false;
+
+                // check the comparison, if an error occurs, continue the execution!
+                //CheckInstrComparison(result, instrComparison);
+
+                instrBoolExpr.ListOperand.Add(instrComparison);
+                listInstrExtract.Clear();
+
+                // goto next instr to scan
+                i++;
+                continue;
+            }
+
+            // wrong instr count between If and Then
+            result.AddError(ErrorCode.ParserBoolExprWrong, listInstr[0].FirstScriptToken());
+            return false;
+        }
+
+        // finish the job
+        if (listInstrExtract.Count > 0)
+        {
+            // TODO:  count=1 et count=3
+        }
+
+        // save the bool expr on the stack
+        stackInstr.Push(instrBoolExpr);
+        return true;
     }
 
     /// <summary>
@@ -152,6 +288,11 @@ internal class IfPartDecoder
         instrComparison.OperandLeft = instrLeft;
         instrComparison.OperandRight = instrRight;
         instrComparison.Operator = instrOperator;
+
+        // check the comparison, if an error occurs, continue the execution!
+        if (!CheckInstrComparison(result, instrComparison))
+            return false;
+
         return true;
     }
 
@@ -176,7 +317,8 @@ internal class IfPartDecoder
     }
 
     /// <summary>
-    ///
+    /// move all instr of the stack from the top until reach the instr if.
+    /// Reverse the index of items of the list, so items are now in the order they were pushed on the stack.
     /// </summary>
     /// <param name="result"></param>
     /// <param name="stackInstr"></param>
@@ -199,6 +341,7 @@ internal class IfPartDecoder
                 result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
                 return false;
             }
+
             // is it the If Instr?
             InstrBase instr = stackInstr.Peek();
             if (instr.InstrType == InstrType.If)
@@ -210,6 +353,22 @@ internal class IfPartDecoder
             instr = stackInstr.Pop();
             listInstr.Add(instr);
         }
+
+        // reverse the index of items of the list
+        listInstr.Reverse();
         return true;
     }
+
+    static bool CheckInstrReturnBoolValue(Result result, InstrBase instr)
+    {
+        // check the return type, should be a bool value
+        if (instr.ReturnType != InstrReturnType.ValueBool)
+        {
+            result.AddError(ErrorCode.ParserReturnTypeWrong, instr.FirstScriptToken());
+            return false;
+        }
+
+        return true;    
+    }
+
 }

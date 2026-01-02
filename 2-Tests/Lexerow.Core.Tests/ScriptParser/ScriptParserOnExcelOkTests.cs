@@ -29,7 +29,7 @@ public class ScriptParserOnExcelOkTests
     /// End OnExcel
     /// </summary>
     [TestMethod]
-    public void VeryShortOnExcelFileStringOk()
+    public void BasicCaseOnExcelOk()
     {
         int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();

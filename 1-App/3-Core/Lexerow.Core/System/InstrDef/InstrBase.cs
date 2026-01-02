@@ -54,6 +54,9 @@ public enum InstrType
     Then,
     IfThenElse,
 
+    And,
+    Or,
+
     EndIf,
     EndOnExcel,
 
@@ -85,7 +88,10 @@ public enum InstrType
     BoolExpr
 }
 
-public enum InstrFunctionReturnType
+/// <summary>
+/// Return type of the instruction after the execution of it.
+/// </summary>
+public enum InstrReturnType
 {
     Nothing,
 
@@ -93,9 +99,9 @@ public enum InstrFunctionReturnType
     ValueInt,
     ValueDouble,
     ValueString,
-    ValueDate,
+    ValueDateOnly,
     ValueDateTime,
-    ValueTime,
+    ValueTimeOnly,
 
     ExcelFile,
     ExcelSheet,
@@ -141,7 +147,8 @@ public abstract class InstrBase
     public bool IsFunctionCall { get; protected set; } = false;
 
     /// <summary>
-    /// Return type of this function call.
+    /// Return type of the instruction after the execution of it.
+    /// exp: InstrValue -> depend on the value type, ValueBool,...
     /// </summary>
-    public InstrFunctionReturnType ReturnType { get; set; } = InstrFunctionReturnType.Nothing;
+    public InstrReturnType ReturnType { get; set; } = InstrReturnType.Nothing;
 }

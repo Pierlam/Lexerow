@@ -200,6 +200,9 @@ public enum ErrorCode
     ParserReturnTypeWrong,
     ParserThenPartIsEmpty,
 
+    ParserBoolExprMixAndOrNotAllowed,
+    ParserBoolExprWrong,
+
     //--run program, instructions
     ExecUnableOpenFile,
 

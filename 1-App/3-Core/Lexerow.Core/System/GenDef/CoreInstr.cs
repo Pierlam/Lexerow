@@ -9,7 +9,6 @@ public class CoreInstr
 
     public const string InstrRow = "Row";
 
-    // special case
     public const string InstrForEachRow = "ForEachRow";
 
     public const string InstrNext = "Next";
@@ -24,6 +23,9 @@ public class CoreInstr
     public const string InstrBlank = "Blank";
     public const string InstrNull = "Null";
     public const string InstrEndName = "End";
+
+    public const string InstrAnd = "And";
+    public const string InstrOr = "Or";
 
     //--function names
     public const string InstrFuncSelectFiles = "SelectFiles";

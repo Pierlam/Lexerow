@@ -12,7 +12,7 @@ public class InstrIf : InstrBase
     public InstrIf(ScriptToken scriptToken) : base(scriptToken)
     {
         InstrType = InstrType.If;
-        ReturnType = InstrFunctionReturnType.ValueBool;
+        ReturnType = InstrReturnType.ValueBool;
     }
 
     /// <summary>

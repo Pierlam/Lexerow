@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using DocumentFormat.OpenXml.Math;
+using FakeItEasy;
 using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
@@ -24,7 +25,7 @@ public class ScriptParserOnExcelOkTests
     ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
-    ///     If A.Cell >10 Then A.Cell=10
+    ///     If A.Cell =10 Then A.Cell=10
     ///   Next
     /// End OnExcel
     /// </summary>
@@ -40,8 +41,10 @@ public class ScriptParserOnExcelOkTests
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
-        // If A.Cell >10 Then A.Cell=10
-        TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(numLine++, scriptTokens);
+        // If A.Cell =10 Then A.Cell=10
+        var line = new ScriptLineTokens();
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(numLine++, line, "A", "=", 10, "A", 10);
+        scriptTokens.Add(line);
 
         // Next
         TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
@@ -92,7 +95,7 @@ public class ScriptParserOnExcelOkTests
         // check If-Operator
         InstrSepComparison instrSepComparison = instrComparison.Operator;
         Assert.IsNotNull(instrSepComparison);
-        Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
+        Assert.AreEqual(SepComparisonOperator.Equal, instrSepComparison.Operator);
 
         // check If-Operand Left
         Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
@@ -233,7 +236,7 @@ public class ScriptParserOnExcelOkTests
         TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell >10 Then A.Cell=10
-        TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, scriptTokens);
+        TestTokensBuilder.BuidIfColCellGreaterIntThenSetColCellInt(3, scriptTokens);
 
         // Next
         TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
@@ -312,7 +315,7 @@ public class ScriptParserOnExcelOkTests
         scriptTokens.Add(line);
 
         // If A.Cell >10 Then A.Cell=10
-        TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, scriptTokens);
+        TestTokensBuilder.BuidIfColCellGreaterIntThenSetColCellInt(3, scriptTokens);
 
         // Next
         line = new ScriptLineTokens();

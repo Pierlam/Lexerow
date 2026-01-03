@@ -19,7 +19,7 @@ namespace Lexerow.Core.Tests.ScriptParser;
 /// If .. And ... Then
 /// </summary>
 [TestClass]
-public class ScriptParserIfSeveralAndOrTests
+public class ScriptParserIfAndOrThenTests
 {
     /// <summary>
     /// Compile: OnExcel, very short version

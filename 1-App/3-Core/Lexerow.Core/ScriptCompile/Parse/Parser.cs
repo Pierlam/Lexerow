@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
@@ -133,46 +134,78 @@ public class Parser
                 return false;
             }
 
+            //--is it the Cell or BgColor or FgColor token?
+            if (!InstrColCellFuncParser.Parse(result, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
+
+            //--is it an operator comparison ? =,<,>,<=, >= (and not a set var isntr)
+            if (!ComparisonParser.ParseCompOperator(result, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
+
+
+            //--is it the SetVar equal char?
+            // TODO: 
+
+
+            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
             //--is it the SetVar equal char?
             res = SetVarDecoder.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
             if (!res) break;
             if (isToken) continue;
 
             //--Is it comparison separator =, >, <, ...?
-            if (ParserUtils.IsComparisonSeparator(currToken))
-            {
+            //if (ParserUtils.IsComparisonOperator(currToken))
+            //{
                 // process the content of the stack until the If instr
-                res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(result, listVar, stackInstr, currToken);
-                if (!res) break;
-                continue;
-            }
+                //res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(result, listVar, stackInstr, currToken);
+                //if (!res) break;
+                //continue;
+            //}
 
             //--Is it the And/or token?
             res = IfPartDecoder.ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken);
             if (!res) break;
             if (isToken) continue;
 
+            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
             //--Is it the Then token?
-            res = IfPartDecoder.ProcessStackBeforeTokenThen(result, listVar, stackInstr, currToken, out isToken);
+            //res = IfPartDecoder.ProcessStackBeforeTokenThen(result, listVar, stackInstr, currToken, out isToken);
+            //if (!res) break;
+            //if (isToken) continue;
+
+            ////--is the token the char ) ?  pop the stack until found ( and parse the expression. parameter of a function
+            //res = TokenCloseBracketProcessor.Process(result, listVar, stackInstr, currToken, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
+            //if (!res) break;
+            //if (isListOfParams)
+            //{
+            //    // process the fct call, check and set parameters, error saved
+            //    res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, result, listVar, stackInstr, currToken, program, listItem);
+            //    if (!res) break;
+            //    continue;
+            //}
+            //if (isMathExpr)
+            //{
+            //    // TODO: exp: (23+a)
+            //    //ProcessMathExpression(stkItems, listInstr, listItem);
+            //    continue;
+            //}
+            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
+
+            //--Is it the comma "," token?
+
+            //--Is it the Then token?
+            ProcessTokenThen(result, listVar, stackInstr, currToken, out isToken);
             if (!res) break;
             if (isToken) continue;
 
-            //--is the token the char ) ?  pop the stack until found ( and parse the expression. parameter of a function
-            res = TokenCloseBracketProcessor.Process(result, listVar, stackInstr, currToken, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
+            //--is the token the char ) ?  
+            ProcessTokenRightBracket(result, listVar, stackInstr, currToken, out isToken);
             if (!res) break;
-            if (isListOfParams)
-            {
-                // process the fct call, check and set parameters, error saved
-                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, result, listVar, stackInstr, currToken, program, listItem);
-                if (!res) break;
-                continue;
-            }
-            if (isMathExpr)
-            {
-                // TODO: exp: (23+a)
-                //ProcessMathExpression(stkItems, listInstr, listItem);
-                continue;
-            }
+            if (isToken) continue;
+
+
+            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
+
 
             // move the script token into an exec token
             res = InstrBuilder.Build(result, currToken, out InstrBase instr);
@@ -197,6 +230,81 @@ public class Parser
             return false;
 
         return result.Res;
+    }
+
+    /// <summary>
+    /// Is it the Then token? so process the if condition.
+    /// Comment: right bracket placed before are alreay processed, exp: if (a > b) Then
+    /// Analyse instr back to If, can be:
+    ///  -a bool value
+    ///  -comparison expr, exp: a>b
+    ///  -bool expression, exp: a and b
+    ///  -calc expr, not allowed but possible in inner instr.
+    ///   
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="token"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessTokenThen(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    {
+        isToken = false;
+
+        // not the token Then? bye
+        if (!scriptToken.Value.Equals(CoreInstr.InstrThen, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+
+        isToken = true;
+
+        // TODO: Renvoyer l'instr finale obtenue: doit etre de type bool (ou renvoyer un bool)
+        ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.If);
+
+        // out bool isListOfParams, out bool isMathExpr, boolExpr, boolValue, fctCall-RetBoolValue
+
+
+
+        //InstrThen instrThen = new InstrThen(scriptToken);
+
+
+
+        // TODO: see IfPartDecoder
+        return true;
+    }
+
+    /// <summary>
+    /// Is the token right bracket ) ?  can be
+    /// can be: 
+    ///  -fct call parameters, exp: fct(a,b,c)
+    ///  -bool expression, exp: (a and b)
+    ///  -comparison expr, exp: (a>b)
+    ///  -calc expr:, exp:      (a+2)
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="token"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessTokenRightBracket(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    {
+        isToken = false;
+
+        //--is it ) ?
+        if (!scriptToken.Value.Equals(")"))
+            // no, bye
+            return true;
+
+        isToken = true;
+
+        // TODO: traiter dans une autre fct!! pour etre en commun si parenthèses ()
+        ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.OpenBracket);
+
+        // out bool isListOfParams, out bool isMathExpr, boolExpr, boolValue, fctCall-RetBoolValue
+        // TODO: see TokenCloseBracketProcessor
+
+        return true;
     }
 
     /// <summary>

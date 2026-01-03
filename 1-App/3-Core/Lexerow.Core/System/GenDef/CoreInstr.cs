@@ -15,6 +15,9 @@ public class CoreInstr
 
     public const string InstrCol = "Col";
     public const string InstrCell = "Cell";
+    public const string InstrBgColor = "BgColor";
+    public const string InstrFgColor = "FgColor";
+    
 
     public const string InstrIf = "If";
     public const string InstrThen = "Then";
@@ -27,6 +30,8 @@ public class CoreInstr
     public const string InstrAnd = "And";
     public const string InstrOr = "Or";
 
+    public const string InstrDot = ".";
+    
     //--function names
     public const string InstrFuncSelectFiles = "SelectFiles";
 

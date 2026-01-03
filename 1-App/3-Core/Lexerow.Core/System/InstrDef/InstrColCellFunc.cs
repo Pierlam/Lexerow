@@ -41,6 +41,11 @@ public class InstrColCellFunc : InstrBase
         string s= "(null)";
         if (ColName != null) s = ColName;
 
-        return ColName+"." + ColNum.ToString();
+        s= ColName + ".Cell";
+        if (InstrColCellFuncType == InstrColCellFuncType.BgColor)
+            return s + ".BgColor";
+        if (InstrColCellFuncType == InstrColCellFuncType.FgColor)
+            return s + ".FgColor";
+        return s;
     }
 }

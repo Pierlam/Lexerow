@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
@@ -10,8 +11,8 @@ internal class ParserUtils
 {
     /// <summary>
     /// Is it instr column Cell function?
-    /// exp: A.Cell, A.Cell.BgColor, VB.Cell.FgColor,...
-    ///
+    /// exp: A.Cell, A.Cell.BgColor, D.Cell.FgColor,...
+    /// excelOut.B.Cell, Sheet[1].B.Cell
     /// The stack should contains items in reverse order.
     /// the last token is on the top of stack: Cell or BgColor or FgColor.
     /// </summary>
@@ -80,14 +81,28 @@ internal class ParserUtils
         return false;
     }
 
-    public static bool IsComparisonSeparator(ScriptToken currToken)
+    public static bool IsComparisonOperator(ScriptToken scriptToken)
     {
-        if (currToken.Value.Equals("=")) return true;
-        if (currToken.Value.Equals(">")) return true;
-        if (currToken.Value.Equals("<")) return true;
-        if (currToken.Value.Equals("<>")) return true;
-        if (currToken.Value.Equals(">=")) return true;
-        if (currToken.Value.Equals("<=")) return true;
+        if (scriptToken.Value.Equals("=")) return true;
+        if (scriptToken.Value.Equals(">")) return true;
+        if (scriptToken.Value.Equals("<")) return true;
+        if (scriptToken.Value.Equals("<>")) return true;
+        if (scriptToken.Value.Equals(">=")) return true;
+        if (scriptToken.Value.Equals("<=")) return true;
+        return false;
+    }
+
+    /// <summary>
+    /// Is it =? 
+    /// can be a SetVar or a comparison operator.
+    /// </summary>
+    /// <param name="scriptToken"></param>
+    /// <returns></returns>
+    public static bool IsEqualOperator(ScriptToken scriptToken)
+    {
+        if(scriptToken==null) return false;
+        if (scriptToken.Value == null) return false;
+        if (scriptToken.Value.Equals("=")) return true;
         return false;
     }
 
@@ -95,6 +110,15 @@ internal class ParserUtils
     {
         if (value == null) return false;
         if (value.ValueType == System.ValueType.String) return true;
+
+        return false;
+    }
+
+    public static bool IsToken(string tokenName, ScriptToken scriptToken)
+    {
+        if (tokenName == null) return false;
+        if (scriptToken.Value.Equals(tokenName, StringComparison.InvariantCultureIgnoreCase))
+            return true;
 
         return false;
     }
@@ -123,4 +147,5 @@ internal class ParserUtils
 
         return true;
     }
+
 }

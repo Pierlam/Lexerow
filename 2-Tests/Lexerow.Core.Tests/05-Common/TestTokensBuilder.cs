@@ -274,7 +274,7 @@ public class TestTokensBuilder
     /// </summary>
     /// <param name="script"></param>
     /// <returns></returns>
-    public static ScriptLineTokens BuidIfColCellEqualIntThenSetColCellInt(int numLine, List<ScriptLineTokens> script)
+    public static ScriptLineTokens BuidIfColCellGreaterIntThenSetColCellInt(int numLine, List<ScriptLineTokens> script)
     {
         var line = new ScriptLineTokens();
         line = BuidIfColCellCompIntThenSetColCellInt(numLine, line, "A", ">", 10, "A", 10);

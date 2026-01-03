@@ -94,7 +94,7 @@ public class CompilStackInstr
     }
 
     /// <summary>
-    /// Looking for an instr in the stack, starting from the top.
+    /// Looking for an instr in the stack, starting from the top (latest instr added).
     /// </summary>
     /// <param name="stkInstr"></param>
     /// <param name="type"></param>
@@ -107,6 +107,26 @@ public class CompilStackInstr
                 return instr;
         }
         return null;
+    }
+
+    /// <summary>
+    /// Looking for an instr in the stack, starting from the top (latest instr added).
+    /// if the instr is not found, return 0.
+    /// </summary>
+    /// <param name="stkInstr"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public int GetDistanceFromTop(InstrType type)
+    {
+        int i = 1;
+        foreach (var instr in StackInstr)
+        {
+            if (instr.InstrType == type)
+                return i;
+            i++;
+        }
+        // instr not found
+        return 0;
     }
 
     public string Dump()

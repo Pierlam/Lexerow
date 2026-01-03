@@ -8,7 +8,7 @@ namespace Lexerow.Core.ScriptCompile.Parse;
 internal class TokenCloseBracketProcessor
 {
     /// <summary>
-    /// Is the script token the close bracket char?
+    /// Is the script token the right bracket char?
     ///
     /// 2 main cases:
     /// 1/ it's a list of params pushed to a function call.

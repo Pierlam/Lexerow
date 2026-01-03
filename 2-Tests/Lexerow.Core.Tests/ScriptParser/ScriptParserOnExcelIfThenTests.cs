@@ -50,7 +50,7 @@ public class ScriptParserOnExcelIfThenTests
         scriptTokens.Add(line);
 
         // If A.Cell >10 Then A.Cell=10
-        TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, scriptTokens);
+        TestTokensBuilder.BuidIfColCellGreaterIntThenSetColCellInt(3, scriptTokens);
 
         // If B.Cell >12 Then B.Cell=12
         TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(4, scriptTokens, "B", ">", 12, "B", 12);

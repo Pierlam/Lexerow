@@ -44,14 +44,14 @@ public class ScriptParserIfSeveralAndOrTests
         // ForEach Row
         TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
-        // If A.Cell >10 And B.Cell< 20 Then C.Cell=25
+        // If A.Cell >10 And B.Cell< 20 Then C.Cell=25  (in the same script line!!)
         var line = new ScriptLineTokens();
         line.AddTokenName(numLine++, 1, "If");
         TestTokensBuilder.BuidColCellOperInt(numLine++, line, "A", ">", 10);
-        line.AddTokenName(numLine++, 1, "And");
+        line.AddTokenName(numLine, 1, "And");
         TestTokensBuilder.BuidColCellOperInt(numLine++, line, "B", "<", 20);
 
-        line.AddTokenName(numLine++, 1, "Then");
+        line.AddTokenName(numLine, 1, "Then");
         TestTokensBuilder.BuidColCellEqualInt(numLine++, line, "C", 25);
         scriptTokens.Add(line);
 
@@ -84,24 +84,15 @@ public class ScriptParserIfSeveralAndOrTests
         // check IfThen
         InstrIfThenElse instrIfThenElse = instrOnSheet.ListInstrForEachRow[0] as InstrIfThenElse;
 
-        // check If
-        InstrComparison instrComparison = instrIfThenElse.InstrIf.InstrBase as InstrComparison;
+        // check If  -> bool expression
+        InstrBoolExpr instrBoolExpr = instrIfThenElse.InstrIf.InstrBase as InstrBoolExpr;
+        Assert.IsNotNull(instrBoolExpr);
+        Assert.AreEqual(2, instrBoolExpr.ListOperand.Count);
+        Assert.AreEqual(InstrBoolExprOperator.And, instrBoolExpr.Operator);
+
+        // Comparison: A.Cell > 10
+        InstrComparison instrComparison = instrBoolExpr.ListOperand[0] as InstrComparison;
         Assert.IsNotNull(instrComparison);
-        Assert.IsNotNull(instrComparison.OperandLeft);
-        Assert.IsNotNull(instrComparison.OperandRight);
-        Assert.IsNotNull(instrComparison.Operator);
-
-
-        // check If-Operator
-        InstrSepComparison instrSepComparison = instrComparison.Operator;
-        Assert.IsNotNull(instrSepComparison);
-        Assert.AreEqual(SepComparisonOperator.GreaterThan, instrSepComparison.Operator);
-
-        // check If-Operand Left
-        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrComparison.OperandLeft, "A", 1));
-
-        // check If-Operand Right
-        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrComparison.OperandRight, 10));
-
+        Assert.AreEqual(SepComparisonOperator.GreaterThan, instrComparison.Operator.Operator);
     }
 }

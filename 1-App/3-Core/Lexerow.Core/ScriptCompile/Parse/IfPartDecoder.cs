@@ -91,6 +91,10 @@ internal class IfPartDecoder
     /// -first part of the If condition. exp: If, A.Cell, >, B, ., Cell
     /// -a fct call returning a bool
     /// -a bool variable
+    /// 
+    /// At the ned of the process, instr if contains the comparison or the bool expr. Stay in the stack.
+    /// And the instr Then is pushed on top of the stack
+    /// >OnExcel, If, Then
     /// </summary>
     /// <param name="result"></param>
     /// <param name="listVar"></param>
@@ -118,7 +122,7 @@ internal class IfPartDecoder
             return false;
 
         // is it a boolean expression? contains And or Or instr
-        if(!ProcessBoolExpr(result, listVar, stackInstr, listInstr, out bool isTokenExpr)) return false;
+        if(!ProcessBoolExpr(result, listVar, stackInstr, instrIf, instrThen, listInstr, out bool isTokenExpr)) return false;
         if(isTokenExpr) return true;
 
         // nothing between If and then
@@ -148,9 +152,6 @@ internal class IfPartDecoder
             if (!BuildInstrComparison(result, listInstr[0], listInstr[1], listInstr[2], out InstrComparison instrComparison))
                 return false;
 
-            // check the comparison, if an error occurs, continue the execution!
-            //CheckInstrComparison(result, instrComparison);
-
             instrIf.InstrBase = instrComparison;
 
             // push the token Then on the stack
@@ -172,7 +173,7 @@ internal class IfPartDecoder
     /// <param name="listInstr"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessBoolExpr(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, List<InstrBase> listInstr, out bool isToken)
+    private static bool ProcessBoolExpr(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, InstrIf instrIf, InstrThen instrThen, List<InstrBase> listInstr, out bool isToken)
     {
         isToken = false;
 
@@ -212,53 +213,67 @@ internal class IfPartDecoder
                 i++;
                 continue;
             }
+            if(!ProcessBoolExprSubPart(result, instrBoolExpr, listInstrExtract, listInstr[0]))
+                return false;
 
-            // only one instr? should return a bool value
-            if (listInstrExtract.Count == 1)
-            {
-                if (!CheckInstrReturnBoolValue(result, listInstrExtract[0]))
-                    return false;
-
-                instrBoolExpr.ListOperand.AddRange(listInstrExtract);
-                listInstrExtract.Clear();
-
-                // goto next instr to scan
-                i++;
-                continue;
-            }
-
-            // 3 instr? should be a comparison instr
-            if (listInstrExtract.Count == 3)
-            {
-                // build the 3 items comparison instructions: operandLeft operator operandRight
-                if (!BuildInstrComparison(result, listInstrExtract[0], listInstrExtract[1], listInstrExtract[2], out InstrComparison instrComparison))
-                    return false;
-
-                // check the comparison, if an error occurs, continue the execution!
-                //CheckInstrComparison(result, instrComparison);
-
-                instrBoolExpr.ListOperand.Add(instrComparison);
-                listInstrExtract.Clear();
-
-                // goto next instr to scan
-                i++;
-                continue;
-            }
-
-            // wrong instr count between If and Then
-            result.AddError(ErrorCode.ParserBoolExprWrong, listInstr[0].FirstScriptToken());
-            return false;
+            // goto next instr to scan
+            i++;
         }
 
         // finish the job
         if (listInstrExtract.Count > 0)
         {
-            // TODO:  count=1 et count=3
+            if (!ProcessBoolExprSubPart(result, instrBoolExpr, listInstrExtract, listInstr[0]))
+                return false;
         }
 
-        // save the bool expr on the stack
-        stackInstr.Push(instrBoolExpr);
+        // set the bool exp into the If instr
+        instrIf.InstrBase = instrBoolExpr;
+
+        // save the Then instr on the stack
+        stackInstr.Push(instrThen);
         return true;
+    }
+
+    /// <summary>
+    /// Process a sub part of instr: If subart1 And subPart2 ...
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="instrBoolExpr"></param>
+    /// <param name="listInstr"></param>
+    /// <returns></returns>
+    static bool ProcessBoolExprSubPart(Result result, InstrBoolExpr instrBoolExpr, List<InstrBase> listInstr, InstrBase firstInstr)
+    {
+        // only one instr? should return a bool value
+        if (listInstr.Count == 1)
+        {
+            if (!CheckInstrReturnBoolValue(result, listInstr[0]))
+                return false;
+
+            instrBoolExpr.ListOperand.AddRange(listInstr);
+            listInstr.Clear();
+            return true;
+        }
+
+        // 3 instr? should be a comparison instr
+        if (listInstr.Count == 3)
+        {
+            // build the 3 items comparison instruction: operandLeft operator operandRight
+            if (!BuildInstrComparison(result, listInstr[0], listInstr[1], listInstr[2], out InstrComparison instrComparison))
+                return false;
+
+            instrBoolExpr.ListOperand.Add(instrComparison);
+            listInstr.Clear();
+            return true;
+        }
+        
+        ScriptToken scriptToken = firstInstr.FirstScriptToken();
+        if (listInstr.Count > 0)
+            scriptToken = listInstr[0].FirstScriptToken();
+
+        // wrong instr count between If and Then
+        result.AddError(ErrorCode.ParserBoolExprWrong, scriptToken);
+        return false;
     }
 
     /// <summary>

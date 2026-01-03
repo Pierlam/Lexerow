@@ -474,6 +474,7 @@ internal class ParserStackContentProcessor
 
         // is this instr after Then in the script is in the same line?
         if (instrThen.FirstScriptToken().LineNum == instrBase.FirstScriptToken().LineNum)
+            // very important to close properly the processing of If-Then instruction!
             instrThen.HasInstrAfterInSameLine = true;
 
         // save the then instr into the list

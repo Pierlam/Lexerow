@@ -116,7 +116,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("And"))
+            if (currToken.Value.Equals("Then"))
             {
                 int a = 12;
             }

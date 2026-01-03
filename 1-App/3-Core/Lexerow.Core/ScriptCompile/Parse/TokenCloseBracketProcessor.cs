@@ -59,7 +59,7 @@ internal class TokenCloseBracketProcessor
         if (!ProcessInstrAndSep(result, stackInstr, scriptToken, instr, listInstr, out isListOfParams, out isMathExpr))
             return false;
 
-        // no mroe item in the stack? exp (12), (a)
+        // no more item in the stack? exp (12), (a)
         if (stackInstr.Count == 0)
         {
             // error, wrong object name
@@ -80,7 +80,7 @@ internal class TokenCloseBracketProcessor
             return true;
         }
 
-        // the item is an math operator, before the open bracket? exp: *(2)
+        // the item is a math operator, before the open bracket? exp: *(2)
         if (ParserUtils.IsMathOperator(instBeforeOpenBracket))
         {
             isMathExpr = true;

@@ -374,4 +374,14 @@ public class InstrUtils
         if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.Double) return true;
         return false;
     }
+
+    public static bool IsValueString(InstrBase instrBase)
+    {
+        if (instrBase == null) return false;
+        if (instrBase.InstrType != InstrType.Value) return false;
+
+        if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.String) return true;
+        return false;
+    }
+
 }

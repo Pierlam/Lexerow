@@ -25,7 +25,7 @@ public class ScriptParserOnExcelOkTests
     ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
-    ///     If A.Cell=10 Then A.Cell=20
+    ///     If A.Cell=10 Then B.Cell=25
     ///   Next
     /// End OnExcel
     /// </summary>
@@ -43,7 +43,7 @@ public class ScriptParserOnExcelOkTests
 
         // If A.Cell =10 Then A.Cell=10
         var line = new ScriptLineTokens();
-        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(numLine++, line, "A", "=", 10, "A", 20);
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(numLine++, line, "A", "=", 10, "B", 25);
         scriptTokens.Add(line);
 
         // Next
@@ -110,8 +110,8 @@ public class ScriptParserOnExcelOkTests
         InstrSetVar instrSetVar = instrIfThenElse.InstrThen.ListInstr[0] as InstrSetVar;
         Assert.IsNotNull(instrSetVar);
 
-        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
-        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, 20));
+        Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "B", 2));
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, 25));
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ public class ScriptParserOnExcelOkTests
     /// Result: one instruction OnExcel
     /// Implicite: sheet=0, FirstRow=1
     ///
-    /// file=OpenExcel("file.xlsx")
+    /// file=SelectFiles("file.xlsx")
     ///	OnExcel file
     ///   ForEach Row
     ///     If A.Cell >10 Then A.Cell=10
@@ -221,7 +221,7 @@ public class ScriptParserOnExcelOkTests
     /// End OnExcel
     /// </summary>
     [TestMethod]
-    public void VeryShortOnExcelFileNameOk()
+    public void SelectFilesOnExcelFileNameOk()
     {
         int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
@@ -245,7 +245,7 @@ public class ScriptParserOnExcelOkTests
         TestTokensBuilder.AddLineEndOnExcel(numLine++, scriptTokens);
 
         //==>just to check the content of the script
-        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+        var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());

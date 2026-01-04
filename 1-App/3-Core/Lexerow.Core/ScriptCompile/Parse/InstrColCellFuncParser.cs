@@ -21,7 +21,7 @@ namespace Lexerow.Core.ScriptCompile.Parse;
 /// </summary>
 public class InstrColCellFuncParser
 {
-    public static bool Parse(Result result, CompilStackInstr stackInstr,  ScriptToken scriptToken, out bool isToken)
+    public static bool Process(Result result, CompilStackInstr stackInstr,  ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 

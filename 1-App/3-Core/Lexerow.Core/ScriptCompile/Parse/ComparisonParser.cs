@@ -27,7 +27,7 @@ public class ComparisonParser
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ParseCompOperator(Result result, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    public static bool ProcessCompOperator(Result result, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
     {     
         isToken = false;
 

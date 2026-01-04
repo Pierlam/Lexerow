@@ -160,7 +160,9 @@ public class CompilStackInstr
         List<InstrBase> list = new List<InstrBase>();
         while(true)
         {
-            if (i > StackInstr.Count) break;
+            // no more item in the stack, bye
+            if (StackInstr.Count==0) break;
+
             if (i > instrCount) break;
 
             var instr = StackInstr.Pop();

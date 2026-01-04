@@ -18,7 +18,7 @@ internal class SetVarParser
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ParseSetVar(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    public static bool ProcessSetVar(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
@@ -46,6 +46,10 @@ internal class SetVarParser
             instrSetVar.InstrLeft = instrObjectName;
             instrSetVar.ListScriptToken.Add(scriptToken);
 
+            // save the var if it does not exists yet
+            if(listVar.FirstOrDefault(v=>v.Name.Equals(instrObjectName.Name, StringComparison.InvariantCultureIgnoreCase))==null)
+                listVar.Add(instrObjectName);
+            
             stackInstr.Push(instrSetVar);
             return true;
         }
@@ -62,7 +66,7 @@ internal class SetVarParser
             return true;
         }
 
-        result.AddError(ErrorCode.ParserTokenNotExpected, stackInstr.Peek().FirstScriptToken());
+        result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
         return false;
     }
 

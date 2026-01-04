@@ -8,7 +8,7 @@ using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
-internal class FunctionCallParamsProcessor
+internal class FunctionCallParamsParser
 {
     /// <summary>
     /// Manage function call parameters.
@@ -33,7 +33,15 @@ internal class FunctionCallParamsProcessor
         // read the last instr from the stack
         InstrBase instrBase = stackInstr.Peek();
 
-        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsProcessor.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
+        //-item before openBracket is an object name? exp: fct()
+        if (!instrBase.IsFunctionCall)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken());
+            return false;
+        }
+
+
+        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsParser.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
 
         if (instrBase.InstrType == InstrType.FuncSelectFiles)
             return ProcessFuncSelectFiles(logger, result, listVar, instrBase as InstrFuncCallSelectFiles, program, listParams);
@@ -48,7 +56,7 @@ internal class FunctionCallParamsProcessor
 
     private static bool ProcessFuncSelectFiles(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallSelectFiles instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count IN: " + listParams.Count);
+        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.ProcessFuncSelectFiles", "Param count IN: " + listParams.Count);
 
         // only one param expected, type should be string or an instr returning a string
         if (listParams.Count != 1)
@@ -68,7 +76,7 @@ internal class FunctionCallParamsProcessor
 
     private static bool ProcessFuncDate(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallDate instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsProcessor.ProcessFuncSelectFiles", "Param count In: " + listParams.Count);
+        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.ProcessFuncSelectFiles", "Param count In: " + listParams.Count);
 
         // 3 param expected, type should be an int or an instr returning an int
         if (listParams.Count != 3)

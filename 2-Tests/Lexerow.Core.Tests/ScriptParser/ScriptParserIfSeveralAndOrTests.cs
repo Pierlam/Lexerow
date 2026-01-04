@@ -93,6 +93,10 @@ public class ScriptParserIfAndOrThenTests
         // Comparison: A.Cell > 10
         InstrComparison instrComparison = instrBoolExpr.ListOperand[0] as InstrComparison;
         Assert.IsNotNull(instrComparison);
+        InstrColCellFunc instrColCellFunc = instrComparison.OperandLeft as InstrColCellFunc;
+        Assert.IsNotNull(instrColCellFunc);
+        Assert.AreEqual("A", instrColCellFunc.ColName);
+        // >
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrComparison.Operator.Operator);
     }
 }

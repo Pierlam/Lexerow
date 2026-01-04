@@ -250,7 +250,7 @@ public class ScriptParserSelectFilesTests
         List<ScriptLineTokens> scriptTokens = [line];
 
         //==>just to check the content of the script
-        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());

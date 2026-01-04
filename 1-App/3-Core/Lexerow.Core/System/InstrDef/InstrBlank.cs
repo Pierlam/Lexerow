@@ -13,4 +13,9 @@ public class InstrBlank : InstrBase
     {
         InstrType = InstrType.InstrBlank;
     }
+
+    public override string ToString()
+    {
+        return "Blank";
+    }
 }

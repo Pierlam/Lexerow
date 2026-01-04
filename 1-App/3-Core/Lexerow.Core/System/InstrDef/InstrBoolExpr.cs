@@ -36,4 +36,16 @@ public class InstrBoolExpr : InstrBase
     public InstrBoolExprOperator Operator { get; set; }
 
     public List<InstrBase> ListOperand { get; set; }=new List<InstrBase>();
+
+    public override string ToString()
+    {
+        string s=string.Empty;
+        foreach (var instr in ListOperand) 
+        {
+            s+=instr.ToString()+", ";
+        }
+        // remove the last comma
+        if(s.Trim().EndsWith(",")) s=s.Trim().Substring(0, s.Length-1);
+        return "BoolExpr, oper: " + Operator.ToString()+", operands: " + s;
+    }
 }

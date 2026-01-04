@@ -74,8 +74,11 @@ internal class IfPartDecoder
         isToken = true;
 
         //--case operandLeft operator B.Cell Then ? exp: If/And/Or A.Cell> B.Cell -> parse the right operand
-        bool res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptToken, out bool isInstr);
-        if (!res) return false;
+        //bool res = ParserUtils.ProcessInstrColCellFunc(result, stackInstr, scriptToken, out bool isInstr);
+        //if (!res) return false;
+
+        // parse l'expression!comme pour Then et )
+        //ici;
 
         // save the bool operator And/Or on the stack
         InstrBase instrBoolOperator=InstrUtils.CreateBoolOperator(scriptToken);

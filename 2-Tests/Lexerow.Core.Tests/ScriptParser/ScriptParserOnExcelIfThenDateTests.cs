@@ -194,7 +194,7 @@ public class ScriptParserOnExcelIfThenDateTests
 
         //==> Check the result
         Assert.IsFalse(res);
-        Assert.AreEqual(ErrorCode.ParserTokenNotExpected, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserExpressionWrong, result.ListError[0].ErrorCode);
         Assert.AreEqual("Then", result.ListError[0].Param);
     }
 

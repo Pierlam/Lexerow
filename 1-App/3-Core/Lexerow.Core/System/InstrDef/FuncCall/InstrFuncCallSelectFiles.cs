@@ -51,4 +51,9 @@ public class InstrFuncCallSelectFiles : InstrBase
         ListInstrParams.Add(param);
         ListFilesSelectors.Add(InstrFuncSelectFilesSelector.Unselect);
     }
+
+    public override string ToString()
+    {
+        return "SelectFiles()";
+    }
 }

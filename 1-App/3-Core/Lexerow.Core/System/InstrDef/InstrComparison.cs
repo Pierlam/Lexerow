@@ -30,4 +30,14 @@ public class InstrComparison : InstrBase
     /// Execution, Result of the comparison.
     /// </summary>
     public bool Result { get; set; } = false;
+
+    public override string ToString()
+    {
+        string s = string.Empty;
+        if(OperandLeft != null) s= OperandLeft.ToString();
+        if (Operator != null) s += Operator.ToString();
+        if (OperandRight != null) s += OperandRight.ToString();
+
+        return "Compare " + s;
+    }
 }

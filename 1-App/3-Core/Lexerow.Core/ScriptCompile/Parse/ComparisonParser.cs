@@ -46,7 +46,8 @@ public class ComparisonParser
         if (ParserUtils.IsEqualOperator(scriptToken))
         {
             // special case, comparison equal is defined only in a if instr
-            if(stackInstr.FindInstrFromTop(InstrType.If) == null)
+            InstrBase InstrIfOrThen = stackInstr.FindFirstInstrFromTop(InstrType.If, InstrType.Then);
+            if(InstrIfOrThen == null || InstrIfOrThen is InstrThen) 
                 // no If found, so it's a SetVar instr, not a comparison
                 return true;
         }

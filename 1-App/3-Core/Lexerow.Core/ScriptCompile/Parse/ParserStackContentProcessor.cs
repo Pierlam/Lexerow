@@ -186,7 +186,7 @@ internal class ParserStackContentProcessor
             // not a set var instr to finish
             return true;
 
-        // the instr just before the topt is a SetVar instr?
+        // the instr just before the top is a SetVar instr?
         if (instrBefTop.InstrType != InstrType.SetVar)
             // not a set var instr
             return true;

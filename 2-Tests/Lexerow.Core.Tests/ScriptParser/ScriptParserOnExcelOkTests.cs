@@ -25,7 +25,7 @@ public class ScriptParserOnExcelOkTests
     ///
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
-    ///     If A.Cell =10 Then A.Cell=10
+    ///     If A.Cell=10 Then A.Cell=20
     ///   Next
     /// End OnExcel
     /// </summary>
@@ -43,7 +43,7 @@ public class ScriptParserOnExcelOkTests
 
         // If A.Cell =10 Then A.Cell=10
         var line = new ScriptLineTokens();
-        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(numLine++, line, "A", "=", 10, "A", 10);
+        TestTokensBuilder.BuidIfColCellCompIntThenSetColCellInt(numLine++, line, "A", "=", 10, "A", 20);
         scriptTokens.Add(line);
 
         // Next
@@ -111,7 +111,7 @@ public class ScriptParserOnExcelOkTests
         Assert.IsNotNull(instrSetVar);
 
         Assert.IsTrue(TestInstrHelper.TestInstrColCellFuncValue(instrSetVar.InstrLeft, "A", 1));
-        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, 10));
+        Assert.IsTrue(TestInstrHelper.TestInstrValue(instrSetVar.InstrRight, 20));
     }
 
     /// <summary>

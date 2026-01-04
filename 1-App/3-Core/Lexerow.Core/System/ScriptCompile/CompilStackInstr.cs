@@ -129,6 +129,49 @@ public class CompilStackInstr
         return 0;
     }
 
+    /// <summary>
+    /// Save instr in a list of instr in the right order.
+    /// </summary>
+    /// <param name="instrCount"></param>
+    /// <returns></returns>
+    public List<InstrBase> SaveInListReverse(int instrCount)
+    {
+        int i = 1;
+        List<InstrBase> list = new List<InstrBase>();
+        foreach (var instr in StackInstr)
+        {
+            if (i > StackInstr.Count) break;
+            if (i > instrCount) break;
+            list.Add(instr);
+            i++;
+        }
+        list.Reverse();
+        return list;
+    }
+
+    /// <summary>
+    /// Save instr in a list of instr in the right order.
+    /// </summary>
+    /// <param name="instrCount"></param>
+    /// <returns></returns>
+    public List<InstrBase> RemoveSaveInListReverse(int instrCount)
+    {
+        int i = 1;
+        List<InstrBase> list = new List<InstrBase>();
+        while(true)
+        {
+            if (i > StackInstr.Count) break;
+            if (i > instrCount) break;
+
+            var instr = StackInstr.Pop();
+            list.Add(instr);
+            i++;
+        }
+        list.Reverse();
+        return list;
+    }
+
+
     public string Dump()
     {
         string dump = string.Empty;

@@ -197,11 +197,15 @@ public enum ErrorCode
 
     ParserColNumWrong,
     ParserSepComparatorWrong,
+    ParserCompExprWrong,
+
     ParserReturnTypeWrong,
     ParserThenPartIsEmpty,
 
     ParserBoolExprMixAndOrNotAllowed,
     ParserBoolExprWrong,
+
+    ParserExpressionWrong,
 
     //--run program, instructions
     ExecUnableOpenFile,

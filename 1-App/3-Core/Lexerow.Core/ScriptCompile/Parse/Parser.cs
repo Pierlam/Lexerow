@@ -117,7 +117,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("Then"))
+            if (currToken.Value.Equals("="))
             {
                 int a = 12;
             }
@@ -144,30 +144,26 @@ public class Parser
 
 
             //--is it the SetVar equal char?
-            // TODO: 
+            if (!SetVarParser.ParseSetVar(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
 
 
             //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
             //--is it the SetVar equal char?
-            res = SetVarDecoder.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
-            if (!res) break;
-            if (isToken) continue;
+            //res = SetVarParser.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
+            //if (!res) break;
+            //if (isToken) continue;
 
             //--Is it comparison separator =, >, <, ...?
             //if (ParserUtils.IsComparisonOperator(currToken))
             //{
-                // process the content of the stack until the If instr
-                //res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(result, listVar, stackInstr, currToken);
-                //if (!res) break;
-                //continue;
+            // process the content of the stack until the If instr
+            //res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(result, listVar, stackInstr, currToken);
+            //if (!res) break;
+            //continue;
             //}
 
-            //--Is it the And/or token?
-            res = IfPartDecoder.ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken);
-            if (!res) break;
-            if (isToken) continue;
 
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
             //--Is it the Then token?
             //res = IfPartDecoder.ProcessStackBeforeTokenThen(result, listVar, stackInstr, currToken, out isToken);
             //if (!res) break;
@@ -191,20 +187,26 @@ public class Parser
             //}
             //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
 
+            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-NEW:
+
+            //--Is it the And/or token?
+            if (!IfPartDecoder.ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
+
             //--Is it the comma "," token?
+            // TODO: process the expr: between the comma and the ) or a another ,
+            // ProcessTokenComma()
 
             //--Is it the Then token?
-            ProcessTokenThen(result, listVar, stackInstr, currToken, out isToken);
-            if (!res) break;
+            if (!ProcessTokenThen(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
             //--is the token the char ) ?  
-            ProcessTokenRightBracket(result, listVar, stackInstr, currToken, out isToken);
-            if (!res) break;
+            if (!ProcessTokenRightBracket(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
 
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
+            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-NEW:
 
 
             // move the script token into an exec token
@@ -258,19 +260,32 @@ public class Parser
 
         isToken = true;
 
-        // TODO: Renvoyer l'instr finale obtenue: doit etre de type bool (ou renvoyer un bool)
-        ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.If);
+        // find the If instr in the stack
+        InstrIf instrIf = stackInstr.FindInstrFromTop(InstrType.If) as InstrIf;
+        if (instrIf == null)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
 
+        // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
         // out bool isListOfParams, out bool isMathExpr, boolExpr, boolValue, fctCall-RetBoolValue
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.If, out InstrBase instrBaseOut))
+            return false;
 
+        if(instrBaseOut.InstrType == InstrType.BoolExpr || instrBaseOut.InstrType == InstrType.Comparison || instrBaseOut.ReturnType== InstrReturnType.ValueBool) 
+        {
+            // get If instr and add it
+            instrIf.InstrBase = instrBaseOut;
 
+            // create the Then instr and push it on the stack
+            InstrThen instrThen = new InstrThen(scriptToken);
+            stackInstr.Push(instrThen);
+            return true;    
+        }
 
-        //InstrThen instrThen = new InstrThen(scriptToken);
-
-
-
-        // TODO: see IfPartDecoder
-        return true;
+        result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+        return false;
     }
 
     /// <summary>
@@ -298,10 +313,10 @@ public class Parser
 
         isToken = true;
 
-        // TODO: traiter dans une autre fct!! pour etre en commun si parenthèses ()
-        ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.OpenBracket);
+        // TODO: out bool isListOfParams, out bool isMathExpr, boolExpr, boolValue, fctCall-RetBoolValue
+        if(!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.OpenBracket, out InstrBase instrBaseOut))
+            return false;
 
-        // out bool isListOfParams, out bool isMathExpr, boolExpr, boolValue, fctCall-RetBoolValue
         // TODO: see TokenCloseBracketProcessor
 
         return true;

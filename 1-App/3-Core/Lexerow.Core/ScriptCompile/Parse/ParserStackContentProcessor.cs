@@ -214,6 +214,8 @@ internal class ParserStackContentProcessor
         if (instrValue != null)
         {
             instrSetVar.InstrRight = instrBase;
+            instrSetVar.InstrLeft.ReturnType = InstrUtils.GetReturnType(instrValue);
+
             if (stackInstr.Count == 0)
                 // instr SetVar not included in a Then instr or ForEachRow
                 listInstrToExec.Add(instrSetVar);
@@ -229,7 +231,8 @@ internal class ParserStackContentProcessor
             // can be a bool value: true or false, convert to a ValueBool 
             if(ValueUtils.IsBoolStrValue(instrObjectName.Name, out bool boolValue))
             {
-                instrSetVar.InstrRight = new InstrValue(instrObjectName.FirstScriptToken(), boolValue); 
+                instrSetVar.InstrRight = new InstrValue(instrObjectName.FirstScriptToken(), boolValue);
+                instrSetVar.InstrLeft.ReturnType = InstrReturnType.ValueBool;
 
                 if (stackInstr.Count == 0)
                     // instr SetVar not included in a Then instr or ForEachRow
@@ -241,9 +244,13 @@ internal class ParserStackContentProcessor
             }
 
             // Check that right var exists
-            if (listVar.FirstOrDefault(x => x.Name.Equals(instrObjectName.Name, StringComparison.InvariantCultureIgnoreCase)) != null)
+            InstrNameObject instrObjectNameFound = listVar.FirstOrDefault(x => x.Name.Equals(instrObjectName.Name, StringComparison.InvariantCultureIgnoreCase));
+            if (instrObjectNameFound != null)
             {
-                instrSetVar.InstrRight = instrObjectName;
+                // replace the left part by the saved var: same name and important: the return type is set!
+                instrSetVar.InstrRight = instrObjectNameFound;
+                instrSetVar.InstrLeft.ReturnType = instrObjectNameFound.ReturnType;
+
                 if (stackInstr.Count == 0)
                     // instr SetVar not included in a Then instr or ForEachRow
                     listInstrToExec.Add(instrSetVar);
@@ -297,6 +304,8 @@ internal class ParserStackContentProcessor
                 return false;
 
             instrSetVar.InstrRight = instrBase;
+            instrSetVar.InstrLeft.ReturnType = instrBase.ReturnType;
+
             if (stackInstr.Count == 0)
                 // instr SetVar not included in a Then instr or ForEachRow
                 listInstrToExec.Add(instrSetVar);

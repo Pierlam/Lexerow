@@ -117,7 +117,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("And"))
+            if (currToken.Value.Equals("Then"))
             {
                 int a = 12;
             }
@@ -282,7 +282,7 @@ public class Parser
         }
 
         // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
-        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.If, out List<InstrBase> listInstrOut))
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOrOpenBracketIf.InstrType, out List<InstrBase> listInstrOut))
             return false;
 
         // only one expr instr expected

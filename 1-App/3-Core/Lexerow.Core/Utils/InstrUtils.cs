@@ -291,6 +291,27 @@ public class InstrUtils
         return true;
     }
 
+    /// <summary>
+    /// Return the type of the instr value.
+    /// </summary>
+    /// <param name="instrValue"></param>
+    /// <returns></returns>
+    public static InstrReturnType GetReturnType(InstrValue instrValue)
+    {
+        if(instrValue==null)return InstrReturnType.Nothing;
+
+        if (instrValue.ValueType == System.ValueType.String) return InstrReturnType.ValueString;
+        if (instrValue.ValueType == System.ValueType.Int) return InstrReturnType.ValueInt;
+        if (instrValue.ValueType == System.ValueType.Double) return InstrReturnType.ValueDouble;
+        if (instrValue.ValueType == System.ValueType.Bool) return InstrReturnType.ValueBool;
+
+        if (instrValue.ValueType == System.ValueType.DateOnly) return InstrReturnType.ValueDateOnly;
+        if (instrValue.ValueType == System.ValueType.DateTime) return InstrReturnType.ValueDateTime;
+        if (instrValue.ValueType == System.ValueType.TimeOnly) return InstrReturnType.ValueTimeOnly;
+
+        return InstrReturnType.Nothing;
+    }
+
 
     /// <summary>
     /// Create a and or Or instruction.

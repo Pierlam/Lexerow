@@ -1,4 +1,4 @@
-﻿using DocumentFormat.OpenXml.Vml;
+﻿using Castle.Components.DictionaryAdapter.Xml;
 using FakeItEasy;
 using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
@@ -15,28 +15,32 @@ using System.Threading.Tasks;
 namespace Lexerow.Core.Tests.ScriptParser;
 
 /// <summary>
-/// Test script parser focus and If condition.
-/// If .. And ... Then
+/// Test script parser on OnExcel instr.
+/// Focus on If condition.
 /// </summary>
 [TestClass]
-public class ScriptParserIfAndOrThenTests
+public class ScriptParserOnExcelIfCondTests
 {
     /// <summary>
     /// Compile: OnExcel, very short version
     /// Result: one instruction OnExcel
     /// Implicite: sheet=0, FirstRow=1
-    ///
+    /// 
+    /// a=true
     ///	OnExcel "file.xlsx"
     ///   ForEach Row
-    ///     If A.Cell >10 And B.Cell< 20 Then C.Cell=25
+    ///     If a Then C.Cell=25
     ///   Next
     /// End OnExcel
     /// </summary>
     [TestMethod]
-    public void OnExcelIfAndAndOk()
+    public void varaEqTrueOnExcelIfaOk()
     {
         int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();
+
+        // a=true
+        TestTokensBuilder.AddLineSetVarStrBool(numLine++, scriptTokens, "a", "true");
 
         // OnExcel "data.xlsx"
         TestTokensBuilder.AddLineOnExcelFileString(numLine++, scriptTokens, "\"data.xlsx\"");
@@ -47,10 +51,7 @@ public class ScriptParserIfAndOrThenTests
         // If A.Cell >10 And B.Cell< 20 Then C.Cell=25  (in the same script line!!)
         var line = new ScriptLineTokens();
         line.AddTokenName(numLine++, 1, "If");
-        TestTokensBuilder.BuidColCellOperInt(numLine++, line, "A", ">", 10);
-        line.AddTokenName(numLine, 1, "And");
-        TestTokensBuilder.BuidColCellOperInt(numLine++, line, "B", "<", 20);
-
+        line.AddTokenName(numLine, 1, "a");
         line.AddTokenName(numLine, 1, "Then");
         TestTokensBuilder.BuidColCellEqualInt(numLine++, line, "C", 25);
         scriptTokens.Add(line);
@@ -99,4 +100,5 @@ public class ScriptParserIfAndOrThenTests
         // >
         Assert.AreEqual(SepComparisonOperator.GreaterThan, instrComparison.Operator.Operator);
     }
+
 }

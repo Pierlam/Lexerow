@@ -48,6 +48,7 @@ public class ScriptParserSetVarTests
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueInt, instrObjectName.ReturnType);
 
         // InstrRight: Value
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -88,6 +89,7 @@ public class ScriptParserSetVarTests
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueInt, instrObjectName.ReturnType);
 
         // InstrRight: Value
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -132,11 +134,13 @@ public class ScriptParserSetVarTests
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueInt, instrObjectName.ReturnType);
 
         // InstrRight: Value
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
         Assert.IsNotNull(instrValue);
         Assert.AreEqual(12, (instrValue.ValueBase as ValueInt).Val);
+        Assert.AreEqual(InstrReturnType.ValueInt, instrValue.ReturnType);
 
         //--SetVar b=a
         Assert.AreEqual(InstrType.SetVar, prog.ListInstr[1].InstrType);
@@ -146,11 +150,13 @@ public class ScriptParserSetVarTests
         instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("b", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueInt, instrObjectName.ReturnType);
 
         // InstrRight: Value
         instrObjectName = instrSetVar.InstrRight as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueInt, instrObjectName.ReturnType);
     }
 
     /// <summary>
@@ -187,10 +193,12 @@ public class ScriptParserSetVarTests
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueDateOnly, instrObjectName.ReturnType);
 
         // InstrRight: built-in fct Date
         InstrFuncCallDate instrFuncDate = instrSetVar.InstrRight as InstrFuncCallDate;
         Assert.IsNotNull(instrFuncDate);
+        Assert.AreEqual(InstrReturnType.ValueDateOnly, instrFuncDate.ReturnType);
 
         Assert.AreEqual(2025, TestInstrHelper.GetValueInt(instrFuncDate.InstrYear));
         Assert.AreEqual(11, TestInstrHelper.GetValueInt(instrFuncDate.InstrMonth));
@@ -240,10 +248,12 @@ public class ScriptParserSetVarTests
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueDateOnly, instrObjectName.ReturnType);
 
         // InstrRight: built-in fct Date
         InstrFuncCallDate instrFuncDate = instrSetVar.InstrRight as InstrFuncCallDate;
         Assert.IsNotNull(instrFuncDate);
+        Assert.AreEqual(InstrReturnType.ValueDateOnly, instrFuncDate.ReturnType);
 
         // the year is a var
         InstrNameObject instrObjectName1 = instrFuncDate.InstrYear as InstrNameObject;
@@ -288,16 +298,17 @@ public class ScriptParserSetVarTests
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueBool, instrObjectName.ReturnType);
 
         // InstrRight: Value bool
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
         Assert.IsNotNull(instrValue);
         Assert.AreEqual(true, (instrValue.ValueBase as ValueBool).Val);
+        Assert.AreEqual(InstrReturnType.ValueBool, instrValue.ReturnType);
     }
 
     /// <summary>
-    /// SetVar set a value to system var.
-    /// a= true
+    /// a= FALSE
     /// </summary>
     [TestMethod]
     public void SetVarStrBoolFALSEOk()
@@ -329,6 +340,7 @@ public class ScriptParserSetVarTests
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
         Assert.AreEqual("a", instrObjectName.Name);
+        Assert.AreEqual(InstrReturnType.ValueBool, instrObjectName.ReturnType);
 
         // InstrRight: Value bool
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -394,7 +406,7 @@ public class ScriptParserSetVarTests
     /// a=b
     /// </summary>
     [TestMethod]
-    public void SetaEqbErrorOk()
+    public void SetaEqbError()
     {
         int numLine = 0;
         List<ScriptLineTokens> scriptTokens = new List<ScriptLineTokens>();

@@ -185,6 +185,7 @@ public enum ErrorCode
     ParserValueIntExpected,
     ParserValueIntWrong,
     ParserVarNotDefined,
+    ParserVarOrFctNameNotDefined,
     ParserVarWrongRightPart,
 
     ParserOnExcelExpected,

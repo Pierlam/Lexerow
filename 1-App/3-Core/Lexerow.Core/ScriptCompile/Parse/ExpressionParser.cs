@@ -49,8 +49,16 @@ public class ExpressionParser
         if (instrCount == 1)
         {
             InstrBase instrBase = stackInstr.Pop();
-            listInstrBaseOut.Add(instrBase);
-                return true;
+
+            // is a var/fct call name?
+            if (!InstrUtils.CheckObjectName(result, listVar, instrBase, out InstrNameObject instrNameObject))
+                return false;
+
+            if(instrNameObject!=null)
+                instrBase = instrNameObject;
+
+            listInstrBaseOut.Add(instrNameObject);
+            return true;
         }
 
         // save instr in a list of instr in the right order

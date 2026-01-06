@@ -10,6 +10,38 @@ namespace Lexerow.Core.Utils;
 /// </summary>
 public class InstrUtils
 {
+
+    /// <summary>
+    /// Is a var/fct call name?
+    /// if it's the case, should exists in the list.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instrBase"></param>
+    /// <param name="instrNameObjectOut"></param>
+    /// <returns></returns>
+    public static bool CheckObjectName(Result result, List<InstrNameObject> listVar, InstrBase instrBase, out InstrNameObject instrNameObjectOut)
+    {
+        instrNameObjectOut = null;
+
+        InstrNameObject instrNameObject = instrBase as InstrNameObject;
+        if (instrNameObject == null) 
+            // not the case
+            return true;
+
+        InstrNameObject instrObjectNameFound = listVar.FirstOrDefault(x => x.Name.Equals(instrNameObject.Name, StringComparison.InvariantCultureIgnoreCase));
+        if (instrObjectNameFound== null)
+        {
+            // the var/fctcall should exists
+            result.AddError(ErrorCode.ParserVarOrFctNameNotDefined, instrBase.FirstScriptToken());
+            return false;
+        }
+        // push the existing one, because the return type is set
+        instrNameObjectOut = instrObjectNameFound;
+        return true;
+    }
+
+
     /// <summary>
     /// Get the String value from the instruction, can be a Value or a Var.
     /// If it's a funct call, a math expr or a bool expr, can't return the value.

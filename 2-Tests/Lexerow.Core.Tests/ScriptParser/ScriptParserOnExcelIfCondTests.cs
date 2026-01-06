@@ -73,11 +73,14 @@ public class ScriptParserOnExcelIfCondTests
 
         //==> Check the result
         Assert.IsTrue(res);
-        Assert.AreEqual(1, prog.ListInstr.Count);
+        Assert.AreEqual(2, prog.ListInstr.Count);
+
+        // a=true
+        Assert.AreEqual(InstrType.SetVar, prog.ListInstr[0].InstrType);
 
         // OnExcel
-        Assert.AreEqual(InstrType.OnExcel, prog.ListInstr[0].InstrType);
-        InstrOnExcel instrOnExcel = prog.ListInstr[0] as InstrOnExcel;
+        Assert.AreEqual(InstrType.OnExcel, prog.ListInstr[1].InstrType);
+        InstrOnExcel instrOnExcel = prog.ListInstr[1] as InstrOnExcel;
 
         // InstrOnSheet
         InstrOnSheet instrOnSheet = instrOnExcel.ListSheets[0];
@@ -85,20 +88,12 @@ public class ScriptParserOnExcelIfCondTests
         // check IfThen
         InstrIfThenElse instrIfThenElse = instrOnSheet.ListInstrForEachRow[0] as InstrIfThenElse;
 
-        // check If  -> bool expression
-        InstrBoolExpr instrBoolExpr = instrIfThenElse.InstrIf.InstrBase as InstrBoolExpr;
-        Assert.IsNotNull(instrBoolExpr);
-        Assert.AreEqual(2, instrBoolExpr.ListOperand.Count);
-        Assert.AreEqual(InstrBoolExprOperator.And, instrBoolExpr.Operator);
+        // check If  -> a
+        InstrNameObject instrNameObject = instrIfThenElse.InstrIf.InstrBase as InstrNameObject;
+        Assert.IsNotNull(instrNameObject);
+        Assert.AreEqual("a", instrNameObject.Name);
+        Assert.AreEqual(InstrReturnType.ValueBool, instrNameObject.ReturnType);
 
-        // Comparison: A.Cell > 10
-        InstrComparison instrComparison = instrBoolExpr.ListOperand[0] as InstrComparison;
-        Assert.IsNotNull(instrComparison);
-        InstrColCellFunc instrColCellFunc = instrComparison.OperandLeft as InstrColCellFunc;
-        Assert.IsNotNull(instrColCellFunc);
-        Assert.AreEqual("A", instrColCellFunc.ColName);
-        // >
-        Assert.AreEqual(SepComparisonOperator.GreaterThan, instrComparison.Operator.Operator);
     }
 
 }

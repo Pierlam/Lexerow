@@ -57,7 +57,7 @@ public class ExpressionParser
             if(instrNameObject!=null)
                 instrBase = instrNameObject;
 
-            listInstrBaseOut.Add(instrNameObject);
+            listInstrBaseOut.Add(instrBase);
             return true;
         }
 

@@ -62,7 +62,7 @@ public class ScriptParserSelectFilesTests
         InstrFuncCallSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrFuncCallSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
 
-        // OpenExcel Param
+        // SelectFiles Param
         Assert.AreEqual(1, instrOpenExcel.ListInstrParams.Count);
         InstrValue instrValue = instrOpenExcel.ListInstrParams[0] as InstrValue;
         Assert.IsNotNull(instrValue);
@@ -366,7 +366,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, result.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserVarNotDefined, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserVarOrFctNameNotDefined, result.ListError[0].ErrorCode);
     }
 
     /// <summary>

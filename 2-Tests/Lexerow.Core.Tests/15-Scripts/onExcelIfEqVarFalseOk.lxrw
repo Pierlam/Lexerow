@@ -1,0 +1,7 @@
+﻿
+a=false
+OnExcel ".\10-ExcelFiles\onExcelIfEqVarFalseOk.xlsx"
+	ForEachRow
+		If a Then A.Cell=12
+	Next
+End OnExcel

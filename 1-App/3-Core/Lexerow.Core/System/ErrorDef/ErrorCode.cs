@@ -216,6 +216,7 @@ public enum ErrorCode
     ExecInstrNotManaged,
 
     ExecInstrValueExpected,
+    ExecInstrBoolValueExpected,
 
     ExecInstrVarNotFound,
     ExecInstrVarTypeNotExpected,

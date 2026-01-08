@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.InstrProgExec;
 
@@ -120,6 +121,35 @@ public class InstrIfThenElseExecutor
         }
 
         //--case2: If Operand
+        if (instrIf.InstrBase.InstrType == InstrType.NameObject)
+        {
+            // check return type, should be ok
+            InstrNameObject instrNameObject = (InstrNameObject)instrIf.InstrBase;
+            if (!progRunVarMgr.GetVarBoolValue(result, instrNameObject.FirstScriptToken(), instrNameObject.Name, out bool value))
+                return false;
+
+            instrIf.Result = value;
+
+            // remove the if from the stack
+            ctx.StackInstr.Pop();
+
+            // if cond execution return true, so execute then instr
+            if (instrIf.Result)
+            {
+                // update insights
+                result.Insights.NewIfCondMatch();
+
+                // the if instr becomes the previous one
+                ctx.PrevInstrExecuted = instrIf;
+                return true;
+            }
+
+            // remove the ifThenElse from the stack, go back to the ForEachRow
+            ctx.StackInstr.Pop();
+            ctx.PrevInstrExecuted = null;
+            return true;
+        }
+
         // TODO:
         throw new NotImplementedException("InstrIfThenElseExecutor.ExecInstrIf: case2: If Operand to implement");
         return true;

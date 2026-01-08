@@ -22,7 +22,7 @@ public class InstrValue : InstrBase
         InstrType = InstrType.Value;
         RawValue = rawValue.ToString();
         ValueBase = new ValueBool(rawValue);
-        ValueType = ValueType.String;
+        ValueType = ValueType.Bool;
         ReturnType = InstrReturnType.ValueBool;
     }
 

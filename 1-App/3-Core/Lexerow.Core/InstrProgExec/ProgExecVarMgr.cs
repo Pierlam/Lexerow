@@ -2,6 +2,7 @@
 using Lexerow.Core.System.GenDef;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ProgExec;
+using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.InstrProgExec;
@@ -27,6 +28,50 @@ public class ProgExecVarMgr
     /// List of user defined execution variables.
     /// </summary>
     public List<ProgExecVar> ListExecVar { get; private set; } = new List<ProgExecVar>();
+
+
+    /// <summary>
+    /// Get the bool value of the var.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="scriptToken"></param>
+    /// <param name="varName"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public bool GetVarBoolValue(Result result, ScriptToken scriptToken, string varName, out bool value)
+    {
+        value = false;
+
+        if (string.IsNullOrWhiteSpace(varName))
+        {
+            result.AddError(ErrorCode.ExecInstrVarNotFound, scriptToken);
+            return false;
+        }
+
+        ProgExecVar progExecVar = FindVarByName(varName);
+        if (progExecVar == null)
+        {
+            result.AddError(ErrorCode.ExecInstrVarNotFound, scriptToken);
+            return false;
+        }
+
+        InstrValue instrValue = progExecVar.Value as InstrValue;
+        if (instrValue==null)
+        if (progExecVar.ObjectName.ReturnType != InstrReturnType.ValueBool)
+        {
+            result.AddError(ErrorCode.ExecInstrValueExpected, scriptToken);
+            return false;
+        }
+
+        if(instrValue.ValueType != System.ValueType.Bool)
+        {
+            result.AddError(ErrorCode.ExecInstrBoolValueExpected, scriptToken);
+            return false;
+        }
+
+        value = (instrValue.ValueBase as ValueBool).Val;
+        return true;
+    }
 
     /// <summary>
     /// Create a new var, or update if the var already exists (left part).
@@ -98,6 +143,7 @@ public class ProgExecVarMgr
 
         return ListExecVar.FirstOrDefault(v => v.NameEquals(varname));
     }
+
 
     /// <summary>
     /// Find the last var. Useful if the value of the var is a var.

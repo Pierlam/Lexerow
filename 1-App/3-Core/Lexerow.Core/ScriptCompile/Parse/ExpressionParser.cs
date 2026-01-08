@@ -26,6 +26,7 @@ public class ExpressionParser
 {
     /// <summary>
     /// Process the instr between If and Then, or between ( and )
+    /// called when: And/Or, Then ) is found.
     /// </summary>
     /// <param name="result"></param>
     /// <param name="listVar"></param>

@@ -117,7 +117,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("a"))
+            if (currToken.Value.Equals(")"))
             {
                 int a = 12;
             }
@@ -382,7 +382,8 @@ public class Parser
             return true;    
         }
 
-        result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+
+        result.AddError(ErrorCode.ParserBoolExprWrong, listInstrOut[0].FirstScriptToken());
         return false;
     }
 
@@ -447,8 +448,15 @@ public class Parser
             return false;
         }
 
-        //InstrBase instBeforeOpenBracket = stackInstr.Pop();
+        // if <instr>
+        InstrBase instrBase=stackInstr.Peek();
+        if(instrBase.InstrType == InstrType.If)
+        {
+            stackInstr.Push(listInstrOut[0]);
+            return true;
+        }
 
+        // TODO: only if comma is found (or only one instr found)
         // process the fct call, check and set parameters, error saved
         return FunctionCallParamsParser.ProcessFunctionCallParams(logger, result, listVar, stackInstr, scriptToken, program, listInstrOut);
     }

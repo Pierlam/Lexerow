@@ -86,7 +86,6 @@ public class LoadFileExecOnExcelIfVarTests : BaseTests
         Assert.IsTrue(res);
     }
 
-    // same , a=false
     /// <summary>
     /// a=false
     /// OnExcel ".\10-ExcelFiles\onExcelIfEqVarFalseOk.xlsx"
@@ -121,4 +120,40 @@ public class LoadFileExecOnExcelIfVarTests : BaseTests
         res = TestExcelChecker.CheckCellValue(excelFile, "A4", new DateOnly(2025, 12,10));
         Assert.IsTrue(res);
     }
+
+    /// <summary>
+    /// a=true
+    /// OnExcel ".\10-ExcelFiles\onExcelIfEqVarOk.xlsx"
+    ///   ForEachRow
+    ///     If (a) Then A.Cell=12
+    ///   Next
+    /// End OnExcel
+    /// </summary>
+    [TestMethod]
+    public void OnExcelIfBrkEqVarVrkOk()
+    {
+        LexerowCore core = new LexerowCore();
+        string scriptfile = PathScriptFiles + "onExcelIfBrkEqVarBrkOk.lxrw";
+
+        // load the script, compile it and then execute it
+        Result result = core.LoadExecScript("script", scriptfile);
+        Assert.IsTrue(result.Res);
+
+        //--check the content of excel file
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "onExcelIfBrkEqVarBrkOk.xlsx");
+        Assert.IsNotNull(excelFile);
+
+        //--A2: -> 12 
+        bool res = TestExcelChecker.CheckCellValue(excelFile, "A2", 12);
+        Assert.IsTrue(res);
+
+        //--A3: -> 12
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 12);
+        Assert.IsTrue(res);
+
+        //--A4: -> 12
+        res = TestExcelChecker.CheckCellValue(excelFile, "A4", 12);
+        Assert.IsTrue(res);
+    }
+
 }

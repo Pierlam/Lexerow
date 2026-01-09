@@ -31,7 +31,9 @@ public class CoreInstr
     public const string InstrOr = "Or";
 
     public const string InstrDot = ".";
+    public const string InstrComma = ",";
     
+
     //--function names
     public const string InstrFuncSelectFiles = "SelectFiles";
 

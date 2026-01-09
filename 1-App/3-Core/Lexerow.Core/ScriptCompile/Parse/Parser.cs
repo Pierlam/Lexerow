@@ -117,7 +117,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals(")"))
+            if (currToken.Value.Equals(","))
             {
                 int a = 12;
             }
@@ -147,56 +147,14 @@ public class Parser
             if (!SetVarParser.ProcessSetVar(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
-
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
-            //--is it the SetVar equal char?
-            //res = SetVarParser.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
-            //if (!res) break;
-            //if (isToken) continue;
-
-            //--Is it comparison separator =, >, <, ...?
-            //if (ParserUtils.IsComparisonOperator(currToken))
-            //{
-            // process the content of the stack until the If instr
-            //res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(result, listVar, stackInstr, currToken);
-            //if (!res) break;
-            //continue;
-            //}
-
-
-            //--Is it the Then token?
-            //res = IfPartDecoder.ProcessStackBeforeTokenThen(result, listVar, stackInstr, currToken, out isToken);
-            //if (!res) break;
-            //if (isToken) continue;
-
-            ////--is the token the char ) ?  pop the stack until found ( and parse the expression. parameter of a function
-            //res = TokenCloseBracketProcessor.Process(result, listVar, stackInstr, currToken, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
-            //if (!res) break;
-            //if (isListOfParams)
-            //{
-            //    // process the fct call, check and set parameters, error saved
-            //    res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, result, listVar, stackInstr, currToken, program, listItem);
-            //    if (!res) break;
-            //    continue;
-            //}
-            //if (isMathExpr)
-            //{
-            //    // TODO: exp: (23+a)
-            //    //ProcessMathExpression(stkItems, listInstr, listItem);
-            //    continue;
-            //}
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-REWORK:
-
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-NEW:
-
             //--Is it the And/or token?
-            //if (!IfPartDecoder.ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken)) break;
             if (!ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
             //--Is it the comma "," token?
             // TODO: process the expr: between the comma and the ) or a another ,
-            // ProcessTokenComma()
+            if (!ProcessTokenComma(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
 
             //--Is it the Then token?
             if (!ProcessTokenThen(result, listVar, stackInstr, currToken, out isToken)) break;
@@ -205,9 +163,6 @@ public class Parser
             //--is the token the char ) ?  
             if (!ProcessTokenRightBracket(_logger, result, listVar, stackInstr, currToken, program, out isToken)) break;
             if (isToken) continue;
-
-
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-NEW:
 
 
             // move the script token into an exec token
@@ -299,6 +254,64 @@ public class Parser
         InstrBase instrBoolOperator = InstrUtils.CreateBoolOperator(scriptToken);
         stackInstr.Push(instrBoolOperator);
         return true;
+    }
+
+    /// <summary>
+    /// Process the expr: between the comma and the ( or a another ,
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="scriptToken"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessTokenComma(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    {
+        isToken = false;
+
+        // not the token ,? bye
+        if (!scriptToken.Value.Equals(CoreInstr.InstrComma, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+
+        isToken = true;
+
+        // nothing in the stack, error
+        if (stackInstr.Count == 0)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // parse the sub part
+        InstrBase instrStart = stackInstr.FindFirstInstrFromTop(InstrType.OpenBracket, InstrType.Comma);
+        if(instrStart==null)
+        {
+            // errror?
+        }
+
+        List<InstrBase> listInstrOut;
+
+        // parse the expression between , and , or (
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
+            return false;
+
+        // only one result instr expected  -> NON IN FACT, can be a math expr, a bool expr
+        if (listInstrOut.Count != 1)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+        stackInstr.Push(listInstrOut[0]);
+
+        // push now the comma
+        InstrComma instrComma = new InstrComma(scriptToken);
+        stackInstr.Push(instrComma);
+        return true;
+
+        // TODO:
+        //result.AddError(ErrorCode.ParserCaseNotManaged, scriptToken);
+        //return false;
+
     }
 
     /// <summary>

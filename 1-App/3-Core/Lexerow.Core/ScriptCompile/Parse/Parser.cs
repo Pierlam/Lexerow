@@ -295,7 +295,7 @@ public class Parser
         if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
             return false;
 
-        // only one result instr expected  -> NON IN FACT, can be a math expr, a bool expr
+        // only one result instr expected  -> NON IN FACT, can be a math expr, a bool expr, a comp expr
         if (listInstrOut.Count != 1)
         {
             result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
@@ -307,11 +307,6 @@ public class Parser
         InstrComma instrComma = new InstrComma(scriptToken);
         stackInstr.Push(instrComma);
         return true;
-
-        // TODO:
-        //result.AddError(ErrorCode.ParserCaseNotManaged, scriptToken);
-        //return false;
-
     }
 
     /// <summary>

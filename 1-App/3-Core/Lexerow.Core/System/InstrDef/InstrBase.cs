@@ -151,4 +151,9 @@ public abstract class InstrBase
     /// exp: InstrValue -> depend on the value type, ValueBool,...
     /// </summary>
     public InstrReturnType ReturnType { get; set; } = InstrReturnType.Nothing;
+
+    /// <summary>
+    /// Return true if the instruction is already executed.
+    /// </summary>
+    public bool IsExecuted { get; set; } = false;
 }

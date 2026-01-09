@@ -24,6 +24,8 @@ public class InstrExecutor
 
     private InstrComparisonExecutor _instrComparisonExecutor;
 
+    private InstrBoolExprExecutor _instrBoolExprExecutor;
+
     private InstrSetColCellFuncExecutor _instrSetColCellFuncExecutor;
 
     private InstrSetVarExecutor _instrSetVarExecutor;
@@ -44,6 +46,7 @@ public class InstrExecutor
         _instrRowExecutor = new InstrRowExecutor(_logger, excelProcessor);
         _instrIfThenElseExecutor = new InstrIfThenElseExecutor(_logger);
         _instrComparisonExecutor = new InstrComparisonExecutor(_logger, excelProcessor);
+        _instrBoolExprExecutor= new InstrBoolExprExecutor(_logger, excelProcessor);
         _instrSetColCellFuncExecutor = new InstrSetColCellFuncExecutor(_logger, excelProcessor, progExecVarMgr);
         _instrSetVarExecutor = new InstrSetVarExecutor(_logger, _instrSetColCellFuncExecutor);
 
@@ -136,6 +139,13 @@ public class InstrExecutor
             if (instr.InstrType == InstrType.Comparison)
             {
                 res = _instrComparisonExecutor.ExecInstrComparison(result, ctx, progExecVarMgr, instr as InstrComparison);
+                if (!res) return false;
+                continue;
+            }
+
+            if (instr.InstrType == InstrType.BoolExpr)
+            {
+                res = _instrBoolExprExecutor.ExecInstrBoolExpr(result, ctx, progExecVarMgr, instr as InstrBoolExpr);
                 if (!res) return false;
                 continue;
             }

@@ -7,6 +7,10 @@ using OpenExcelSdk;
 
 namespace Lexerow.Core.InstrProgExec;
 
+/// <summary>
+/// Execute comparison instructions.
+/// exp: A.Cell>10
+/// </summary>
 public class InstrComparisonExecutor
 {
     private IActivityLogger _logger;
@@ -140,6 +144,7 @@ public class InstrComparisonExecutor
             if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
                 return false;
             instrComparison.Result = resultComp;
+            instrComparison.IsExecuted = true;
             ctx.PrevInstrExecuted = instrComparison;
             ctx.StackInstr.Pop();
             return true;
@@ -153,6 +158,7 @@ public class InstrComparisonExecutor
             if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowNum, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
                 return false;
             instrComparison.Result = resultComp;
+            instrComparison.IsExecuted = true;
             ctx.PrevInstrExecuted = instrComparison;
             ctx.StackInstr.Pop();
             return true;
@@ -167,6 +173,7 @@ public class InstrComparisonExecutor
                 return false;
 
             instrComparison.Result = resultComp;
+            instrComparison.IsExecuted = true;
             ctx.PrevInstrExecuted = instrComparison;
             ctx.StackInstr.Pop();
             return true;
@@ -183,6 +190,7 @@ public class InstrComparisonExecutor
                 return false;
 
             instrComparison.Result = resultComp;
+            instrComparison.IsExecuted = true;
             ctx.PrevInstrExecuted = instrComparison;
             ctx.StackInstr.Pop();
             return true;

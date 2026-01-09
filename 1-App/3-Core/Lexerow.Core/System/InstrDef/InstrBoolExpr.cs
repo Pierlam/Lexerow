@@ -37,6 +37,11 @@ public class InstrBoolExpr : InstrBase
 
     public List<InstrBase> ListOperand { get; set; }=new List<InstrBase>();
 
+    /// <summary>
+    /// The exection result.
+    /// </summary>
+    public bool Result { get; set; } = false;
+
     public override string ToString()
     {
         string s=string.Empty;

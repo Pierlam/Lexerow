@@ -104,12 +104,38 @@ public class InstrIfThenElseExecutor
                 return true;
             }
 
-            //-is it a bool var?
-            // TODO:
-            throw new NotImplementedException("InstrIfThenElseExecutor.ExecInstrIf: Bool Var or fct call to implement");
+            //-is it a bool expr?
+            var instrBoolExpr = ctx.PrevInstrExecuted as InstrBoolExpr;
+            if(instrBoolExpr!=null)
+            {
+                instrIf.Result = instrBoolExpr.Result;
+                _logger.LogExecStart(ActivityLogLevel.Debug, "InstrIfThenElseExecutor.ExecInstrIf", "Prev was If comparison, result: " + instrIf.Result.ToString());
+
+                // remove the if from the stack
+                ctx.StackInstr.Pop();
+
+                // if cond execution return true, so execute then instr
+                if (instrIf.Result)
+                {
+                    // update insights
+                    result.Insights.NewIfCondMatch();
+
+                    // the if instr becomes the previous one
+                    ctx.PrevInstrExecuted = instrIf;
+                    return true;
+                }
+
+                // remove the ifThenElse from the stack, go back to the ForEachRow
+                ctx.StackInstr.Pop();
+                ctx.PrevInstrExecuted = null;
+                return true;
+            }
 
             //-is it a fct call?
             // TODO:
+
+            result.AddError(ErrorCode.ExecInstrNotManaged, ctx.PrevInstrExecuted.FirstScriptToken());
+            return false;
         }
 
         //--case1: If operandLeft operator operandRight
@@ -117,6 +143,14 @@ public class InstrIfThenElseExecutor
         {
             ctx.StackInstr.Push(instrIf.InstrBase);
             _logger.LogExecEnd(ActivityLogLevel.Debug, "InstrIfThenElseExecutor.ExecInstrIf", "Run If comparison");
+            return true;
+        }
+
+        //--Bool expr, exp: If a>10 And a<10 
+        if (instrIf.InstrBase.InstrType == InstrType.BoolExpr)
+        {
+            // execute each part of the bool expr
+            ctx.StackInstr.Push(instrIf.InstrBase);
             return true;
         }
 
@@ -150,9 +184,8 @@ public class InstrIfThenElseExecutor
             return true;
         }
 
-        // TODO:
-        throw new NotImplementedException("InstrIfThenElseExecutor.ExecInstrIf: case2: If Operand to implement");
-        return true;
+        result.AddError(ErrorCode.ExecInstrValueExpected, instrIf.InstrBase.FirstScriptToken());
+        return false;
     }
 
     public bool ExecInstrThen(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrThen instrThen)

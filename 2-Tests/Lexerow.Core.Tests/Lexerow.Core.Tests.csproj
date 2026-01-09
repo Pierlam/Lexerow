@@ -29,6 +29,9 @@
     <None Update="10-ExcelFiles\IfACellNotEqString.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="10-ExcelFiles\onExcelIfAndOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="10-ExcelFiles\onExcelIfEqVarFalseOk.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -180,6 +183,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\OnExcelIfVarDateThenDate.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfAndOk.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\varAfilesStringOnExcelOk.lxrw">

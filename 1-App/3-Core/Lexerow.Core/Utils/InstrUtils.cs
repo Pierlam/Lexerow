@@ -323,6 +323,33 @@ public class InstrUtils
         return true;
     }
 
+    public static void ClearIsExecuted(InstrBase instr)
+    {
+        if (instr == null) return;
+        instr.IsExecuted = false;
+
+        InstrBoolExpr instrBoolExpr = instr as InstrBoolExpr;
+        if(instrBoolExpr!=null)
+        {
+            foreach(InstrBase instrInner in instrBoolExpr.ListOperand)
+            {
+                ClearIsExecuted(instrInner);
+            }
+            return;
+        }
+
+        InstrComparison instrComparison = instr as InstrComparison;
+        if (instrComparison != null) 
+        {
+            ClearIsExecuted(instrComparison.OperandLeft);
+            ClearIsExecuted(instrComparison.OperandRight);
+            return;
+        }
+
+
+        //TODO: InstrMathExpr 
+    }
+
     /// <summary>
     /// Return the type of the instr value.
     /// </summary>

@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
@@ -19,7 +20,7 @@ public class InstrOnExcelBuilder
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool OnExcelBuildOngoing(Result result, List<InstrObjectName> listVar, CompilStackInstr stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
+    public static bool OnExcelBuildOngoing(Result result, List<InstrNameObject> listVar, CompilStackInstr stkInstr, InstrBase instr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
         InstrOnExcel instrOnExcel;
@@ -87,7 +88,7 @@ public class InstrOnExcelBuilder
                 return false;
             }
             // filename is a variable, should be defined before
-            if (instr.InstrType == InstrType.ObjectName)
+            if (instr.InstrType == InstrType.NameObject)
             {
                 // save the string filename
                 instrOnExcel.InstrFiles = instr;

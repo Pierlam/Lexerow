@@ -1,9 +1,10 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.GenDef;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
-using Org.BouncyCastle.Utilities.Collections;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -19,7 +20,7 @@ public class Parser
     /// list of defined variables.
     /// A variable can be created and set several times.
     /// </summary>
-    private List<InstrObjectName> _listVar = new List<InstrObjectName>();
+    private List<InstrNameObject> _listVar = new List<InstrNameObject>();
 
     public Parser(IActivityLogger activityLogger)
     {
@@ -37,7 +38,7 @@ public class Parser
     /// <returns></returns>
     public bool Process(Result result, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "Parser.Process", "script lines Num: " + listScriptLineTokens.Count.ToString());
+        _logger.LogCompilStart(ActivityLogLevel.Info, "Parser.Process", "script lines Num: " + listScriptLineTokens.Count.ToString());
         _listVar.Clear();
 
         // no token in the source code! -> error or warning?
@@ -47,12 +48,12 @@ public class Parser
             return false;
         }
 
-        // process, loop on tokens
-        bool res = LoopOnTokens(result, _listVar, listScriptLineTokens, program);
+        // process tokens, line by line
+        bool res = ProcessTokensLineByLine(result, _listVar, listScriptLineTokens, program);
 
         if (res)
         {
-            _logger.LogCompilEnd(ActivityLogLevel.Important, "Parser.Process", "Instr count: " + program.ListInstr.Count().ToString());
+            _logger.LogCompilEnd(ActivityLogLevel.Info, "Parser.Process", "Instr count: " + program.ListInstr.Count().ToString());
 
             // ok, no error
             return true;
@@ -70,7 +71,7 @@ public class Parser
     /// <param name="listScriptLineTokens"></param>
     /// <param name="listInstrToExec"></param>
     /// <returns></returns>
-    private bool LoopOnTokens(Result result, List<InstrObjectName> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
+    private bool ProcessTokensLineByLine(Result result, List<InstrNameObject> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
         bool res;
         bool isToken = false;
@@ -79,9 +80,6 @@ public class Parser
         int currLineTokensIndex = 0;
         ScriptLineTokens currLineTokens = null;
         currLineTokens = listScriptLineTokens[0];
-
-        // final list of compiled instructions to execute
-        //listInstrToExec = new List<InstrBase>();
 
         //--init vars on tokens
         int currTokenIndex = -1;
@@ -96,7 +94,7 @@ public class Parser
 
             if (currTokenIndex >= currLineTokens.ListScriptToken.Count)
             {
-                _logger.LogCompilOnGoing(ActivityLogLevel.Important, "Parser.LoopOnTokens", "End Of line reached, Num: " + currLineTokensIndex.ToString());
+                _logger.LogCompilOnGoing(ActivityLogLevel.Debug, "Parser.ProcessTokensLineByLine", "End Of line reached, Num: " + currLineTokensIndex.ToString() + ", Line: " + currLineTokens.ScriptLine);
 
                 // no more token in the current line tokens, process items saved in the stack
                 res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);
@@ -119,7 +117,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals("-"))
+            if (currToken.Value.Equals(")"))
             {
                 int a = 12;
             }
@@ -136,41 +134,36 @@ public class Parser
                 return false;
             }
 
-            //--is it the SetVar equal char? 
-            res = SetVarDecoder.ProcessSetVarEqualChar(result, listVar, stackInstr, currToken, program.ListInstr, out isToken);
-            if (!res) break;
+            //--is it the Cell or BgColor or FgColor token?
+            if (!InstrColCellFuncParser.Process(result, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
-            //--Is it comparison separator =, >, <, ...?
-            if (ParserUtils.IsComparisonSeparator(currToken))
-            {
-                // process the content of the stack until the If instr
-                res = IfPartDecoder.ProcessStackBeforeTokenSepEqualAfterTokenIf(result, listVar, stackInstr, currToken);
-                if (!res) break;
-                continue;
-            }
+            //--is it an operator comparison ? =,<,>,<=, >= (and not a set var isntr)
+            if (!ComparisonParser.ProcessCompOperator(result, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
+
+
+            //--is it the SetVar equal char?
+            if (!SetVarParser.ProcessSetVar(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
+
+            //--Is it the And/or token?
+            if (!ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
+
+            //--Is it the comma "," token?
+            // TODO: process the expr: between the comma and the ) or a another ,
+            if (!ProcessTokenComma(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (isToken) continue;
 
             //--Is it the Then token?
-            res = IfPartDecoder.ProcessStackBeforeTokenThen(result, listVar, stackInstr, currToken, out isToken);
-            if (!res) break;
+            if (!ProcessTokenThen(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
-            //--is the token the char ) ?  pop the stack until found ( et traite l'expression. parametre d'une fonction/méthode.
-            res = TokenCloseBracketProcessor.Do(result, listVar, stackInstr, currToken, program.ListInstr, out bool isListOfParams, out bool isMathExpr, out List<InstrBase> listItem);
-            if (!res) break;
-            if (isListOfParams)
-            {
-                // process the fct call, check and set parameters, error saved
-                res = FunctionCallParamsProcessor.ProcessFunctionCallParams(_logger, result, listVar, stackInstr, currToken, program.ListInstr, listItem);
-                if (!res) break;
-                continue;
-            }
-            if (isMathExpr)
-            {
-                // TODO: exp: (23+a)
-                //ProcessMathExpression(stkItems, listInstr, listItem);
-                continue;
-            }
+            //--is the token the char ) ?  
+            if (!ProcessTokenRightBracket(_logger, result, listVar, stackInstr, currToken, program, out isToken)) break;
+            if (isToken) continue;
+
 
             // move the script token into an exec token
             res = InstrBuilder.Build(result, currToken, out InstrBase instr);
@@ -198,6 +191,298 @@ public class Parser
     }
 
     /// <summary>
+    /// Is it the token And or Or?  If operand And
+    /// If .. And, If(...And 
+    /// - 2 main cases: 
+    ///   it's the first bool operator found, If Operand And
+    ///   It's the second or more bool operator foud, exp: If Operand1 And Operand2 And
+    ///   
+    /// Just check it and push the bool operator on the stack.
+    /// The content will be finally parsed when the instr Then will be found.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="scriptToken"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    public static bool ProcessTokenAndOr(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    {
+        isToken = false;
+
+        // not the token And/Or? bye
+        if (!scriptToken.Value.Equals(CoreInstr.InstrAnd, StringComparison.InvariantCultureIgnoreCase) && !scriptToken.Value.Equals(CoreInstr.InstrOr, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+
+        isToken = true;
+
+        // nothing in the stack, error
+        if (stackInstr.Count == 0)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // Find the start instr: And, Or, ( or If 
+        InstrBase instrAndOrOpenBracketIf = stackInstr.FindFirstInstrFromTop(InstrType.And, InstrType.Or);
+        if(instrAndOrOpenBracketIf == null)
+        {
+            // Find the start instr:  ( or If 
+            instrAndOrOpenBracketIf = stackInstr.FindFirstInstrFromTop(InstrType.OpenBracket, InstrType.If);
+        }
+        if(instrAndOrOpenBracketIf==null)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOrOpenBracketIf.InstrType, out List<InstrBase> listInstrOut))
+            return false;
+
+        // only one expr instr expected
+        if (listInstrOut.Count != 1)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // save the parsed instr between If/And/Or/( and And/or
+        stackInstr.Push(listInstrOut[0]);
+
+        // save the bool operator And/Or on the stack
+        InstrBase instrBoolOperator = InstrUtils.CreateBoolOperator(scriptToken);
+        stackInstr.Push(instrBoolOperator);
+        return true;
+    }
+
+    /// <summary>
+    /// Process the expr: between the comma and the ( or a another ,
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="scriptToken"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessTokenComma(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    {
+        isToken = false;
+
+        // not the token ,? bye
+        if (!scriptToken.Value.Equals(CoreInstr.InstrComma, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+
+        isToken = true;
+
+        // nothing in the stack, error
+        if (stackInstr.Count == 0)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // parse the sub part
+        InstrBase instrStart = stackInstr.FindFirstInstrFromTop(InstrType.OpenBracket, InstrType.Comma);
+        if(instrStart==null)
+        {
+            // errror?
+        }
+
+        List<InstrBase> listInstrOut;
+
+        // parse the expression between , and , or (
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
+            return false;
+
+        // only one result instr expected  -> NON IN FACT, can be a math expr, a bool expr, a comp expr
+        if (listInstrOut.Count != 1)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+        stackInstr.Push(listInstrOut[0]);
+
+        // push now the comma
+        InstrComma instrComma = new InstrComma(scriptToken);
+        stackInstr.Push(instrComma);
+        return true;
+    }
+
+    /// <summary>
+    /// Is it the Then token? so process the if condition.
+    /// Comment: right bracket placed before are alreay processed, exp: if (a > b) Then
+    /// Analyse instr back to If, can be:
+    ///  -a bool value
+    ///  -comparison expr, exp: a>b
+    ///  -bool expression, exp: a and b
+    ///  -calc expr, not allowed but possible in inner instr.
+    ///   
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="token"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessTokenThen(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    {
+        isToken = false;
+
+        // not the token Then? bye
+        if (!scriptToken.Value.Equals(CoreInstr.InstrThen, StringComparison.InvariantCultureIgnoreCase))
+            return true;
+
+        isToken = true;
+
+        // nothing in the stack, error
+        if (stackInstr.Count == 0)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        List<InstrBase> listInstrOut;
+
+        // parse the sub part if And/Or exists, exp: If .. And A.Cell>10 Then
+        InstrBase instrAndOr = stackInstr.FindFirstInstrFromTop(InstrType.And, InstrType.Or);
+        if (instrAndOr != null)
+        {
+            // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
+            if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOr.InstrType, out listInstrOut))
+                return false;
+            // only one result instr expected
+            if (listInstrOut.Count != 1)
+            {
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                return false;
+            }
+            stackInstr.Push(listInstrOut[0]);
+        }
+
+        // find the If instr in the stack, must exists
+        InstrIf instrIf = stackInstr.FindInstrFromTop(InstrType.If) as InstrIf;
+        if (instrIf == null)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.If, out listInstrOut))
+            return false;
+
+        // only one expr instr expected
+        if(listInstrOut.Count != 1)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        if (listInstrOut[0].InstrType == InstrType.BoolExpr || listInstrOut[0].InstrType == InstrType.Comparison || listInstrOut[0].ReturnType== InstrReturnType.ValueBool) 
+        {
+            // get If instr and add it
+            instrIf.InstrBase = listInstrOut[0];
+
+            // create the Then instr and push it on the stack
+            InstrThen instrThen = new InstrThen(scriptToken);
+            stackInstr.Push(instrThen);
+            return true;    
+        }
+
+
+        result.AddError(ErrorCode.ParserBoolExprWrong, listInstrOut[0].FirstScriptToken());
+        return false;
+    }
+
+    /// <summary>
+    /// Is the token right bracket ) ?  can be
+    /// can be: 
+    ///  -fct call parameters, exp: fct(a,b,c)
+    ///  -bool expression, exp: (a and b)
+    ///  -comparison expr, exp: (a>b)
+    ///  -calc expr:, exp:      (a+2)
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="stackInstr"></param>
+    /// <param name="token"></param>
+    /// <param name="isToken"></param>
+    /// <returns></returns>
+    private static bool ProcessTokenRightBracket(IActivityLogger logger, Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, out bool isToken)
+    {
+        isToken = false;
+
+        //--is it ) ?
+        if (!scriptToken.Value.Equals(")"))
+            // no, bye
+            return true;
+
+        isToken = true;
+
+        // nothing in the stack, error
+        if (stackInstr.Count == 0)
+        {
+            result.AddError(ErrorCode.ParserTokenExpected, scriptToken);
+            return false;
+        }
+
+        List<InstrBase> listInstrOut;
+
+        // parse the sub part if And/Or exists, exp: fct(.. And A.Cell>10)
+        InstrBase instrAndOr = stackInstr.FindFirstInstrFromTop(InstrType.And, InstrType.Or);
+        if (instrAndOr != null)
+        {
+            if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOr.InstrType, out listInstrOut))
+                return false;
+
+            // only one result instr expected
+            if (listInstrOut.Count != 1)
+            {
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                return false;
+            }
+            stackInstr.Push(listInstrOut[0]);
+        }
+
+        // parse the sub part if comma exists, exp: fct(.., A.Cell>10)
+        // TODO:
+
+        // find the ( instr in the stack, must exists
+        InstrBase instrStart = stackInstr.FindInstrFromTop(InstrType.OpenBracket);
+        if (instrStart == null)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // Process the expression 
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
+            return false;
+
+        // remove the ( from the stack
+        stackInstr.Pop();
+
+        // nothing in the stack, error
+        if (stackInstr.Count == 0)
+        {
+            result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+            return false;
+        }
+
+        // if <instr>  or again (
+        InstrBase instrBase=stackInstr.Peek();
+        if(instrBase.InstrType == InstrType.If || instrBase.InstrType == InstrType.OpenBracket)
+        {
+            stackInstr.Push(listInstrOut[0]);
+            return true;
+        }
+
+        // process the fct call, check and set parameters, error saved
+        return FunctionCallParamsParser.ProcessFunctionCallParams(logger, result, listVar, stackInstr, scriptToken, program, listInstrOut);
+    }
+
+    /// <summary>
     /// Process special cases like:
     ///  all token are inline, pb is on token Next:
     ///     OnExcel "data.xlsx" ForEach Row If A.Cell >10 Then A.Cell=10 Next
@@ -211,7 +496,7 @@ public class Parser
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessSpecialCases(Result result, List<InstrObjectName> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
+    private static bool ProcessSpecialCases(Result result, List<InstrNameObject> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
     {
         isToken = false;
 
@@ -229,14 +514,13 @@ public class Parser
         }
 
         //--a=-7, curr=7. Stack> Minus; SetVar
-        if(!ProcessNegativeValueNumber(result, stackInstr, instr, out isToken))
+        if (!ProcessNegativeValueNumber(result, stackInstr, instr, out isToken))
             return false;
-        if(isToken)return true;
+        if (isToken) return true;
 
         //--If a=-1; Stack IN> ??
 
         //--Then a=-1; Stack IN> ??
-
 
         return true;
     }
@@ -279,7 +563,7 @@ public class Parser
     }
 
     /// <summary>
-    /// case1: a=-7, 
+    /// case1: a=-7,
     /// instr=7, Stack> Minus; SetVar
     ///
     /// case2: A.Cell>10
@@ -295,14 +579,14 @@ public class Parser
         isToken = false;
 
         // the current instr is not an int or a double?
-        if(!InstrUtils.IsValueInt(instr) && InstrUtils.IsValueDouble(instr))return true;
+        if (!InstrUtils.IsValueInt(instr) && InstrUtils.IsValueDouble(instr)) return true;
 
         // not enought instr in the stack
         if (stackInstr.Count < 2) return true;
 
         // read the instr in the top of the stack
         InstrCharMinus instrCharMinus = stackInstr.Peek() as InstrCharMinus;
-        if(instrCharMinus==null) return true;
+        if (instrCharMinus == null) return true;
 
         //--case1: the next instr is the SetVar instr?
         if ((stackInstr.ReadInstrBeforeTop() as InstrSetVar) != null)
@@ -330,5 +614,4 @@ public class Parser
 
         return true;
     }
-
 }

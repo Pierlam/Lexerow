@@ -14,7 +14,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -29,7 +29,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 ";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -44,7 +44,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "43E10";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -59,7 +59,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12.45";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -74,7 +74,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = ".789";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -89,7 +89,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "4.95E10";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -104,7 +104,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "4.95E-10";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(1, listScriptTokens.Count);
@@ -119,7 +119,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12A";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         // return false -> error
         Assert.IsFalse(res);
@@ -134,7 +134,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12A ";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         // return false -> error
         Assert.IsFalse(res);
@@ -149,7 +149,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12.3A";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         // return false -> error
         Assert.IsFalse(res);
@@ -165,7 +165,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 45";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -182,7 +182,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12 45";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -199,7 +199,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = " 12 45 ";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -217,7 +217,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12-23";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -238,7 +238,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 -23";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -259,7 +259,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 - 23";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -280,7 +280,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "12 + -23";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(4, listScriptTokens.Count);
@@ -304,7 +304,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "a>-12";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(4, listScriptTokens.Count);
@@ -329,7 +329,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A.Cell ";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -349,7 +349,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A.Cell";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(3, listScriptTokens.Count);
@@ -369,7 +369,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A.";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);
@@ -387,7 +387,7 @@ public class StringParser
 
         ScriptSplitter stringParser = new ScriptSplitter();
         string line = "A. ";
-        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
+        bool res = stringParser.Split(1, line, conf.Separators, conf.StringSep, conf.CommentTag, conf.SystVarStartTag, out List<ScriptToken> listScriptTokens, out ScriptTokenType lastTokenType);
 
         Assert.IsTrue(res);
         Assert.AreEqual(2, listScriptTokens.Count);

@@ -1,20 +1,22 @@
-﻿using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.ProgExec;
+﻿using DocumentFormat.OpenXml.Math;
+using Lexerow.Core.Diag;
+using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.ScriptCompile;
 using Lexerow.Core.ScriptLoad;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.Excel;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
+using OpenExcelSdk;
 
 namespace Lexerow.Core;
 
 /// <summary>
 /// Lexerow core backend application.
 /// </summary>
-public class LexerowCore
+public class LexerowCore : IDisposable
 {
-    private IExcelProcessor _excelProcessor;
+    private ExcelProcessor _excelProcessor;
 
     private CoreData _coreData = new CoreData();
 
@@ -32,16 +34,24 @@ public class LexerowCore
     public LexerowCore()
     {
         _logger = new ActivityLogger();
+        // default activity log lelve: Info, only main information.
+        _logger.ActiveLevel = ActivityLogLevel.Info;
+
+        Diagnostics = new Diagnostics(_logger);
+
         _logger.ActivityLogEvent += logger_ActivityLogEvent;
 
-        _excelProcessor = new ExcelProcessorNpoi();
-
+        // main managers
+        _excelProcessor = new ExcelProcessor();
         _scriptLoader = new ScriptLoader();
         _scriptCompiler = new ScriptCompiler(_logger, _coreData);
-
         _programExecutor = new ProgramExecutor(_logger, _excelProcessor);
     }
 
+    public void Dispose() 
+    {
+        Diagnostics.CloseLogs();
+    }
     public event EventHandler<ActivityLog> ActivityLogEvent;
 
     /// <summary>
@@ -72,7 +82,7 @@ public class LexerowCore
     /// <returns></returns>
     public Result LoadLinesScript(string scriptName, List<string> scriptLines)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromLines", scriptName);
+        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromLines", scriptName);
 
         Result result = new Result();
 
@@ -93,7 +103,7 @@ public class LexerowCore
             return result;
         }
 
-        if (!_scriptLoader.LoadScriptFromLines(result, scriptName, scriptLines, out Script script))
+        if (!_scriptLoader.LoadScriptFromLines(result, scriptName, scriptLines, out System.ScriptDef.Script script))
             return result;
 
         // compile the script,  generate instructions
@@ -104,7 +114,7 @@ public class LexerowCore
         // save it
         _coreData.ListProgram.Add(programScript);
 
-        _logger.LogCompilEnd(ActivityLogLevel.Important, "LoadScriptFromFile", scriptName);
+        _logger.LogCompilEnd(ActivityLogLevel.Info, "LoadScriptFromFile", scriptName);
 
         return result;
     }
@@ -132,7 +142,7 @@ public class LexerowCore
     /// <returns></returns>
     public Result LoadScript(string scriptName, string fileName)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
+        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", scriptName);
 
         Result result = new Result();
 
@@ -153,7 +163,7 @@ public class LexerowCore
             return result;
         }
 
-        if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out Script script))
+        if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out System.ScriptDef.Script script))
             return result;
 
         // compile the script,  generate instructions
@@ -161,11 +171,10 @@ public class LexerowCore
         if (!result.Res)
             return result;
 
-
         // save it
         _coreData.ListProgram.Add(programInstr);
 
-        _logger.LogCompilEnd(ActivityLogLevel.Important, "LexerowCore.LoadScriptFromFile", scriptName);
+        _logger.LogCompilEnd(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", scriptName);
 
         return result;
     }
@@ -178,7 +187,7 @@ public class LexerowCore
     /// <exception cref="Exception"></exception>
     public Result ExecuteScript(string scriptName)
     {
-        _logger.LogExecStart(ActivityLogLevel.Important, "LexerowCore.ExecuteScript", scriptName);
+        _logger.LogExecStart(ActivityLogLevel.Info, "LexerowCore.ExecuteScript", scriptName);
 
         Result result = new Result();
 
@@ -205,19 +214,22 @@ public class LexerowCore
         return result;
     }
 
+    /// <summary>
+    /// Diagnostics tool.
+    /// </summary>
+    public Diagnostics Diagnostics { get;}
+
     private void logger_ActivityLogEvent(object? sender, ActivityLog e)
     {
+        // log to console is active?
+        if (Diagnostics.IsLogToConsoleActive)
+            Diagnostics.LogToConsole(e);
+
+        // log to txt file is active?
+        if (Diagnostics.IsSaveLogTxtActive)
+            Diagnostics.SaveLog(e);
+
+        // log outside
         ActivityLogEvent?.Invoke(sender, e);
     }
-
-    //Action<AppTrace> _appTraceEvent;
-
-    //public Action<AppTrace> AppTraceEvent
-    //{
-    //    get { return _appTraceEvent; }
-    //    set {
-    //        //ProgBuilder.AppTraceEvent = value;
-    //        Exec.AppTraceEvent = value;
-    //    }
-    //}
 }

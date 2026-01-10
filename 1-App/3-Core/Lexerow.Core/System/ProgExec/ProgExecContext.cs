@@ -1,4 +1,8 @@
-﻿namespace Lexerow.Core.System;
+﻿using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.Object;
+using OpenExcelSdk;
+
+namespace Lexerow.Core.System;
 
 /// <summary>
 /// Program execution context.
@@ -15,17 +19,17 @@ public class ProgExecContext
     /// Used in execution.
     /// base0.
     /// </summary>
-    public int FileToProcessNum { get; set; } = -1;
+    //public int FileToProcessNum { get; set; } = -1;
 
     /// <summary>
     /// The current excel file object to process.
     /// </summary>
-    public InstrExcelFileObject ExcelFileObject { get; set; } = null;
+    public InstrObjectExcelFile ExcelFileObject { get; set; } = null;
 
     /// <summary>
     /// The current excel sheet to process.
     /// </summary>
-    public IExcelSheet? ExcelSheet { get; set; } = null;
+    public ExcelSheet? ExcelSheet { get; set; } = null;
 
     /// <summary>
     /// The current excel sheet row num to process.
@@ -35,5 +39,5 @@ public class ProgExecContext
     /// <summary>
     /// list of selected excel filename to process
     /// </summary>
-    public List<InstrSelectedFilename> ListSelectedFilename { get; private set; } = new List<InstrSelectedFilename>();
+    public List<ObjectSelectedFile> ListObjectSelectedFiles { get; private set; } = new List<ObjectSelectedFile>();
 }

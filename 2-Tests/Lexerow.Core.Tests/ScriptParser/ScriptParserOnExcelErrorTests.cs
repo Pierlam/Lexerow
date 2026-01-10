@@ -39,13 +39,12 @@ public class ScriptParserOnExcelErrorTests
         TestTokensBuilder.AddLineForEachRow(numLine++, scriptTokens);
 
         // If A.Cell >10 Then A.Cell=10
-        TestTokensBuilder.BuidIfColCellEqualIntThenSetColCellInt(3, scriptTokens);
+        TestTokensBuilder.BuidIfColCellGreaterIntThenSetColCellInt(3, scriptTokens);
 
         // Next
         TestTokensBuilder.AddLineNext(numLine++, scriptTokens);
 
         // End OnExcel not present!
-
 
         //==>just to check the content of the script
         var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);

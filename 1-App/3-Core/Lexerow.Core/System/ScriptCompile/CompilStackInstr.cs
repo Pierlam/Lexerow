@@ -1,4 +1,6 @@
 ﻿using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
+using System;
 
 namespace Lexerow.Core.System.ScriptCompile;
 
@@ -18,19 +20,27 @@ public class CompilStackInstr
     public int Count
     { get { return StackInstr.Count; } }
 
+    /// <summary>
+    /// Peek/read the top item on the stack.
+    /// </summary>
+    /// <returns></returns>
     public InstrBase Peek()
     {
         var instr = StackInstr.Peek();
-        _logger.LogCompilOnGoing(ActivityLogLevel.Detail, "CompilStackInstr.Peek", instr.ToString());
+        Log(_logger, "CompilStackInstr.Peek", instr);
         return instr;
     }
 
+    /// <summary>
+    /// Pop/Remove the top item on the stack.
+    /// </summary>
+    /// <returns></returns>
     public InstrBase Pop()
     {
         try
         {
             var instr = StackInstr.Pop();
-            _logger.LogCompilOnGoing(ActivityLogLevel.Detail, "CompilStackInstr.Pop", instr.ToString());
+            Log(_logger, "CompilStackInstr.Pop", instr);
             return instr;
         }
         catch (Exception e)
@@ -43,6 +53,7 @@ public class CompilStackInstr
     public void Push(InstrBase instr)
     {
         StackInstr.Push(instr);
+        Log(_logger, "CompilStackInstr.Push", instr);
     }
 
     /// <summary>
@@ -83,7 +94,7 @@ public class CompilStackInstr
     }
 
     /// <summary>
-    /// Looking for an instr in the stack, starting from the top.
+    /// Looking for an instr in the stack, starting from the top (latest instr added).
     /// </summary>
     /// <param name="stkInstr"></param>
     /// <param name="type"></param>
@@ -97,6 +108,71 @@ public class CompilStackInstr
         }
         return null;
     }
+
+    /// <summary>
+    /// Looking for an instr in the stack, starting from the top (latest instr added).
+    /// if the instr is not found, return 0.
+    /// </summary>
+    /// <param name="stkInstr"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public int GetDistanceFromTop(InstrType type)
+    {
+        int i = 1;
+        foreach (var instr in StackInstr)
+        {
+            if (instr.InstrType == type)
+                return i;
+            i++;
+        }
+        // instr not found
+        return 0;
+    }
+
+    /// <summary>
+    /// Save instr in a list of instr in the right order.
+    /// </summary>
+    /// <param name="instrCount"></param>
+    /// <returns></returns>
+    public List<InstrBase> SaveInListReverse(int instrCount)
+    {
+        int i = 1;
+        List<InstrBase> list = new List<InstrBase>();
+        foreach (var instr in StackInstr)
+        {
+            if (i > StackInstr.Count) break;
+            if (i > instrCount) break;
+            list.Add(instr);
+            i++;
+        }
+        list.Reverse();
+        return list;
+    }
+
+    /// <summary>
+    /// Save instr in a list of instr in the right order.
+    /// </summary>
+    /// <param name="instrCount"></param>
+    /// <returns></returns>
+    public List<InstrBase> RemoveSaveInListReverse(int instrCount)
+    {
+        int i = 1;
+        List<InstrBase> list = new List<InstrBase>();
+        while(true)
+        {
+            // no more item in the stack, bye
+            if (StackInstr.Count==0) break;
+
+            if (i > instrCount) break;
+
+            var instr = StackInstr.Pop();
+            list.Add(instr);
+            i++;
+        }
+        list.Reverse();
+        return list;
+    }
+
 
     public string Dump()
     {
@@ -114,4 +190,12 @@ public class CompilStackInstr
     /// the stack onf isntr, is private.
     /// </summary>
     private Stack<InstrBase> StackInstr { get; set; } = new Stack<InstrBase>();
+
+    void Log(IActivityLogger logger, string msg , InstrBase instrBase)
+    {
+        int count = StackInstr.Count;
+        if(logger.IsLevelTraceActive())
+            logger.LogCompilOnGoing(ActivityLogLevel.Trace, msg, instrBase.ToString() + ", Nb=" + count.ToString() + " Top> " + Dump()) ;
+    }
+
 }

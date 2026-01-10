@@ -1,0 +1,6 @@
+﻿
+OnExcel ".\10-ExcelFiles\onExcelIfDateThenYesOk.xlsx"
+	ForEachRow
+		If A.Cell <= Date(2023,11,14) Then B.Cell="yes"
+	Next
+End OnExcel

@@ -1,0 +1,7 @@
+﻿# check the col A but modify the colB!
+
+OnExcel ".\10-ExcelFiles\onExcelIfThenDateOk.xlsx"
+	ForEachRow
+		If A.Cell <= 10 Then B.Cell=Date(2025, 11, 30)
+	Next
+End OnExcel

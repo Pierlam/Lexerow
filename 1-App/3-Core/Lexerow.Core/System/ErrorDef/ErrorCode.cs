@@ -1,6 +1,5 @@
 ﻿namespace Lexerow.Core.System;
 
-
 /// <summary>
 /// Error/warning code.
 /// </summary>
@@ -107,24 +106,24 @@ public enum ErrorCode
     FileNotFound,
 
     //-----Excel errors
-    ExcelCellIsEmpty,
-
-    ExcelCellTypeNotManaged,
+    ExcelError,
 
     ExcelUnableOpenFile,
     ExcelUnableCloseFile,
     ExcelUnableGetSheet,
+
+    ExcelUnableSetCellValue,
+
+    ExcelCellIsEmpty,
+
+    ExcelCellTypeNotManaged,
 
     ExcelCellNotUnique,
     ExcelFuncNameIsEmpty,
     ExcelColNameIsWrong,
     ExcelFuncNameIsWrong,
 
-    CompOperatorIsEmpty,
-    CompOperatorIsWrong,
-
     ExcelWrongListCols,
-
     ExcelColNameIsEmpty,
 
     /// <summary>
@@ -138,7 +137,10 @@ public enum ErrorCode
     InstrNotAllowed,
     IfConditionInstrNotAllowed,
     ThenConditionInstrNotAllowed,
-    IfCondTypeMismatch,
+    ExecIfCondTypeMismatch,
+
+    CompOperatorIsEmpty,
+    CompOperatorIsWrong,
 
     ItemsShouldBeNotNullAndUnique,
 
@@ -162,6 +164,7 @@ public enum ErrorCode
 
     LexerFoundSgtringBadFormatted,
     LexerFoundCharUndefined,
+    LexerFoundSystNameWrong,
 
     //--syntax analyzer error codes
     ParserCaseNotManaged,
@@ -169,16 +172,20 @@ public enum ErrorCode
     ParserTokenNotExpected,
     ParserTokenExpected,
 
+    ParserFctNotManaged,
     ParserFctNameExpected,
+    ParserFctNameNotExpected,
+    ParserFctResultNotSet,
+    ParserFctParamWrong,
     ParserFctParamCountWrong,
     ParserFctParamTypeWrong,
     ParserFctParamVarNotDefined,
-    ParserFctResultNotSet,
-    
+
     ParserValueStringExpected,
     ParserValueIntExpected,
     ParserValueIntWrong,
     ParserVarNotDefined,
+    ParserVarOrFctNameNotDefined,
     ParserVarWrongRightPart,
 
     ParserOnExcelExpected,
@@ -191,15 +198,36 @@ public enum ErrorCode
 
     ParserColNumWrong,
     ParserSepComparatorWrong,
+    ParserCompExprWrong,
+
     ParserReturnTypeWrong,
     ParserThenPartIsEmpty,
 
+    ParserBoolExprMixAndOrNotAllowed,
+    ParserBoolExprWrong,
+
+    ParserExpressionWrong,
+
     //--run program, instructions
+    ExecUnableOpenFile,
+
+    ExecUnableCloseFile,
+
     ExecInstrNotManaged,
 
-    ExecInstrTypeStringExpected,
+    ExecInstrValueExpected,
+    ExecInstrBoolValueExpected,
+
     ExecInstrVarNotFound,
     ExecInstrVarTypeNotExpected,
+
+    ExecInstrTypeStringExpected,
+    ExecValueStringExpected,
+    ExecValueIntExpected,
+
+    ExecValueIntWrong,
+    ExecValueDateWrong,
+
     ExecInstrMissing,
     ExecInstrAccessFileWrong,
     ExecInstrFilenameWrong,
@@ -208,8 +236,10 @@ public enum ErrorCode
     ExecFuncNotExists,
 
     ExecFuncOneParamExpected,
-    ExecValueIntWrong,
+
+    ExecNoFileSelected,
+    ExecUnableCreateUpdateVar,
 
     InstrNotExpected,
-    IntMustBePositive
+    IntMustBePositive,
 }

@@ -1,0 +1,7 @@
+﻿
+a=true
+OnExcel ".\10-ExcelFiles\onExcelIfBrkEqVarBrkOk.xlsx"
+	ForEachRow
+		If (a) Then A.Cell=12
+	Next
+End OnExcel

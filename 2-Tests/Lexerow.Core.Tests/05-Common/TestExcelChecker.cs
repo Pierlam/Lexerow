@@ -1,21 +1,18 @@
-﻿using Lexerow.Core.Utils;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
+﻿using OpenExcelSdk;
 
 namespace Lexerow.Core.Tests._20_Utils;
 
-/*
-public class ExcelFileSheetTest
-{
-    public string FileName {  get; set; }
-
-    public XSSFWorkbook Workbook { get; set; }
-
-    public int SheetNul {  get; set; }
-}*/
-
 public class TestExcelChecker
 {
+    private static OpenExcelSdk.ExcelProcessor excelProcessor = new OpenExcelSdk.ExcelProcessor();
+    private static StyleMgr styleMgr = new StyleMgr();
+
+    public static ExcelFile Open(string filename)
+    {
+        ExcelFile excelFile = excelProcessor.OpenExcelFile(filename);
+        return excelFile;
+    }
+
     public static FileStream OpenExcel(string fileName)
     {
         var stream = new FileStream(fileName, FileMode.Open);
@@ -23,150 +20,261 @@ public class TestExcelChecker
         return stream;
     }
 
-    public static XSSFWorkbook GetWorkbook(FileStream stream)
+    /// <summary>
+    /// Check the number format Id of the value of the cell.
+    /// 14: dd/mm/yyyy
+    /// </summary>
+    /// <param name="excelFile"></param>
+    /// <param name="cellReference"></param>
+    /// <param name="numFormatId"></param>
+    /// <returns></returns>
+    public static bool CheckCellStyleNumberFormatId(ExcelFile excelFile, string cellReference, int numFormatId)
     {
-        return new XSSFWorkbook(stream);
-    }
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
 
-    public static void CloseExcel(FileStream stream)
-    {
-        stream.Close();
-    }
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
 
-    public static bool CheckCellValueColRow(XSSFWorkbook workbook, int sheetNum, int colNum, int rowNum, double expectedValue)
-    {
-        return CheckCellValue(workbook, sheetNum, rowNum, colNum, expectedValue);
-    }
+        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
 
-    public static bool CheckCellValueColRow(XSSFWorkbook workbook, int sheetNum, int colNum, int rowNum, string expectedValue)
-    {
-        return CheckCellValue(workbook, sheetNum, rowNum, colNum, expectedValue);
-    }
-
-    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, double expectedValue)
-    {
-        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
-            return false;
-        return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, expectedValue);
-    }
-
-    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, double expectedValue)
-    {
-        var sheet = workbook.GetSheetAt(sheetNum);
-        var row = sheet.GetRow(rowNum);
-        var cell = row.GetCell(colNum);
-        if (cell == null) return false;
-
-        if (cell.CellType != CellType.Numeric) return false;
-        if (cell.NumericCellValue == null) return false;
-
-        double val = cell.NumericCellValue;
-
-        return expectedValue == val;
+        // no format
+        if (cellFormat == null) return false;
+        if (cellFormat.ApplyNumberFormat == null) return false;
+        return (numFormatId == (int)cellFormat.NumberFormatId.Value);
     }
 
     /// <summary>
-    /// cell=A2
+    /// Check the number format  of the value of the cell.
+    /// Should be a custom one, Id>163.
     /// </summary>
-    /// <param name="workbook"></param>
-    /// <param name="sheetNum"></param>
+    /// <param name="excelFile"></param>
+    /// <param name="cellReference"></param>
+    /// <param name="numFormat"></param>
+    /// <returns></returns>
+    public static bool CheckCellStyleNumberFormat(ExcelFile excelFile, string cellReference, string numFormat)
+    {
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
+
+        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+
+        if (cellFormat.ApplyNumberFormat == null) return false;
+
+        styleMgr.GetCustomNumberFormat(excelSheet, cellFormat.NumberFormatId.Value, out string numFormatGet);
+        return (numFormatGet == numFormat);
+    }
+
+    public static bool CheckCellBgColor(ExcelFile excelFile, string cellReference, int colorCode)
+    {
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+        return false;
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
+
+        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+
+        if (cellFormat.ApplyFill == null) return false;
+
+        //cellFormat.FillId
+
+        //XX
+        //ICellStyle cellStyle = cell.CellStyle;
+
+        //IColor col = cellStyle.FillBackgroundColorColor;
+        //if (col == null) return false;
+
+        //if (col.Indexed != colorCode) return false;
+        //return true;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Get the cell type and value of a cell, in the first sheet by default.
+    /// exp: A3= 12.5 ?
+    /// </summary>
+    /// <param name="proc"></param>
     /// <param name="cell"></param>
     /// <param name="expectedValue"></param>
     /// <returns></returns>
-    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, string cell, string expectedValue)
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, double expectedValue)
     {
-        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
-            return false;
-        return CheckCellValue(workbook, sheetNum, rowIndex - 1, colIndex - 1, expectedValue);
-    }
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
 
-    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, string expectedValue)
-    {
-        var sheet = workbook.GetSheetAt(sheetNum);
-        var row = sheet.GetRow(rowNum);
-        var cell = row.GetCell(colNum);
-        if (cell == null) return false;
-        if (cell.CellType != CellType.String) return false;
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
 
-        string val = cell.StringCellValue;
+        // get the type and the value of the cell
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
 
-        return expectedValue == val;
-    }
-
-    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, DateOnly expectedValue)
-    {
-        var sheet = workbook.GetSheetAt(sheetNum);
-        var row = sheet.GetRow(rowNum);
-        var cell = row.GetCell(colNum);
-        if (cell == null) return false;
-
-        if (cell.CellType != CellType.Numeric) return false;
-
-        double val = cell.NumericCellValue;
-
-        DateTime expectedDateTime = expectedValue.ToDateTime(TimeOnly.MinValue);
-
-        return expectedDateTime == DateTime.FromOADate(val);
-    }
-
-    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, DateTime expectedValue)
-    {
-        var sheet = workbook.GetSheetAt(sheetNum);
-        var row = sheet.GetRow(rowNum);
-        var cell = row.GetCell(colNum);
-        if (cell == null) return false;
-
-        if (cell.CellType != CellType.Numeric) return false;
-
-        double val = cell.NumericCellValue;
-
-        return expectedValue == DateTime.FromOADate(val);
-    }
-
-    public static bool CheckCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum, TimeOnly expectedValue)
-    {
-        var sheet = workbook.GetSheetAt(sheetNum);
-        var row = sheet.GetRow(rowNum);
-        var cell = row.GetCell(colNum);
-        if (cell == null) return false;
-
-        if (cell.CellType != CellType.Numeric) return false;
-
-        double val = cell.NumericCellValue;
-        TimeOnly foundVal = DateTimeUtils.ToTimeOnly(val);
-
-        return foundVal == expectedValue;
-    }
-
-    public static bool CheckCellNull(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum)
-    {
-        var sheet = workbook.GetSheetAt(sheetNum);
-        var row = sheet.GetRow(rowNum);
-        var cell = row.GetCell(colNum);
-        // ok
-        if (cell == null) return true;
-
-        return false;
-    }
-
-    public static bool CheckCellValueBlank(XSSFWorkbook workbook, int sheetNum, string cell)
-    {
-        if (!ExcelExtendedUtils.SplitCellAddress(cell, out string colName, out int colIndex, out int rowIndex))
-            return false;
-        return CheckCellValueBlank(workbook, sheetNum, rowIndex - 1, colIndex - 1);
-    }
-
-    public static bool CheckCellValueBlank(XSSFWorkbook workbook, int sheetNum, int rowNum, int colNum)
-    {
-        var sheet = workbook.GetSheetAt(sheetNum);
-        var row = sheet.GetRow(rowNum);
-        var cell = row.GetCell(colNum);
-        if (cell == null) return false;
-
-        if (cell.CellType == CellType.Blank)
-            // ok
+        // can be a double value
+        if (excelCellValue.CellType == ExcelCellType.Double)
+        {
+            // compare values
+            if (expectedValue != excelCellValue.DoubleValue) return false;
             return true;
+        }
 
-        return false;
+        // can be an int value
+        if (excelCellValue.CellType == ExcelCellType.Integer)
+        {
+            // compare values
+            if (expectedValue != excelCellValue.IntegerValue) return false;
+            return true;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get the cell type and value of a cell, in the first sheet by default.
+    /// </summary>
+    /// <param name="proc"></param>
+    /// <param name="cell"></param>
+    /// <param name="expectedValue"></param>
+    /// <returns></returns>
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, string expectedValue)
+    {
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
+
+        // get the type and the value of the cell
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
+
+        // type string expected
+        if (excelCellValue.CellType != ExcelCellType.String) return false;
+
+        // compare values
+        if (expectedValue != excelCellValue.StringValue) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get the cell type and value of a cell, in the first sheet by default.
+    /// </summary>
+    /// <param name="proc"></param>
+    /// <param name="cell"></param>
+    /// <param name="expectedValue"></param>
+    /// <returns></returns>
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, DateOnly expectedValue)
+    {
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
+
+        // get the type and the value of the cell
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
+
+        // type dateOnly expected
+        if (excelCellValue.CellType != ExcelCellType.DateOnly) return false;
+
+        // compare values
+        if (expectedValue != excelCellValue.DateOnlyValue) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get the cell type and value of a cell, in the first sheet by default.
+    /// </summary>
+    /// <param name="proc"></param>
+    /// <param name="cell"></param>
+    /// <param name="expectedValue"></param>
+    /// <returns></returns>
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, DateTime expectedValue)
+    {
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
+
+        // get the type and the value of the cell
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
+
+        // type dateTime expected
+        if (excelCellValue.CellType != ExcelCellType.DateTime) return false;
+
+        // compare values
+        if (expectedValue != excelCellValue.DateTimeValue) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get the cell type and value of a cell, in the first sheet by default.
+    /// </summary>
+    /// <param name="proc"></param>
+    /// <param name="cell"></param>
+    /// <param name="expectedValue"></param>
+    /// <returns></returns>
+    public static bool CheckCellValue(ExcelFile excelFile, string cellReference, TimeOnly expectedValue)
+    {
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
+
+        // get the type and the value of the cell
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
+
+        // type TimeOnly expected
+        if (excelCellValue.CellType != ExcelCellType.TimeOnly) return false;
+
+        // compare values
+        if (expectedValue != excelCellValue.TimeOnlyValue) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get the cell type and value of a cell, in the first sheet by default.
+    /// </summary>
+    /// <param name="proc"></param>
+    /// <param name="cell"></param>
+    /// <param name="expectedValue"></param>
+    /// <returns></returns>
+    public static bool CheckCellValueEmpty(ExcelFile excelFile, string cellReference)
+    {
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        if (excelCell == null) return false;
+
+        // get the type and the value of the cell
+        ExcelCellValue excelCellValue = excelProcessor.GetCellValue(excelSheet, excelCell);
+
+        // can be type string
+        if (excelCellValue.CellType == ExcelCellType.String)
+        {
+            if (excelCellValue.StringValue == string.Empty) return true;
+            return false;
+        }
+
+        // type undefined expected
+        if (excelCellValue.CellType != ExcelCellType.Undefined) return false;
+
+        return true;
     }
 }

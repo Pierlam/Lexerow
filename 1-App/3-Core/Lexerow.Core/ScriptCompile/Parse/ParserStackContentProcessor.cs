@@ -1,9 +1,9 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
+using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
-using NPOI.Util;
-using Org.BouncyCastle.Utilities.Collections;
-using System.Collections.Generic;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -28,7 +28,7 @@ internal class ParserStackContentProcessor
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public static bool ScriptEndLineReached(Result result, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
+    public static bool ScriptEndLineReached(Result result, List<InstrNameObject> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
     {
         bool res, isToken;
 
@@ -84,8 +84,13 @@ internal class ParserStackContentProcessor
             // TODO: fct call can be in a Then or in a ForEachRow!
             if (isToken) continue;
 
-            // case not managed, error or not yet implemented
-            result.AddError(ErrorCode.ParserTokenNotExpected, scriptLineNum.ToString());
+            // get the last instr on the stack
+            if (stackInstr.Count > 0)
+                // case not managed, error or not yet implemented
+                result.AddError(ErrorCode.ParserTokenNotExpected, stackInstr.Peek().FirstScriptToken());
+            else
+                // case not managed, error or not yet implemented
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptLineNum.ToString());
             return false;
         }
     }
@@ -168,7 +173,7 @@ internal class ParserStackContentProcessor
     /// <param name="stackInstr"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    private static bool GatherSetVar(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherSetVar(Result result, List<InstrNameObject> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -181,7 +186,7 @@ internal class ParserStackContentProcessor
             // not a set var instr to finish
             return true;
 
-        // the instr just before the topt is a SetVar instr?
+        // the instr just before the top is a SetVar instr?
         if (instrBefTop.InstrType != InstrType.SetVar)
             // not a set var instr
             return true;
@@ -209,6 +214,8 @@ internal class ParserStackContentProcessor
         if (instrValue != null)
         {
             instrSetVar.InstrRight = instrBase;
+            instrSetVar.InstrLeft.ReturnType = InstrUtils.GetReturnType(instrValue);
+
             if (stackInstr.Count == 0)
                 // instr SetVar not included in a Then instr or ForEachRow
                 listInstrToExec.Add(instrSetVar);
@@ -218,13 +225,32 @@ internal class ParserStackContentProcessor
         }
 
         //--case a=b
-        InstrObjectName instrObjectName = instrBase as InstrObjectName;
+        InstrNameObject instrObjectName = instrBase as InstrNameObject;
         if (instrObjectName != null)
         {
-            // Check that right var exists
-            if (listVar.FirstOrDefault(x => x.ObjectName.Equals(instrObjectName.ObjectName, StringComparison.InvariantCultureIgnoreCase)) != null)
+            // can be a bool value: true or false, convert to a ValueBool 
+            if(ValueUtils.IsBoolStrValue(instrObjectName.Name, out bool boolValue))
             {
-                instrSetVar.InstrRight = instrObjectName;
+                instrSetVar.InstrRight = new InstrValue(instrObjectName.FirstScriptToken(), boolValue);
+                instrSetVar.InstrLeft.ReturnType = InstrReturnType.ValueBool;
+
+                if (stackInstr.Count == 0)
+                    // instr SetVar not included in a Then instr or ForEachRow
+                    listInstrToExec.Add(instrSetVar);
+                else
+                    stackInstr.Push(instrSetVar);
+
+                return true;
+            }
+
+            // Check that right var exists
+            InstrNameObject instrObjectNameFound = listVar.FirstOrDefault(x => x.Name.Equals(instrObjectName.Name, StringComparison.InvariantCultureIgnoreCase));
+            if (instrObjectNameFound != null)
+            {
+                // replace the left part by the saved var: same name and important: the return type is set!
+                instrSetVar.InstrRight = instrObjectNameFound;
+                instrSetVar.InstrLeft.ReturnType = instrObjectNameFound.ReturnType;
+
                 if (stackInstr.Count == 0)
                     // instr SetVar not included in a Then instr or ForEachRow
                     listInstrToExec.Add(instrSetVar);
@@ -267,7 +293,7 @@ internal class ParserStackContentProcessor
         if (instrBase.IsFunctionCall)
         {
             // check that the function return something to set to a var
-            if (instrBase.ReturnType == InstrFunctionReturnType.Nothing)
+            if (instrBase.ReturnType == InstrReturnType.Nothing)
             {
                 result.AddError(ErrorCode.ParserVarWrongRightPart, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
                 return false;
@@ -278,6 +304,8 @@ internal class ParserStackContentProcessor
                 return false;
 
             instrSetVar.InstrRight = instrBase;
+            instrSetVar.InstrLeft.ReturnType = instrBase.ReturnType;
+
             if (stackInstr.Count == 0)
                 // instr SetVar not included in a Then instr or ForEachRow
                 listInstrToExec.Add(instrSetVar);
@@ -296,7 +324,7 @@ internal class ParserStackContentProcessor
     /// is previous instr on stack FirstRow ?
     /// Stack  IN => ValueInt/VarName/FctCall; FirstRow, OnExcel
     /// Stack OUT => OnExcel
-    /// 
+    ///
     /// OnExcel
     ///   [OnSheet sheetNum]
     ///   [FirstRow val/var]
@@ -306,7 +334,7 @@ internal class ParserStackContentProcessor
     /// <param name="stackInstr"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessFirstDataRowValue(Result result, List<InstrObjectName> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program, out bool isToken)
+    private static bool ProcessFirstDataRowValue(Result result, List<InstrNameObject> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program, out bool isToken)
     {
         isToken = false;
 
@@ -324,6 +352,7 @@ internal class ParserStackContentProcessor
             return true;
 
         isToken = true;
+
         // remove the top of the stack: value or varname or fctcall
         var instr = stackInstr.Pop();
 
@@ -331,7 +360,7 @@ internal class ParserStackContentProcessor
         stackInstr.Pop();
 
         // the stack should contains one instr: OnExcel
-        if(stackInstr.Count != 1)
+        if (stackInstr.Count != 1)
         {
             // Instr OnExcel expected
             result.AddError(ErrorCode.ParserOnExcelExpected, scriptLineNum.ToString());
@@ -347,18 +376,24 @@ internal class ParserStackContentProcessor
             return false;
         }
 
-        // expected now/here -> check stage in OnExcel 
+        // expected now/here -> check stage in OnExcel
         // TODO:
 
-        //--the top instr on the stack is a value string?
-        InstrValue instrValue = instr as InstrValue;
-        if (instrValue != null)
-            return ProcessFirstDataRowValueValue(result, scriptLineNum, instrOnExcel, instrValue);
-
-        //--the top instr on the stack is a varname?
-        InstrObjectName instrObjectName = instr as InstrObjectName;
-        if (instrObjectName != null) 
-            return ProcessFirstDataRowValueVar(result, listVar, scriptLineNum, program, instrOnExcel, instrObjectName);
+        //--check the instr value, should be an int
+        if (!InstrUtils.GetIntFromInstrParser(result, program, instr, out bool valueSet, out int value))
+            return false;
+        if (valueSet)
+        {
+            // check the int value, should be >= 1
+            if (value < 1)
+            {
+                result.AddError(ErrorCode.ParserValueIntWrong, instr.FirstScriptToken());
+                return false;
+            }
+            // save the value into the current OnExcel sheet
+            instrOnExcel.CurrOnSheet.InstrFirstDataRow = instr;
+            return true;
+        }
 
         //--the top instr on the stack is a fctcall?
         // TODO:
@@ -367,7 +402,7 @@ internal class ParserStackContentProcessor
         return false;
     }
 
-    private static bool GatherForEachRow(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherForEachRow(Result result, List<InstrNameObject> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -414,7 +449,7 @@ internal class ParserStackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherThen(Result result, List<InstrObjectName> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherThen(Result result, List<InstrNameObject> listVar, int sourceCodeLineIndex, CompilStackInstr stackInstr, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
 
@@ -448,13 +483,13 @@ internal class ParserStackContentProcessor
 
         // is this instr after Then in the script is in the same line?
         if (instrThen.FirstScriptToken().LineNum == instrBase.FirstScriptToken().LineNum)
+            // very important to close properly the processing of If-Then instruction!
             instrThen.HasInstrAfterInSameLine = true;
 
         // save the then instr into the list
         instrThen.ListInstr.Add(instrBase);
         return true;
     }
-
 
     /// <summary>
     /// is the last instr on the stack is Then?
@@ -623,7 +658,7 @@ internal class ParserStackContentProcessor
         // TODO:
 
         //--is it the fct SelectFiles ?
-        InstrSelectFiles instrOpenExcel = instrBase as InstrSelectFiles;
+        InstrFuncCallSelectFiles instrOpenExcel = instrBase as InstrFuncCallSelectFiles;
         if (instrOpenExcel != null)
         {
             // OpenExcel result not used!
@@ -636,69 +671,65 @@ internal class ParserStackContentProcessor
         return false;
     }
 
-    private static bool ProcessFirstDataRowValueValue(Result result, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrValue)
-    {
-        if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ResultError error, out int val))
-        {
-            result.AddError(error);
-            return false;
-        }
+    //private static bool ProcessFirstDataRowValueValue(Result result, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrValue)
+    //{
+    //    if (!InstrUtils.GetValueIntFromInstrValue(result, instrValue, scriptLineNum, out int val))
+    //        return false;
 
-        // check the int value, should be >= 1
-        if (val < 1)
-        {
-            result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
-            return false;
-        }
-        // save the value into the current OnExcel sheet
-        instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrValue;
-        return true;
-    }
+    //    // check the int value, should be >= 1
+    //    if (val < 1)
+    //    {
+    //        result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
+    //        return false;
+    //    }
+    //    // save the value into the current OnExcel sheet
+    //    //instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrValue;
+    //    return true;
+    //}
 
-    private static bool ProcessFirstDataRowValueVar(Result result, List<InstrObjectName> listVar, int scriptLineNum, Program program, InstrOnExcel instrOnExcel, InstrObjectName instrObjectName)
-    {
-        // the varname should be defined
-        var instrObjectNameVar = listVar.FirstOrDefault(v => v.MatchName(instrObjectName.ObjectName));
-        if (instrObjectNameVar == null)
-        {
-            result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
-            return false;
-        }
+    //// should be a int value, constraint: >1
+    //private static bool ProcessFirstDataRowValueVar(Result result, List<InstrObjectName> listVar, int scriptLineNum, Program program, InstrOnExcel instrOnExcel, InstrObjectName instrObjectName)
+    //{
+    //    // the varname should be defined
+    //    // TODO: really needed?? program.FindLastVarSet() do the job!
+    //    //var instrObjectNameVar = listVar.FirstOrDefault(v => v.MatchName(instrObjectName.ObjectName));
+    //    //if (instrObjectNameVar == null)
+    //    //{
+    //    //    result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
+    //    //    return false;
+    //    //}
 
-        // check the final value of the var, can be a value, a fct call or a math expr
-        InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectNameVar.ObjectName);
-        if (instrSetVar == null)
-        {
-            result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
-            return false;
-        }
+    //    // check the final value of the var, can be a value, a fct call or a math expr
+    //    InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.ObjectName);
+    //    if (instrSetVar == null)
+    //    {
+    //        result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
+    //        return false;
+    //    }
 
-        // its a final int value, check it
-        if (instrSetVar.InstrRight.InstrType== InstrType.Value)
-        {
-            var instrValue = instrSetVar.InstrRight as InstrValue;
-            if (!InstrUtils.GetValueIntFromInstrValue(instrValue, scriptLineNum, out ResultError error, out int val))
-            {
-                result.AddError(error);
-                return false;
-            }
+    //    // its a final int value, check it
+    //    if (instrSetVar.InstrRight.InstrType== InstrType.Value)
+    //    {
+    //        var instrValue = instrSetVar.InstrRight as InstrValue;
+    //        if (!InstrUtils.GetValueIntFromInstrValue(result, instrValue, scriptLineNum, out int val))
+    //            return false;
 
-            // check the int value, should be >= 1
-            if (val < 1)
-            {
-                result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
-                return false;
-            }
-            // save the var object
-            instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrObjectName;
-            return true;
-        }
+    //        // check the int value, should be >= 1
+    //        if (val < 1)
+    //        {
+    //            result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
+    //            return false;
+    //        }
+    //        // save the var object
+    //        //instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrObjectName;
+    //        return true;
+    //    }
 
-        // can be fct call, a math expr
-        // TODO: 
+    //    // can be fct call, a math expr
+    //    // TODO:
 
-        result.AddError(ErrorCode.ParserCaseNotManaged, instrSetVar.InstrRight.FirstScriptToken());
-        return false;
+    //    result.AddError(ErrorCode.ParserCaseNotManaged, instrSetVar.InstrRight.FirstScriptToken());
+    //    return false;
 
-    }
+    //}
 }

@@ -20,7 +20,7 @@ public class ScriptSplitter
     /// <param name="commentTag"></param>
     /// <param name="tokens"></param>
     /// <returns></returns>
-    public bool Split(int lineNum, string line, string separators, char stringSep, string commentTag, out List<ScriptToken> tokens, out ScriptTokenType lastTokenType)
+    public bool Split(int lineNum, string line, string separators, char stringSep, string commentTag, char systVarStartTag, out List<ScriptToken> tokens, out ScriptTokenType lastTokenType)
     {
         lastTokenType = ScriptTokenType.Comment;
         tokens = new List<ScriptToken>();
@@ -102,12 +102,21 @@ public class ScriptSplitter
             }
 
             //--is it a name? variable, constant, object, function  or method
-            if (ProcessName(line, i, out iOut, out token))
+            if (ProcessName(systVarStartTag, line, i, out iOut, out token))
             {
                 token.LineNum = lineNum;
                 tokens.Add(token);
-                lastTokenType = ScriptTokenType.Name;
                 i = iOut;
+
+                // check special error case
+                if (systVarStartTag != ' ' & token.Value.Trim().Equals(systVarStartTag.ToString()))
+                { 
+                    token.ScriptTokenType = ScriptTokenType.WrongSystName;
+                    lastTokenType = ScriptTokenType.WrongSystName;
+                    return false; 
+                }
+
+                lastTokenType = ScriptTokenType.Name;
                 continue;
             }
 
@@ -426,27 +435,54 @@ public class ScriptSplitter
 
     /// <summary>
     /// Is it a name?
-    /// variable, object, function, or method.
+    /// variable, object, function, or method....
     /// </summary>
+    /// <param name="systVarStartTag"></param>
     /// <param name="line"></param>
     /// <param name="i"></param>
     /// <param name="iOut"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private bool ProcessName(string line, int i, out int iOut, out ScriptToken token)
+    private bool ProcessName(char systVarStartTag, string line, int i, out int iOut, out ScriptToken token)
     {
         iOut = i;
         token = null;
         bool tokenFound = false;
+
+        // manage first char system variable if defined
+        if (systVarStartTag != ' ' && line[i]== systVarStartTag)
+        {
+            token = new ScriptToken();
+            token.ScriptTokenType = ScriptTokenType.SystName;
+            token.ColNum = i;
+            token.Value += systVarStartTag;
+            tokenFound = true;
+
+            // move to the next char
+            i++;
+        }
+
+        bool isFirstChar = true;
+
         while (true)
         {
             if (i >= line.Length) return tokenFound;
 
             char c = line[i];
 
+
             // is it a letter or a digit or an underscore?
             if (char.IsLetterOrDigit(c) || c == '_')
             {
+                // the first char can't be a digit, only a letter or an underscore
+                if (isFirstChar && char.IsDigit(c)) 
+                {
+                    // stop here
+                    return tokenFound;
+                }
+
+                isFirstChar = false;
+
                 if (token == null)
                 {
                     token = new ScriptToken();

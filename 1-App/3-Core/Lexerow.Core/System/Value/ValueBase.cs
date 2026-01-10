@@ -132,7 +132,6 @@ public class ValueDateOnly : ValueBase
     public double ToDouble()
     {
         DateTime val = Val.ToDateTime(TimeOnly.MinValue);
-
         return val.ToOADate();
     }
 }

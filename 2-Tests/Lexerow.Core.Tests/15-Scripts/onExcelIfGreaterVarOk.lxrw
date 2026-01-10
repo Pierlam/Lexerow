@@ -1,0 +1,6 @@
+﻿a=12
+OnExcel ".\10-ExcelFiles\onExcelIfGreaterVarOk.xlsx"
+  ForEachRow
+    If A.Cell > a Then A.Cell=12
+  Next
+End OnExcel

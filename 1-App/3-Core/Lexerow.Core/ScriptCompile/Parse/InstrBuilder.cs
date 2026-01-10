@@ -1,5 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.GenDef;
+using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
@@ -15,6 +17,14 @@ public class InstrBuilder
     /// <returns></returns>
     public static bool Build(Result result, ScriptToken scriptToken, out InstrBase instrBase)
     {
+        //--script token is a system name, like $DateFormat
+        if (scriptToken.ScriptTokenType == ScriptTokenType.SystName)
+        {
+            // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
+            instrBase = new InstrNameObject(scriptToken);
+            return true;
+        }
+
         //--script token is a name/id
         if (scriptToken.ScriptTokenType == ScriptTokenType.Name)
         {
@@ -22,13 +32,6 @@ public class InstrBuilder
             if (scriptToken.Value.Equals(CoreInstr.InstrEndName, StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrEnd(scriptToken);
-                return true;
-            }
-
-            // SelectFiles
-            if (scriptToken.Value.Equals(CoreInstr.InstrSelectFiles, StringComparison.InvariantCultureIgnoreCase))
-            {
-                instrBase = new InstrSelectFiles(scriptToken);
                 return true;
             }
 
@@ -42,7 +45,7 @@ public class InstrBuilder
             // OnSheet
             if (scriptToken.Value.Equals(CoreInstr.InstrOnSheet, StringComparison.InvariantCultureIgnoreCase))
             {
-                InstrValue value= InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowNum);
+                InstrValue value = InstrUtils.CreateInstrValueInt(CoreInstr.FirstDataRowIndex);
                 instrBase = new InstrOnSheet(scriptToken, value);
                 return true;
             }
@@ -124,8 +127,22 @@ public class InstrBuilder
                 return true;
             }
 
+            // FuncSelectFiles
+            if (scriptToken.Value.Equals(CoreInstr.InstrFuncSelectFiles, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFuncCallSelectFiles(scriptToken);
+                return true;
+            }
+
+            // FuncDate
+            if (scriptToken.Value.Equals(CoreInstr.InstrFuncDate, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFuncCallDate(scriptToken);
+                return true;
+            }
+
             // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
-            instrBase = new InstrObjectName(scriptToken);
+            instrBase = new InstrNameObject(scriptToken);
             return true;
         }
 
@@ -139,14 +156,17 @@ public class InstrBuilder
             }
             if (scriptToken.Value.Equals(")", StringComparison.InvariantCultureIgnoreCase))
             {
-                // TODO: needed?
-                //instrBase = new InstrCloseBrace(scriptToken);
                 instrBase = null;
                 return true;
             }
             if (scriptToken.Value.Equals(".", StringComparison.InvariantCultureIgnoreCase))
             {
                 instrBase = new InstrDot(scriptToken);
+                return true;
+            }
+            if (scriptToken.Value.Equals(",", StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrComma(scriptToken);
                 return true;
             }
 

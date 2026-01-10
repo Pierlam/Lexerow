@@ -1,0 +1,93 @@
+﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.Process;
+using OpenExcelSdk;
+
+namespace Lexerow.Core.InstrProgExec;
+
+public class InstrRowExecutor
+{
+    private IActivityLogger _logger;
+
+    private ExcelProcessor _excelProcessor;
+
+    public InstrRowExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor)
+    {
+        _logger = activityLogger;
+        _excelProcessor = excelProcessor;
+    }
+
+    /// <summary>
+    /// process the current datarow.
+    ///     Execute all defined instructions (ForEach Row ListInstr).
+    ///  -Stack: ProcessRow, OnSheet, OnExcel
+    ///  Next: ForEachRow.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="ctx"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instrProcessRow"></param>
+    /// <returns></returns>
+    public bool ExecInstrProcessRow(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessRow instrProcessRow)
+    {
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", string.Empty);
+
+        // next data row exists?
+        int lastRowNum = _excelProcessor.GetLastRowIndex(ctx.ExcelSheet);
+        if (instrProcessRow.RowIndex > lastRowNum)
+        {
+            // no more datarow to process, go back to OnSheet instr
+            ctx.StackInstr.Pop();
+            _logger.LogExecEnd(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "No More row");
+            return true;
+        }
+
+        ctx.RowNum = instrProcessRow.RowIndex;
+        // prepare the next one
+        instrProcessRow.RowIndex++;
+
+        // update insights
+        result.Insights.NewRowProcessed();
+
+        // next: process all defined instructions on the current row
+        InstrProcessInstrForEachRow instrForEachRow = new InstrProcessInstrForEachRow(instrProcessRow.FirstScriptToken(), instrProcessRow.ListInstrForEachRow);
+
+        ctx.StackInstr.Push(instrForEachRow);
+
+        _logger.LogExecEnd(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowIndex);
+        return true;
+    }
+
+    /// <summary>
+    /// Execute next instr defined in the ForEach/Next instr block.
+    ///  -Stack: ProcessInstrForEachRow, ProcessRow, OnSheet, OnExcel
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="ctx"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instrForEachRow"></param>
+    /// <returns></returns>
+    public bool ExecProcessInstrForEachRow(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessInstrForEachRow instrForEachRow)
+    {
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrRowExecutor.ExecProcessInstrForEachRow", string.Empty);
+
+        // execute next instr in ForEach Row
+        instrForEachRow.InstrToProcessNum++;
+
+        // next instr exists?
+        if (instrForEachRow.InstrToProcessNum >= instrForEachRow.ListInstr.Count)
+        {
+            // no more instr to execute in OnSheet/ForEachRow
+            ctx.StackInstr.Pop();
+            _logger.LogExecEnd(ActivityLogLevel.Debug, "InstrRowExecutor.RunInstrForEachRow", "No More Instr");
+            return true;
+        }
+
+        // get the next instr to execute
+        InstrBase instrBase = instrForEachRow.ListInstr[instrForEachRow.InstrToProcessNum];
+        ctx.StackInstr.Push(instrBase);
+        _logger.LogExecEnd(ActivityLogLevel.Debug, "InstrRowExecutor.RunInstrForEachRow", "InstrToProcessNum: " + instrForEachRow.InstrToProcessNum);
+        return true;
+    }
+}

@@ -1,4 +1,6 @@
-﻿using Lexerow.Core;
+﻿using DevApp;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Lexerow.Core;
 using Lexerow.Core.System.ActivLog;
 
 Console.WriteLine("==>Lexerow Dev:");
@@ -43,29 +45,8 @@ void TestGetFiles()
     }
 }
 
-///
-/// If A.Cell In [ "y", "yes", "ok" ] Then A.Cell= "X"
-/// by default, it is case sensitive.
-///
-/// Case insensitive:
-/// If A.Cell In [ "y", "yes", "ok" ] /I Then A.Cell= "X"
-///  In /CI -> In case Insensitive
-///  In    -> In case Sensitive
-
-//XXXXXXXXXXXXXXXXXXXX-MAIN:
-
-//DevNpoi devNpoi = new DevNpoi();
-
-//string fileName = @"Input\Test1.xlsx";
-//devNpoi.TestTypes(fileName);
-
-//string fileName = @"Input\TestTypes.xlsx";
-//devNpoi.TestTypes();
-
-//string fileName = @"Input\TestDate.xlsx";
-//devNpoi.TestDateTime(fileName);
-
-//devNpoi.TestBlankNull();
+//==================================
+Main:
 
 //TestCore();
 
@@ -76,6 +57,12 @@ int a = 12;
 if (a >= 10) { }
 if (a <= 10) { }
 
-TestGetFiles();
+//TestGetFiles();
+
+//DateSandBox.TestReadDates();
+
+//DateSandBox.TestWriteDate();
+
+TestTheCore.TestCore();
 
 Console.WriteLine("\n=> ends.");

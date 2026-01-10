@@ -2,13 +2,9 @@
 using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ScriptParser;
 
@@ -245,9 +241,9 @@ public class ScriptParserOnExcelFirstRowOkTests
         Assert.AreEqual(1, instrOnSheet.ListInstrForEachRow.Count);
 
         // check the firstrow value, it's a var
-        InstrObjectName instrObjectName = instrOnExcel.ListSheets[0].InstrFirstDataRow as InstrObjectName;
+        InstrNameObject instrObjectName = instrOnExcel.ListSheets[0].InstrFirstDataRow as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("r", instrObjectName.ObjectName);
+        Assert.AreEqual("r", instrObjectName.Name);
     }
 
     /// <summary>

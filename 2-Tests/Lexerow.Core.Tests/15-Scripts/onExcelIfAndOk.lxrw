@@ -1,0 +1,6 @@
+﻿
+OnExcel ".\10-ExcelFiles\onExcelIfAndOk.xlsx"
+  ForEachRow
+     If A.Cell>10 And A.Cell<20 Then A.Cell=56
+   Next
+End OnExcel

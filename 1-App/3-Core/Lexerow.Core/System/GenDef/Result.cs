@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System.ScriptDef;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.System;
 
@@ -10,7 +11,6 @@ public class Result
 {
     public Result()
     {
-        
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public class Result
     /// <summary>
     /// list of warning occured.
     /// </summary>
-    public List<ResultWarning> ListWarning { get; private set; } = new List<ResultWarning>();
+    public List<ResultError> ListWarning { get; private set; } = new List<ResultError>();
 
     /// <summary>
     /// execution result insights/informations: how many datarow are modified, created or removed.
@@ -43,10 +43,11 @@ public class Result
         Res = false;
     }
 
-    public void AddError(ResultError error)
+    public bool AddError(ResultError error)
     {
         this.ListError.Add(error);
         Res = false;
+        return false;
     }
 
     public ResultError AddError(ErrorCode errorCode, Exception exception, string msg)
@@ -67,7 +68,7 @@ public class Result
 
     public ResultError AddError(ErrorCode errorCode, int numLine, int colLine, string msg)
     {
-        var resultError = new ResultError(errorCode, numLine, 0, msg);
+        var resultError = new ResultError(errorCode, numLine, colLine, msg);
         ListError.Add(resultError);
         Res = false;
         return resultError;
@@ -78,7 +79,7 @@ public class Result
     /// </summary>
     /// <param name="errorCode"></param>
     /// <param name="scriptToken"></param>
-    public void AddError(ErrorCode errorCode, ScriptToken scriptToken)
+    public bool AddError(ErrorCode errorCode, ScriptToken scriptToken)
     {
         ResultError resultError;
         if (scriptToken != null)
@@ -87,6 +88,7 @@ public class Result
             resultError = new ResultError(errorCode, 0, 0, string.Empty);
         ListError.Add(resultError);
         Res = false;
+        return false;
     }
 
     /// <summary>
@@ -94,7 +96,7 @@ public class Result
     /// </summary>
     /// <param name="errorCode"></param>
     /// <param name="scriptToken"></param>
-    public void AddError(ErrorCode errorCode, ScriptToken scriptToken, string param)
+    public bool AddError(ErrorCode errorCode, ScriptToken scriptToken, string param)
     {
         ResultError resultError;
         if (scriptToken != null)
@@ -103,6 +105,7 @@ public class Result
             resultError = new ResultError(errorCode, 0, 0, string.Empty, param);
         ListError.Add(resultError);
         Res = false;
+        return false;
     }
 
     /// <summary>
@@ -110,7 +113,7 @@ public class Result
     /// </summary>
     /// <param name="errorCode"></param>
     /// <param name="scriptToken"></param>
-    public void AddError(ErrorCode errorCode, ScriptToken scriptToken, Exception exception)
+    public bool AddError(ErrorCode errorCode, ScriptToken scriptToken, Exception exception)
     {
         ResultError resultError;
         if (scriptToken != null)
@@ -119,6 +122,7 @@ public class Result
             resultError = new ResultError(errorCode, 0, 0, exception, string.Empty);
         ListError.Add(resultError);
         Res = false;
+        return false;
     }
 
     /// <summary>
@@ -130,25 +134,35 @@ public class Result
     /// <param name="colNum"></param>
     /// <param name="cellValueType"></param>
     /// <returns></returns>
-    public ResultWarning? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public ResultError? FindWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)
     {
         if (fileName == null) fileName = string.Empty;
         return ListWarning.Find(x => x.ErrorCode == errorCode && x.FileName.Equals(fileName, StringComparison.CurrentCultureIgnoreCase) && x.SheetNum == sheetNum && x.ColNum == colNum && x.CellValueType == cellValueType);
     }
 
-    public void AddWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, CellRawValueType cellValueType)
+    public void AddWarning(ErrorCode errorCode, ScriptToken scriptToken)
+    {
+        ResultError resultError;
+        if (scriptToken != null)
+            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value);
+        else
+            resultError = new ResultError(errorCode, 0, 0, string.Empty);
+        ListWarning.Add(resultError);
+        Res = false;
+    }
+
+    public void AddWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
 
         // is there a warning already existing? Code=IfCondTypeMismatch, ExcelFile, fileName, SheetNum, colNum, valType
-        ResultWarning? warning = FindWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
+        ResultError? warning = FindWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
         if (warning != null)
         {
             warning.IncCounter();
             return;
         }
-
-        warning = new ResultWarning(errorCode, fileName, sheetNum, colNum, cellValueType);
+        warning = new ResultError(errorCode, fileName, sheetNum, colNum, cellValueType);
         ListWarning.Add(warning);
     }
 }

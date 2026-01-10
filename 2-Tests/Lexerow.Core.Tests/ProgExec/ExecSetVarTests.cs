@@ -1,14 +1,9 @@
-﻿using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.ProgExec;
+﻿using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Tests.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Tests.ProgExec;
 
@@ -16,7 +11,7 @@ namespace Lexerow.Core.Tests.ProgExec;
 /// Test execution of the instruction SetVar.
 /// </summary>
 [TestClass]
-public class ExecSetVarTests :BaseTests
+public class ExecSetVarTests : BaseTests
 {
     /// <summary>
     /// a= 12
@@ -31,7 +26,7 @@ public class ExecSetVarTests :BaseTests
         program.ListInstr.Add(instrSetVar);
 
         //--create the program runner
-        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new ExcelProcessorNpoi());
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);

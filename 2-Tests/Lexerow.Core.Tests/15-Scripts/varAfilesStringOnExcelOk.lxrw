@@ -1,0 +1,9 @@
+﻿
+a= ".\10-ExcelFiles\varAfilesStringOnExcelOk.xlsx"
+files=a
+
+OnExcel files
+	ForEachRow
+		If A.Cell>10 Then A.Cell=10
+	Next
+End OnExcel

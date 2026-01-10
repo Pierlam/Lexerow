@@ -1,0 +1,8 @@
+﻿
+$StrCompareCaseSensitive=true
+
+OnExcel ".\10-ExcelFiles\IfACellEqStringCaseSensitive.xlsx"
+	ForEachRow
+		If A.Cell="Hello" Then A.Cell="Bonjour"
+	Next
+End OnExcel

@@ -9,8 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="8.3.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="MSTest" Version="3.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="MSTest" Version="4.0.2" />
+    <PackageReference Include="OpenExcelSdk" Version="0.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +23,66 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="10-ExcelFiles\IfACellEqStringCaseSensitive.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\IfACellNotEqString.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfBrkBrkAndBrkOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfBrkBrkAndOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfBrkAndBrkOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfAndAndOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfAndOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfEqVarFalseOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfBrkEqVarBrkOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfEqVarOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfGreaterVarOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\OnExcelIfDateThenDateFormat.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\OnExcelIfDateThenDate3Vars.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\OnExcelIfDateThenVarDate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\OnExcelIfVarDateThenDate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\varAfilesStringOnExcelOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\varfilesStringOnExcelOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\OnExcelIfThenDateOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\OnExcelIfDateThenYesOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\OnExcelIfDateThenDateOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="10-ExcelFiles\IfACellGreaterMinus7.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -38,9 +99,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="10-ExcelFiles\onExcelManyThen.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="10-ExcelFiles\OpenClose.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="10-ExcelFiles\onExcelManyIf.xlsx">
@@ -109,10 +167,70 @@
     <None Update="10-ExcelFiles\data1.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="15-Scripts\IfACellEqStringCaseSensitive.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\IfACellNotEqString.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfAndAndOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfBrkBrkAndBrkOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfBrkBrkAndOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfBrkAndBrkOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\OnExcelIfDateThenDateFormat.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\OnExcelIfDateThenVarDate.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\OnExcelIfDateThenDate3Vars.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfEqVarFalseOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfBrkEqVarBrkOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfGreaterVarOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfEqVarOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\OnExcelIfVarDateThenDate.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfAndOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\varAfilesStringOnExcelOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\varfilesStringOnExcelOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="15-Scripts\IfACellGreaterMinus7.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\execSelectFilesOnExcel.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfThenDateOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfDateThenDateOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\OnExcelIfDateThenYesOk.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\onExcelFirstRowValue.lxrw">

@@ -1,4 +1,5 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 
 namespace Lexerow.Core.Tests._05_Common;
 
@@ -7,22 +8,31 @@ namespace Lexerow.Core.Tests._05_Common;
 /// </summary>
 public class TestInstrHelper
 {
-    public static void TestInstrColCellFuncValue(string stage, InstrBase instrBase, string colName, int colNum)
+    public static int GetValueInt(InstrBase instr)
     {
-        InstrColCellFunc instrColCellFunc = instrBase as InstrColCellFunc;
-        Assert.IsNotNull(instrColCellFunc);
-
-        Assert.AreEqual(colName, instrColCellFunc.ColName);
-        Assert.AreEqual(colNum, instrColCellFunc.ColNum);
-        Assert.AreEqual(InstrColCellFuncType.Value, instrColCellFunc.InstrColCellFuncType);
+        return ((instr as InstrValue).ValueBase as ValueInt).Val;
     }
 
-    public static void TestInstrValue(string stage, InstrBase instrBase, int val)
+    public static bool TestInstrColCellFuncValue(InstrBase instrBase, string colName, int colNum)
+    {
+        InstrColCellFunc instrColCellFunc = instrBase as InstrColCellFunc;
+        if (instrColCellFunc == null) return false;
+
+        if (colName != instrColCellFunc.ColName) return false;
+        if (colNum != instrColCellFunc.ColNum) return false;
+        if (instrColCellFunc.InstrColCellFuncType != InstrColCellFuncType.Value) return false;
+
+        return true;
+    }
+
+    public static bool TestInstrValue(InstrBase instrBase, int val)
     {
         // check If-Operand Right
         InstrValue instrValue = instrBase as InstrValue;
-        Assert.IsNotNull(instrValue);
-        Assert.AreEqual(val.ToString(), instrValue.RawValue);
-        Assert.AreEqual(val, (instrValue.ValueBase as ValueInt).Val);
+        if (instrValue == null) return false;
+
+        if (instrValue.RawValue != val.ToString()) return false;
+        if ((instrValue.ValueBase as ValueInt).Val != val) return false;
+        return true;
     }
 }

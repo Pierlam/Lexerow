@@ -1,13 +1,7 @@
-﻿using Lexerow.Core.System;
-using Lexerow.Core.System.GenDef;
+﻿using Lexerow.Core.InstrProgExec;
+using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
-using NPOI.SS.Formula.Functions;
-using Org.BouncyCastle.Utilities.Collections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexerow.Core.Utils;
 
@@ -16,59 +10,401 @@ namespace Lexerow.Core.Utils;
 /// </summary>
 public class InstrUtils
 {
+
     /// <summary>
-    /// Return the value int, if it's a case.
+    /// Is a var/fct call name?
+    /// if it's the case, should exists in the list.
     /// </summary>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
     /// <param name="instrBase"></param>
-    /// <param name="scriptLineNum"></param>
-    /// <param name="error"></param>
+    /// <param name="instrNameObjectOut"></param>
+    /// <returns></returns>
+    public static bool CheckObjectName(Result result, List<InstrNameObject> listVar, InstrBase instrBase, out InstrNameObject instrNameObjectOut)
+    {
+        instrNameObjectOut = null;
+
+        InstrNameObject instrNameObject = instrBase as InstrNameObject;
+        if (instrNameObject == null) 
+            // not the case
+            return true;
+
+        InstrNameObject instrObjectNameFound = listVar.FirstOrDefault(x => x.Name.Equals(instrNameObject.Name, StringComparison.InvariantCultureIgnoreCase));
+        if (instrObjectNameFound== null)
+        {
+            // the var/fctcall should exists
+            result.AddError(ErrorCode.ParserVarOrFctNameNotDefined, instrBase.FirstScriptToken());
+            return false;
+        }
+        // push the existing one, because the return type is set
+        instrNameObjectOut = instrObjectNameFound;
+        return true;
+    }
+
+
+    /// <summary>
+    /// Get the String value from the instruction, can be a Value or a Var.
+    /// If it's a funct call, a math expr or a bool expr, can't return the value.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="program"></param>
+    /// <param name="instr"></param>
+    /// <param name="isValueOrVar"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool GetValueInt(InstrBase instrBase, int scriptLineNum, out int value)
+    public static bool GetStringFromInstrExec(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isValueOrVar, out string value)
     {
-        value = 0;
+        isValueOrVar = false;
+        value = string.Empty;
 
-        if(instrBase==null)
+        //--is it an instr value?
+        if (!GetStringFromInstrValue(result, false, instr, out isValueOrVar, out value))
+            return false;
+        if (isValueOrVar) return true;
+
+        //--is it an instr var?
+        if (!GetStringFromInstrVarExec(result, progExecVarMgr, instr, out isValueOrVar, out value))
             return false;
 
-        InstrValue instrValue = instrBase as InstrValue;
-        if (instrValue == null) 
-            return false;
-
-        if (instrValue.ValueBase.ValueType != System.ValueType.Int)
-            return false;
-
-        value = (instrValue.ValueBase as ValueInt).Val;
         return true;
     }
 
     /// <summary>
-    /// Return the value int from the InstrValue parameter.
+    /// Get the String value from the instruction, can be a Value or a Var.
+    /// If it's a funct call, a math expr or a bool expr, can't return the value.
     /// </summary>
-    /// <param name="instrBase"></param>
-    /// <param name="scriptLineNum"></param>
-    /// <param name="error"></param>
+    /// <param name="result"></param>
+    /// <param name="program"></param>
+    /// <param name="instr"></param>
+    /// <param name="isValueOrVar"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool GetValueIntFromInstrValue(InstrBase instr, int scriptLineNum, out ResultError error, out int value)
+    public static bool GetStringFromInstrParser(Result result, Program program, InstrBase instr, out bool isValueOrVar, out string value)
     {
-        error = null;
+        isValueOrVar = false;
+        value = string.Empty;
+
+        //--is it an instr value?
+        if (!GetStringFromInstrValue(result, true, instr, out isValueOrVar, out value))
+            return false;
+        if (isValueOrVar) return true;
+
+        //--is it an instr var?
+        if (!GetStringFromInstrVarParser(result, program, instr, out isValueOrVar, out value))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get the int value from the instruction, can be a Value or a Var.
+    /// If it's a funct call, a math expr or a bool expr, can't return the value.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="program"></param>
+    /// <param name="instr"></param>
+    /// <param name="isValueOrVar"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetIntFromInstrExec(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isValueOrVar, out int value)
+    {
+        isValueOrVar = false;
         value = 0;
 
-        var instrValue = instr as InstrValue;
-        if (instrValue == null)
+        //--is it an instr value?
+        if (!GetIntFromInstrValueParser(result, instr, out isValueOrVar, out value))
+            return false;
+        if (isValueOrVar) return true;
+
+        //--is it an instr var?
+        if (!GetIntFromInstrVarExec(result, progExecVarMgr, instr, out isValueOrVar, out value))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get the int value from the instruction, can be a Value or a Var.
+    /// If it's a funct call, a math expr or a bool expr, can't return the value.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="program"></param>
+    /// <param name="instr"></param>
+    /// <param name="isValueOrVar"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetIntFromInstrParser(Result result, Program program, InstrBase instr, out bool isValueOrVar, out int value)
+    {
+        isValueOrVar = false;
+        value = 0;
+
+        //--is it an instr value?
+        if (!GetIntFromInstrValueParser(result, instr, out isValueOrVar, out value))
+            return false;
+        if (isValueOrVar) return true;
+
+        //--is it an instr var?
+        if (!GetIntFromInstrVar(result, true, program, instr, out isValueOrVar, out value))
+            return false;
+
+        return true;
+    }
+
+    public static bool GetIntFromInstrVar(Result result, bool isParser, Program program, InstrBase instr, out bool isVar, out int value)
+    {
+        isVar = false;
+        value = 0;
+
+        //--is it an var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return true;
+
+        // check the final value of the var, can be a value, a fct call or a math expr
+        InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.Name);
+        if (instrSetVar == null)
         {
-            error = new ResultError(ErrorCode.ParserTokenExpected, scriptLineNum, instr.FirstScriptToken().ColNum, instr.FirstScriptToken().ToString());
+            ErrorCode error = ErrorCode.ParserVarNotDefined;
+            if (!isParser) error = ErrorCode.ExecInstrVarNotFound;
+            result.AddError(error, instrObjectName.FirstScriptToken());
             return false;
         }
+        isVar = true;
 
+        //-the final var right instr is not a value?
+        if (instrSetVar.InstrRight.InstrType != InstrType.Value)
+            return true;
+
+        //--is the instr right part a value?
+        if (!GetIntFromInstrValueParser(result, instrSetVar.InstrRight, out isVar, out value))
+            return false;
+
+        return true;
+    }
+
+    public static bool GetIntFromInstrVarExec(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isVar, out int value)
+    {
+        isVar = false;
+        value = 0;
+
+        //--is it an var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return true;
+
+        // check the final value of the var, can be a value, a fct call or a math expr
+        ProgExecVar progExecVar = progExecVarMgr.FindVarByName(instrObjectName.Name);
+        if (progExecVar == null)
+            return result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
+
+        isVar = true;
+
+        //-the final var right instr is not a value?
+        if (progExecVar.Value.InstrType != InstrType.Value)
+            return true;
+
+        //--is the instr right part a value?
+        if (!GetIntFromInstrValueParser(result, progExecVar.Value, out isVar, out value))
+            return false;
+
+        return true;
+    }
+
+    public static bool GetStringFromInstrVarParser(Result result, Program program, InstrBase instr, out bool isVar, out string value)
+    {
+        isVar = false;
+        value = string.Empty;
+
+        //--is it a var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return true;
+
+        // check the final value of the var, can be a value, a fct call or a math expr
+        InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.Name);
+        if (instrSetVar == null)
+            return result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
+
+        isVar = true;
+
+        //-the final var right instr is not a value?
+        if (instrSetVar.InstrRight.InstrType != InstrType.Value)
+            return true;
+
+        //--is the instr right part a value?
+        if (!GetStringFromInstrValue(result, true, instrSetVar.InstrRight, out isVar, out value))
+            return false;
+
+        return true;
+    }
+
+    public static bool GetStringFromInstrVarExec(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isVar, out string value)
+    {
+        isVar = false;
+        value = string.Empty;
+
+        //--is it a var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return true;
+
+        // check the final value of the var, can be a value, a fct call or a math expr
+        ProgExecVar progExecVar = progExecVarMgr.FindVarByName(instrObjectName.Name);
+        if (progExecVar == null)
+            return result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
+
+        isVar = true;
+
+        //-the final var right instr is not a value?
+        if (progExecVar.Value.InstrType != InstrType.Value)
+            return true;
+
+        //--is the instr right part a value?
+        if (!GetStringFromInstrValue(result, false, progExecVar.Value, out isVar, out value))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// If it's not an instr value, not checked, ok.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="instr"></param>
+    /// <param name="isValue"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetIntFromInstrValueParser(Result result, InstrBase instr, out bool isValue, out int value)
+    {
+        value = 0;
+        isValue = false;
+
+        var instrValue = instr as InstrValue;
+
+        // not an instr value, nothing to do, bye
+        if (instrValue == null) return true;
+
+        // it's an InstrValue, type must be Int
         if (instrValue.ValueBase.ValueType != System.ValueType.Int)
         {
-            error = new ResultError(ErrorCode.ParserValueIntExpected, instrValue.FirstScriptToken().LineNum, instrValue.FirstScriptToken().ColNum, instrValue.FirstScriptToken().Value);
+            result.AddError(ErrorCode.ParserValueIntExpected, instrValue.FirstScriptToken().LineNum, instrValue.FirstScriptToken().ColNum, instrValue.FirstScriptToken().Value);
             return false;
         }
         value = (instrValue.ValueBase as ValueInt).Val;
+        isValue = true;
         return true;
+    }
+
+    /// <summary>
+    /// If it's not an instr value, not checked, ok.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="instr"></param>
+    /// <param name="isValue"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetStringFromInstrValue(Result result, bool isParser, InstrBase instr, out bool isValue, out string value)
+    {
+        value = string.Empty;
+        isValue = false;
+
+        var instrValue = instr as InstrValue;
+
+        // not an instr value, nothing to do, bye
+        if (instrValue == null) return true;
+
+        // it's an InstrValue, type must be Int
+        if (instrValue.ValueBase.ValueType != System.ValueType.String)
+        {
+            ErrorCode error = ErrorCode.ParserValueStringExpected;
+            if (!isParser) error = ErrorCode.ExecValueStringExpected;
+            result.AddError(error, instrValue.FirstScriptToken().LineNum, instrValue.FirstScriptToken().ColNum, instrValue.FirstScriptToken().Value);
+            return false;
+        }
+
+        value = (instrValue.ValueBase as ValueString).Val;
+        isValue = true;
+        return true;
+    }
+
+    public static void ClearIsExecuted(InstrBase instr)
+    {
+        if (instr == null) return;
+        instr.IsExecuted = false;
+
+        InstrBoolExpr instrBoolExpr = instr as InstrBoolExpr;
+        if(instrBoolExpr!=null)
+        {
+            foreach(InstrBase instrInner in instrBoolExpr.ListOperand)
+            {
+                ClearIsExecuted(instrInner);
+            }
+            return;
+        }
+
+        InstrComparison instrComparison = instr as InstrComparison;
+        if (instrComparison != null) 
+        {
+            ClearIsExecuted(instrComparison.OperandLeft);
+            ClearIsExecuted(instrComparison.OperandRight);
+            return;
+        }
+
+
+        //TODO: InstrMathExpr 
+    }
+
+    /// <summary>
+    /// Return the type of the instr value.
+    /// </summary>
+    /// <param name="instrValue"></param>
+    /// <returns></returns>
+    public static InstrReturnType GetReturnType(InstrValue instrValue)
+    {
+        if(instrValue==null)return InstrReturnType.Nothing;
+
+        if (instrValue.ValueType == System.ValueType.String) return InstrReturnType.ValueString;
+        if (instrValue.ValueType == System.ValueType.Int) return InstrReturnType.ValueInt;
+        if (instrValue.ValueType == System.ValueType.Double) return InstrReturnType.ValueDouble;
+        if (instrValue.ValueType == System.ValueType.Bool) return InstrReturnType.ValueBool;
+
+        if (instrValue.ValueType == System.ValueType.DateOnly) return InstrReturnType.ValueDateOnly;
+        if (instrValue.ValueType == System.ValueType.DateTime) return InstrReturnType.ValueDateTime;
+        if (instrValue.ValueType == System.ValueType.TimeOnly) return InstrReturnType.ValueTimeOnly;
+
+        return InstrReturnType.Nothing;
+    }
+
+
+    /// <summary>
+    /// Create a and or Or instruction.
+    /// </summary>
+    /// <param name="scriptToken"></param>
+    /// <returns></returns>
+    public static InstrBase CreateBoolOperator(ScriptToken scriptToken)
+    {
+        if (scriptToken.Value.Equals("And", StringComparison.InvariantCultureIgnoreCase))
+            return new InstrAnd(scriptToken);
+
+        if (scriptToken.Value.Equals("Or", StringComparison.InvariantCultureIgnoreCase))
+            return new InstrOr(scriptToken);
+
+        return null;
+    }
+
+    /// <summary>
+    /// Is the instruction need to be executed?
+    /// It's the case for: function call, comparison, bool and math expression.
+    /// </summary>
+    /// <param name="instrBase"></param>
+    /// <returns></returns>
+    public static bool NeedToBeExecuted(InstrBase instrBase)
+    {
+        if (instrBase == null) return false;
+
+        if (instrBase.IsFunctionCall) return true;
+        if (instrBase.InstrType == InstrType.Comparison) return true;
+        if (instrBase.InstrType == InstrType.BoolExpr) return true;
+        if (instrBase.InstrType == InstrType.MathExpr) return true;
+
+        // no
+        return false;
     }
 
     /// <summary>
@@ -79,7 +415,7 @@ public class InstrUtils
     /// <returns></returns>
     public static bool MergeInstrMinus(InstrCharMinus instrCharMinus, InstrValue instrValue)
     {
-        if (instrCharMinus == null)return false;
+        if (instrCharMinus == null) return false;
         if (instrValue == null) return false;
 
         if (instrValue.ValueBase.ValueType == System.ValueType.Int)
@@ -95,22 +431,20 @@ public class InstrUtils
         instrValue.RawValue = valueDouble.Val.ToString();
         return true;
     }
-
     public static InstrValue CreateInstrValueInt(int initValue)
     {
-        ValueInt valueInt= new ValueInt(initValue);
-        ScriptToken scriptToken= new ScriptToken();
-        scriptToken.Value= initValue.ToString();
+        ValueInt valueInt = new ValueInt(initValue);
+        ScriptToken scriptToken = new ScriptToken();
+        scriptToken.Value = initValue.ToString();
         return new InstrValue(scriptToken, initValue);
     }
 
     public static bool IsValueInt(InstrBase instrBase)
     {
-        if(instrBase == null)return false;
+        if (instrBase == null) return false;
         if (instrBase.InstrType != InstrType.Value) return false;
 
-
-        if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.Int ) return true;
+        if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.Int) return true;
         return false;
     }
 
@@ -119,8 +453,17 @@ public class InstrUtils
         if (instrBase == null) return false;
         if (instrBase.InstrType != InstrType.Value) return false;
 
-
         if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.Double) return true;
         return false;
     }
+
+    public static bool IsValueString(InstrBase instrBase)
+    {
+        if (instrBase == null) return false;
+        if (instrBase.InstrType != InstrType.Value) return false;
+
+        if ((instrBase as InstrValue).ValueBase.ValueType == System.ValueType.String) return true;
+        return false;
+    }
+
 }

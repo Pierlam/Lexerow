@@ -43,7 +43,7 @@ To process datarow of the excel file as explained, Lexerow provide a powerful in
 Let's consider the excel file to fix blank values is "file.xlsx".
 The first row is the header. Data starts at the second row which is the default case.
 
-Create a basic script and save it let's say with this name: "script.lxrw"
+Create a basic script as a text file and save it let's say with this name: "script.lxrw"
 
 The file name extension is free.
 
@@ -111,6 +111,9 @@ If A.Cell>8.55
 If A.Cell<>"Hello"
 If A.Cell=blank      # no value in the cell, can have formatting
 If A.Cell=null       # no value and no formatting
+If A.Cell <= Date(2019,11,14) 
+If A.Cell >10 And B.Cell< 20
+If (A.Cell >10 And B.Cell< 20) Or C.Cell=12
 ```
 
 In Then instruction, you can set a value to a cell or clear it.
@@ -127,11 +130,12 @@ Then A.Cell=25.89
 Then A.Cell="Hello"
 Then A.Cell=blank    # cell formatting will stay
 Then A.Cell=null     # cell formatting will be cleared
+Then A.Cell=Date(2019,11,14) 
 ```
 
-For If and Then instruction, type of value can be: int, double, string.
+For If and Then instruction, type of value can be: int, double, string and now Date.
 
-Date and time will be managed later.
+DateTime and time will be managed later.
 
 You may want to apply many Then instructions for one If instruction; for example:
 
@@ -170,12 +174,11 @@ https://github.com/Pierlam/Lexerow/wiki
 
 # Dependency
 
-To access Excel content file, Lexerow uses the great NPOI library available on Nuget here:
+To access Excel content file, Lexerow uses the OpenExcelSdk library available on Nuget here:
 
-https://www.nuget.org/packages/NPOI
+https://www.nuget.org/packages/OpenExcelSdk
 
-NPOI source code is hosted on github here:
+Source code is hosted on github here:
 
-https://github.com/nissl-lab/npoi
-
+https://github.com/Pierlam/OpenExcelSdk
 

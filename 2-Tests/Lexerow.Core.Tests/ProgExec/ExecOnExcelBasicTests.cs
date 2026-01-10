@@ -1,11 +1,12 @@
-﻿using Lexerow.Core.ExcelLayer;
-using Lexerow.Core.ProgExec;
+﻿using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
-using Lexerow.Core.System.ScriptDef;
+using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.Tests._05_Common;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.Tests.ProgExec;
 
@@ -20,9 +21,9 @@ public class ExecOnExcelBasicTests : BaseTests
     /// End OnExcel
     ///
     ///--excel content:
-    ///  age
-    ///   9
-    ///  13  -> 10
+    ///  A1: age
+    ///  A2: 9
+    ///  A3: 13  -> modified to: 10
     ///
     /// </summary>
     [TestMethod]
@@ -40,23 +41,21 @@ public class ExecOnExcelBasicTests : BaseTests
 
         //--create the program runner
         ActivityLogger logger = new ActivityLogger();
-        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
+        ProgramExecutor programExec = new ProgramExecutor(logger, new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcel1.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcel1.xlsx");
+        Assert.IsNotNull(excelFile);
 
-        // r1, c0: 9  -> not modified
-        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        // A2: 9  -> not modified
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
-        // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        // A3: 10 -> modified!
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -87,37 +86,33 @@ public class ExecOnExcelBasicTests : BaseTests
         program.ListInstr.Add(instrOnExcel);
 
         //--create the program runner
-        ActivityLogger logger = new ActivityLogger();
-        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerA.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcelJokerA.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerA2.xlsx");
-        Assert.IsNotNull(fileStream);
-        wb = TestExcelChecker.GetWorkbook(fileStream);
+        excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcelJokerA2.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -140,7 +135,7 @@ public class ExecOnExcelBasicTests : BaseTests
         //    InstrRight: OpenExcel, p="data.xlsx"
 
         // instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //instr right
         InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcel2.xlsx"));
@@ -160,24 +155,21 @@ public class ExecOnExcelBasicTests : BaseTests
         //Program programScript = new ProgramScript(script, listInstr);
 
         //--create the program runner
-        ActivityLogger logger = new ActivityLogger();
-        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcel2.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcel2.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -200,7 +192,7 @@ public class ExecOnExcelBasicTests : BaseTests
         //    InstrRight: OpenExcel, p="data.xlsx"
 
         // instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         //instr right
         InstrValue instrValue = TestInstrBuilder.CreateValueString(AddDblQuote(PathExcelFilesExec + "dataOnExcelJokerB*.xlsx"));
@@ -217,37 +209,33 @@ public class ExecOnExcelBasicTests : BaseTests
         program.ListInstr.Add(instrOnExcel);
 
         //--create the program runner
-        ActivityLogger logger = new ActivityLogger();
-        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerB.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcelJokerB.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
 
         //--check the content of excel file  B2
-        fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcelJokerB2.xlsx");
-        Assert.IsNotNull(fileStream);
-        wb = TestExcelChecker.GetWorkbook(fileStream);
+        excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcelJokerB2.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 
@@ -269,10 +257,10 @@ public class ExecOnExcelBasicTests : BaseTests
         //    InstrLeft:  OpenExcel, p="dataOnExcel3.xlsx"
 
         // instr left
-        InstrObjectName instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
+        InstrNameObject instrObjectName = TestInstrBuilder.CreateInstrObjectName("file");
 
         // instr right
-        InstrSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "dataOnExcel3.xlsx"));
+        InstrFuncCallSelectFiles instrSelectFiles = TestInstrBuilder.CreateInstrSelectExcelParamString(AddDblQuote(PathExcelFilesExec + "dataOnExcel3.xlsx"));
 
         InstrSetVar instrSetVar = TestInstrBuilder.CreateInstrSetVar(instrObjectName, instrSelectFiles);
         program.ListInstr.Add(instrSetVar);
@@ -286,24 +274,21 @@ public class ExecOnExcelBasicTests : BaseTests
         program.ListInstr.Add(instrOnExcel);
 
         //--create the program runner
-        ActivityLogger logger = new ActivityLogger();
-        ExcelProcessorNpoi excelProcessor = new ExcelProcessorNpoi();
-        ProgramExecutor programExec = new ProgramExecutor(logger, excelProcessor);
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
 
         //--check the content of excel file
-        var fileStream = TestExcelChecker.OpenExcel(PathExcelFilesExec + "dataOnExcel3.xlsx");
-        Assert.IsNotNull(fileStream);
-        var wb = TestExcelChecker.GetWorkbook(fileStream);
+        ExcelFile excelFile = TestExcelChecker.Open(PathExcelFilesExec + "dataOnExcel3.xlsx");
+        Assert.IsNotNull(excelFile);
 
         // r1, c0: 9  -> not modified
-        res = TestExcelChecker.CheckCellValue(wb, 0, 1, 0, 9);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A2", 9);
         Assert.IsTrue(res);
 
         // r2, c0: 10 -> modified!
-        res = TestExcelChecker.CheckCellValue(wb, 0, 2, 0, 10);
+        res = TestExcelChecker.CheckCellValue(excelFile, "A3", 10);
         Assert.IsTrue(res);
     }
 }

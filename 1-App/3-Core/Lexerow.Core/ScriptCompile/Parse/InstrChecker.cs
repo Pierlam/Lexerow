@@ -1,4 +1,6 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.FuncCall;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -15,21 +17,32 @@ internal class InstrChecker
         // not a fct call, bye
         if (!instrBase.IsFunctionCall) return true;
 
-        //--is it OpenExcel?
-        InstrSelectFiles instrOpenExcel = instrBase as InstrSelectFiles;
-        if (instrOpenExcel != null)
+        //--is it SelectFiles?
+        InstrFuncCallSelectFiles instrFuncSelectFiles = instrBase as InstrFuncCallSelectFiles;
+        if (instrFuncSelectFiles != null)
         {
             // need at least one parameter
-            if (instrOpenExcel.ListInstrParams.Count == 0)
+            if (instrFuncSelectFiles.ListInstrParams.Count == 0)
             {
                 result.AddError(ErrorCode.ParserFctParamCountWrong, instrBase.FirstScriptToken());
                 return false;
             }
-            // isntr OpenExcel is ok
             return true;
         }
 
+        //--is it Date?
+        InstrFuncCallDate instrFuncDate = instrBase as InstrFuncCallDate;
+        if (instrFuncDate != null)
+        {
+            if (instrFuncDate.InstrYear == null || instrFuncDate.InstrMonth == null || instrFuncDate.InstrDay == null)
+            {
+                result.AddError(ErrorCode.ParserFctParamWrong, instrBase.FirstScriptToken());
+                return false;
+            }
+            return true;
+        }
         //--fct not managed
-        throw new NotImplementedException(instrBase.ToString());
+        result.AddError(ErrorCode.ParserFctNotManaged, instrBase.FirstScriptToken());
+        return false;
     }
 }

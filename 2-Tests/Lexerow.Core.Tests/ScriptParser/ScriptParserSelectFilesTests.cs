@@ -2,6 +2,8 @@
 using Lexerow.Core.ScriptCompile.Parse;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Tests._05_Common;
 
@@ -52,15 +54,15 @@ public class ScriptParserSelectFilesTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("file", instrObjectName.ObjectName);
+        Assert.AreEqual("file", instrObjectName.Name);
 
         // InstrRight: SelectFiles
-        InstrSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrSelectFiles;
+        InstrFuncCallSelectFiles instrOpenExcel = instrSetVar.InstrRight as InstrFuncCallSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
 
-        // OpenExcel Param
+        // SelectFiles Param
         Assert.AreEqual(1, instrOpenExcel.ListInstrParams.Count);
         InstrValue instrValue = instrOpenExcel.ListInstrParams[0] as InstrValue;
         Assert.IsNotNull(instrValue);
@@ -127,9 +129,9 @@ public class ScriptParserSelectFilesTests
         InstrSetVar instrSetVar = prog.ListInstr[0] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        InstrObjectName instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("name", instrObjectName.ObjectName);
+        Assert.AreEqual("name", instrObjectName.Name);
 
         // InstrRight: ConstValue
         InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
@@ -142,19 +144,19 @@ public class ScriptParserSelectFilesTests
         instrSetVar = prog.ListInstr[1] as InstrSetVar;
 
         // InstrLeft: ObjectName
-        instrObjectName = instrSetVar.InstrLeft as InstrObjectName;
+        instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("file", instrObjectName.ObjectName);
+        Assert.AreEqual("file", instrObjectName.Name);
 
         // InstrRight: SelectFiles
-        var instrOpenExcel = instrSetVar.InstrRight as InstrSelectFiles;
+        var instrOpenExcel = instrSetVar.InstrRight as InstrFuncCallSelectFiles;
         Assert.IsNotNull(instrOpenExcel);
 
         // OpenExcel Param -> object name
         Assert.AreEqual(1, instrOpenExcel.ListInstrParams.Count);
-        instrObjectName = instrOpenExcel.ListInstrParams[0] as InstrObjectName;
+        instrObjectName = instrOpenExcel.ListInstrParams[0] as InstrNameObject;
         Assert.IsNotNull(instrObjectName);
-        Assert.AreEqual("name", instrObjectName.ObjectName);
+        Assert.AreEqual("name", instrObjectName.Name);
     }
 
     /// <summary>
@@ -234,9 +236,9 @@ public class ScriptParserSelectFilesTests
     /// </summary>
     [TestMethod]
     public void i12EqSelectFilesWrong()
-    {        
+    {
         //-build one line of tokens
-        ScriptLineTokens  line = new ScriptLineTokens();
+        ScriptLineTokens line = new ScriptLineTokens();
         line.AddTokenInteger(1, 1, 12);
         line.AddTokenSeparator(1, 1, "=");
         line.AddTokenName(1, 1, "SelectFiles");
@@ -248,7 +250,7 @@ public class ScriptParserSelectFilesTests
         List<ScriptLineTokens> scriptTokens = [line];
 
         //==>just to check the content of the script
-        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(script);
+        //var scriptCheck = TestTokens2ScriptBuilder.BuildScript(scriptTokens);
 
         //==> Parse the script tokens
         Parser parser = new Parser(A.Fake<IActivityLogger>());
@@ -329,7 +331,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, result.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamTypeWrong, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserValueStringExpected, result.ListError[0].ErrorCode);
     }
 
     /// <summary>
@@ -337,7 +339,7 @@ public class ScriptParserSelectFilesTests
     /// error -> param f is not defined before
     /// </summary>
     [TestMethod]
-    public void FileEqSelectFilesParamvarFWrong()
+    public void FileEqSelectFilesParamVarWrong()
     {
         //-build one line of tokens
         ScriptLineTokens line = new ScriptLineTokens();
@@ -364,7 +366,7 @@ public class ScriptParserSelectFilesTests
         Assert.IsFalse(res);
         Assert.AreEqual(0, prog.ListInstr.Count);
         Assert.AreEqual(1, result.ListError.Count);
-        Assert.AreEqual(ErrorCode.ParserFctParamVarNotDefined, result.ListError[0].ErrorCode);
+        Assert.AreEqual(ErrorCode.ParserVarOrFctNameNotDefined, result.ListError[0].ErrorCode);
     }
 
     /// <summary>

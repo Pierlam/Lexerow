@@ -1,0 +1,7 @@
+﻿
+a=true
+OnExcel ".\10-ExcelFiles\onExcelIfBrkBrkAndOk.xlsx"
+	ForEachRow
+		If ((A.Cell >10) And B.Cell< 20) Then A.Cell=678
+	Next
+End OnExcel

@@ -2,6 +2,6 @@
 a=true
 OnExcel ".\10-ExcelFiles\onExcelIfBrkBrkAndBrkOk.xlsx"
 	ForEachRow
-		If (A.Cell >10) And B.Cell< 20 Then A.Cell=223
+		If ((A.Cell >10) And B.Cell< 20) Then A.Cell=223
 	Next
 End OnExcel

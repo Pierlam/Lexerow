@@ -92,7 +92,7 @@ public class LoadFileExecOnExcelIfAndOrTests : BaseTests
     }
 
     /// <summary>
-    /// OnExcel ".\10-ExcelFiles\onExcelIfAndAndOk.xlsx"
+    /// OnExcel ".\10-ExcelFiles\onExcelIfBrkAndBrkOk.xlsx"
     ///   ForEachRow
     ///     If (A.Cell >10 And B.Cell< 20) Then A.Cell=345
     ///   Next
@@ -130,7 +130,7 @@ public class LoadFileExecOnExcelIfAndOrTests : BaseTests
     }
 
     /// <summary>
-    /// OnExcel ".\10-ExcelFiles\onExcelIfAndAndOk.xlsx"
+    /// OnExcel ".\10-ExcelFiles\onExcelIfBrkBrkAndOk.xlsx"
     ///   ForEachRow
     ///     If (A.Cell >10) And B.Cell< 20 Then A.Cell=678
     ///   Next
@@ -168,7 +168,7 @@ public class LoadFileExecOnExcelIfAndOrTests : BaseTests
     }
 
     /// <summary>
-    /// OnExcel ".\10-ExcelFiles\onExcelIfAndAndOk.xlsx"
+    /// OnExcel ".\10-ExcelFiles\onExcelIfBrkBrkAndBrkOk.xlsx"
     ///   ForEachRow
     ///     If ((A.Cell >10) And B.Cell< 20) Then A.Cell=223
     ///   Next

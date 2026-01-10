@@ -24,14 +24,24 @@ public class InstrSetVarExecutor
 
     /// <summary>
     /// Execute instr SetVar.
-    /// A.Cell=12
-    /// A.Cell=b
-    /// a=12
-    /// a=b
-    /// file=SelectFiles(..)
-    /// in these cases, create a var name and set the value.
+    /// -Left part:
+    ///   a=
+    ///   A.Cell=
+    ///   
+    /// -Right part:
+    ///   =value     e.g.: =12
+    ///   =var       e.g.: =b
+    ///   =fctcall   e.g.: =Date(..)
+    ///   =boolExpr  e.g.: =a and b
+    ///   =compExpr  e.g.: =a>b
+    ///   =mathExpr  e.g.: =12+a
+    /// 
+    /// -Some samples:
+    ///   a=12
+    ///   a=b
+    ///   file=SelectFiles(..)
     ///
-    /// special case: A.Cell=xx
+    /// -Special case: A.Cell=xx
     ///   Not really a set var instruction.
     ///   >Just set the value to the excel cell, doesn't create a var.
     /// </summary>
@@ -56,11 +66,10 @@ public class InstrSetVarExecutor
         if (InstrUtils.NeedToBeExecuted(instrRight))
         {
             ctx.StackInstr.Push(instrRight);
-            //instrComparison.LastInstrExecuted = 1;
             return true;
         }
 
-        //--is the right instr a varname?
+        //--is it xx=var ?
         InstrNameObject instrNameObject = instrRight as InstrNameObject;
         if (instrNameObject != null)
         {
@@ -73,61 +82,11 @@ public class InstrSetVarExecutor
         if (instrColCellFunc != null)
             return ExecSetToColCellFunc(result, ctx, instrSetVar, instrColCellFunc, instrRight);
 
-        //--is it a=val/var/object?
+        //--is it a=xx ?
         InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
         if (instrObjectName != null)
             return ExecSetToVar(result, ctx, progExecVarMgr, instrSetVar, instrObjectName, instrRight);
 
-        //--is it Fct()=val/var?
-        // TODO:
-
-        // now remove the SetInstr from the stack
-        ctx.PrevInstrExecuted = null;
-        ctx.StackInstr.Pop();
-        return true;
-
-        //-XXXXXXXXXXXXXXXXX
-
-        // the left part should be an objectName (varname), exp: a=xx
-        //InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
-        //if (instrObjectName == null)
-        //{
-        //    result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, "Instr Left: " + instrSetVar.InstrLeft.FirstScriptToken());
-        //    return false;
-        //}
-
-        //--case a=12, the right instr is a const value
-        //InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
-        //if (instrValue != null)
-        //{
-        //    // get or create the var, set the value
-        //    CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrValue);
-        //    ctx.StackInstr.Pop();
-        //    return true;
-        //}
-
-        //--case a=b, the right instr is a a var too
-        instrObjectName = instrSetVar.InstrRight as InstrNameObject;
-        if (instrObjectName != null)
-        {
-            // get the var on the right to catch the result
-            //ici();
-
-            // get or create the var, set the value
-            CreateVar(result, ctx, progExecVarMgr, instrSetVar.InstrLeft, instrObjectName);
-            ctx.StackInstr.Pop();
-            return true;
-        }
-
-        // first execute the right part of the SetVar instr
-        if (ctx.PrevInstrExecuted == null)
-        {
-            ctx.StackInstr.Push(instrSetVar.InstrRight);
-            return true;
-        }
-
-        // get or create the var, set the value, exp: f=SelectFiles()
-        CreateVar(result, ctx, progExecVarMgr, instrSetVar.InstrLeft, ctx.PrevInstrExecuted);
 
         // now remove the SetInstr from the stack
         ctx.PrevInstrExecuted = null;
@@ -135,69 +94,6 @@ public class InstrSetVarExecutor
         return true;
     }
 
-    /// <summary>
-    /// To REMOVE when the new version will be up!
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="ctx"></param>
-    /// <param name="progExecVarMgr"></param>
-    /// <param name="instrSetVar"></param>
-    /// <returns></returns>
-    //public bool Exec_OLD(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrSetVar instrSetVar)
-    //{
-    //    _logger.LogExecStart(ActivityLogLevel.Info, "InstrSetVarExecutor.Exec", "Token: " + instrSetVar.FirstScriptToken());
-
-    //    //--case A.Cell= xxx ?
-    //    InstrColCellFunc instrColCellFunc = instrSetVar.InstrLeft as InstrColCellFunc;
-    //    if (instrColCellFunc != null)
-    //        return ExecSetToColCellFunc(result, ctx, progExecVarMgr, instrSetVar, instrColCellFunc);
-
-    //    // the left part should be an objectName (varname), exp: a=xx
-    //    InstrNameObject instrObjectName = instrSetVar.InstrLeft as InstrNameObject;
-    //    if (instrObjectName == null)
-    //    {
-    //        result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, "Instr Left: " + instrSetVar.InstrLeft.FirstScriptToken());
-    //        return false;
-    //    }
-
-    //    //--case a=12, the right instr is a const value
-    //    InstrValue instrValue = instrSetVar.InstrRight as InstrValue;
-    //    if (instrValue != null)
-    //    {
-    //        // get or create the var, set the value
-    //        CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrValue);
-    //        ctx.StackInstr.Pop();
-    //        return true;
-    //    }
-
-    //    //--case a=b, the right instr is a a var too
-    //    instrObjectName = instrSetVar.InstrRight as InstrNameObject;
-    //    if (instrObjectName != null)
-    //    {
-    //        // get the var on the right to catch the result
-    //        //ici();
-
-    //        // get or create the var, set the value
-    //        CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, instrObjectName);
-    //        ctx.StackInstr.Pop();
-    //        return true;
-    //    }
-
-    //    // first execute the right part of the SetVar instr
-    //    if (ctx.PrevInstrExecuted == null)
-    //    {
-    //        ctx.StackInstr.Push(instrSetVar.InstrRight);
-    //        return true;
-    //    }
-
-    //    // get or create the var, set the value, exp: f=SelectFiles()
-    //    CreateVar(ctx, progExecVarMgr, instrSetVar.InstrLeft, ctx.PrevInstrExecuted);
-
-    //    // now remove the SetInstr from the stack
-    //    ctx.PrevInstrExecuted = null;
-    //    ctx.StackInstr.Pop();
-    //    return true;
-    //}
 
     /// <summary>
     /// Execute instr SetVar, left part format is: A.Cell

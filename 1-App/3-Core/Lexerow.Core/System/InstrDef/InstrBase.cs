@@ -30,6 +30,7 @@ public enum InstrType
     ExcelCellAddress,
 
     SepComparison,
+
     Comparison,
 
     CompOperator,

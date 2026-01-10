@@ -138,7 +138,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.Comparison)
             {
-                res = _instrComparisonExecutor.ExecInstrComparison(result, ctx, progExecVarMgr, instr as InstrComparison);
+                res = _instrComparisonExecutor.ExecInstrCompExpr(result, ctx, progExecVarMgr, instr as InstrComparison);
                 if (!res) return false;
                 continue;
             }

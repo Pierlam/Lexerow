@@ -36,7 +36,7 @@ public class InstrComparisonExecutor
     /// <param name="listVar"></param>
     /// <param name="instrComparison"></param>
     /// <returns></returns>
-    public bool ExecInstrComparison(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrComparison instrComparison)
+    public bool ExecInstrCompExpr(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrComparison instrComparison)
     {
         _logger.LogExecStart(ActivityLogLevel.Debug, "InstrComparisonExecutor.ExecInstrComparison", string.Empty);
 

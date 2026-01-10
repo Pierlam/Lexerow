@@ -390,17 +390,19 @@ public class InstrUtils
 
     /// <summary>
     /// Is the instruction need to be executed?
-    /// It's the case for: function call, math expr and bool expression.
+    /// It's the case for: function call, comparison, bool and math expression.
     /// </summary>
     /// <param name="instrBase"></param>
     /// <returns></returns>
     public static bool NeedToBeExecuted(InstrBase instrBase)
     {
         if (instrBase == null) return false;
-        if (instrBase.IsFunctionCall) return true;
 
-        if (instrBase.InstrType == InstrType.MathExpr) return true;
+        if (instrBase.IsFunctionCall) return true;
+        if (instrBase.InstrType == InstrType.Comparison) return true;
         if (instrBase.InstrType == InstrType.BoolExpr) return true;
+        if (instrBase.InstrType == InstrType.MathExpr) return true;
+
         // no
         return false;
     }

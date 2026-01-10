@@ -132,6 +132,9 @@ If A.Cell>8.55
 If A.Cell<>"Hello"
 If A.Cell=blank
 If A.Cell=null
+If A.Cell <= Date(2019,11,14) 
+If A.Cell >10 And B.Cell< 20
+If (A.Cell >10 And B.Cell< 20) Or C.Cell=12
 ```
 
 In Then instruction, you can set a value to a cell or clear it.
@@ -141,9 +144,9 @@ The formating of the cell will remain: background/foreground color and border.
 
 To remove completly a cell (value and formatting) , you have to set it to null. 
 
-For If and Then instruction, type of value can be: int, double, string.
+For If and Then instruction, type of value can be: int, double, string and now Date.
 
-Date and time will be managed later.
+DateTime and time will be managed later.
 
 ```
 Then A.Cell=13
@@ -151,6 +154,7 @@ Then A.Cell=25.89
 Then A.Cell="Hello"
 Then A.Cell=blank    # cell formatting will stay
 Then A.Cell=null     # cell formatting will be cleared
+Then A.Cell=Date(2019,11,14) 
 ```
 
 From a technical point of view, you can manage easily errors occured during compilation or during the execution of scripts.

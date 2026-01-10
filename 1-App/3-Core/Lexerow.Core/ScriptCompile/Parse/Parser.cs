@@ -456,7 +456,7 @@ public class Parser
             return false;
         }
 
-        // TODO: out bool isListOfParams, out bool isMathExpr, boolExpr, boolValue, fctCall-RetBoolValue
+        // Process the expression 
         if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
             return false;
 
@@ -478,7 +478,6 @@ public class Parser
             return true;
         }
 
-        // TODO: only if comma is found (or only one instr found)
         // process the fct call, check and set parameters, error saved
         return FunctionCallParamsParser.ProcessFunctionCallParams(logger, result, listVar, stackInstr, scriptToken, program, listInstrOut);
     }

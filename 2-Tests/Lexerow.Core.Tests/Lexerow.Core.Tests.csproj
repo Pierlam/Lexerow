@@ -29,6 +29,18 @@
     <None Update="10-ExcelFiles\IfACellNotEqString.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="10-ExcelFiles\onExcelIfBrkBrkAndBrkOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfBrkBrkAndOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfBrkAndBrkOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="10-ExcelFiles\onExcelIfAndAndOk.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="10-ExcelFiles\onExcelIfAndOk.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -159,6 +171,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\IfACellNotEqString.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfAndAndOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfBrkBrkAndBrkOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfBrkBrkAndOk.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="15-Scripts\onExcelIfBrkAndBrkOk.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="15-Scripts\OnExcelIfDateThenDateFormat.lxrw">

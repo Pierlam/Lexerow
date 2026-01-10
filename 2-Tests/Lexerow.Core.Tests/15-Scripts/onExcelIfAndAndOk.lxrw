@@ -1,0 +1,6 @@
+﻿
+OnExcel ".\10-ExcelFiles\onExcelIfAndAndOk.xlsx"
+  ForEachRow
+     If A.Cell >10 And B.Cell< 20 And C.Cell=17 Then A.Cell=137
+   Next
+End OnExcel

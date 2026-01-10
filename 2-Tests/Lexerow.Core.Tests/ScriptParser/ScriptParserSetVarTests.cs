@@ -265,7 +265,6 @@ public class ScriptParserSetVarTests
     }
 
     /// <summary>
-    /// SetVar set a value to system var.
     /// a= true
     /// </summary>
     [TestMethod]

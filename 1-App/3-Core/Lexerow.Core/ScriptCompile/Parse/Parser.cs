@@ -117,7 +117,7 @@ public class Parser
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
 
             //XXX-DEBUG:
-            if (currToken.Value.Equals(","))
+            if (currToken.Value.Equals(")"))
             {
                 int a = 12;
             }
@@ -427,23 +427,37 @@ public class Parser
             return false;
         }
 
+        List<InstrBase> listInstrOut;
+
         // parse the sub part if And/Or exists, exp: fct(.. And A.Cell>10)
-        // TODO:
+        InstrBase instrAndOr = stackInstr.FindFirstInstrFromTop(InstrType.And, InstrType.Or);
+        if (instrAndOr != null)
+        {
+            if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOr.InstrType, out listInstrOut))
+                return false;
+
+            // only one result instr expected
+            if (listInstrOut.Count != 1)
+            {
+                result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
+                return false;
+            }
+            stackInstr.Push(listInstrOut[0]);
+        }
 
         // parse the sub part if comma exists, exp: fct(.., A.Cell>10)
         // TODO:
 
-
         // find the ( instr in the stack, must exists
-        InstrOpenBracket instrOpenBracket = stackInstr.FindInstrFromTop(InstrType.OpenBracket) as InstrOpenBracket;
-        if (instrOpenBracket == null)
+        InstrBase instrStart = stackInstr.FindInstrFromTop(InstrType.OpenBracket);
+        if (instrStart == null)
         {
             result.AddError(ErrorCode.ParserTokenNotExpected, scriptToken);
             return false;
         }
 
         // TODO: out bool isListOfParams, out bool isMathExpr, boolExpr, boolValue, fctCall-RetBoolValue
-        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.OpenBracket, out List<InstrBase> listInstrOut))
+        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
             return false;
 
         // remove the ( from the stack
@@ -456,9 +470,9 @@ public class Parser
             return false;
         }
 
-        // if <instr>
+        // if <instr>  or again (
         InstrBase instrBase=stackInstr.Peek();
-        if(instrBase.InstrType == InstrType.If)
+        if(instrBase.InstrType == InstrType.If || instrBase.InstrType == InstrType.OpenBracket)
         {
             stackInstr.Push(listInstrOut[0]);
             return true;

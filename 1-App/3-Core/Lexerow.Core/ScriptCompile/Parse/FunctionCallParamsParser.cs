@@ -33,15 +33,14 @@ internal class FunctionCallParamsParser
         // read the last instr from the stack
         InstrBase instrBase = stackInstr.Peek();
 
+        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsParser.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
+
         //-item before openBracket is an object name? exp: fct()
         if (!instrBase.IsFunctionCall)
         {
             result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken());
             return false;
         }
-
-
-        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsParser.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
 
         if (instrBase.InstrType == InstrType.FuncSelectFiles)
             return ProcessFuncSelectFiles(logger, result, listVar, instrBase as InstrFuncCallSelectFiles, program, listParams);

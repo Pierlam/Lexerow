@@ -33,7 +33,7 @@ public class ExpressionParser
     /// <param name="stackInstr"></param>
     /// <param name="scriptToken"></param>
     /// <param name="instrTypeStart"></param>
-    /// <param name="instrBaseOut"></param>
+    /// <param name="listInstrBaseOut"></param>
     /// <returns></returns>
     public static bool Process(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, InstrType instrTypeStart, out List<InstrBase> listInstrBaseOut)
     {
@@ -139,6 +139,15 @@ public class ExpressionParser
         return false;
     }
 
+    /// <summary>
+    /// Process the instruction.
+    /// Is it a comparison operator ? a calculation operator? a comma? ...
+    /// </summary>
+    /// <param name="instr"></param>
+    /// <param name="listOperand"></param>
+    /// <param name="listOperator"></param>
+    /// <param name="commaCount"></param>
+    /// <returns></returns>
     static bool ProcessInstr(InstrBase instr, List<InstrBase> listOperand, List<InstrBase> listOperator, out int commaCount)
     {
         commaCount = 0;

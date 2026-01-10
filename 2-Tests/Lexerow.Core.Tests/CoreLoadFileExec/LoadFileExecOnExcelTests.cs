@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Lexerow.Core.System;
+﻿using Lexerow.Core.System;
 using Lexerow.Core.Tests._20_Utils;
 using Lexerow.Core.Tests.Common;
 using OpenExcelSdk;

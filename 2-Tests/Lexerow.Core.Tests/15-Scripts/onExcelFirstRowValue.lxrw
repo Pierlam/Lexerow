@@ -1,5 +1,4 @@
-﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
-
+﻿
 OnExcel ".\10-ExcelFiles\onExcelFirstRowValue.xlsx"
 	FirstRow 3
 	ForEachRow

@@ -41,18 +41,12 @@ public class ProgramExecutor
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        // convert program instr to instr to execute
-
         // execute instr, one by one
         foreach (var instrBase in program.ListInstr)
         {
             res = _instrExecutor.ExecInstr(result, program, _progExecVarMgr, instrBase);
             if (!res) return false;
         }
-
-        // close all opened excel file, if its not done
-        // TODO: don't call it! each excel file will be closed just the use of it at the end of the exec of the instr OnExcel
-        //res= CloseAllOpenedExcelFile(result, _listExecVar);
 
         stopwatch.Stop();
         string elapsedTime = string.Format("{0:hh\\:mm\\:ss}", stopwatch.Elapsed);

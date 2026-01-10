@@ -224,10 +224,6 @@ public class ProgExecVarMgr
         progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarCurrencyFormatName, new ValueString("#,##0.00\\ \"€\""));
         ListSysExecVar.Add(progExecSysVar);
 
-        //--$ForceDateFormat=false
-        //progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarForceDateFormatName, new ValueBool(false));
-        //ListSysExecVar.Add(progExecSysVar);
-
         //--$StrCompareCaseSensitive=false
         progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarStrCompareCaseSensitive, new ValueBool(false));
         ListSysExecVar.Add(progExecSysVar);

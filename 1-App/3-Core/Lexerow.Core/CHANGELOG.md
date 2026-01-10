@@ -1,4 +1,8 @@
-﻿## 0.5.0 Release (2026-31-01)
+﻿## 0.6.0 Release (2026-02-10)
+
+todo
+
+## 0.5.0 Release (2026-01-10)
 
 -Access to Excel: NPOI Library replaced by OpenExcelSdk.
 

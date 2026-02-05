@@ -36,12 +36,13 @@ public class TestExcelChecker
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
         if (excelCell == null) return false;
 
-        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+        //var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+
 
         // no format
-        if (cellFormat == null) return false;
-        if (cellFormat.ApplyNumberFormat == null) return false;
-        return (numFormatId == (int)cellFormat.NumberFormatId.Value);
+        if (excelCell.CellFormat == null) return false;
+        if (excelCell.CellFormat.ApplyNumberFormat == null) return false;
+        return (numFormatId == (int)excelCell.CellFormat.NumberFormatId.Value);
     }
 
     /// <summary>
@@ -60,11 +61,11 @@ public class TestExcelChecker
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
         if (excelCell == null) return false;
 
-        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+        //var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
 
-        if (cellFormat.ApplyNumberFormat == null) return false;
+        if (excelCell.CellFormat.ApplyNumberFormat == null) return false;
 
-        styleMgr.GetCustomNumberFormat(excelSheet, cellFormat.NumberFormatId.Value, out string numFormatGet);
+        styleMgr.GetCustomNumberFormat(excelSheet, excelCell.CellFormat.NumberFormatId.Value, out string numFormatGet);
         return (numFormatGet == numFormat);
     }
 
@@ -77,9 +78,7 @@ public class TestExcelChecker
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
         if (excelCell == null) return false;
 
-        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
-
-        if (cellFormat.ApplyFill == null) return false;
+        if (excelCell.CellFormat.ApplyFill == null) return false;
 
         //cellFormat.FillId
 

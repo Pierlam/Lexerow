@@ -209,23 +209,23 @@ public class ProgExecVarMgr
         ProgExecSysVar progExecSysVar;
 
         //--$DateFormat
-        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarDateFormatName, new ValueString("d/m/yyyy"));
+        progExecSysVar = new ProgExecSysVar(CoreDefinitions.SysVarDateFormatName, new ValueString("d/m/yyyy"));
         ListSysExecVar.Add(progExecSysVar);
 
         //--$DateTimeFormat
-        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarDateTimeFormatName, new ValueString("dd/mm/yyyy\\ hh:mm"));
+        progExecSysVar = new ProgExecSysVar(CoreDefinitions.SysVarDateTimeFormatName, new ValueString("dd/mm/yyyy\\ hh:mm"));
         ListSysExecVar.Add(progExecSysVar);
 
         //--$TimeFormat
-        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarTimeFormatName, new ValueString("hh:mm:ss"));
+        progExecSysVar = new ProgExecSysVar(CoreDefinitions.SysVarTimeFormatName, new ValueString("hh:mm:ss"));
         ListSysExecVar.Add(progExecSysVar);
 
         //--$CurrencyFormat
-        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarCurrencyFormatName, new ValueString("#,##0.00\\ \"€\""));
+        progExecSysVar = new ProgExecSysVar(CoreDefinitions.SysVarCurrencyFormatName, new ValueString("#,##0.00\\ \"€\""));
         ListSysExecVar.Add(progExecSysVar);
 
         //--$StrCompareCaseSensitive=false
-        progExecSysVar = new ProgExecSysVar(CoreInstr.SysVarStrCompareCaseSensitive, new ValueBool(false));
+        progExecSysVar = new ProgExecSysVar(CoreDefinitions.SysVarStrCompareCaseSensitive, new ValueBool(false));
         ListSysExecVar.Add(progExecSysVar);
     }
 }

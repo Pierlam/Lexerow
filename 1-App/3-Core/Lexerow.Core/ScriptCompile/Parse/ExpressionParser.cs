@@ -35,7 +35,7 @@ public class ExpressionParser
     /// <param name="instrTypeStart"></param>
     /// <param name="listInstrBaseOut"></param>
     /// <returns></returns>
-    public static bool Process(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, InstrType instrTypeStart, out List<InstrBase> listInstrBaseOut)
+    public static bool Perform(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, InstrType instrTypeStart, out List<InstrBase> listInstrBaseOut)
     {
         listInstrBaseOut = new List<InstrBase>();
 

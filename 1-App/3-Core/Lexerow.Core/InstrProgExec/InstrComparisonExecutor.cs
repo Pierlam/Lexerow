@@ -367,7 +367,7 @@ public class InstrComparisonExecutor
         //--string
         if (excelCellValue.CellType == ExcelCellType.String)
         {
-            bool caseSensitive= progExecVarMgr.GetProgExecSysVarAsBool(CoreInstr.SysVarStrCompareCaseSensitive);
+            bool caseSensitive= progExecVarMgr.GetProgExecSysVarAsBool(CoreDefinitions.SysVarStrCompareCaseSensitive);
 
             // only Equal or NotEqual is possible
             compResult = CompareString(caseSensitive, excelCellValue.StringValue, compOperator, ((ValueString)valueBase).Val);
@@ -466,7 +466,7 @@ public class InstrComparisonExecutor
         //--string
         if (excelCellValueLeft.CellType == ExcelCellType.String)
         {
-            bool caseSensitive = progExecVarMgr.GetProgExecSysVarAsBool(CoreInstr.SysVarStrCompareCaseSensitive);
+            bool caseSensitive = progExecVarMgr.GetProgExecSysVarAsBool(CoreDefinitions.SysVarStrCompareCaseSensitive);
             compResult = CompareString(caseSensitive, excelCellValueLeft.StringValue, compOperator, excelCellValueRight.StringValue);
             return true;
         }

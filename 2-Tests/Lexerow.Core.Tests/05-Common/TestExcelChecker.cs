@@ -20,6 +20,16 @@ public class TestExcelChecker
         return stream;
     }
 
+    public static ExcelSheet GetSheetAt(ExcelFile excelFile, int idx)
+    {
+        return  excelProcessor.GetSheetAt(excelFile,idx);
+    }
+
+    public static ExcelSheet GetSheetByName(ExcelFile excelFile, string name)
+    {
+        return excelProcessor.GetSheetByName(excelFile, name);
+    }
+
     /// <summary>
     /// Check the number format Id of the value of the cell.
     /// 14: dd/mm/yyyy

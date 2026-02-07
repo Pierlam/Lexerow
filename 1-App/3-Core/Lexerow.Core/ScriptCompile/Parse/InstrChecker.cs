@@ -17,7 +17,7 @@ internal class InstrChecker
         // not a fct call, bye
         if (!instrBase.IsFunctionCall) return true;
 
-        //--is it SelectFiles?
+        //--is it function SelectFiles?
         InstrFuncCallSelectFiles instrFuncSelectFiles = instrBase as InstrFuncCallSelectFiles;
         if (instrFuncSelectFiles != null)
         {
@@ -30,7 +30,7 @@ internal class InstrChecker
             return true;
         }
 
-        //--is it Date?
+        //--is it function Date?
         InstrFuncCallDate instrFuncDate = instrBase as InstrFuncCallDate;
         if (instrFuncDate != null)
         {
@@ -41,6 +41,19 @@ internal class InstrChecker
             }
             return true;
         }
+
+        //--is it function CreateExcel?
+        InstrFuncCallCreateExcel instrFuncCreateExcel = instrBase as InstrFuncCallCreateExcel;
+        if (instrFuncCreateExcel != null)
+        {
+            if(instrFuncCreateExcel.InstrFileName == null)
+            {
+                result.AddError(ErrorCode.ParserFctParamWrong, instrBase.FirstScriptToken());
+                return false;
+            }
+            return true;
+        }
+
         //--fct not managed
         result.AddError(ErrorCode.ParserFctNotManaged, instrBase.FirstScriptToken());
         return false;

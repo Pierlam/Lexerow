@@ -49,7 +49,7 @@ public class Parser
         }
 
         // process tokens, line by line
-        bool res = ProcessTokensLineByLine(result, _listVar, listScriptLineTokens, program);
+        bool res = PerformTokensLineByLine(result, _listVar, listScriptLineTokens, program);
 
         if (res)
         {
@@ -71,7 +71,7 @@ public class Parser
     /// <param name="listScriptLineTokens"></param>
     /// <param name="listInstrToExec"></param>
     /// <returns></returns>
-    private bool ProcessTokensLineByLine(Result result, List<InstrNameObject> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
+    private bool PerformTokensLineByLine(Result result, List<InstrNameObject> listVar, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
         bool res;
         bool isToken = false;
@@ -94,7 +94,7 @@ public class Parser
 
             if (currTokenIndex >= currLineTokens.ListScriptToken.Count)
             {
-                _logger.LogCompilOnGoing(ActivityLogLevel.Debug, "Parser.ProcessTokensLineByLine", "End Of line reached, Num: " + currLineTokensIndex.ToString() + ", Line: " + currLineTokens.ScriptLine);
+                _logger.LogCompilOnGoing(ActivityLogLevel.Debug, "Parser.PerformTokensLineByLine", "End Of line reached, Num: " + currLineTokensIndex.ToString() + ", Line: " + currLineTokens.ScriptLine);
 
                 // no more token in the current line tokens, process items saved in the stack
                 res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);
@@ -135,7 +135,7 @@ public class Parser
             }
 
             //--is it the Cell or BgColor or FgColor token?
-            if (!InstrColCellFuncParser.Process(result, stackInstr, currToken, out isToken)) break;
+            if (!InstrColCellFuncParser.Perform(result, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
             //--is it an operator comparison ? =,<,>,<=, >= (and not a set var isntr)
@@ -144,24 +144,24 @@ public class Parser
 
 
             //--is it the SetVar equal char?
-            if (!SetVarParser.ProcessSetVar(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (!SetVarParser.PerformSetVar(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
             //--Is it the And/or token?
-            if (!ProcessTokenAndOr(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (!PerformTokenAndOr(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
             //--Is it the comma "," token?
             // TODO: process the expr: between the comma and the ) or a another ,
-            if (!ProcessTokenComma(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (!PerformTokenComma(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
             //--Is it the Then token?
-            if (!ProcessTokenThen(result, listVar, stackInstr, currToken, out isToken)) break;
+            if (!PerformTokenThen(result, listVar, stackInstr, currToken, out isToken)) break;
             if (isToken) continue;
 
             //--is the token the char ) ?  
-            if (!ProcessTokenRightBracket(_logger, result, listVar, stackInstr, currToken, program, out isToken)) break;
+            if (!PerfomTokenRightBracket(_logger, result, listVar, stackInstr, currToken, program, out isToken)) break;
             if (isToken) continue;
 
 
@@ -175,7 +175,7 @@ public class Parser
             if (isToken) continue;
 
             // process special cases: all token of OnExcel instr inline for exp
-            res = ProcessSpecialCases(result, listVar, currLineTokensIndex, stackInstr, instr, program, out isToken);
+            res = PerformSpecialCases(result, listVar, currLineTokensIndex, stackInstr, instr, program, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -206,12 +206,12 @@ public class Parser
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    public static bool ProcessTokenAndOr(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    public static bool PerformTokenAndOr(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
         // not the token And/Or? bye
-        if (!scriptToken.Value.Equals(CoreInstr.InstrAnd, StringComparison.InvariantCultureIgnoreCase) && !scriptToken.Value.Equals(CoreInstr.InstrOr, StringComparison.InvariantCultureIgnoreCase))
+        if (!scriptToken.Value.Equals(CoreDefinitions.InstrAnd, StringComparison.InvariantCultureIgnoreCase) && !scriptToken.Value.Equals(CoreDefinitions.InstrOr, StringComparison.InvariantCultureIgnoreCase))
             return true;
 
         isToken = true;
@@ -237,7 +237,7 @@ public class Parser
         }
 
         // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
-        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOrOpenBracketIf.InstrType, out List<InstrBase> listInstrOut))
+        if (!ExpressionParser.Perform(result, listVar, stackInstr, scriptToken, instrAndOrOpenBracketIf.InstrType, out List<InstrBase> listInstrOut))
             return false;
 
         // only one expr instr expected
@@ -265,12 +265,12 @@ public class Parser
     /// <param name="scriptToken"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessTokenComma(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    private static bool PerformTokenComma(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
         // not the token ,? bye
-        if (!scriptToken.Value.Equals(CoreInstr.InstrComma, StringComparison.InvariantCultureIgnoreCase))
+        if (!scriptToken.Value.Equals(CoreDefinitions.InstrComma, StringComparison.InvariantCultureIgnoreCase))
             return true;
 
         isToken = true;
@@ -292,7 +292,7 @@ public class Parser
         List<InstrBase> listInstrOut;
 
         // parse the expression between , and , or (
-        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
+        if (!ExpressionParser.Perform(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
             return false;
 
         // only one result instr expected  -> NON IN FACT, can be a math expr, a bool expr, a comp expr
@@ -325,12 +325,12 @@ public class Parser
     /// <param name="token"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessTokenThen(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
+    private static bool PerformTokenThen(Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
         // not the token Then? bye
-        if (!scriptToken.Value.Equals(CoreInstr.InstrThen, StringComparison.InvariantCultureIgnoreCase))
+        if (!scriptToken.Value.Equals(CoreDefinitions.InstrThen, StringComparison.InvariantCultureIgnoreCase))
             return true;
 
         isToken = true;
@@ -349,7 +349,7 @@ public class Parser
         if (instrAndOr != null)
         {
             // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
-            if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOr.InstrType, out listInstrOut))
+            if (!ExpressionParser.Perform(result, listVar, stackInstr, scriptToken, instrAndOr.InstrType, out listInstrOut))
                 return false;
             // only one result instr expected
             if (listInstrOut.Count != 1)
@@ -369,7 +369,7 @@ public class Parser
         }
 
         // parse the expression between If and Then, should return a bool value: bool expr or comparison or bool value or fct retunrg a bool value
-        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, InstrType.If, out listInstrOut))
+        if (!ExpressionParser.Perform(result, listVar, stackInstr, scriptToken, InstrType.If, out listInstrOut))
             return false;
 
         // only one expr instr expected
@@ -409,7 +409,7 @@ public class Parser
     /// <param name="token"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessTokenRightBracket(IActivityLogger logger, Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, out bool isToken)
+    private static bool PerfomTokenRightBracket(IActivityLogger logger, Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, out bool isToken)
     {
         isToken = false;
 
@@ -433,7 +433,7 @@ public class Parser
         InstrBase instrAndOr = stackInstr.FindFirstInstrFromTop(InstrType.And, InstrType.Or);
         if (instrAndOr != null)
         {
-            if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrAndOr.InstrType, out listInstrOut))
+            if (!ExpressionParser.Perform(result, listVar, stackInstr, scriptToken, instrAndOr.InstrType, out listInstrOut))
                 return false;
 
             // only one result instr expected
@@ -457,7 +457,7 @@ public class Parser
         }
 
         // Process the expression 
-        if (!ExpressionParser.Process(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
+        if (!ExpressionParser.Perform(result, listVar, stackInstr, scriptToken, instrStart.InstrType, out listInstrOut))
             return false;
 
         // remove the ( from the stack
@@ -479,7 +479,7 @@ public class Parser
         }
 
         // process the fct call, check and set parameters, error saved
-        return FunctionCallParamsParser.ProcessFunctionCallParams(logger, result, listVar, stackInstr, scriptToken, program, listInstrOut);
+        return FunctionCallParamsParser.PerformFunctionCallParams(logger, result, listVar, stackInstr, scriptToken, program, listInstrOut);
     }
 
     /// <summary>
@@ -496,7 +496,7 @@ public class Parser
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessSpecialCases(Result result, List<InstrNameObject> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
+    private static bool PerformSpecialCases(Result result, List<InstrNameObject> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
     {
         isToken = false;
 

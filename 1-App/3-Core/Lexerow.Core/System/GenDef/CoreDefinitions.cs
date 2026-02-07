@@ -1,6 +1,9 @@
 ﻿namespace Lexerow.Core.System.GenDef;
 
-public class CoreInstr
+/// <summary>
+/// Main core definitions.
+/// </summary>
+public class CoreDefinitions
 {
     public const string InstrOnExcel = "OnExcel";
     public const string InstrOnSheet = "OnSheet";
@@ -36,10 +39,13 @@ public class CoreInstr
 
     //--function names
     public const string InstrFuncSelectFiles = "SelectFiles";
-
+    public const string InstrCreateExcel = "CreateExcel";
+    
     public const string InstrFuncDate = "Date";
     public const string InstrFuncDateTime = "DateTime";
     public const string InstrFuncTime = "Time";
+
+    public static string DefaultExcelSheetName = "Sheet1";
 
     /// <summary>
     /// Used in OnExcel instr.
@@ -59,8 +65,6 @@ public class CoreInstr
 
     //--$CurrencyFormat
     public static string SysVarCurrencyFormatName = "$CurrencyFormat";
-
-    //public static string SysVarForceDateFormatName = "$ForceDateFormat";
 
     public static string SysVarStrCompareCaseSensitive = "$StrCompareCaseSensitive";
 

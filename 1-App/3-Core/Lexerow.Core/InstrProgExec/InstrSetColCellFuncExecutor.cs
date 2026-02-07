@@ -116,7 +116,7 @@ public class InstrSetColCellFuncExecutor
 
             if (value.ValueType == System.ValueType.DateOnly)
             {
-                string sysVarDateFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateFormatName);
+                string sysVarDateFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreDefinitions.SysVarDateFormatName);
 
                 // set the new value to the cell
                 return excelProcessor.SetCellValue(sheet, cell, (value as ValueDateOnly).Val, sysVarDateFormat);
@@ -124,7 +124,7 @@ public class InstrSetColCellFuncExecutor
 
             if (value.ValueType == System.ValueType.DateTime)
             {
-                string sysVarDateTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
+                string sysVarDateTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreDefinitions.SysVarDateTimeFormatName);
 
                 // set the new value to the cell
                 return excelProcessor.SetCellValue(sheet, cell, (value as ValueDateTime).Val, sysVarDateTimeFormat);
@@ -132,7 +132,7 @@ public class InstrSetColCellFuncExecutor
 
             if (value.ValueType == System.ValueType.TimeOnly)
             {
-                string sysVarTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreInstr.SysVarDateTimeFormatName);
+                string sysVarTimeFormat = _progExecVarMgr.GetProgExecSysVarAsString(CoreDefinitions.SysVarDateTimeFormatName);
                 // set the new value to the cell
                 return excelProcessor.SetCellValue(sheet, cell, (value as ValueTimeOnly).Val, sysVarTimeFormat);
             }

@@ -36,6 +36,12 @@ public class InstrExecutor
 
     private ProgExecVarMgr _progExecVarMgr;
 
+    /// <summary>
+    /// Program instruction executor constructor.
+    /// </summary>
+    /// <param name="activityLogger"></param>
+    /// <param name="excelProcessor"></param>
+    /// <param name="progExecVarMgr"></param>
     public InstrExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor, ProgExecVarMgr progExecVarMgr)
     {
         _logger = activityLogger;

@@ -31,9 +31,9 @@ internal class InstrOnSheetExecutor
     /// <param name="listVar"></param>
     /// <param name="instrNextSheet"></param>
     /// <returns></returns>
-    public bool ExecInstrProcessSheets(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
+    public bool ExecInstrPerformSheets(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessSheets instrNextSheet)
     {
-        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrProcessSheets", string.Empty);
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrPerformSheets", string.Empty);
 
         // move to next sheet num
         instrNextSheet.SheetNum++;

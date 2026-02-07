@@ -240,6 +240,8 @@ public enum ErrorCode
     ExecNoFileSelected,
     ExecUnableCreateUpdateVar,
 
+    ExecUnableCreateExcelFile,
+
     InstrNotExpected,
     IntMustBePositive,
 }

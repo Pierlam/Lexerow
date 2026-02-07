@@ -4,7 +4,7 @@ using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.Utils;
 
-namespace Lexerow.Core.InstrProgExec;
+namespace Lexerow.Core.InstrProgExec.ExecFunc;
 
 public class InstrFuncDateExecutor
 {

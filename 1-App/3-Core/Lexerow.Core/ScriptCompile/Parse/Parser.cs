@@ -36,9 +36,9 @@ public class Parser
     /// <param name="listSourceCodeLineTokens"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public bool Process(Result result, List<ScriptLineTokens> listScriptLineTokens, Program program)
+    public bool Perform(Result result, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Info, "Parser.Process", "script lines Num: " + listScriptLineTokens.Count.ToString());
+        _logger.LogCompilStart(ActivityLogLevel.Info, "Parser.Perform", "script lines Num: " + listScriptLineTokens.Count.ToString());
         _listVar.Clear();
 
         // no token in the source code! -> error or warning?
@@ -53,13 +53,13 @@ public class Parser
 
         if (res)
         {
-            _logger.LogCompilEnd(ActivityLogLevel.Info, "Parser.Process", "Instr count: " + program.ListInstr.Count().ToString());
+            _logger.LogCompilEnd(ActivityLogLevel.Info, "Parser.Perform", "Instr count: " + program.ListInstr.Count().ToString());
 
             // ok, no error
             return true;
         }
 
-        _logger.LogCompilEndError(null, "SyntaxAnalParseryzer.Process", "Error count: " + result.ListError.Count().ToString());
+        _logger.LogCompilEndError(null, "Parser.Perform", "Error count: " + result.ListError.Count().ToString());
         return false;
     }
 

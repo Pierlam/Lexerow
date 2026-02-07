@@ -33,6 +33,10 @@ public class LoadLinesExecCreateExcelTests : BaseTests
             "file=CreateExcel(" + AddDblQuote(PathExcelFilesExec + "createExcel1.xlsx") +")"
             ];
 
+        // remove the file if it exists
+        if (File.Exists(PathExcelFilesExec + "createExcel1.xlsx"))
+            File.Delete(PathExcelFilesExec + "createExcel1.xlsx");
+
         // load the script and compile it
         result = core.LoadLinesScript("script", lines);
         Assert.IsTrue(result.Res);
@@ -60,6 +64,11 @@ public class LoadLinesExecCreateExcelTests : BaseTests
         List<string> lines = [
             "file=CreateExcel(" + AddDblQuote(PathExcelFilesExec + "createExcel2.xlsx") + ", \"data\")"
             ];
+
+        // remove the file if it exists
+        if (File.Exists(PathExcelFilesExec + "createExcel2.xlsx"))
+            File.Delete(PathExcelFilesExec + "createExcel2.xlsx");
+
         // load the script and compile it
         result = core.LoadLinesScript("script", lines);
         Assert.IsTrue(result.Res);
@@ -88,7 +97,11 @@ public class LoadLinesExecCreateExcelTests : BaseTests
             "filename=" + AddDblQuote(PathExcelFilesExec + "createExcel3.xlsx"),
             "file=CreateExcel(filename)"
         ];
-    
+
+        // remove the file if it exists
+        if (File.Exists(PathExcelFilesExec + "createExcel3.xlsx"))
+            File.Delete(PathExcelFilesExec + "createExcel3.xlsx");
+
         // load the script and compile it
         result = core.LoadLinesScript("script", lines);
         Assert.IsTrue(result.Res);

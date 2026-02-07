@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System;
+﻿using Lexerow.Core.InstrProgExec.ExecFunc;
+using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
@@ -33,6 +34,7 @@ public class InstrExecutor
     private InstrFuncSelectFilesExecutor _instrFuncSelectFilesExecutor;
 
     private InstrFuncDateExecutor _instrFuncDateExecutor;
+    private InstrFuncCreateExcelExecutor _instrFuncCreateExcelExecutor;
 
     private ProgExecVarMgr _progExecVarMgr;
 
@@ -58,6 +60,7 @@ public class InstrExecutor
 
         _instrFuncSelectFilesExecutor = new InstrFuncSelectFilesExecutor(_logger);
         _instrFuncDateExecutor = new InstrFuncDateExecutor(_logger);
+        _instrFuncCreateExcelExecutor= new InstrFuncCreateExcelExecutor(_logger, excelProcessor);
     }
 
     /// <summary>
@@ -71,6 +74,8 @@ public class InstrExecutor
     /// <returns></returns>
     public bool ExecInstr(Result result, Program program, ProgExecVarMgr progExecVarMgr, InstrBase instr)
     {
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrExecotur.ExecInstr", "instr: " + instr.ToString());
+
         ProgExecContext ctx = new ProgExecContext();
 
         bool res = true;
@@ -102,7 +107,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.ProcessSheets)
             {
-                res = _instrOnSheetExecutor.ExecInstrProcessSheets(result, ctx, progExecVarMgr, instr as InstrProcessSheets);
+                res = _instrOnSheetExecutor.ExecInstrPerformSheets(result, ctx, progExecVarMgr, instr as InstrProcessSheets);
                 if (!res) return false;
                 continue;
             }
@@ -173,6 +178,13 @@ public class InstrExecutor
             if (instr.InstrType == InstrType.FuncDate)
             {
                 res = _instrFuncDateExecutor.ExecFuncDate(result, ctx, progExecVarMgr, instr as InstrFuncCallDate);
+                if (!res) return false;
+                continue;
+            }
+
+            if (instr.InstrType == InstrType.FuncCreateExcel)
+            {
+                res = _instrFuncCreateExcelExecutor.ExecFuncCreateExcel(result, ctx, progExecVarMgr, instr as InstrFuncCallCreateExcel);
                 if (!res) return false;
                 continue;
             }

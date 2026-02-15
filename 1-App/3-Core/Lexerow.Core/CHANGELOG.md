@@ -1,6 +1,7 @@
-﻿## 0.6.0 Release (2026-02-10)
+﻿## 0.6.0 Release (2026-02-20)
 
-todo
+Add Core.Diagnostics class to display or export logs to txt or csv file.
+
 
 ## 0.5.0 Release (2026-01-10)
 

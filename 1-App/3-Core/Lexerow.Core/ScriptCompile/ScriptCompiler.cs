@@ -56,7 +56,7 @@ public class ScriptCompiler
         if (res)
             _logger.LogCompilEnd(ActivityLogLevel.Info, "CompileScript", script.Name);
         else
-            _logger.LogCompilEndError(result.ListError[0], "CompileScript", script.Name);
+            _logger.LogCompilEndError("CompileScript", script.Name);
 
         return result;
     }

@@ -59,7 +59,7 @@ public class Parser
             return true;
         }
 
-        _logger.LogCompilEndError(null, "Parser.Perform", "Error count: " + result.ListError.Count().ToString());
+        _logger.LogCompilEndError(null, "Parser.Perform", "Finished with error(s), count: " + result.ListError.Count().ToString());
         return false;
     }
 
@@ -115,6 +115,7 @@ public class Parser
 
             // get the fist token of the line
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
+            _logger.LogCompilOnGoing(ActivityLogLevel.Trace, "Parser.PerformTokensLineByLine" , "Line: " + currLineTokens.ScriptLine + ", Token: " + currToken.Value);
 
             //XXX-DEBUG:
             if (currToken.Value.Equals(")"))

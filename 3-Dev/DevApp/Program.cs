@@ -1,13 +1,14 @@
 ﻿using DevApp;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Lexerow.Core;
+using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 
 Console.WriteLine("==>Lexerow Dev:");
 
 void Core_ActivityLogEvent(object? sender, ActivityLog e)
 {
-    Console.WriteLine("ActivityLogEvent!");
+    Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Module + " " + e.Operation + " " + e.Msg);
 }
 
 void TestCore()
@@ -16,6 +17,7 @@ void TestCore()
     core.ActivityLogEvent += Core_ActivityLogEvent;
     core.LoadScript("scriptName", "fileName");
 }
+
 
 void TestGetFiles()
 {
@@ -63,6 +65,8 @@ if (a <= 10) { }
 
 //DateSandBox.TestWriteDate();
 
-TestTheCore.TestCore();
+//TestTheCore.TestCore();
+
+TestTheCore.TestCoreCompilCopyHeader();
 
 Console.WriteLine("\n=> ends.");

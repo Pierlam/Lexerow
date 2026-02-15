@@ -128,6 +128,17 @@ public class Diagnostics
 
         s = e.When.ToString("dd/MM/yyyy HH:mm:ss fff");
 
+        if(e.Result== ActivityLogResult.Error && e.Error!=null)
+        {
+           string msg= e.Msg; 
+            e.Msg = "LineNum: " + e.Error.LineNum+ ", ErrCode: " + e.Error.ErrorCode.ToString() + ", Msg: " + e.Error.Param;
+            if (e.Error.Exception != null)
+                e.Msg += ", Ex: " + e.Error.Exception.Message;
+
+            if(!string.IsNullOrWhiteSpace(msg))
+                e.Msg += " " + msg;
+        }
+
         s += " " + e.Level + " " + e.Module + " " + e.Stage + " " + e.Result + " " + e.Operation + " " + e.Msg;
         return s;
     }

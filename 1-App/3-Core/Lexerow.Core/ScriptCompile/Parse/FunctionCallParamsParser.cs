@@ -5,6 +5,7 @@ using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -38,7 +39,7 @@ internal class FunctionCallParamsParser
         //-item before openBracket is an object name? exp: fct()
         if (!instrBase.IsFunctionCall)
         {
-            result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken());
+            logger.LogCompilEndError(result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken()), "FunctionCallParamsParser.ProcessFunctionCallParams", "Instr should be a function Call, Type: " + instrBase.InstrType);
             return false;
         }
 
@@ -52,7 +53,7 @@ internal class FunctionCallParamsParser
             return PerformFuncCreateExcel(logger, result, listVar, instrBase as InstrFuncCallCreateExcel, program, listParams);
 
         // function call name not expected
-        result.AddError(ErrorCode.ParserFctNameNotExpected, scriptToken);
+        logger.LogCompilEndError(result.AddNewError(ErrorCode.ParserFctNameNotExpected, scriptToken), "FunctionCallParamsParser.ProcessFunctionCallParams", string.Empty);
         return false;
     }
 

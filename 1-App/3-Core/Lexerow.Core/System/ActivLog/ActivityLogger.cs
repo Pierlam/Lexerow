@@ -95,6 +95,21 @@ public class ActivityLogger : IActivityLogger
     }
 
     /// <summary>
+    /// Error log are Important.
+    /// </summary>
+    /// <param name="error"></param>
+    /// <param name="operation"></param>
+    /// <param name="msg"></param>
+    public void LogCompilEndError(string operation, string msg)
+    {
+        ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Info, operation, msg);
+        log.Module = ActivityLogType.CompileScript;
+        //log.Error = error;
+        log.Result = ActivityLogResult.Error;
+        RaiseEvent(log);
+    }
+
+    /// <summary>
     /// stage is Start, result is Ok/success.
     /// </summary>
     /// <param name="operation"></param>

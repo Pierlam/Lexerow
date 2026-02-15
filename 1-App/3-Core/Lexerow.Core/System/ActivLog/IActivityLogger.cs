@@ -44,6 +44,8 @@ public interface IActivityLogger
 
     void LogCompilEndError(ResultError error, string operation, string msg);
 
+    void LogCompilEndError(string operation, string msg);
+
     void LogExecStart(ActivityLogLevel level, string operation, string msg);
 
     void LogExecEnd(ActivityLogLevel level, string operation, string msg);

@@ -148,6 +148,20 @@ public class InstrBuilder
                 return true;
             }
 
+            // CopyHeader
+            if (scriptToken.Value.Equals(CoreDefinitions.InstrCopyHeader, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFuncCallCopyHeader(scriptToken);
+                return true;
+            }
+
+            // CopyRow
+            if (scriptToken.Value.Equals(CoreDefinitions.InstrCopyRow, StringComparison.InvariantCultureIgnoreCase))
+            {
+                instrBase = new InstrFuncCallCopyRow(scriptToken);
+                return true;
+            }
+
             // if it is not a known keyword, it's an object name, can be: a variable or a user defined function
             instrBase = new InstrNameObject(scriptToken);
             return true;

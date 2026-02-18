@@ -81,6 +81,8 @@ public enum InstrType
     //--functions
     FuncSelectFiles,
     FuncCreateExcel,
+    FuncCopyHeader,
+    FuncCopyRow,
 
     FuncDate,
 

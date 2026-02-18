@@ -40,7 +40,12 @@ public class CoreDefinitions
     //--function names
     public const string InstrFuncSelectFiles = "SelectFiles";
     public const string InstrCreateExcel = "CreateExcel";
+    public const string InstrCopyHeader = "CopyHeader";
+    public const string InstrCopyRow = "CopyRow";
+
     
+
+
     public const string InstrFuncDate = "Date";
     public const string InstrFuncDateTime = "DateTime";
     public const string InstrFuncTime = "Time";

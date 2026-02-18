@@ -16,10 +16,31 @@ namespace Lexerow.Core.Tests.CoreLoadLinesCompile;
 public class LoadLinesCompileCopyHeaderTests
 {
     /// <summary>
-    /// file= CreateExcel("mydata.xlsx")
+    /// CopyHeader(string, string)
     /// </summary>
     [TestMethod]
-    public void CopyHeaderExcelFileOk()
+    public void CopyHeaderStringStringOk()
+    {
+        Result result;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "file= SelectFiles(\"data.xlsx\")",
+            "excelOut= CreateExcel(\"result.xlsx\")",
+            "CopyHeader(\"data.xlsx\", \"result.xlsx\")",
+            ];
+
+        // load the script and compile it
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
+    }
+
+    /// <summary>
+    /// CopyHeader(excelFileObject, excelFileObject)
+    /// </summary>
+    [TestMethod]
+    public void CopyHeaderExcelFileFileOk()
     {
         Result result;
         LexerowCore core = new LexerowCore();
@@ -36,12 +57,32 @@ public class LoadLinesCompileCopyHeaderTests
         Assert.IsTrue(result.Res);
     }
 
-    // CopyHeader(filename, excelOut)
     /// <summary>
-    /// file= CreateExcel("mydata.xlsx")
+    /// CopyHeader(excelFileObject, excelFileObject)
     /// </summary>
     [TestMethod]
-    public void CopyHeaderStringOk()
+    public void CopyHeaderExcelFileListOfExcelFileObjectOk()
+    {
+        Result result;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "file= SelectFiles(\"*.xlsx\")",
+            "excelOut= CreateExcel(\"result.xlsx\")",
+            "CopyHeader(file, excelOut)",
+            ];
+
+        // load the script and compile it
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsTrue(result.Res);
+    }
+
+    /// <summary>
+    /// var= CopyHeader(string, string)
+    /// </summary>
+    [TestMethod]
+    public void ResCopyHeaderStringStringWrong()
     {
         Result result;
         LexerowCore core = new LexerowCore();
@@ -50,11 +91,35 @@ public class LoadLinesCompileCopyHeaderTests
         List<string> lines = [
             "file= SelectFiles(\"data.xlsx\")",
             "excelOut= CreateExcel(\"result.xlsx\")",
-            "CopyHeader(\"data.xlsx\", \"result.xlsx\")",
+            "var= CopyHeader(\"data.xlsx\", \"result.xlsx\")",
             ];
 
         // load the script and compile it
         result = core.LoadLinesScript("script", lines);
-        Assert.IsTrue(result.Res);
+        Assert.IsFalse(result.Res);
+        Assert.AreEqual(1, result.ListError.Count); 
+        Assert.AreEqual(ErrorCode.ParserVarWrongRightPart, result.ListError[0].ErrorCode);
     }
+
+    /// <summary>
+    /// var= CopyHeader(string)
+    /// </summary>
+    [TestMethod]
+    public void ResCopyHeaderStringWrong()
+    {
+        Result result;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "CopyHeader(\"data.xlsx\")",
+            ];
+
+        // load the script and compile it
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsFalse(result.Res);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, result.ListError[0].ErrorCode);
+    }
+
 }

@@ -131,6 +131,23 @@ public class Result
     /// </summary>
     /// <param name="errorCode"></param>
     /// <param name="scriptToken"></param>
+    public ResultError AddNewError(ErrorCode errorCode, ScriptToken scriptToken, string param)
+    {
+        ResultError resultError;
+        if (scriptToken != null)
+            resultError = new ResultError(errorCode, scriptToken.LineNum, scriptToken.ColNum, scriptToken.Value, param);
+        else
+            resultError = new ResultError(errorCode, 0, 0, string.Empty, param);
+        ListError.Add(resultError);
+        Res = false;
+        return resultError;
+    }
+
+    /// <summary>
+    /// Error occurs during script compilation.
+    /// </summary>
+    /// <param name="errorCode"></param>
+    /// <param name="scriptToken"></param>
     public bool AddError(ErrorCode errorCode, ScriptToken scriptToken, Exception exception)
     {
         ResultError resultError;

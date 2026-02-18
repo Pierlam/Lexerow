@@ -97,7 +97,7 @@ public class Parser
                 _logger.LogCompilOnGoing(ActivityLogLevel.Debug, "Parser.PerformTokensLineByLine", "End Of line reached, Num: " + currLineTokensIndex.ToString() + ", Line: " + currLineTokens.ScriptLine);
 
                 // no more token in the current line tokens, process items saved in the stack
-                res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);
+                res = ParserStackContentProcessor.ScriptEndLineReached(_logger, result, listVar, currLineTokensIndex, stackInstr, program);
                 if (!res) break;
 
                 // no more token in the current line tokens, go to the next one
@@ -176,7 +176,7 @@ public class Parser
             if (isToken) continue;
 
             // process special cases: all token of OnExcel instr inline for exp
-            res = PerformSpecialCases(result, listVar, currLineTokensIndex, stackInstr, instr, program, out isToken);
+            res = PerformSpecialCases(_logger, result, listVar, currLineTokensIndex, stackInstr, instr, program, out isToken);
             if (!res) break;
             if (isToken) continue;
 
@@ -497,7 +497,7 @@ public class Parser
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool PerformSpecialCases(Result result, List<InstrNameObject> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
+    private static bool PerformSpecialCases(IActivityLogger logger, Result result, List<InstrNameObject> listVar, int currLineTokensIndex, CompilStackInstr stackInstr, InstrBase instr, Program program, out bool isToken)
     {
         isToken = false;
 
@@ -505,7 +505,7 @@ public class Parser
         if (instr.InstrType == InstrType.Next)
         {
             // special case? Next inline: ..Then A.Cell= 12 Next   or  ..Then fct() Next
-            bool res = ParserStackContentProcessor.ScriptEndLineReached(result, listVar, currLineTokensIndex, stackInstr, program);
+            bool res = ParserStackContentProcessor.ScriptEndLineReached(logger, result, listVar, currLineTokensIndex, stackInstr, program);
             if (!res) return false;
 
             // now process the token Next of the OnExcel instr

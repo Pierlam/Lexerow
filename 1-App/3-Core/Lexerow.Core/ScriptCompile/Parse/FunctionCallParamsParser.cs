@@ -234,9 +234,22 @@ internal class FunctionCallParamsParser
             return false;
         }
 
-        // parse the first param: target file
-        if (!InstrUtils.GetStringFromInstrParser(result, program, listParams[0], out _, out _))
+        // parse the first param: target file, must be a excel file object variable
+        InstrBase instrVarValue = InstrUtils.GetValueFromInstrVarParser(program, listParams[0]); 
+        if(instrVarValue==null)
+        {
+            result.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams.Count.ToString());
             return false;
+        }
+
+        if (instrVarValue.ReturnType != InstrReturnType.ExcelFile)
+        {
+            result.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            return false;
+        }
+
+
+        // set the target file parameter
         instr.InstrTargetFile = listParams[0];
 
         return true;

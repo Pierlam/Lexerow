@@ -286,6 +286,25 @@ public class InstrUtils
         return true;
     }
 
+    /// <summary>
+    /// Get the value of the var instruction, if it's a var, else return null.
+    /// </summary>
+    /// <param name="progExecVarMgr"></param>
+    /// <param name="instr"></param>
+    /// <returns></returns>
+    public static InstrBase GetValueFromInstrVarParser(Program program, InstrBase instr)
+    {
+
+        //--is it a var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return null;
+
+        InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.Name);
+        if (instrSetVar == null) return null;
+
+        return instrSetVar.InstrRight;
+    }
+
     public static bool GetStringFromInstrVarParser(Result result, Program program, InstrBase instr, out bool isVar, out string value)
     {
         isVar = false;

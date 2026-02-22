@@ -39,7 +39,7 @@ public class InstrFuncCallCopyHeader:InstrBase
     /// <summary>
     /// If provided, the sheet will be created with the name. Otherwise, the default name will be used.
     /// </summary>
-    public InstrBase? InstrTargetShee { get; set; } = null;
+    public InstrBase? InstrTargetSheet { get; set; } = null;
 
     public override string ToString()
     {

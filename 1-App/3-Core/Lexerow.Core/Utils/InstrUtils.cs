@@ -1,7 +1,9 @@
 ﻿using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.System.ScriptDef;
+using OpenExcelSdk;
 
 namespace Lexerow.Core.Utils;
 
@@ -52,7 +54,7 @@ public class InstrUtils
     /// <param name="isValueOrVar"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool GetStringFromInstrExec(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isValueOrVar, out string value)
+    public static bool GetStringFromInstr(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isValueOrVar, out string value)
     {
         isValueOrVar = false;
         value = string.Empty;
@@ -63,9 +65,85 @@ public class InstrUtils
         if (isValueOrVar) return true;
 
         //--is it an instr var?
-        if (!GetStringFromInstrVarExec(result, progExecVarMgr, instr, out isValueOrVar, out value))
+        if (!GetStringFromInstrVar(result, progExecVarMgr, instr, out isValueOrVar, out value))
             return false;
 
+        return true;
+    }
+
+    public static bool GetFilenameOrExceFileFromInstr(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out string filename, out ExcelFile excelFile)
+    {
+        excelFile=null;
+        bool isValueOrVar = false;
+
+        //--is it an instr value?
+        if (!GetStringFromInstrValue(result, false, instr, out isValueOrVar, out filename))
+            return false;
+        if (isValueOrVar) return true;
+
+        //--is it an instr var?
+        //if (!GetStringFromInstrVar(result, progExecVarMgr, instr, out isValueOrVar, out filename))
+        //    return false;
+
+        //--is it a var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return true;
+
+        // check the final value of the var, can be a value, a fct call or a math expr
+        ProgExecVar progExecVar = progExecVarMgr.FindVarByName(instrObjectName.Name);
+        if (progExecVar == null)
+            return result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
+
+        //-the final var right instr is not a value?
+        //if (progExecVar.Value.InstrType != InstrType.Value)
+        //    return true;
+
+        //--is the instr right part a value?
+        if (!GetStringFromInstrValue(result, false, progExecVar.Value, out bool isValue, out filename))
+            return false;
+
+        if (isValue) return true;
+
+        // is it an Excel file?
+        InstrObjectExcelFile instrObjectExcelFile = progExecVar.Value as InstrObjectExcelFile;
+        if(instrObjectExcelFile==null)
+            // TODO: error?
+            return true;
+
+        filename = instrObjectExcelFile.Filename;
+        excelFile = instrObjectExcelFile.ExcelFile;
+        return true;
+    }
+
+    /// <summary>
+    /// Get the first filename from the instruction ObjectSelectedFiles.
+    /// </summary>
+    /// <param name="progExecVarMgr"></param>
+    /// <param name="instr"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetFirstValueFromInstrObjectSelectedFiles(ProgExecVarMgr progExecVarMgr, InstrBase instr, out string value)
+    {
+        value = string.Empty;
+
+        //--is it a var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return true;
+
+        // check the final value of the var, can be a value, a fct call or a math expr
+        ProgExecVar progExecVar = progExecVarMgr.FindVarByName(instrObjectName.Name);
+        if (progExecVar == null)
+            return false;
+
+        //-the final var right instr is not a value?
+        if (progExecVar.Value.InstrType != InstrType.ObjectSelectedFiles)
+            return true;
+
+        InstrObjectSelectedFiles instrObjectSelectedFiles = progExecVar.Value as InstrObjectSelectedFiles;
+        if (instrObjectSelectedFiles.ListObjectSelectedFile.Count == 0)
+            return false;
+
+        value= instrObjectSelectedFiles.ListObjectSelectedFile[0].Filename;
         return true;
     }
 
@@ -235,7 +313,7 @@ public class InstrUtils
         return true;
     }
 
-    public static bool GetStringFromInstrVarExec(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isVar, out string value)
+    public static bool GetStringFromInstrVar(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr, out bool isVar, out string value)
     {
         isVar = false;
         value = string.Empty;

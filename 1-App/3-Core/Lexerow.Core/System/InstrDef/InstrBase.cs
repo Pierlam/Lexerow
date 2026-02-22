@@ -71,7 +71,7 @@ public enum InstrType
     ProcessRow,
 
     //--Object
-    ObjectFilenamesSelected,
+    ObjectSelectedFiles,
 
     ObjectDate,
     ObjectDateTime,

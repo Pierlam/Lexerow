@@ -1,0 +1,3 @@
+﻿# need to have the target excel file
+
+CopyHeader(".\10-ExcelFiles\copyHeader2.xlsx", ".\10-ExcelFiles\copyHeaderRes2.xlsx")

@@ -35,7 +35,7 @@ public class InstrObjectSelectedFiles : InstrBase
 {
     public InstrObjectSelectedFiles(ScriptToken scriptToken) : base(scriptToken)
     {
-        InstrType = InstrType.ObjectFilenamesSelected;
+        InstrType = InstrType.ObjectSelectedFiles;
     }
 
     /// <summary>

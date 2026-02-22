@@ -286,4 +286,14 @@ public class TestExcelChecker
 
         return true;
     }
+
+    public static bool CheckCellNull(ExcelFile excelFile, string cellReference)
+    {
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        return (excelCell == null) ;
+    }
 }

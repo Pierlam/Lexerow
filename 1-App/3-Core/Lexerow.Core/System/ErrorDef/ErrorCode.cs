@@ -241,6 +241,9 @@ public enum ErrorCode
     ExecUnableCreateUpdateVar,
 
     ExecUnableCreateExcelFile,
+    ExecUnableCopyHeader,
+    ExecExcelSheetNotEmpty,
+    ExecExcelSheetEmpty,
 
     InstrNotExpected,
     IntMustBePositive,

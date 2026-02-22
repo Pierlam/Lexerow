@@ -52,14 +52,14 @@ public class InstrFuncCreateExcelExecutor
         }
 
         // get the filename
-        if (!InstrUtils.GetStringFromInstrExec(result, progExecVarMgr, instrCreateExcel.InstrFileName, out bool _, out string filename))
+        if (!InstrUtils.GetStringFromInstr(result, progExecVarMgr, instrCreateExcel.InstrFileName, out bool _, out string filename))
             return false;
 
         // get the sheetname
         string sheetname = CoreDefinitions.DefaultExcelSheetName;
         if (instrCreateExcel.InstrSheetName !=null)
         {
-            if (!InstrUtils.GetStringFromInstrExec(result, progExecVarMgr, instrCreateExcel.InstrSheetName, out bool _, out sheetname))
+            if (!InstrUtils.GetStringFromInstr(result, progExecVarMgr, instrCreateExcel.InstrSheetName, out bool _, out sheetname))
                 return false;
         }
 
@@ -73,13 +73,13 @@ public class InstrFuncCreateExcelExecutor
 
             // remove the instr from the stack
             ctx.StackInstr.Pop();
-            //ctx.PrevInstrExecuted = instrCreateExcel;
             ctx.PrevInstrExecuted = instrObjectExcelFile;
             return true;
         }
         catch (Exception ex)
         {
-            result.AddError(ErrorCode.ExecUnableCreateExcelFile, instrCreateExcel.FirstScriptToken());
+            var error= result.AddNewError(ErrorCode.ExecUnableCreateExcelFile, instrCreateExcel.FirstScriptToken());
+            _logger.LogExecEndError(error, "InstrFuncCreateExcelExecutor.ExecFuncCreateExcel", string.Empty);
             return false;
         }
 

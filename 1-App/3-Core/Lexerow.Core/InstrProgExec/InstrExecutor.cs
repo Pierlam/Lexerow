@@ -36,6 +36,8 @@ public class InstrExecutor
     private InstrFuncDateExecutor _instrFuncDateExecutor;
     private InstrFuncCreateExcelExecutor _instrFuncCreateExcelExecutor;
 
+    private InstrFuncCopyHeaderExecutor _instrFuncCopyHeaderExecutor;
+
     private ProgExecVarMgr _progExecVarMgr;
 
     /// <summary>
@@ -61,6 +63,7 @@ public class InstrExecutor
         _instrFuncSelectFilesExecutor = new InstrFuncSelectFilesExecutor(_logger);
         _instrFuncDateExecutor = new InstrFuncDateExecutor(_logger);
         _instrFuncCreateExcelExecutor= new InstrFuncCreateExcelExecutor(_logger, excelProcessor);
+        _instrFuncCopyHeaderExecutor= new InstrFuncCopyHeaderExecutor(_logger, excelProcessor);
     }
 
     /// <summary>
@@ -189,10 +192,18 @@ public class InstrExecutor
                 continue;
             }
 
+            if (instr.InstrType == InstrType.FuncCopyHeader)
+            {
+                res = _instrFuncCopyHeaderExecutor.ExecFuncCopyHeader(result, ctx, progExecVarMgr, instr as InstrFuncCallCopyHeader);
+                if (!res) return false;
+                continue;
+            }
+
             // string concatenation, exp: "data" + ".xlsx"
             // TODO:
 
-            result.AddError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
+            var error = result.AddNewError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
+            _logger.LogExecEndError(error, "InstrExecotur.ExecInstr", "instr: " + instr.ToString() + " not managed");
             return false;
         }
     }

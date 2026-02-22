@@ -122,4 +122,25 @@ public class LoadLinesCompileCopyHeaderTests
         Assert.AreEqual(ErrorCode.ParserFctParamCountWrong, result.ListError[0].ErrorCode);
     }
 
+    /// <summary>
+    /// var= CopyHeader(12, string)
+    /// </summary>
+    [TestMethod]
+    public void ResCopyHeader12StringWrong()
+    {
+        Result result;
+        LexerowCore core = new LexerowCore();
+
+        // create a basic script
+        List<string> lines = [
+            "CopyHeader(12, \"data.xlsx\")",
+            ];
+
+        // load the script and compile it
+        result = core.LoadLinesScript("script", lines);
+        Assert.IsFalse(result.Res);
+        Assert.AreEqual(1, result.ListError.Count);
+        Assert.AreEqual(ErrorCode.ParserValueStringExpected, result.ListError[0].ErrorCode);
+    }
+
 }

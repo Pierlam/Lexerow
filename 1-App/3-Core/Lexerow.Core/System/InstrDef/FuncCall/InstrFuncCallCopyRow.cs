@@ -13,7 +13,7 @@ namespace Lexerow.Core.System.InstrDef.FuncCall;
 /// 
 ///   CopyRow(fileTarget, A.Cell, B.Cell, D.Cell)
 ///   CopyRow(fileTarget, $file.Name, A.Cell, B.Cell, D.Cell)
-///   CopyRowToSheet(fileTarget, sheetNum/SheetName, <-values-... )
+///   CopyRowToSheet(fileTarget, sheetNum/SheetName, -values-... )
 /// </summary>
 public class InstrFuncCallCopyRow : InstrBase
 {
@@ -23,7 +23,16 @@ public class InstrFuncCallCopyRow : InstrBase
         IsFunctionCall = true;
     }
 
-    public InstrBase InstrTargetFile { get; set; }  
+    /// <summary>
+    /// the taget file. SHould an ExcelFile object or a var containing an ExcelFile object.
+    /// </summary>
+    public InstrBase InstrTargetFile { get; set; }
+
+    /// <summary>
+    /// List of instr for the values to copy, if not specified, the whole datarow will be copied.
+    /// </summary>
+    /// <returns></returns>
+    /// List<Instrbase> ListInstrValues { get; set; }
 
     public override string ToString()
     {

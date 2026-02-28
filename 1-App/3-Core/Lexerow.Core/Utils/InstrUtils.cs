@@ -81,10 +81,6 @@ public class InstrUtils
             return false;
         if (isValueOrVar) return true;
 
-        //--is it an instr var?
-        //if (!GetStringFromInstrVar(result, progExecVarMgr, instr, out isValueOrVar, out filename))
-        //    return false;
-
         //--is it a var?
         InstrNameObject instrObjectName = instr as InstrNameObject;
         if (instrObjectName == null) return true;
@@ -93,10 +89,6 @@ public class InstrUtils
         ProgExecVar progExecVar = progExecVarMgr.FindVarByName(instrObjectName.Name);
         if (progExecVar == null)
             return result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
-
-        //-the final var right instr is not a value?
-        //if (progExecVar.Value.InstrType != InstrType.Value)
-        //    return true;
 
         //--is the instr right part a value?
         if (!GetStringFromInstrValue(result, false, progExecVar.Value, out bool isValue, out filename))
@@ -173,6 +165,7 @@ public class InstrUtils
 
         return true;
     }
+
 
     /// <summary>
     /// Get the int value from the instruction, can be a Value or a Var.
@@ -329,6 +322,37 @@ public class InstrUtils
         if (!GetStringFromInstrValue(result, true, instrSetVar.InstrRight, out isVar, out value))
             return false;
 
+        return true;
+    }
+
+    /// <summary>
+    /// Get the object excel file from the instruction, if it's a var, else return null.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="progExecVarMgr"></param>
+    /// <param name="instr"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool GetObjectExcelFileFromInstrVar(Result result, ProgExecVarMgr progExecVarMgr, InstrBase instr,  out InstrObjectExcelFile value)
+    {
+        value = null;
+
+        //--is it a var?
+        InstrNameObject instrObjectName = instr as InstrNameObject;
+        if (instrObjectName == null) return true;
+
+        // check the final value of the var, can be a value, a fct call or a math expr
+        ProgExecVar progExecVar = progExecVarMgr.FindVarByName(instrObjectName.Name);
+        if (progExecVar == null)
+            return result.AddError(ErrorCode.ExecInstrVarNotFound, instrObjectName.FirstScriptToken());
+
+        // is it an Excel file?
+        InstrObjectExcelFile instrObjectExcelFile = progExecVar.Value as InstrObjectExcelFile;
+        if (instrObjectExcelFile == null)
+            // TODO: error?
+            return true;
+
+        value= instrObjectExcelFile;
         return true;
     }
 

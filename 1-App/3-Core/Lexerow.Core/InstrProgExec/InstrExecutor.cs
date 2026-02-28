@@ -38,6 +38,8 @@ public class InstrExecutor
 
     private InstrFuncCopyHeaderExecutor _instrFuncCopyHeaderExecutor;
 
+    private InstrFuncCopyRowExecutor _instrFuncCopyRowExecutor;
+
     private ProgExecVarMgr _progExecVarMgr;
 
     /// <summary>
@@ -64,6 +66,7 @@ public class InstrExecutor
         _instrFuncDateExecutor = new InstrFuncDateExecutor(_logger);
         _instrFuncCreateExcelExecutor= new InstrFuncCreateExcelExecutor(_logger, excelProcessor);
         _instrFuncCopyHeaderExecutor= new InstrFuncCopyHeaderExecutor(_logger, excelProcessor);
+        _instrFuncCopyRowExecutor= new InstrFuncCopyRowExecutor(_logger, excelProcessor);
     }
 
     /// <summary>
@@ -195,6 +198,13 @@ public class InstrExecutor
             if (instr.InstrType == InstrType.FuncCopyHeader)
             {
                 res = _instrFuncCopyHeaderExecutor.ExecFuncCopyHeader(result, ctx, progExecVarMgr, instr as InstrFuncCallCopyHeader);
+                if (!res) return false;
+                continue;
+            }
+
+            if (instr.InstrType == InstrType.FuncCopyRow)
+            {
+                res = _instrFuncCopyRowExecutor.ExecFuncCopyRow(result, ctx, progExecVarMgr, instr as InstrFuncCallCopyRow);
                 if (!res) return false;
                 continue;
             }

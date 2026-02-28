@@ -72,19 +72,17 @@ public class InstrFuncCopyHeaderExecutor
             return true;
         }
 
-        // TODO: decode sheet number, default is 0
+        // decode sheet number, default is 0
         int sheetNumSource = 0;
         int sheetNumTarget = 0;
 
-        // the source file can be a string, a varname or an excel file object, same for target file. 
+        // the source file can be a string, a varname or an excel file object
         if (!InstrUtils.GetFilenameOrExceFileFromInstr(result, progExecVarMgr, instrCopyHeader.InstrSourceFile, out string filenameSource, out ExcelFile excelFileSource))
             return false;
         if(string.IsNullOrEmpty(filenameSource))
         {
             InstrUtils.GetFirstValueFromInstrObjectSelectedFiles(progExecVarMgr, instrCopyHeader.InstrSourceFile, out filenameSource);
         }
-        // source filename should not be empty
-        // TODO: if the source file is an excel file object, 
 
         // the target file can be a string, a varname or an excel file object, same for target file. 
         if (!InstrUtils.GetFilenameOrExceFileFromInstr(result, progExecVarMgr, instrCopyHeader.InstrTargetFile, out string filenameTarget, out ExcelFile excelFileTarget))
@@ -164,7 +162,6 @@ public class InstrFuncCopyHeaderExecutor
             // remove the instr from the stack
             ctx.StackInstr.Pop();
             ctx.PrevInstrExecuted = null;
-            //_excelProcessor.CloseExcelFile(excelFileSrc);
             return true;
         }
         catch (Exception ex)
@@ -173,8 +170,6 @@ public class InstrFuncCopyHeaderExecutor
             _logger.LogExecEndError(error, "InstrFuncCreateExcelExecutor.ExecFuncCopyHeader", string.Empty);
             return false;
         }
-
-        return false;
     }
 }
 

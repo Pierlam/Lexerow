@@ -1,0 +1,89 @@
+﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ActivLog;
+using Lexerow.Core.System.InstrDef.FuncCall;
+using Lexerow.Core.System.InstrDef.Object;
+using Lexerow.Core.Utils;
+using OpenExcelSdk;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lexerow.Core.InstrProgExec.ExecFunc;
+
+public class InstrFuncCopyRowExecutor
+{
+    private IActivityLogger _logger;
+    private ExcelProcessor _excelProcessor;
+
+    public InstrFuncCopyRowExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor)
+    {
+        _logger = activityLogger;
+        _excelProcessor = excelProcessor;
+    }
+
+    /// <summary>
+    /// Execute the function CopyRow(fileTarget) which copy the current datarow in the fileTarget.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="ctx"></param>
+    /// <param name="progExecVarMgr"></param>
+    /// <param name="instrCopyRow"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public bool ExecFuncCopyRow(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncCallCopyRow instrCopyRow)
+    {
+        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrFuncCopyHeaderExecutor.ExecFuncCopyRow", string.Empty);
+
+        // source file instr need to be executed ?
+        if (InstrUtils.NeedToBeExecuted(instrCopyRow.InstrTargetFile))
+        {
+            ctx.StackInstr.Push(instrCopyRow.InstrTargetFile);
+            return true;
+        }
+
+        // get the target file
+        if (!InstrUtils.GetObjectExcelFileFromInstrVar(result, progExecVarMgr, instrCopyRow.InstrTargetFile, out InstrObjectExcelFile instrObjectExcelFile))
+            return false;
+
+        // by default, copy the datarow source to the first sheet
+        ExcelSheet excelSheetTarget = _excelProcessor.GetFirstSheet(instrObjectExcelFile.ExcelFile);
+
+        // get the datarow to copy from the context, it should be set by the ForEachRow instruction
+        ExcelRow row = _excelProcessor.GetRowAt(ctx.ExcelSheet, ctx.RowIndex);
+        if (row == null) return true;
+
+        // get the last row in the target sheet, and copy the source row to the next row
+        int lastRowIndex = _excelProcessor.GetLastRowIndex(excelSheetTarget);
+        lastRowIndex++;
+        for (int colNum = 1; colNum <= row.Row.Count(); colNum++)
+        {
+            // get the cell value
+            ExcelCell cell = _excelProcessor.GetCellAt(ctx.ExcelSheet, colNum, ctx.RowIndex);
+            if (cell == null) continue;
+
+            ExcelCellValue cellValue = _excelProcessor.GetCellValue(ctx.ExcelSheet, cell);
+            if (cellValue == null || cellValue.IsEmpty) continue;
+
+            if (cellValue.CellType == ExcelCellType.Integer)
+            {
+                _excelProcessor.SetCellValue(excelSheetTarget, colNum, lastRowIndex, (double)cellValue.IntegerValue);
+                continue;
+            }
+
+            if (cellValue.CellType == ExcelCellType.String)
+            {
+                _excelProcessor.SetCellValue(excelSheetTarget, colNum, lastRowIndex, cellValue.StringValue);
+                continue;
+            }
+
+            // TODO: other type?  the cell can have a Format, we need to copy it too
+        }
+
+        // remove the instr from the stack
+        ctx.StackInstr.Pop();
+        ctx.PrevInstrExecuted = null;
+        return true;
+    }
+}

@@ -43,7 +43,7 @@ public class InstrRowExecutor
             return true;
         }
 
-        ctx.RowNum = instrProcessRow.RowIndex;
+        ctx.RowIndex = instrProcessRow.RowIndex;
         // prepare the next one
         instrProcessRow.RowIndex++;
 

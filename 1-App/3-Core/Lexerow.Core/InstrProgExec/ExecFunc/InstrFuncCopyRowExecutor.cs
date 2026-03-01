@@ -51,7 +51,7 @@ public class InstrFuncCopyRowExecutor
         ExcelSheet excelSheetTarget = _excelProcessor.GetFirstSheet(instrObjectExcelFile.ExcelFile);
 
         // get the datarow to copy from the context, it should be set by the ForEachRow instruction
-        ExcelRow row = _excelProcessor.GetRowAt(ctx.ExcelSheet, ctx.RowIndex);
+        ExcelRow row = _excelProcessor.GetRowAt(ctx.ExcelSheet, ctx.RowIndex-1);
         if (row == null) return true;
 
         // get the last row in the target sheet, and copy the source row to the next row

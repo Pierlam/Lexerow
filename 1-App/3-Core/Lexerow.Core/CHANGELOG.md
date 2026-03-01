@@ -1,6 +1,10 @@
-﻿## 0.6.0 Release (2026-02-20)
+﻿## 0.6.0 Release (2026-03-XX)
 
 Add Core.Diagnostics class to display or export logs to txt or csv file.
+
+-Add new instructions: CreateExcel, CopyHeader and CopyRow to manage Excel file creation and copy header or row from an existing file.
+
+-194 unit tests, all are green.
 
 
 ## 0.5.0 Release (2026-01-10)

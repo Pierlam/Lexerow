@@ -75,7 +75,7 @@ public class TestExcelChecker
 
         if (excelCell.CellFormat.ApplyNumberFormat == null) return false;
 
-        styleMgr.GetCustomNumberFormat(excelSheet, excelCell.CellFormat.NumberFormatId.Value, out string numFormatGet);
+        styleMgr.GetCustomNumberFormat(excelSheet, (int)excelCell.CellFormat.NumberFormatId.Value, out string numFormatGet);
         return (numFormatGet == numFormat);
     }
 

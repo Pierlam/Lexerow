@@ -107,7 +107,7 @@ public class InstrFuncCopyHeaderExecutor
             ExcelSheet sheetSource = _excelProcessor.GetSheetAt(excelFileSource, sheetNumSource);
 
             // from A1 to last column of the first row, copy the header cell value from source sheet to target sheet
-            ExcelRow row = _excelProcessor.GetRowAt(sheetSource, 0);
+            ExcelRow row = _excelProcessor.GetRowAt(sheetSource, 1);
             if(row==null)
             {
                 var error = result.AddNewError(ErrorCode.ExecExcelSheetEmpty, instrCopyHeader.FirstScriptToken(), filenameSource);

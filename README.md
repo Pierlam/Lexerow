@@ -1,6 +1,5 @@
 # What is Lexerow ?
-Lexerow is a backend dotnet library to process easily datarows and cells in Excel files (xlsx).
-
+Lexerow is a backend dotnet library providing a micro-language to process easily datarows and cells in Excel files.
 You can for example detect empty cell in a column and set a specific value. 
 You can compare a cell value to a specific value and then put a new value in the same cell or in another cell of the row.
 

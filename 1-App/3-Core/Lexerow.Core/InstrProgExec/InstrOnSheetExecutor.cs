@@ -84,10 +84,10 @@ internal class InstrOnSheetExecutor
             if (!GetFirstRowValue(result, ctx, progExecVarMgr, instrOnSheet.InstrFirstDataRow, out int val))
                 return false;
 
-            instrProcessRow.RowIndex = val;
-            instrProcessRow.ColIndex = instrOnSheet.FirstColIndex;
+            instrProcessRow.RowAddr = val;
+            instrProcessRow.ColAddr = instrOnSheet.FirstCollAddr;
 
-            _logger.LogExecOnGoing(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnSheet", "RowIndex: " + val + ", ColIndex:" + instrOnSheet.FirstColIndex.ToString());
+            _logger.LogExecOnGoing(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnSheet", "RowAddr: " + val + ", ColAddr:" + instrOnSheet.FirstCollAddr.ToString());
 
             // set to the first datarow
             ctx.StackInstr.Push(instrProcessRow);

@@ -141,7 +141,7 @@ public class InstrComparisonExecutor
         if (instrBlankRight != null)
         {
             isCase = true;
-            if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowIndex, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
+            if (!CompareColCellBlank(result, _excelProcessor, ctx.ExcelSheet, ctx.RowAddr, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
                 return false;
             instrComparison.Result = resultComp;
             instrComparison.IsExecuted = true;
@@ -155,7 +155,7 @@ public class InstrComparisonExecutor
         if (instrBlankRight != null)
         {
             isCase = true;
-            if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowIndex, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
+            if (!CompareColCellNull(result, _excelProcessor, ctx.ExcelSheet, ctx.RowAddr, instrColCellFuncLeft, instrComparison.Operator, out bool resultComp))
                 return false;
             instrComparison.Result = resultComp;
             instrComparison.IsExecuted = true;
@@ -169,7 +169,7 @@ public class InstrComparisonExecutor
         if (instrColCellFuncRight != null)
         {
             isCase = true;
-            if (!Compare(result, _excelProcessor, progExecVarMgr, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowIndex, instrColCellFuncLeft, instrComparison.Operator, instrColCellFuncRight, out bool resultComp))
+            if (!Compare(result, _excelProcessor, progExecVarMgr, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowAddr, instrColCellFuncLeft, instrComparison.Operator, instrColCellFuncRight, out bool resultComp))
                 return false;
 
             instrComparison.Result = resultComp;
@@ -186,7 +186,7 @@ public class InstrComparisonExecutor
         if (instrValueRight != null)
         {
             isCase = true;
-            if (!Compare(result, _excelProcessor, progExecVarMgr, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowIndex, instrColCellFuncLeft, instrComparison.Operator, instrValueRight.ValueBase, out bool resultComp))
+            if (!Compare(result, _excelProcessor, progExecVarMgr, ctx.ExcelFileObject.Filename, ctx.ExcelSheet, ctx.RowAddr, instrColCellFuncLeft, instrComparison.Operator, instrValueRight.ValueBase, out bool resultComp))
                 return false;
 
             instrComparison.Result = resultComp;

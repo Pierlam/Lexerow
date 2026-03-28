@@ -104,11 +104,14 @@ public class InstrFuncCopyHeaderExecutor
             }
 
             // get the source sheet
-            ExcelSheet sheetSource = _excelProcessor.GetSheetAt(excelFileSource, sheetNumSource);
+            ExcelSheet excelSheetSource = _excelProcessor.GetSheetAt(excelFileSource, sheetNumSource);
 
-            // from A1 to last column of the first row, copy the header cell value from source sheet to target sheet
-            ExcelRow row = _excelProcessor.GetRowAt(sheetSource, 1);
-            if(row==null)
+            // header is always on the first row
+            int rowAddr = 1;
+
+            // on source excel file
+            int lastColAddr = _excelProcessor.GetLastColAddress(excelSheetSource, rowAddr);
+            if (lastColAddr == 0)
             {
                 var error = result.AddNewError(ErrorCode.ExecExcelSheetEmpty, instrCopyHeader.FirstScriptToken(), filenameSource);
                 _logger.LogExecEndError(error, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
@@ -123,10 +126,10 @@ public class InstrFuncCopyHeaderExecutor
             }
 
             // get the target sheet
-            ExcelSheet sheetTarget = _excelProcessor.GetSheetAt(excelFileTarget, sheetNumTarget);
+            ExcelSheet excelSheetTarget = _excelProcessor.GetSheetAt(excelFileTarget, sheetNumTarget);
 
             // the target sheet should be empty
-            int targetlastRowIndex= _excelProcessor.GetLastRowIndex(sheetTarget);
+            int targetlastRowIndex= _excelProcessor.GetLastRowIndex(excelSheetTarget);
             if(targetlastRowIndex>0)
             {
                 var error = result.AddNewError(ErrorCode.ExecExcelSheetNotEmpty, instrCopyHeader.FirstScriptToken(), filenameTarget);
@@ -134,23 +137,14 @@ public class InstrFuncCopyHeaderExecutor
                 return false;
             }
 
-
-            for (int colNum = 1; colNum <= row.Row.Count(); colNum++)
+            // copy cells of the source row header to the target
+            for (int c = 1; c <= lastColAddr; c++)
             {
-                // get the cell value
-                ExcelCell cell = _excelProcessor.GetCellAt(sheetSource,colNum, 1);
-                if(cell==null)continue;
+                // get the source cell
+                ExcelCell cellSource = _excelProcessor.GetCellAt(excelSheetSource, c, rowAddr);
 
-                ExcelCellValue cellValue= _excelProcessor.GetCellValue(sheetSource, cell);
-                if (cellValue == null || cellValue.IsEmpty) continue;
-
-                if(cellValue.CellType== ExcelCellType.String)
-                {
-                    _excelProcessor.SetCellValue(sheetTarget, colNum, 1, cellValue.StringValue);
-                    continue;
-                }
-
-                // TODO: other type?  For header, we expect the value is string, if not string, we also convert to string and copy to target sheet.
+                // copy to the target excel file
+                _excelProcessor.CopyCellValue(excelSheetSource, cellSource, excelSheetTarget, ExcelCellAddressUtils.ConvertAddress(c, rowAddr));
             }
 
             if(closeSourceFile)

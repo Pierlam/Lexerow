@@ -37,7 +37,7 @@ public class InstrOnSheet : InstrBase
     /// <summary>
     /// Human readable, base1
     /// </summary>
-    public int FirstColIndex { get; set; } = 1;
+    public int FirstCollAddr { get; set; } = 1;
 
     /// <summary>
     /// List of instr to apply on each row.

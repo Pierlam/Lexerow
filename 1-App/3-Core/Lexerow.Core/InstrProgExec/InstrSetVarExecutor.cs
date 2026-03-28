@@ -115,7 +115,7 @@ public class InstrSetVarExecutor
         InstrValue instrValue = instrRight as InstrValue;
         if (instrValue != null)
         {
-            if (!_instrSetColCellFuncExecutor.ExecSetCellValue(result, ctx.ExcelSheet, ctx.RowIndex, instrColCellFunc, instrValue))
+            if (!_instrSetColCellFuncExecutor.ExecSetCellValue(result, ctx.ExcelSheet, ctx.RowAddr, instrColCellFunc, instrValue))
                 return false;
             ctx.StackInstr.Pop();
             return true;
@@ -125,7 +125,7 @@ public class InstrSetVarExecutor
         InstrBlank instrBlank = instrRight as InstrBlank;
         if (instrBlank != null)
         {
-            if (!_instrSetColCellFuncExecutor.ExecSetCellBlank(result, ctx.ExcelSheet, ctx.RowIndex, instrColCellFunc))
+            if (!_instrSetColCellFuncExecutor.ExecSetCellBlank(result, ctx.ExcelSheet, ctx.RowAddr, instrColCellFunc))
                 return false;
             ctx.StackInstr.Pop();
             return true;
@@ -135,7 +135,7 @@ public class InstrSetVarExecutor
         InstrNull instrNull = instrRight as InstrNull;
         if (instrNull != null)
         {
-            if (!_instrSetColCellFuncExecutor.ExecSetCellNull(result, ctx.ExcelSheet, ctx.RowIndex, instrColCellFunc))
+            if (!_instrSetColCellFuncExecutor.ExecSetCellNull(result, ctx.ExcelSheet, ctx.RowAddr, instrColCellFunc))
                 return false;
             ctx.StackInstr.Pop();
             return true;

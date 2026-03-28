@@ -28,10 +28,10 @@ public class ProgExecContext
     public ExcelSheet? ExcelSheet { get; set; } = null;
 
     /// <summary>
-    /// The current excel sheet row index to process.
+    /// The current excel sheet row address to process.
     /// Starting from 1, init to -1 which is not started.
     /// </summary>
-    public int RowIndex { get; set; } = -1;
+    public int RowAddr { get; set; } = -1;
 
     /// <summary>
     /// list of selected excel filename to process

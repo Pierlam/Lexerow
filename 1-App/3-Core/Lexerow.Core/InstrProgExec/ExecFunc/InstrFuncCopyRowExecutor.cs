@@ -1,4 +1,6 @@
-﻿using Lexerow.Core.System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
@@ -50,35 +52,20 @@ public class InstrFuncCopyRowExecutor
         // by default, copy the datarow source to the first sheet
         ExcelSheet excelSheetTarget = _excelProcessor.GetFirstSheet(instrObjectExcelFile.ExcelFile);
 
-        // get the datarow to copy from the context, it should be set by the ForEachRow instruction
-        ExcelRow row = _excelProcessor.GetRowAt(ctx.ExcelSheet, ctx.RowIndex-1);
-        if (row == null) return true;
+        // on source excel file
+        int lastColAddr = _excelProcessor.GetLastColAddress(ctx.ExcelSheet, ctx.RowAddr);
 
-        // get the last row in the target sheet, and copy the source row to the next row
+        // on target excel file 
         int lastRowIndex = _excelProcessor.GetLastRowIndex(excelSheetTarget);
         lastRowIndex++;
-        for (int colNum = 1; colNum <= row.Row.Count(); colNum++)
+
+        for (int c = 1; c <= lastColAddr; c++)
         {
-            // get the cell value
-            ExcelCell cell = _excelProcessor.GetCellAt(ctx.ExcelSheet, colNum, ctx.RowIndex);
-            if (cell == null) continue;
+            // get the source cell
+            ExcelCell cell = _excelProcessor.GetCellAt(ctx.ExcelSheet, c, ctx.RowAddr);
 
-            ExcelCellValue cellValue = _excelProcessor.GetCellValue(ctx.ExcelSheet, cell);
-            if (cellValue == null || cellValue.IsEmpty) continue;
-
-            if (cellValue.CellType == ExcelCellType.Integer)
-            {
-                _excelProcessor.SetCellValue(excelSheetTarget, colNum, lastRowIndex, (double)cellValue.IntegerValue);
-                continue;
-            }
-
-            if (cellValue.CellType == ExcelCellType.String)
-            {
-                _excelProcessor.SetCellValue(excelSheetTarget, colNum, lastRowIndex, cellValue.StringValue);
-                continue;
-            }
-
-            // TODO: other type?  the cell can have a Format, we need to copy it too
+            // copy to the target excel file
+            _excelProcessor.CopyCellValue(ctx.ExcelSheet, cell, excelSheetTarget, ExcelCellAddressUtils.ConvertAddress(c, ctx.RowAddr));
         }
 
         // remove the instr from the stack

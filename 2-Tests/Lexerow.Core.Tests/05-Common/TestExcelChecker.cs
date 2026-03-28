@@ -20,6 +20,16 @@ public class TestExcelChecker
         return stream;
     }
 
+    public static ExcelSheet GetSheetAt(ExcelFile excelFile, int idx)
+    {
+        return  excelProcessor.GetSheetAt(excelFile,idx);
+    }
+
+    public static ExcelSheet GetSheetByName(ExcelFile excelFile, string name)
+    {
+        return excelProcessor.GetSheetByName(excelFile, name);
+    }
+
     /// <summary>
     /// Check the number format Id of the value of the cell.
     /// 14: dd/mm/yyyy
@@ -36,12 +46,13 @@ public class TestExcelChecker
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
         if (excelCell == null) return false;
 
-        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+        //var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+
 
         // no format
-        if (cellFormat == null) return false;
-        if (cellFormat.ApplyNumberFormat == null) return false;
-        return (numFormatId == (int)cellFormat.NumberFormatId.Value);
+        if (excelCell.CellFormat == null) return false;
+        if (excelCell.CellFormat.ApplyNumberFormat == null) return false;
+        return (numFormatId == (int)excelCell.CellFormat.NumberFormatId.Value);
     }
 
     /// <summary>
@@ -60,11 +71,11 @@ public class TestExcelChecker
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
         if (excelCell == null) return false;
 
-        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
+        //var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
 
-        if (cellFormat.ApplyNumberFormat == null) return false;
+        if (excelCell.CellFormat.ApplyNumberFormat == null) return false;
 
-        styleMgr.GetCustomNumberFormat(excelSheet, cellFormat.NumberFormatId.Value, out string numFormatGet);
+        styleMgr.GetCustomNumberFormat(excelSheet, (int)excelCell.CellFormat.NumberFormatId.Value, out string numFormatGet);
         return (numFormatGet == numFormat);
     }
 
@@ -77,9 +88,7 @@ public class TestExcelChecker
         ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
         if (excelCell == null) return false;
 
-        var cellFormat = excelProcessor.GetCellFormat(excelSheet, excelCell);
-
-        if (cellFormat.ApplyFill == null) return false;
+        if (excelCell.CellFormat.ApplyFill == null) return false;
 
         //cellFormat.FillId
 
@@ -276,5 +285,15 @@ public class TestExcelChecker
         if (excelCellValue.CellType != ExcelCellType.Undefined) return false;
 
         return true;
+    }
+
+    public static bool CheckCellNull(ExcelFile excelFile, string cellReference)
+    {
+        // get the first sheet
+        ExcelSheet excelSheet = excelProcessor.GetSheetAt(excelFile, 0);
+
+        // get the cell at the address
+        ExcelCell excelCell = excelProcessor.GetCellAt(excelSheet, cellReference);
+        return (excelCell == null) ;
     }
 }

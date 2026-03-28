@@ -70,7 +70,10 @@ public class LexerowCore : IDisposable
         Result result = LoadLinesScript(scriptName, scriptLines);
         if (!result.Res) return result;
 
-        return ExecuteScript(scriptName);
+        result= ExecuteScript(scriptName);
+
+        Diagnostics.CloseLogs();
+        return result;
     }
 
     /// <summary>

@@ -34,8 +34,8 @@ public class InstrRowExecutor
         _logger.LogExecStart(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", string.Empty);
 
         // next data row exists?
-        int lastRowNum = _excelProcessor.GetLastRowIndex(ctx.ExcelSheet);
-        if (instrProcessRow.RowIndex > lastRowNum)
+        int lastRowAddr = _excelProcessor.GetLastRowAddress(ctx.ExcelSheet);
+        if (instrProcessRow.RowAddr > lastRowAddr)
         {
             // no more datarow to process, go back to OnSheet instr
             ctx.StackInstr.Pop();
@@ -43,9 +43,10 @@ public class InstrRowExecutor
             return true;
         }
 
-        ctx.RowNum = instrProcessRow.RowIndex;
+        ctx.RowAddr = instrProcessRow.RowAddr;
+
         // prepare the next one
-        instrProcessRow.RowIndex++;
+        instrProcessRow.RowAddr++;
 
         // update insights
         result.Insights.NewRowProcessed();
@@ -55,7 +56,7 @@ public class InstrRowExecutor
 
         ctx.StackInstr.Push(instrForEachRow);
 
-        _logger.LogExecEnd(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowIndex);
+        _logger.LogExecEnd(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowAddr);
         return true;
     }
 

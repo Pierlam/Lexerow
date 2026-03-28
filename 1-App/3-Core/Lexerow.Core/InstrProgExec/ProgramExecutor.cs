@@ -1,6 +1,7 @@
 ﻿using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
+using Lexerow.Core.System.InstrDef.Object;
 using OpenExcelSdk;
 using System.Diagnostics;
 
@@ -41,8 +42,6 @@ public class ProgramExecutor
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        // convert program instr to instr to execute
-
         // execute instr, one by one
         foreach (var instrBase in program.ListInstr)
         {
@@ -50,9 +49,8 @@ public class ProgramExecutor
             if (!res) return false;
         }
 
-        // close all opened excel file, if its not done
-        // TODO: don't call it! each excel file will be closed just the use of it at the end of the exec of the instr OnExcel
-        //res= CloseAllOpenedExcelFile(result, _listExecVar);
+        // close opened excel file
+        res&=CloseOpenedExcelFiles(result, _progExecVarMgr);
 
         stopwatch.Stop();
         string elapsedTime = string.Format("{0:hh\\:mm\\:ss}", stopwatch.Elapsed);
@@ -60,6 +58,28 @@ public class ProgramExecutor
             _logger.LogExecEndError(result.ListError[0], "ProgramExecutor.Exec", "Error count: " + result.ListError.Count.ToString());
         else
             _logger.LogExecEnd(ActivityLogLevel.Info, "ProgramExecutor.Exec", "Elapsed time: " + elapsedTime);
+        return res;
+    }
+
+    /// <summary>
+    /// Close opened excel file
+    /// e.g. file=CreateExcel()
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="progExecVarMgr"></param>
+    /// <returns></returns>
+    private bool CloseOpenedExcelFiles(Result result, ProgExecVarMgr progExecVarMgr)
+    {
+        bool res = true;
+        foreach(ProgExecVar execVar in progExecVarMgr.ListExecVar)
+        {
+            InstrObjectExcelFile instrObjectExcelFile = execVar.Value as InstrObjectExcelFile;
+            if (instrObjectExcelFile!=null && instrObjectExcelFile.ExcelFile!=null)
+            {
+                res &= CloseFileExecutor.Exec(result, _excelProcessor, instrObjectExcelFile.ExcelFile);
+            }
+        }
+
         return res;
     }
 }

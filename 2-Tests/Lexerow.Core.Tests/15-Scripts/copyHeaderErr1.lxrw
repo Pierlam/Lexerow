@@ -1,0 +1,4 @@
+﻿# need to have the target excel file
+fileRes=CreateExcel(".\10-ExcelFiles\copyHeaderResErr1.xlsx")
+
+CopyHeader(".\10-ExcelFiles\copyHeaderErr1.xlsx", ".\10-ExcelFiles\copyHeaderResErr1.xlsx")

@@ -71,7 +71,7 @@ public enum InstrType
     ProcessRow,
 
     //--Object
-    ObjectFilenamesSelected,
+    ObjectSelectedFiles,
 
     ObjectDate,
     ObjectDateTime,
@@ -80,6 +80,9 @@ public enum InstrType
 
     //--functions
     FuncSelectFiles,
+    FuncCreateExcel,
+    FuncCopyHeader,
+    FuncCopyRow,
 
     FuncDate,
 

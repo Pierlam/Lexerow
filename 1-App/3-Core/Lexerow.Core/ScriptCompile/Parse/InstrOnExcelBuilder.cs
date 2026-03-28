@@ -162,14 +162,6 @@ public class InstrOnExcelBuilder
 
                 return true;
             }
-            // SheetName
-            // TODO:
-
-            // ForEach
-            // TODO:
-
-            // FirstRow
-            // TODO:
 
             // error
             result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());

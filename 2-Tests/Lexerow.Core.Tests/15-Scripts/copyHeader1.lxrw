@@ -1,0 +1,4 @@
+﻿
+file=SelectFiles(".\10-ExcelFiles\copyHeader1.xlsx")
+fileRes=CreateExcel(".\10-ExcelFiles\copyHeaderRes1.xlsx")
+CopyHeader(file, fileRes)

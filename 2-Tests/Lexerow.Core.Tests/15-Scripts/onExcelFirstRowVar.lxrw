@@ -1,6 +1,4 @@
-﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
-
-# define here the FirstRow value
+﻿# define here the FirstRow value
 r=3
 
 OnExcel ".\10-ExcelFiles\onExcelFirstRowVar.xlsx"

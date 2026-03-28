@@ -1,8 +1,8 @@
 ﻿using Lexerow.Core.System;
+using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
-using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
@@ -28,7 +28,7 @@ internal class ParserStackContentProcessor
     /// <param name="token"></param>
     /// <param name="compiledScript"></param>
     /// <returns></returns>
-    public static bool ScriptEndLineReached(Result result, List<InstrNameObject> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
+    public static bool ScriptEndLineReached(IActivityLogger logger, Result result, List<InstrNameObject> listVar, int scriptLineNum, CompilStackInstr stackInstr, Program program)
     {
         bool res, isToken;
 
@@ -74,12 +74,12 @@ internal class ParserStackContentProcessor
             if (isToken) continue;
 
             //--is previous instr on stack End If?
-            res = GatherEnd(result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
+            res = GatherEnd(logger, result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
             if (!res) return false;
             if (isToken) continue;
 
             //--is it a fct call, exp: fct()
-            res = ProcessFctCall(result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
+            res = PerformFctCall(logger, result, stackInstr, scriptLineNum, program.ListInstr, out isToken);
             if (!res) return false;
             // TODO: fct call can be in a Then or in a ForEachRow!
             if (isToken) continue;
@@ -571,9 +571,11 @@ internal class ParserStackContentProcessor
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool GatherEnd(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool GatherEnd(IActivityLogger logger, Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
+
+        logger.LogCompilStart(ActivityLogLevel.Trace, "ParserStackContentProcessor.GatherEnd", "Stack.Count: " + stackInstr.Count);
 
         if (stackInstr.Count == 0)
             return true;
@@ -620,116 +622,79 @@ internal class ParserStackContentProcessor
             return true;
         }
 
-        result.AddError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
+        var error= result.AddNewError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
+        logger.LogCompilEndError(error, "ParserStackContentProcessor.GatherEnd",string.Empty);
         return false;
     }
 
     /// <summary>
-    /// is it a fct call, without setVar, exp: fct()
+    /// is it a fct call, WITHOUT setVar, exp: SelectFiles(), CopyHeader(), CopyRow(), ...
     /// </summary>
     /// <param name="result"></param>
     /// <param name="stackInstr"></param>
     /// <param name="listInstrToExec"></param>
     /// <param name="isToken"></param>
     /// <returns></returns>
-    private static bool ProcessFctCall(Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
+    private static bool PerformFctCall(IActivityLogger logger, Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
+        logger.LogCompilStart(ActivityLogLevel.Trace, "ParserStackContentProcessor.PerformFctCall", "Stack.Count: " + stackInstr.Count);
 
         if (stackInstr.Count == 0)
             return true;
 
         // get the first/oldest item pushed in the stack
         var instrBase = stackInstr.Peek();
+        
 
         // the first one is a SetVar instr?
         if (!instrBase.IsFunctionCall)
             // not a set var instr
             return true;
 
-        // it's a fct call, the stack should contains onyl one item
+        // it's a fct call, the stack should contains only one item
         if (stackInstr.Count != 1)
         {
             result.AddError(ErrorCode.ParserTokenNotExpected, sourceCodeLineIndex.ToString());
             return false;
         }
 
-        //--is it the fct XXX ?
-        // TODO:
-
         //--is it the fct SelectFiles ?
-        InstrFuncCallSelectFiles instrOpenExcel = instrBase as InstrFuncCallSelectFiles;
-        if (instrOpenExcel != null)
+        InstrFuncCallSelectFiles instrFuncCallSelectFiles = instrBase as InstrFuncCallSelectFiles;
+        if (instrFuncCallSelectFiles != null)
         {
             // OpenExcel result not used!
             result.AddError(ErrorCode.ParserFctResultNotSet, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
             return false;
         }
 
+        //--is it the fct CopyHeader?
+        InstrFuncCallCopyHeader instrFuncCallCopyHeader = instrBase as InstrFuncCallCopyHeader;
+        if (instrFuncCallCopyHeader != null)
+        {
+            // ok! not a SetVar instr, but it's a fct call which is not expected without SetVar, so error
+            isToken = true;
+            stackInstr.Pop();
+            listInstrToExec.Add(instrFuncCallCopyHeader);
+            return true;
+        }
+
+
+        //--is it the fct CopyRow?
+        InstrFuncCallCopyRow instrFuncCallCopyRow = instrBase as InstrFuncCallCopyRow;
+        if (instrFuncCallCopyRow != null)
+        {
+            // ok 
+            isToken = true;
+            stackInstr.Pop();
+            listInstrToExec.Add(instrFuncCallCopyRow);
+            return true;
+        }
+
         // other cases: unexpected -> error
-        result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+        var error = result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
+        logger.LogCompilEndError(error, "ParserStackContentProcessor.ProcessFctCall", "FuncCall without SetVar expected");
         return false;
     }
 
-    //private static bool ProcessFirstDataRowValueValue(Result result, int scriptLineNum, InstrOnExcel instrOnExcel, InstrValue instrValue)
-    //{
-    //    if (!InstrUtils.GetValueIntFromInstrValue(result, instrValue, scriptLineNum, out int val))
-    //        return false;
-
-    //    // check the int value, should be >= 1
-    //    if (val < 1)
-    //    {
-    //        result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
-    //        return false;
-    //    }
-    //    // save the value into the current OnExcel sheet
-    //    //instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrValue;
-    //    return true;
-    //}
-
-    //// should be a int value, constraint: >1
-    //private static bool ProcessFirstDataRowValueVar(Result result, List<InstrObjectName> listVar, int scriptLineNum, Program program, InstrOnExcel instrOnExcel, InstrObjectName instrObjectName)
-    //{
-    //    // the varname should be defined
-    //    // TODO: really needed?? program.FindLastVarSet() do the job!
-    //    //var instrObjectNameVar = listVar.FirstOrDefault(v => v.MatchName(instrObjectName.ObjectName));
-    //    //if (instrObjectNameVar == null)
-    //    //{
-    //    //    result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
-    //    //    return false;
-    //    //}
-
-    //    // check the final value of the var, can be a value, a fct call or a math expr
-    //    InstrSetVar instrSetVar = program.FindLastVarSet(instrObjectName.ObjectName);
-    //    if (instrSetVar == null)
-    //    {
-    //        result.AddError(ErrorCode.ParserVarNotDefined, instrObjectName.FirstScriptToken());
-    //        return false;
-    //    }
-
-    //    // its a final int value, check it
-    //    if (instrSetVar.InstrRight.InstrType== InstrType.Value)
-    //    {
-    //        var instrValue = instrSetVar.InstrRight as InstrValue;
-    //        if (!InstrUtils.GetValueIntFromInstrValue(result, instrValue, scriptLineNum, out int val))
-    //            return false;
-
-    //        // check the int value, should be >= 1
-    //        if (val < 1)
-    //        {
-    //            result.AddError(ErrorCode.ParserValueIntWrong, instrValue.FirstScriptToken());
-    //            return false;
-    //        }
-    //        // save the var object
-    //        //instrOnExcel.CurrOnSheet.InstrFirstDataRow = instrObjectName;
-    //        return true;
-    //    }
-
-    //    // can be fct call, a math expr
-    //    // TODO:
-
-    //    result.AddError(ErrorCode.ParserCaseNotManaged, instrSetVar.InstrRight.FirstScriptToken());
-    //    return false;
-
-    //}
 }

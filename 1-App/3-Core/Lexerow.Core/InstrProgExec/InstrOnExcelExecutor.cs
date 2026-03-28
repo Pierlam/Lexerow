@@ -211,39 +211,6 @@ internal class InstrOnExcelExecutor
     }
 
     /// <summary>
-    /// Init, case OnExcel "data.xslx"
-    /// </summary>
-    /// <param name="result"></param>
-    /// <param name="ctx"></param>
-    /// <param name="instrOnExcel"></param>
-    /// <param name="exitStack"></param>
-    /// <returns></returns>
-    private bool IsOnExcelInitFilenameString(Result result, ProgExecContext ctx, InstrOnExcel instrOnExcel, out bool exitStack)
-    {
-        exitStack = false;
-        if (ctx.PrevInstrExecuted != null) return true;
-        if (instrOnExcel.InstrFiles == null) return true;
-
-        var instrValue = instrOnExcel.InstrFiles as InstrValue;
-        if (instrValue == null) return true;
-
-        if (instrValue.ValueBase.ValueType != System.ValueType.String)
-        {
-            // value should be string, a filename
-            result.AddError(ErrorCode.ExecInstrVarTypeNotExpected, instrValue.FirstScriptToken());
-            return false;
-        }
-
-        // create an adhoc SelectFiles instr
-        InstrFuncCallSelectFiles instrFuncSelectFiles = new InstrFuncCallSelectFiles(instrOnExcel.InstrFiles.FirstScriptToken());
-        instrFuncSelectFiles.AddParamSelect(instrOnExcel.InstrFiles);
-
-        ctx.StackInstr.Push(instrFuncSelectFiles);
-        exitStack = true;
-        return true;
-    }
-
-    /// <summary>
     /// Open the excel file object, from the name.
     /// </summary>
     /// <param name="result"></param>

@@ -30,7 +30,7 @@ public enum ActivityLogLevel
     Debug=2,
 
     /// <summary>
-    ///  Only when I would be "tracing" the code and trying to find one part of a function specifically.
+    ///  Only to "trace" the code and trying to find one part of a function specifically.
     /// </summary>
     Trace=3
 }   

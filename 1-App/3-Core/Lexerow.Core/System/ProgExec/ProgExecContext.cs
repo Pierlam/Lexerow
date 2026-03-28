@@ -12,14 +12,10 @@ public class ProgExecContext
 {
     public Stack<InstrBase> StackInstr { get; private set; } = new Stack<InstrBase>();
 
-    public InstrBase PrevInstrExecuted { get; set; } = null;
-
     /// <summary>
-    /// Init to -1 which is not started.
-    /// Used in execution.
-    /// base0.
+    /// The previous instruction executed, used for some instructions which need to get the info of the previous instruction, e.g. ForEachRow instruction need to get the excel sheet and row index info from the context which is set by the previous OnExcel instruction.
     /// </summary>
-    //public int FileToProcessNum { get; set; } = -1;
+    public InstrBase PrevInstrExecuted { get; set; } = null;
 
     /// <summary>
     /// The current excel file object to process.
@@ -32,9 +28,10 @@ public class ProgExecContext
     public ExcelSheet? ExcelSheet { get; set; } = null;
 
     /// <summary>
-    /// The current excel sheet row num to process.
+    /// The current excel sheet row address to process.
+    /// Starting from 1, init to -1 which is not started.
     /// </summary>
-    public int RowNum { get; set; } = -1;
+    public int RowAddr { get; set; } = -1;
 
     /// <summary>
     /// list of selected excel filename to process

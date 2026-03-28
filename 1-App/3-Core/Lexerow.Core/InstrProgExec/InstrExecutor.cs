@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.System;
+﻿using Lexerow.Core.InstrProgExec.ExecFunc;
+using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.InstrDef.FuncCall;
@@ -33,9 +34,20 @@ public class InstrExecutor
     private InstrFuncSelectFilesExecutor _instrFuncSelectFilesExecutor;
 
     private InstrFuncDateExecutor _instrFuncDateExecutor;
+    private InstrFuncCreateExcelExecutor _instrFuncCreateExcelExecutor;
+
+    private InstrFuncCopyHeaderExecutor _instrFuncCopyHeaderExecutor;
+
+    private InstrFuncCopyRowExecutor _instrFuncCopyRowExecutor;
 
     private ProgExecVarMgr _progExecVarMgr;
 
+    /// <summary>
+    /// Program instruction executor constructor.
+    /// </summary>
+    /// <param name="activityLogger"></param>
+    /// <param name="excelProcessor"></param>
+    /// <param name="progExecVarMgr"></param>
     public InstrExecutor(IActivityLogger activityLogger, ExcelProcessor excelProcessor, ProgExecVarMgr progExecVarMgr)
     {
         _logger = activityLogger;
@@ -52,6 +64,9 @@ public class InstrExecutor
 
         _instrFuncSelectFilesExecutor = new InstrFuncSelectFilesExecutor(_logger);
         _instrFuncDateExecutor = new InstrFuncDateExecutor(_logger);
+        _instrFuncCreateExcelExecutor= new InstrFuncCreateExcelExecutor(_logger, excelProcessor);
+        _instrFuncCopyHeaderExecutor= new InstrFuncCopyHeaderExecutor(_logger, excelProcessor);
+        _instrFuncCopyRowExecutor= new InstrFuncCopyRowExecutor(_logger, excelProcessor);
     }
 
     /// <summary>
@@ -65,6 +80,8 @@ public class InstrExecutor
     /// <returns></returns>
     public bool ExecInstr(Result result, Program program, ProgExecVarMgr progExecVarMgr, InstrBase instr)
     {
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrExecotur.ExecInstr", "instr: " + instr.ToString());
+
         ProgExecContext ctx = new ProgExecContext();
 
         bool res = true;
@@ -96,7 +113,7 @@ public class InstrExecutor
 
             if (instr.InstrType == InstrType.ProcessSheets)
             {
-                res = _instrOnSheetExecutor.ExecInstrProcessSheets(result, ctx, progExecVarMgr, instr as InstrProcessSheets);
+                res = _instrOnSheetExecutor.ExecInstrPerformSheets(result, ctx, progExecVarMgr, instr as InstrProcessSheets);
                 if (!res) return false;
                 continue;
             }
@@ -171,10 +188,32 @@ public class InstrExecutor
                 continue;
             }
 
+            if (instr.InstrType == InstrType.FuncCreateExcel)
+            {
+                res = _instrFuncCreateExcelExecutor.ExecFuncCreateExcel(result, ctx, progExecVarMgr, instr as InstrFuncCallCreateExcel);
+                if (!res) return false;
+                continue;
+            }
+
+            if (instr.InstrType == InstrType.FuncCopyHeader)
+            {
+                res = _instrFuncCopyHeaderExecutor.ExecFuncCopyHeader(result, ctx, progExecVarMgr, instr as InstrFuncCallCopyHeader);
+                if (!res) return false;
+                continue;
+            }
+
+            if (instr.InstrType == InstrType.FuncCopyRow)
+            {
+                res = _instrFuncCopyRowExecutor.ExecFuncCopyRow(result, ctx, progExecVarMgr, instr as InstrFuncCallCopyRow);
+                if (!res) return false;
+                continue;
+            }
+
             // string concatenation, exp: "data" + ".xlsx"
             // TODO:
 
-            result.AddError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
+            var error = result.AddNewError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
+            _logger.LogExecEndError(error, "InstrExecotur.ExecInstr", "instr: " + instr.ToString() + " not managed");
             return false;
         }
     }

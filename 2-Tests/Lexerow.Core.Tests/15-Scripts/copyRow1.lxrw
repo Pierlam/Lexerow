@@ -1,0 +1,11 @@
+﻿
+file=SelectFiles(".\10-ExcelFiles\copyRow1.xlsx")
+
+fileRes=CreateExcel(".\10-ExcelFiles\copyRowRes1.xlsx")
+CopyHeader(file, fileRes)
+
+OnExcel file
+	ForEachRow
+		If C.Cell >= 10 Then CopyRow(fileRes)
+	Next
+End OnExcel

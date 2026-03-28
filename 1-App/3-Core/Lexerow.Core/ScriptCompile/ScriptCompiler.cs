@@ -51,12 +51,12 @@ public class ScriptCompiler
         programScript = new Program(script);
 
         Parser parser = new Parser(_logger);
-        bool res = parser.Process(result, listScriptLineTokens, programScript);
+        bool res = parser.Perform(result, listScriptLineTokens, programScript);
 
         if (res)
             _logger.LogCompilEnd(ActivityLogLevel.Info, "CompileScript", script.Name);
         else
-            _logger.LogCompilEndError(result.ListError[0], "CompileScript", script.Name);
+            _logger.LogCompilEndError("CompileScript", script.Name);
 
         return result;
     }

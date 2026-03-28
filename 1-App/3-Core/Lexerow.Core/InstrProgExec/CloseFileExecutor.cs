@@ -5,6 +5,13 @@ namespace Lexerow.Core.InstrProgExec;
 
 internal class CloseFileExecutor
 {
+    /// <summary>
+    /// Close an open excel file.
+    /// </summary>
+    /// <param name="result"></param>
+    /// <param name="excelProcessor"></param>
+    /// <param name="excelFile"></param>
+    /// <returns></returns>
     public static bool Exec(Result result, ExcelProcessor excelProcessor, ExcelFile excelFile)
     {
         try

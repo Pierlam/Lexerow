@@ -30,4 +30,32 @@ internal class TestTheCore
         if (result.Res) Console.WriteLine("OK.");
         else Console.WriteLine("ERROR");
     }
+
+    public static void TestCoreCompilCopyHeader()
+    {
+        LexerowCore core = new LexerowCore();
+        //core.ActivityLogEvent += Core_ActivityLogEvent;
+        core.Diagnostics.SetLogLevelTrace();
+        core.Diagnostics.LogToConsole(true);
+        core.Diagnostics.SaveLogTxt(".\\Logs\\logs.txt");
+
+        // create a basic script
+        List<string> lines = [
+            "file= SelectFiles(\"data.xlsx\")",
+            "excelOut= CreateExcel(\"result.xlsx\")",
+            "CopyHeader(file, excelOut)",
+            ];
+
+        // load the script and compile it
+        var result = core.LoadLinesScript("script", lines);
+        core.Diagnostics.CloseLogs();
+
+        if (result.Res)
+            Console.WriteLine("Result: SUCCESS");
+        else
+        {
+            Console.WriteLine("Result: ERROR, error, line: " + result.ListError[0].LineNum);
+        }
+    }
+
 }

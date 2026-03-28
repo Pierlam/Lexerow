@@ -5,12 +5,12 @@ using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.InstrDef.Object;
 using Lexerow.Core.Utils;
 
-namespace Lexerow.Core.InstrProgExec;
+namespace Lexerow.Core.InstrProgExec.ExecFunc;
 
 /// <summary>
-/// Instr SelectFiles runner.
+/// Instr SelectFiles executor.
 /// Select files regarding parameters.
-/// exp:
+/// e.g.:
 /// 1/ basic case: SelectFiles("data.xlsx")  select one file.
 /// 2/ with joker: SelectFiles("*.xlsx")  select several files.
 /// 3/ with var: SelectFiles(filename)
@@ -98,7 +98,6 @@ public class InstrFuncSelectFilesExecutor
         ctx.StackInstr.Pop();
 
         // save the instr and remove it from the stack
-        //ctx.PrevInstrExecuted = instrSelectFiles;
         ctx.PrevInstrExecuted = instrObjectFilenamesSelected;
         return true;
     }

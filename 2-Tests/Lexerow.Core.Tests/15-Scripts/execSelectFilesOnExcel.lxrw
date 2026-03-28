@@ -1,6 +1,4 @@
-﻿# LoadFileExecOnExcelTests.OnExcelBasicOk
-
-files= SelectFiles(".\10-ExcelFiles\execSelectFilesOnExcel.xlsx")
+﻿files= SelectFiles(".\10-ExcelFiles\execSelectFilesOnExcel.xlsx")
 
 OnExcel files
 	ForEachRow

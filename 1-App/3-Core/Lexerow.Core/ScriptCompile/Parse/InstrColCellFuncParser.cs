@@ -21,12 +21,12 @@ namespace Lexerow.Core.ScriptCompile.Parse;
 /// </summary>
 public class InstrColCellFuncParser
 {
-    public static bool Process(Result result, CompilStackInstr stackInstr,  ScriptToken scriptToken, out bool isToken)
+    public static bool Perform(Result result, CompilStackInstr stackInstr,  ScriptToken scriptToken, out bool isToken)
     {
         isToken = false;
 
         //--case Cell 
-        if (!ParserUtils.IsToken(CoreInstr.InstrCell, scriptToken) && !ParserUtils.IsToken(CoreInstr.InstrBgColor, scriptToken) && !ParserUtils.IsToken(CoreInstr.InstrFgColor, scriptToken))
+        if (!ParserUtils.IsToken(CoreDefinitions.InstrCell, scriptToken) && !ParserUtils.IsToken(CoreDefinitions.InstrBgColor, scriptToken) && !ParserUtils.IsToken(CoreDefinitions.InstrFgColor, scriptToken))
             return true;
 
         // the stack contains nothing, error!
@@ -37,7 +37,7 @@ public class InstrColCellFuncParser
         }
 
         //--case Cell 
-        if (ParserUtils.IsToken(CoreInstr.InstrCell, scriptToken))
+        if (ParserUtils.IsToken(CoreDefinitions.InstrCell, scriptToken))
         {
             isToken = true;
             if (!ParseFuncCell(result, stackInstr, scriptToken))
@@ -49,7 +49,7 @@ public class InstrColCellFuncParser
         }
 
         //--case BgColor
-        if (ParserUtils.IsToken(CoreInstr.InstrBgColor, scriptToken))
+        if (ParserUtils.IsToken(CoreDefinitions.InstrBgColor, scriptToken))
         {
             // TODO: get the instr from the stack, should be a InstrColCellFunc
         }

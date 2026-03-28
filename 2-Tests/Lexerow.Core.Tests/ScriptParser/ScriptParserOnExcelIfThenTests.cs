@@ -73,7 +73,7 @@ public class ScriptParserOnExcelIfThenTests
         Parser parser = new Parser(A.Fake<IActivityLogger>());
         Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(result, scriptTokens, prog);
+        bool res = parser.Perform(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);
@@ -220,7 +220,7 @@ public class ScriptParserOnExcelIfThenTests
         Parser parser = new Parser(A.Fake<IActivityLogger>());
         Result result = new Result();
         var prog = TestInstrBuilder.CreateProgram();
-        bool res = parser.Process(result, scriptTokens, prog);
+        bool res = parser.Perform(result, scriptTokens, prog);
 
         //==> Check the result
         Assert.IsTrue(res);

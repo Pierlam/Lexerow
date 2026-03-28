@@ -16,16 +16,16 @@ public class InstrProcessRow : InstrBase
     }
 
     /// <summary>
-    /// row index, base 1.
+    /// row address, base 1.
     /// Placed before the first one.
     /// </summary>
-    public int RowIndex { get; set; } = 0;
+    public int RowAddr { get; set; } = 0;
 
     /// <summary>
-    /// column index, base 1.
+    /// column address, base 1.
     /// Placed before the first one.
     /// </summary>
-    public int ColIndex { get; set; } = 0;
+    public int ColAddr { get; set; } = 0;
 
     /// <summary>
     /// List of Instructions to execute on each datarow.

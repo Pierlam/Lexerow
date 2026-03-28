@@ -5,6 +5,7 @@ using Lexerow.Core.System.InstrDef.FuncCall;
 using Lexerow.Core.System.ScriptCompile;
 using Lexerow.Core.System.ScriptDef;
 using Lexerow.Core.Utils;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Lexerow.Core.ScriptCompile.Parse;
 
@@ -20,7 +21,7 @@ internal class FunctionCallParamsParser
     /// <param name="listInstrToExec"></param>
     /// <param name="listParams"></param>
     /// <returns></returns>
-    public static bool ProcessFunctionCallParams(IActivityLogger logger, Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, List<InstrBase> listParams)
+    public static bool PerformFunctionCallParams(IActivityLogger logger, Result result, List<InstrNameObject> listVar, CompilStackInstr stackInstr, ScriptToken scriptToken, Program program, List<InstrBase> listParams)
     {
         // the stack is empty?
         if (stackInstr.Count == 0)
@@ -38,24 +39,33 @@ internal class FunctionCallParamsParser
         //-item before openBracket is an object name? exp: fct()
         if (!instrBase.IsFunctionCall)
         {
-            result.AddError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken());
+            logger.LogCompilEndError(result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken()), "FunctionCallParamsParser.ProcessFunctionCallParams", "Instr should be a function Call, Type: " + instrBase.InstrType);
             return false;
         }
 
         if (instrBase.InstrType == InstrType.FuncSelectFiles)
-            return ProcessFuncSelectFiles(logger, result, listVar, instrBase as InstrFuncCallSelectFiles, program, listParams);
+            return PerformFuncSelectFiles(logger, result, listVar, instrBase as InstrFuncCallSelectFiles, program, listParams);
 
         if (instrBase.InstrType == InstrType.FuncDate)
-            return ProcessFuncDate(logger, result, listVar, instrBase as InstrFuncCallDate, program, listParams);
+            return PerformFuncDate(logger, result, listVar, instrBase as InstrFuncCallDate, program, listParams);
+
+        if (instrBase.InstrType == InstrType.FuncCreateExcel)
+            return PerformFuncCreateExcel(logger, result, listVar, instrBase as InstrFuncCallCreateExcel, program, listParams);
+
+        if (instrBase.InstrType == InstrType.FuncCopyHeader)
+            return PerformFuncCopyHeader(logger, result, listVar, instrBase as InstrFuncCallCopyHeader, program, listParams);
+
+        if (instrBase.InstrType == InstrType.FuncCopyRow)
+            return PerformFuncCopyRow(logger, result, listVar, instrBase as InstrFuncCallCopyRow, program, listParams);
 
         // function call name not expected
-        result.AddError(ErrorCode.ParserFctNameNotExpected, scriptToken);
+        logger.LogCompilEndError(result.AddNewError(ErrorCode.ParserFctNameNotExpected, scriptToken), "FunctionCallParamsParser.ProcessFunctionCallParams", string.Empty);
         return false;
     }
 
-    private static bool ProcessFuncSelectFiles(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallSelectFiles instr, Program program, List<InstrBase> listParams)
+    private static bool PerformFuncSelectFiles(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallSelectFiles instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.ProcessFuncSelectFiles", "Param count IN: " + listParams.Count);
+        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncSelectFiles", "Param count IN: " + listParams.Count);
 
         // only one param expected, type should be string or an instr returning a string
         if (listParams.Count != 1)
@@ -73,9 +83,19 @@ internal class FunctionCallParamsParser
         return true;
     }
 
-    private static bool ProcessFuncDate(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallDate instr, Program program, List<InstrBase> listParams)
+    /// <summary>
+    ///  Perform Date(year, month, day) function parameter parsing.
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instr"></param>
+    /// <param name="program"></param>
+    /// <param name="listParams"></param>
+    /// <returns></returns>
+    private static bool PerformFuncDate(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallDate instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.ProcessFuncSelectFiles", "Param count In: " + listParams.Count);
+        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncDate", "Param count In: " + listParams.Count);
 
         // 3 param expected, type should be an int or an instr returning an int
         if (listParams.Count != 3)
@@ -114,5 +134,124 @@ internal class FunctionCallParamsParser
             result.AddError(ErrorCode.ParserFctParamWrong, instr.ListScriptToken[0], "year: " + year + ", month: " + month + ", day:" + day);
             return false;
         }
+    }
+
+    /// <summary>
+    /// Perform CreateExcel(filename, sheetname) function parameter parsing.
+    /// can have one (filename) or two parameters: filename and sheetname.
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instr"></param>
+    /// <param name="program"></param>
+    /// <param name="listParams"></param>
+    /// <returns></returns>
+    private static bool PerformFuncCreateExcel(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallCreateExcel instr, Program program, List<InstrBase> listParams)
+    {
+        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCreateExcel", "Param count In: " + listParams.Count);
+
+        // 3 param expected, type should be an int or an instr returning an int
+        if (listParams.Count != 1 && listParams.Count != 2)
+        {
+            result.AddError(ErrorCode.ParserFctParamCountWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            return false;
+        }
+
+        // parse the first param: filename
+        if (!InstrUtils.GetStringFromInstrParser(result, program, listParams[0], out _, out _))
+            return false;
+        instr.InstrFileName= listParams[0];
+
+        // parse the second param: sheetname (optional) 
+        if(listParams.Count ==1)
+            return true;
+
+        if (!InstrUtils.GetStringFromInstrParser(result, program, listParams[1], out _, out _))
+            return false;
+        instr.InstrSheetName= listParams[1];
+        return true;
+    }
+
+    /// <summary>
+    /// Perform CopyHeader(fileSrc, fileRes) function parameter parsing.
+    /// fileSrc: a string filename or an ExcelFile object, or a list of Excel file Object.
+    /// fileRes: a string filename or an ExcelFile object.
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instr"></param>
+    /// <param name="program"></param>
+    /// <param name="listParams"></param>
+    /// <returns></returns>
+    private static bool PerformFuncCopyHeader(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallCopyHeader instr, Program program, List<InstrBase> listParams)
+    {
+        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCopyHeader", "Param count In: " + listParams.Count);
+
+        // 2 param expected, type should be an int or an instr returning an int
+        if (listParams.Count != 2)
+        {
+            result.AddError(ErrorCode.ParserFctParamCountWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            return false;
+        }
+
+        // parse the first param: source file
+        if (!InstrUtils.GetStringFromInstrParser(result, program, listParams[0], out _, out _))
+            return false;
+        instr.InstrSourceFile= listParams[0];
+
+        if (!InstrUtils.GetStringFromInstrParser(result, program, listParams[1], out _, out _))
+            return false;
+        instr.InstrTargetFile = listParams[1];
+        return true;
+    }
+
+    /// <summary>
+    /// Main case: CopyRow(fileTarget)
+    /// later: 
+    /// 
+    ///   CopyRow(fileTarget, A.Cell, B.Cell, D.Cell)
+    ///   CopyRow(fileTarget, $file.Name, A.Cell, B.Cell, D.Cell)
+    ///   CopyRowToSheet(fileTarget, sheetNum/SheetName, <-values-... )
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="result"></param>
+    /// <param name="listVar"></param>
+    /// <param name="instr"></param>
+    /// <param name="program"></param>
+    /// <param name="listParams"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    private static bool PerformFuncCopyRow(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallCopyRow instr, Program program, List<InstrBase> listParams)
+    {
+        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCopyRow", "Param count In: " + listParams.Count);
+
+        // 2 param expected, type should be an int or an instr returning an int
+        if (listParams.Count != 1)
+        {
+            result.AddError(ErrorCode.ParserFctParamCountWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            return false;
+        }
+
+        // parse the first param: target file, must be a excel file object variable
+        InstrBase instrVarValue = InstrUtils.GetValueFromInstrVarParser(program, listParams[0]); 
+        if(instrVarValue==null)
+        {
+            result.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            return false;
+        }
+
+        if (instrVarValue.ReturnType != InstrReturnType.ExcelFile)
+        {
+            result.AddError(ErrorCode.ParserFctParamTypeWrong, instr.ListScriptToken[0], listParams.Count.ToString());
+            return false;
+        }
+
+
+        // set the target file parameter
+        instr.InstrTargetFile = listParams[0];
+
+        return true;
     }
 }

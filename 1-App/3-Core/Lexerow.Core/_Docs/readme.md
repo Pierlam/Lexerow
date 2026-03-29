@@ -2,12 +2,12 @@
 
 Lexerow is a backend dotnet library providing a micro-language to process easily datarows and cells in Excel files.
 
-For example you can detect empty cell in a column and set a specific value.
+A very basic use case should be to detect empty cell in a column and set a specific value.
 You can compare a cell value to a specific value and then put a new value in the same row or in another cell of the row.
 
 Lexerow is developed in C# and can be used in any dotnet application.
 
-Lexerow is an open source library.
+Lexerow is a free and open source library.
 
 # A quick example
 
@@ -110,6 +110,8 @@ https://github.com/Pierlam/Lexerow
 
 # To go further - Script tuning
 
+## basic script sample
+
 Now let's manage a specific case of your datatable.
 
 If the header use 2 rows or more, it's possible to set a different first data row to process. For example, start at the row #3 in place of default row #2. You may use the instruction FirstRow.
@@ -124,6 +126,8 @@ OnExcel "file.xlsx"
 End OnExcel	
 ```
 
+## If condition in script
+
 There are several kind of checks available in If condition:
 
 ```
@@ -137,27 +141,32 @@ If A.Cell >10 And B.Cell< 20
 If (A.Cell >10 And B.Cell< 20) Or C.Cell=12
 ```
 
+## Then instruction in script
+
 In Then instruction, you can set a value to a cell or clear it.
 
 To clear the cell value, you can put blank in it. 
 The formating of the cell will remain: background/foreground color and border.
 
-To remove completly a cell (value and formatting) , you have to set it to null. 
+To remove completly a cell (value and formatting), you have to set it to null. 
 
-For If and Then instruction, type of value can be: int, double, string and now Date.
-
-DateTime and time will be managed later.
 
 ```
 Then A.Cell=13
 Then A.Cell=25.89
 Then A.Cell="Hello"
-Then A.Cell=blank    # cell formatting will stay
-Then A.Cell=null     # cell formatting will be cleared
-Then A.Cell=Date(2019,11,14) 
+Then A.Cell=blank             # cell formatting will stay
+Then A.Cell=null              # cell formatting will be cleared
+Then A.Cell=Date(2019,11,14)  # put a date value in the cell with the default format dd/mm/yyyy
+Then CopyRow(fileRes)         # copy the current row to another excel file
 ```
 
-From a technical point of view, you can manage easily errors occured during compilation or during the execution of scripts.
+For If and Then instruction, type of value can be: int, double, string, and Date.
+
+DateTime, Time and currency are not yet managed.
+
+You may want to apply many Then instructions for one If instruction; for example:
+
 
 ```
 OnExcel "file.xlsx"
@@ -172,7 +181,16 @@ OnExcel "file.xlsx"
 End OnExcel	
 ```
 
-You can also manage easily errors occuring during compilation or during the execution of scripts.
+## More possible cases!
+
+There are a lot of cases which are possible to put in script.
+
+Take a look to samples:  https://github.com/Pierlam/Lexerow/wiki/Script-samples
+
+# Manage errors
+
+From a technical point of view, you can manage easily errors occured during compilation or during the execution of scripts.
+
 
 ```
 

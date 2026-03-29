@@ -61,11 +61,11 @@ public class InstrFuncCopyRowExecutor
 
         for (int c = 1; c <= lastColAddr; c++)
         {
-            // get the source cell
+            // get the source cell, from the current sheet and datarow
             ExcelCell cell = _excelProcessor.GetCellAt(ctx.ExcelSheet, c, ctx.RowAddr);
 
-            // copy to the target excel file
-            _excelProcessor.CopyCellValue(ctx.ExcelSheet, cell, excelSheetTarget, ExcelCellAddressUtils.ConvertAddress(c, ctx.RowAddr));
+            // copy to the target excel file, at the last index
+            _excelProcessor.CopyCellValue(ctx.ExcelSheet, cell, excelSheetTarget, ExcelCellAddressUtils.ConvertAddress(c, lastRowIndex));
         }
 
         // remove the instr from the stack

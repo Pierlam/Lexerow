@@ -122,7 +122,7 @@ If (A.Cell >10 And B.Cell< 20) Or C.Cell=12
 ```
 
 Remark: string comparison are case insensitive by default.
-It's possible to modify this behaviour:
+It's possible to modify this behaviour by putting this instruction at the top of the script:
 
 ```
 $StrCompareCaseSensitive=true
@@ -148,6 +148,15 @@ Then A.Cell=null              # cell formatting will be cleared
 Then A.Cell=Date(2019,11,14)  # put a date value in the cell with the default format dd/mm/yyyy
 Then CopyRow(fileRes)         # copy the current row to another excel file
 ```
+
+By default date are displayed with the default format: dd/mm/yyyy
+You can change the default display format for date by putting this instruction at the top of the script:
+
+```
+# would like to change the output format of dates
+$DateFormat="yyyy-mm-dd"
+```
+
 
 For If and Then instruction, type of value can be: int, double, string, and Date.
 

@@ -1,0 +1,5 @@
+﻿OnExcel "data.xlsx"
+	ForEachRow
+		If A.Cell > 10 Then A.Cell=10
+	Next
+End OnExcel

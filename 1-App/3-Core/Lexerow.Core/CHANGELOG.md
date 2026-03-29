@@ -1,4 +1,11 @@
-﻿## 0.6.0 Release (2026-03-29)
+﻿## 0.7.0 Release (2026-XX-XX)
+
+-TODO:
+
+-194 unit tests, all are green.
+
+
+## 0.6.0 Release (2026-03-29)
 
 Add Core.Diagnostics class to display or export logs to txt or csv file.
 

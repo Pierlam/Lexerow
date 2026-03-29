@@ -1,8 +1,10 @@
-﻿## 0.6.0 Release (2026-03-XX)
+﻿## 0.6.0 Release (2026-03-29)
 
 Add Core.Diagnostics class to display or export logs to txt or csv file.
 
--Add new instructions: CreateExcel, CopyHeader and CopyRow to manage Excel file creation and copy header or row from an existing file.
+-Add new instructions: CreateExcel, CopyHeader and CopyRow to manage Excel file creation, copy header and row to another excel file.
+
+-Use the lastest version v0.7.1 of OpenExcelSdk library to manage Excel file.
 
 -194 unit tests, all are green.
 

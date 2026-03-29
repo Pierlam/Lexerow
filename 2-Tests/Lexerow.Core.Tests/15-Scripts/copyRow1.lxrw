@@ -1,4 +1,5 @@
-﻿
+﻿# copy rows to another excel file
+
 file=SelectFiles(".\10-ExcelFiles\copyRow1.xlsx")
 
 fileRes=CreateExcel(".\10-ExcelFiles\copyRowRes1.xlsx")

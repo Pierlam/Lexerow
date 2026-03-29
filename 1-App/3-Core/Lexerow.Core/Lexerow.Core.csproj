@@ -20,6 +20,7 @@
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageReleaseNotes>(Package release notes are in CHANGELOG.md)</PackageReleaseNotes>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <PackageIcon>Lexerow-logo.jpg</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,5 +40,9 @@
 			<PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
 		</PropertyGroup>
 	</Target>
+
+	<ItemGroup>
+		<None Include="images\Lexerow-logo.jpg" Pack="true" PackagePath="" />
+	</ItemGroup>
 
 </Project>

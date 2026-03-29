@@ -121,6 +121,14 @@ If A.Cell >10 And B.Cell< 20
 If (A.Cell >10 And B.Cell< 20) Or C.Cell=12
 ```
 
+Remark: string comparison are case insensitive by default.
+It's possible to modify this behaviour:
+
+```
+$StrCompareCaseSensitive=true
+```
+
+
 ## Then instruction in script
 
 In Then instruction, you can set a value to a cell or clear it.

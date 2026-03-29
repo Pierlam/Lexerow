@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Description>Lexerow is a backend dotnet library to process very easily datarows and cells in Excel files. You can for example detect empty cell in a column and set a specific value.</Description>
+    <Description>Lexerow is a backend dotnet library providing a micro-language to process very easily datarows and cells in Excel files. You can for example detect empty cell in a column and set a specific value.</Description>
     <Title>backend dotnet library to process very easily datarows and cells in Excel files. </Title> 
 	<AssemblyName>Lexerow</AssemblyName>
     <Authors>Pierlam</Authors>

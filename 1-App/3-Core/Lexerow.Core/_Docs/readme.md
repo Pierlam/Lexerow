@@ -169,8 +169,8 @@ Then A.Cell=Date(2019,11,14)  # put a date value in the cell with the default fo
 Then CopyRow(fileRes)         # copy the current row to another excel file
 ```
 
-By default date are displayed with the default format: dd/mm/yyyy
-You can change the default display format for date by putting this instruction at the top of the script:
+By default date are displayed with the default format: dd/mm/yyyy.
+You can change it the by putting this instruction at the top of the script:
 
 ```
 # would like to change the output format of dates

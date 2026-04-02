@@ -8,6 +8,8 @@ Version version = assembly.GetName().Version;
 
 string vers = version.ToString();
 
+//XXXX-DEBUG:
+args = new string[] { "-debug", "-script", @"script.lxrow" };
 // check arguments
 if (args.Length == 0 || args[0].ToLower() == "-help" || args[0].ToLower() == "/?")
 {

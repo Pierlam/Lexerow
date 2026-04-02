@@ -33,8 +33,12 @@ public class LexerowCore : IDisposable
     /// </summary>
     public LexerowCore()
     {
+        // create the log/trace message builder
+        //MessageBuilder // todo: placer ou?? 
+
         _logger = new ActivityLogger();
-        // default activity log lelve: Info, only main information.
+
+        // default activity log level: Info, only main information.
         _logger.ActiveLevel = ActivityLogLevel.Info;
 
         Diagnostics = new Diagnostics(_logger);
@@ -130,6 +134,7 @@ public class LexerowCore : IDisposable
     /// <returns></returns>
     public Result LoadExecScript(string scriptName, string filename)
     {
+        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadExecScript", filename);
         Result result = LoadScript(scriptName, filename);
         if (!result.Res) return result;
 
@@ -145,7 +150,7 @@ public class LexerowCore : IDisposable
     /// <returns></returns>
     public Result LoadScript(string scriptName, string fileName)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", scriptName);
+        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", fileName);
 
         Result result = new Result();
 

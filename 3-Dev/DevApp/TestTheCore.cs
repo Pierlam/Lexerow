@@ -1,5 +1,6 @@
 ﻿using Lexerow.Core;
 using Lexerow.Core.System;
+using Lexerow.Core.System.ActivLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +12,23 @@ namespace DevApp;
 
 internal class TestTheCore
 {
+    static void Core_ActivityLogEvent(object? sender, ActivityLog e)
+    {
+        Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Module + " " + e.Operation + " " + e.Param);
+    }
+
     /// <summary>
     /// If A.Cell >= 10 Then A.Cell=10
-
     /// </summary>
     public static void TestCore()
     {
         LexerowCore core = new LexerowCore();
         core.Diagnostics.SetLogLevelTrace();
-        core.Diagnostics.LogToConsole(true);
+        //core.Diagnostics.LogToConsole(true);
         core.Diagnostics.SaveLogTxt(".\\Logs\\logs.txt");
         core.Diagnostics.SaveLogCsv(".\\Logs\\logs.csv");
+
+        core.ActivityLogEvent += Core_ActivityLogEvent;
 
         string scriptfile = ".\\Scripts\\test2026.lxrw";
         // load the script, compile it and then execute it

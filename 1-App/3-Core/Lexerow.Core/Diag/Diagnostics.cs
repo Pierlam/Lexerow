@@ -130,16 +130,16 @@ public class Diagnostics
 
         if(e.Result== ActivityLogResult.Error && e.Error!=null)
         {
-           string msg= e.Msg; 
-            e.Msg = "LineNum: " + e.Error.LineNum+ ", ErrCode: " + e.Error.ErrorCode.ToString() + ", Msg: " + e.Error.Param;
+           string msg= e.Param; 
+            e.Param = "LineNum: " + e.Error.LineNum+ ", ErrCode: " + e.Error.ErrorCode.ToString() + ", Msg: " + e.Error.Param;
             if (e.Error.Exception != null)
-                e.Msg += ", Ex: " + e.Error.Exception.Message;
+                e.Param += ", Ex: " + e.Error.Exception.Message;
 
             if(!string.IsNullOrWhiteSpace(msg))
-                e.Msg += " " + msg;
+                e.Param += " " + msg;
         }
 
-        s += " " + e.Level + " " + e.Module + " " + e.Stage + " " + e.Result + " " + e.Operation + " " + e.Msg;
+        s += " " + e.Level + " " + e.Module + " " + e.Stage + " " + e.Result + " " + e.Operation + " " + e.Param;
         return s;
     }
 
@@ -149,7 +149,7 @@ public class Diagnostics
 
         s = e.When.ToString("dd/MM/yyyy HH:mm:ss fff");
 
-        s += sep + e.Level + sep + e.Module + sep + e.Stage + sep + e.Result + sep + e.Operation + sep + e.Msg;
+        s += sep + e.Level + sep + e.Module + sep + e.Stage + sep + e.Result + sep + e.Operation + sep + e.Param;
         return s;
     }
 

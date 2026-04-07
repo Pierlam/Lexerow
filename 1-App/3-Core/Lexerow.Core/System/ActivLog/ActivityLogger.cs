@@ -1,4 +1,6 @@
-﻿namespace Lexerow.Core.System.ActivLog;
+﻿using Lexerow.Core.Diag;
+
+namespace Lexerow.Core.System.ActivLog;
 
 /// <summary>
 /// activity logger for the Lexerow application, used in these stages/modules:
@@ -6,6 +8,13 @@
 /// </summary>
 public class ActivityLogger : IActivityLogger
 {
+    private MessageBuilder _messageBuilder;
+
+    public ActivityLogger(MessageBuilder messageBuilder)
+    {
+        _messageBuilder= messageBuilder;
+    }
+
     public event EventHandler<ActivityLog> ActivityLogEvent;
 
     /// <summary>
@@ -14,6 +23,7 @@ public class ActivityLogger : IActivityLogger
     /// If it's Info, the top one, only this one is allowed.
     /// </summary>
     public ActivityLogLevel ActiveLevel { get; set; }= ActivityLogLevel.Info;
+
 
     /// <summary>
     /// Is the provided log level allowed?
@@ -53,11 +63,11 @@ public class ActivityLogger : IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilStart(ActivityLogLevel level, string operation, string msg)
+    public void LogCompilStart(ActivityLogLevel level, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.Start, level, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.Start, level, operation, param);
         log.Module = ActivityLogType.CompileScript;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
     /// <summary>
@@ -65,18 +75,18 @@ public class ActivityLogger : IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilEnd(ActivityLogLevel level, string operation, string msg)
+    public void LogCompilEnd(ActivityLogLevel level, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.End, level, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.End, level, operation, param);
         log.Module = ActivityLogType.CompileScript;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
-    public void LogCompilOnGoing(ActivityLogLevel level, string operation, string msg)
+    public void LogCompilOnGoing(ActivityLogLevel level, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.OnGoing, level, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.OnGoing, level, operation, param);
         log.Module = ActivityLogType.CompileScript;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
     /// <summary>
@@ -85,13 +95,13 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilEndError(ResultError error, string operation, string msg)
+    public void LogCompilEndError(ResultError error, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Info, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Info, operation, param);
         log.Module = ActivityLogType.CompileScript;
         log.Error = error;
         log.Result = ActivityLogResult.Error;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
     /// <summary>
@@ -100,13 +110,13 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilEndError(string operation, string msg)
+    public void LogCompilEndError(string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Info, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Info, operation, param);
         log.Module = ActivityLogType.CompileScript;
         //log.Error = error;
         log.Result = ActivityLogResult.Error;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
     /// <summary>
@@ -114,11 +124,11 @@ public class ActivityLogger : IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogExecStart(ActivityLogLevel level, string operation, string msg)
+    public void LogExecStart(ActivityLogLevel level, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.Start, level, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.Start, level, operation, param);
         log.Module = ActivityLogType.ExecProg;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
     /// <summary>
@@ -126,18 +136,18 @@ public class ActivityLogger : IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogExecEnd(ActivityLogLevel level, string operation, string msg)
+    public void LogExecEnd(ActivityLogLevel level, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.End, level, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.End, level, operation, param);
         log.Module = ActivityLogType.ExecProg;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
-    public void LogExecOnGoing(ActivityLogLevel level, string operation, string msg)
+    public void LogExecOnGoing(ActivityLogLevel level, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.OnGoing, level, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.OnGoing, level, operation, param);
         log.Module = ActivityLogType.ExecProg;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
     /// <summary>
@@ -146,19 +156,27 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogExecEndError(ResultError error, string operation, string msg)
+    public void LogExecEndError(ResultError error, string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Info, operation, msg);
+        ActivityLog log = new ActivityLog(ActivityLogStage.End, ActivityLogLevel.Info, operation, param);
         log.Module = ActivityLogType.ExecProg;
         log.Error = error;
         log.Result = ActivityLogResult.Error;
-        RaiseEvent(log);
+        BuildMsgRaiseEvent(log);
     }
 
-    private void RaiseEvent(ActivityLog log)
+    /// <summary>
+    /// Build the log message and raise an event.
+    /// </summary>
+    /// <param name="log"></param>
+    private void BuildMsgRaiseEvent(ActivityLog log)
     {
         if (log == null) return;
-        if(IsLogAllowed(log.Level))
-            ActivityLogEvent?.Invoke(this, log);
+
+        if (!IsLogAllowed(log.Level)) return;
+
+        log.Message = _messageBuilder.BuildMsg(log);
+
+        ActivityLogEvent?.Invoke(this, log);
     }
 }

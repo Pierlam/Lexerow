@@ -8,7 +8,7 @@ Console.WriteLine("==>Lexerow Dev:");
 
 void Core_ActivityLogEvent(object? sender, ActivityLog e)
 {
-    Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Module + " " + e.Operation + " " + e.Msg);
+    Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Module + " " + e.Operation + " " + e.Param);
 }
 
 void TestCore()
@@ -65,8 +65,8 @@ if (a <= 10) { }
 
 //DateSandBox.TestWriteDate();
 
-//TestTheCore.TestCore();
+TestTheCore.TestCore();
 
-TestTheCore.TestCoreCompilCopyHeader();
+//TestTheCore.TestCoreCompilCopyHeader();
 
 Console.WriteLine("\n=> ends.");

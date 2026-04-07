@@ -58,7 +58,7 @@ public class ActivityLog
         Level = level;
         Stage = stage;
         Operation = operation;
-        Msg = msg;
+        Param = msg;
     }
 
     public ActivityLogType Module { get; set; } = ActivityLogType.Other;
@@ -74,7 +74,10 @@ public class ActivityLog
     /// </summary>
     public string Operation { get; set; } = string.Empty;
 
-    public string Msg { get; set; } = string.Empty;
+    /// <summary>
+    /// Parameter of the log/trace, exp: file name, script name, etc.
+    /// </summary>
+    public string Param { get; set; } = string.Empty;
 
     /// <summary>
     /// result of the execution of the operation.
@@ -82,4 +85,9 @@ public class ActivityLog
     public ActivityLogResult Result { get; set; } = ActivityLogResult.Ok;
 
     public ResultError? Error { get; set; } = null;
+
+    /// <summary>
+    /// Human readable message.
+    /// </summary>
+    public string Message { get; set; } = string.Empty;
 }

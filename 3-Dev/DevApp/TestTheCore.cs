@@ -14,7 +14,9 @@ internal class TestTheCore
 {
     static void Core_ActivityLogEvent(object? sender, ActivityLog e)
     {
-        Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Module + " " + e.Operation + " " + e.Param);
+        //Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Module + " " + e.Operation + " " + e.Param);
+        if(!string.IsNullOrWhiteSpace(e.Message))
+            Console.WriteLine(e.Message);
     }
 
     /// <summary>

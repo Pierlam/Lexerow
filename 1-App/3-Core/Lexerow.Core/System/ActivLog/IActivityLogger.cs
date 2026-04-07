@@ -31,26 +31,26 @@ public interface IActivityLogger
     /// <returns></returns>
     bool IsLevelTraceDebug();
 
-    void LogCompilStart(ActivityLogLevel level, string operation, string msg);
+    void LogCompilStart(ActivityLogLevel level, string operation, string param);
 
     /// <summary>
     /// stage is end, result is Ok/success.
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    void LogCompilEnd(ActivityLogLevel level, string operation, string msg);
+    void LogCompilEnd(ActivityLogLevel level, string operation, string param);
 
-    void LogCompilOnGoing(ActivityLogLevel level, string operation, string msg);
+    void LogCompilOnGoing(ActivityLogLevel level, string operation, string param);
 
-    void LogCompilEndError(ResultError error, string operation, string msg);
+    void LogCompilEndError(ResultError error, string operation, string param);
 
-    void LogCompilEndError(string operation, string msg);
+    void LogCompilEndError(string operation, string param);
 
-    void LogExecStart(ActivityLogLevel level, string operation, string msg);
+    void LogExecStart(ActivityLogLevel level, string operation, string param);
 
-    void LogExecEnd(ActivityLogLevel level, string operation, string msg);
+    void LogExecEnd(ActivityLogLevel level, string operation, string param);
 
-    void LogExecOnGoing(ActivityLogLevel level, string operation, string msg);
+    void LogExecOnGoing(ActivityLogLevel level, string operation, string param);
 
-    void LogExecEndError(ResultError error, string operation, string msg);
+    void LogExecEndError(ResultError error, string operation, string param);
 }

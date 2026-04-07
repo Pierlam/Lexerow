@@ -85,4 +85,9 @@ public class ActivityLog
     public ActivityLogResult Result { get; set; } = ActivityLogResult.Ok;
 
     public ResultError? Error { get; set; } = null;
+
+    /// <summary>
+    /// Human readable message.
+    /// </summary>
+    public string Message { get; set; } = string.Empty;
 }

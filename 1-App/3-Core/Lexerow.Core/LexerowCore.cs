@@ -20,6 +20,8 @@ public class LexerowCore : IDisposable
 
     private CoreData _coreData = new CoreData();
 
+    private MessageBuilder _messageBuilder;
+
     private IActivityLogger _logger;
 
     private ScriptLoader _scriptLoader;
@@ -34,9 +36,9 @@ public class LexerowCore : IDisposable
     public LexerowCore()
     {
         // create the log/trace message builder
-        //MessageBuilder // todo: placer ou?? 
+        _messageBuilder = new MessageBuilder();
 
-        _logger = new ActivityLogger();
+        _logger = new ActivityLogger(_messageBuilder);
 
         // default activity log level: Info, only main information.
         _logger.ActiveLevel = ActivityLogLevel.Info;
@@ -138,7 +140,9 @@ public class LexerowCore : IDisposable
         Result result = LoadScript(scriptName, filename);
         if (!result.Res) return result;
 
-        return ExecuteScript(scriptName);
+        Result res= ExecuteScript(scriptName);
+        _logger.LogCompilEnd(ActivityLogLevel.Info, "LexerowCore.LoadExecScript", filename);
+        return result;
     }
 
     /// <summary>
@@ -159,7 +163,7 @@ public class LexerowCore : IDisposable
         {
             if (scriptName == null) scriptName = string.Empty;
             var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", scriptName);
+            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", fileName);
             return result;
         }
 
@@ -182,7 +186,7 @@ public class LexerowCore : IDisposable
         // save it
         _coreData.ListProgram.Add(programInstr);
 
-        _logger.LogCompilEnd(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", scriptName);
+        _logger.LogCompilEnd(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", fileName);
 
         return result;
     }
@@ -204,7 +208,7 @@ public class LexerowCore : IDisposable
         {
             if (scriptName == null) scriptName = string.Empty;
             var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", scriptName);
+            _logger.LogCompilEndError(error, "LexerowCore.ExecuteScript", scriptName);
             return result;
         }
 
@@ -213,12 +217,14 @@ public class LexerowCore : IDisposable
         if (program == null)
         {
             result.AddError(ErrorCode.ProgramNotFound, scriptName);
+            //_logger.LogExecEndError(error, ErrorCode.ExecUnableOpenFile, "LexerowCore.ExecuteScript", scriptName);
             return result;
         }
 
         // execute ProgramScript
         _programExecutor.Exec(result, program);
 
+        _logger.LogExecEnd(ActivityLogLevel.Info, "LexerowCore.ExecuteScript", scriptName);
         return result;
     }
 

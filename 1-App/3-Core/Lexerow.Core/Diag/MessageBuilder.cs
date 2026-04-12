@@ -97,7 +97,7 @@ public class MessageBuilder
             msg += "INF ";
         }
 
-        string msgFromRegistry = GetMsg(log.Operation, log.Stage, log.Result, log.Error, log.Param, log.Param2);
+        string msgFromRegistry = GetMsg(log.Operation, log.Result, log.Error, log.Param, log.Param2);
         if(!string.IsNullOrEmpty(msgFromRegistry))
         {
             return msg += msgFromRegistry;
@@ -142,8 +142,8 @@ public class MessageBuilder
 
     }
 
-    string GetMsg(string operation, ActivityLogStage stage, ActivityLogResult result, ResultError error, string param, string param2)
+    string GetMsg(string operation, ActivityLogResult result, ResultError error, string param, string param2)
     {
-        return _listMsg.GetMsg(operation, stage, result, error, param, param2);
+        return _listMsg.GetMsg(operation, result, error, param, param2);
     }
 }

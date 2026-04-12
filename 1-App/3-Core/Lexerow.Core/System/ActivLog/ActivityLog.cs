@@ -35,14 +35,6 @@ public enum ActivityLogLevel
     Trace=3
 }   
 
-public enum ActivityLogStage
-{
-    StartEnd,
-    Start,
-    OnGoing,
-    End
-}
-
 public enum ActivityLogResult
 {
     Ok,
@@ -52,20 +44,18 @@ public enum ActivityLogResult
 
 public class ActivityLog
 {
-    public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string param)
+    public ActivityLog(ActivityLogLevel level, string operation, string param)
     {
         Module = ActivityLogType.CompileScript;
         Level = level;
-        Stage = stage;
         Operation = operation;
         Param = param;
     }
 
-    public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string param, string param2)
+    public ActivityLog(ActivityLogLevel level, string operation, string param, string param2)
     {
         Module = ActivityLogType.CompileScript;
         Level = level;
-        Stage = stage;
         Operation = operation;
         Param = param;
         Param2 = param2;
@@ -74,8 +64,6 @@ public class ActivityLog
     public ActivityLogType Module { get; set; } = ActivityLogType.Other;
 
     public DateTime When { get; private set; } = DateTime.Now;
-
-    public ActivityLogStage Stage { get; set; } = ActivityLogStage.StartEnd;
 
     public ActivityLogLevel Level { get; set; } = ActivityLogLevel.Debug;
 

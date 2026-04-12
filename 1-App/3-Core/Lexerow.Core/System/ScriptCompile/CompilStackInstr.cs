@@ -45,7 +45,7 @@ public class CompilStackInstr
         }
         catch (Exception e)
         {
-            _logger.LogCompilEndError(null, "CompilStackInstr.Pop", e.ToString());
+            _logger.LogCompilError(null, "CompilStackInstr.Pop", e.ToString());
             throw e;
         }
     }
@@ -195,7 +195,7 @@ public class CompilStackInstr
     {
         int count = StackInstr.Count;
         if(logger.IsLevelTraceActive())
-            logger.LogCompilOnGoing(ActivityLogLevel.Trace, msg, instrBase.ToString() + ", Nb=" + count.ToString() + " Top> " + Dump()) ;
+            logger.LogCompil(ActivityLogLevel.Trace, msg, instrBase.ToString() + ", Nb=" + count.ToString() + " Top> " + Dump()) ;
     }
 
 }

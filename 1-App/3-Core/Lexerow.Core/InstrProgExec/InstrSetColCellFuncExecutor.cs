@@ -77,7 +77,7 @@ public class InstrSetColCellFuncExecutor
     /// <returns></returns>
     public bool ExecSetCellValue(Result result, ExcelSheet sheet, int rowNum, InstrColCellFunc instrColCellFunc, InstrValue instrValue)
     {
-        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
+        _logger.LogExec(ActivityLogLevel.Debug, "InstrSetColCellFuncExecutor.ExecSetCellValue", string.Empty);
 
         // get the cell
         ExcelCell cell = _excelProcessor.GetCellAt(sheet, instrColCellFunc.ColNum, rowNum);

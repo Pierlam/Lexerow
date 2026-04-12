@@ -575,7 +575,7 @@ internal class ParserStackContentProcessor
     {
         isToken = false;
 
-        logger.LogCompilStart(ActivityLogLevel.Trace, "ParserStackContentProcessor.GatherEnd", "Stack.Count: " + stackInstr.Count);
+        logger.LogCompil(ActivityLogLevel.Trace, "ParserStackContentProcessor.GatherEnd", "Stack.Count: " + stackInstr.Count);
 
         if (stackInstr.Count == 0)
             return true;
@@ -623,7 +623,7 @@ internal class ParserStackContentProcessor
         }
 
         var error= result.AddNewError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
-        logger.LogCompilEndError(error, "ParserStackContentProcessor.GatherEnd",string.Empty);
+        logger.LogCompilError(error, "ParserStackContentProcessor.GatherEnd",string.Empty);
         return false;
     }
 
@@ -638,7 +638,7 @@ internal class ParserStackContentProcessor
     private static bool PerformFctCall(IActivityLogger logger, Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
-        logger.LogCompilStart(ActivityLogLevel.Trace, "ParserStackContentProcessor.PerformFctCall", "Stack.Count: " + stackInstr.Count);
+        logger.LogCompil(ActivityLogLevel.Trace, "ParserStackContentProcessor.PerformFctCall", "Stack.Count: " + stackInstr.Count);
 
         if (stackInstr.Count == 0)
             return true;
@@ -693,7 +693,7 @@ internal class ParserStackContentProcessor
 
         // other cases: unexpected -> error
         var error = result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
-        logger.LogCompilEndError(error, "ParserStackContentProcessor.ProcessFctCall", "FuncCall without SetVar expected");
+        logger.LogCompilError(error, "ParserStackContentProcessor.ProcessFctCall", "FuncCall without SetVar expected");
         return false;
     }
 

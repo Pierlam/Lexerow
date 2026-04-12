@@ -38,7 +38,7 @@ internal class InstrOnExcelExecutor
     /// <returns></returns>
     public bool ExecInstrOnExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrOnExcel instrOnExcel)
     {
-        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
+        _logger.LogExec(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnExcel", string.Empty);
 
         InstrObjectSelectedFiles instrObjectSelectedFiles = null;
 
@@ -108,7 +108,7 @@ internal class InstrOnExcelExecutor
         // update insights
         result.Insights.StartNewFile(selectedFilename.Filename);
 
-        _logger.LogExecOnGoing(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnExcel:ProcessFile", selectedFilename.Filename);
+        _logger.LogExec(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnExcel:ProcessFile", selectedFilename.Filename);
 
 
         // load the excel file

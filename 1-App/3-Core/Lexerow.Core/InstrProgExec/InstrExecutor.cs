@@ -80,7 +80,7 @@ public class InstrExecutor
     /// <returns></returns>
     public bool ExecInstr(Result result, Program program, ProgExecVarMgr progExecVarMgr, InstrBase instr)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "InstrExecotur.ExecInstr", "instr: " + instr.ToString());
+        _logger.LogExecStart(ActivityLogLevel.Info, "InstrExecutor.ExecInstr", instr.ToString());
 
         ProgExecContext ctx = new ProgExecContext();
 
@@ -89,6 +89,7 @@ public class InstrExecutor
 
         while (true)
         {
+            // no more instr to execute, exit
             if (ctx.StackInstr.Count == 0)
             {
                 return res;
@@ -107,6 +108,7 @@ public class InstrExecutor
             if (instr.InstrType == InstrType.OnExcel)
             {
                 res = _instrOnExcelExecutor.ExecInstrOnExcel(result, ctx, progExecVarMgr, instr as InstrOnExcel);
+                _logger.LogExecEnd(ActivityLogLevel.Info, "InstrExecutor.ExecInstr", string.Empty);
                 if (!res) return false;
                 continue;
             }
@@ -213,7 +215,7 @@ public class InstrExecutor
             // TODO:
 
             var error = result.AddNewError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
-            _logger.LogExecEndError(error, "InstrExecotur.ExecInstr", "instr: " + instr.ToString() + " not managed");
+            _logger.LogExecEndError(error, "InstrExecutor.ExecInstr", instr.ToString() + " not managed");
             return false;
         }
     }

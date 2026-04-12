@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.InstrProgExec;
+﻿using Lexerow.Core.Diag;
+using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
@@ -26,7 +27,7 @@ public class ExecSetVarTests : BaseTests
         program.ListInstr.Add(instrSetVar);
 
         //--create the program runner
-        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(new MessageBuilder()), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);

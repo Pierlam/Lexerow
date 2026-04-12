@@ -52,13 +52,23 @@ public enum ActivityLogResult
 
 public class ActivityLog
 {
-    public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string msg)
+    public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string param)
     {
         Module = ActivityLogType.CompileScript;
         Level = level;
         Stage = stage;
         Operation = operation;
-        Param = msg;
+        Param = param;
+    }
+
+    public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string param, string param2)
+    {
+        Module = ActivityLogType.CompileScript;
+        Level = level;
+        Stage = stage;
+        Operation = operation;
+        Param = param;
+        Param2 = param2;
     }
 
     public ActivityLogType Module { get; set; } = ActivityLogType.Other;
@@ -79,6 +89,8 @@ public class ActivityLog
     /// </summary>
     public string Param { get; set; } = string.Empty;
 
+    public string Param2 { get; set; } = string.Empty;
+
     /// <summary>
     /// result of the execution of the operation.
     /// </summary>
@@ -88,6 +100,7 @@ public class ActivityLog
 
     /// <summary>
     /// Human readable message.
+    /// builded by the ActivityLogger, based on the registry of messages and the parameters of the log.
     /// </summary>
     public string Message { get; set; } = string.Empty;
 }

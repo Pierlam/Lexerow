@@ -40,6 +40,8 @@ public interface IActivityLogger
     /// <param name="msg"></param>
     void LogCompilEnd(ActivityLogLevel level, string operation, string param);
 
+    void LogCompilEnd(ActivityLogLevel level, string operation, string param, string param2);
+
     void LogCompilOnGoing(ActivityLogLevel level, string operation, string param);
 
     void LogCompilEndError(ResultError error, string operation, string param);

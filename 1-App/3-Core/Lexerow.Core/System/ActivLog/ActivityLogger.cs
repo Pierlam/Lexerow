@@ -82,6 +82,18 @@ public class ActivityLogger : IActivityLogger
         BuildMsgRaiseEvent(log);
     }
 
+    /// <summary>
+    /// stage is end, result is Ok/success.
+    /// </summary>
+    /// <param name="operation"></param>
+    /// <param name="msg"></param>
+    public void LogCompilEnd(ActivityLogLevel level, string operation, string param, string param2)
+    {
+        ActivityLog log = new ActivityLog(ActivityLogStage.End, level, operation, param, param2);
+        log.Module = ActivityLogType.CompileScript;
+        BuildMsgRaiseEvent(log);
+    }
+
     public void LogCompilOnGoing(ActivityLogLevel level, string operation, string param)
     {
         ActivityLog log = new ActivityLog(ActivityLogStage.OnGoing, level, operation, param);

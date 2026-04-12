@@ -108,6 +108,9 @@ internal class InstrOnExcelExecutor
         // update insights
         result.Insights.StartNewFile(selectedFilename.Filename);
 
+        _logger.LogExecOnGoing(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnExcel:ProcessFile", selectedFilename.Filename);
+
+
         // load the excel file
         if (!OpenExcelFile(result, ctx.ExcelFileObject))
             return false;

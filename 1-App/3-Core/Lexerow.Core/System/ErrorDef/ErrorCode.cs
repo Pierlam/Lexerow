@@ -86,6 +86,7 @@ public enum ErrorCode
     FileNameNotFound,
 
     NameNullOrEmpty,
+    ScriptNameNullOrEmpty,
     FileNameNullOrEmpty,
     FileNameWrongSyntax,
 

@@ -35,6 +35,7 @@ internal class TestTheCore
         string scriptfile = ".\\Scripts\\test2026.lxrw";
         // load the script, compile it and then execute it
         Result result = core.LoadExecScript("script", scriptfile);
+        //Result result = core.LoadExecScript("script", "toto.xlsx");
 
         if (result.Res) Console.WriteLine("OK.");
         else Console.WriteLine("ERROR");

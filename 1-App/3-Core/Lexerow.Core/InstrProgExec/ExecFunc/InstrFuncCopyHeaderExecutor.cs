@@ -42,7 +42,7 @@ public class InstrFuncCopyHeaderExecutor
     /// <returns></returns>
     public bool ExecFuncCopyHeader(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncCallCopyHeader instrCopyHeader)
     {
-        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
+        _logger.LogExec(ActivityLogLevel.Debug, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
 
         // source file instr need to be executed ?
         if (InstrUtils.NeedToBeExecuted(instrCopyHeader.InstrSourceFile))
@@ -114,7 +114,7 @@ public class InstrFuncCopyHeaderExecutor
             if (lastColAddr == 0)
             {
                 var error = result.AddNewError(ErrorCode.ExecExcelSheetEmpty, instrCopyHeader.FirstScriptToken(), filenameSource);
-                _logger.LogExecEndError(error, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
+                _logger.LogExecError(error, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
                 return false;
             }
 
@@ -133,7 +133,7 @@ public class InstrFuncCopyHeaderExecutor
             if(targetlastRowIndex>0)
             {
                 var error = result.AddNewError(ErrorCode.ExecExcelSheetNotEmpty, instrCopyHeader.FirstScriptToken(), filenameTarget);
-                _logger.LogExecEndError(error, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
+                _logger.LogExecError(error, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
                 return false;
             }
 
@@ -161,7 +161,7 @@ public class InstrFuncCopyHeaderExecutor
         catch (Exception ex)
         {
             var error = result.AddNewError(ErrorCode.ExecUnableCopyHeader, instrCopyHeader.FirstScriptToken(), ex.Message);
-            _logger.LogExecEndError(error, "InstrFuncCreateExcelExecutor.ExecFuncCopyHeader", string.Empty);
+            _logger.LogExecError(error, "InstrFuncCreateExcelExecutor.ExecFuncCopyHeader", string.Empty);
             return false;
         }
     }

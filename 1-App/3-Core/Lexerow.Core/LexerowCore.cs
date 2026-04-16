@@ -8,6 +8,7 @@ using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
 using Lexerow.Core.System.ScriptDef;
 using OpenExcelSdk;
+using System.Diagnostics;
 
 namespace Lexerow.Core;
 
@@ -91,7 +92,7 @@ public class LexerowCore : IDisposable
     /// <returns></returns>
     public Result LoadLinesScript(string scriptName, List<string> scriptLines)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromLines", scriptName);
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromLines", scriptName);
 
         Result result = new Result();
 
@@ -100,7 +101,7 @@ public class LexerowCore : IDisposable
         {
             if (scriptName == null) scriptName = string.Empty;
             var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromLines", scriptName);
+            _logger.LogCompilError("LexerowCore.LoadScriptFromLines", error);
             return result;
         }
 
@@ -123,7 +124,7 @@ public class LexerowCore : IDisposable
         // save it
         _coreData.ListProgram.Add(programScript);
 
-        _logger.LogCompilEnd(ActivityLogLevel.Info, "LoadScriptFromFile", scriptName);
+        _logger.LogCompil(ActivityLogLevel.Info, "LoadScriptFromFile", scriptName);
 
         return result;
     }
@@ -131,17 +132,67 @@ public class LexerowCore : IDisposable
     /// <summary>
     /// Load, compile and then execute a text file script.
     /// </summary>
-    /// <param name="scriptName"></param>
+    /// <param name="scriptname"></param>
     /// <param name="filename"></param>
     /// <returns></returns>
-    public Result LoadExecScript(string scriptName, string filename)
+    public Result LoadExecScript(string scriptname, string filename)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadExecScript", filename);
-        Result result = LoadScript(scriptName, filename);
-        if (!result.Res) return result;
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
 
-        Result res= ExecuteScript(scriptName);
-        _logger.LogCompilEnd(ActivityLogLevel.Info, "LexerowCore.LoadExecScript", filename);
+        Result result;
+
+        // check that the script name is set
+        if (string.IsNullOrWhiteSpace(scriptname))
+        {
+            result=new Result();
+            var error = result.AddError(ErrorCode.ScriptNameNullOrEmpty, string.Empty);
+            _logger.LogCompilError("LexerowCore.LoadExecScript", error);
+            return result;
+        }
+
+        if (string.IsNullOrWhiteSpace(filename))
+        {
+            result = new Result();
+            var error = result.AddError(ErrorCode.FileNameNullOrEmpty, string.Empty);
+            _logger.LogCompilError("LexerowCore.LoadExecScript", error);
+            return result;
+        }
+
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadExecScript.Start", filename);
+
+        string elapsedTime;
+
+        // first load the script from the file
+        result = LoadScriptFromFile(scriptname, filename, out System.ScriptDef.Script script);
+        if (!result.Res)
+        {
+            _logger.LogCompilError("LexerowCore.LoadExecScript", filename);
+            return result;
+        }
+
+        // compile the script, generate instructions
+        _scriptCompiler.CompileScript(result, script, out Program program);
+        if (!result.Res)
+        {
+            _logger.LogCompilError("LexerowCore.LoadExecScript", filename);
+            return result;
+        }
+
+        // save it
+        _coreData.ListProgram.Add(program);
+
+        // then, execute the compiled script
+        _programExecutor.Exec(result, program);
+
+        stopwatch.Stop();
+        elapsedTime = string.Format("{0:hh\\:mm\\:ss\\.fff}", stopwatch.Elapsed);
+
+        if (result.Res)
+            _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadExecScript.End", filename,elapsedTime);
+        else
+            _logger.LogCompilError("LexerowCore.LoadExecScript", filename);
+
         return result;
     }
 
@@ -154,31 +205,13 @@ public class LexerowCore : IDisposable
     /// <returns></returns>
     public Result LoadScript(string scriptName, string fileName)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", fileName);
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScript", fileName);
 
-        Result result = new Result();
-
-        // check that the name is not already used by another program
-        if (string.IsNullOrWhiteSpace(scriptName))
-        {
-            if (scriptName == null) scriptName = string.Empty;
-            var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilEndError(error, "LexerowCore.LoadScriptFromFile", fileName);
-            return result;
-        }
-
-        // any program should have the same name
-        Program program = _coreData.GetProgramByName(scriptName);
-        if (program != null)
-        {
-            result.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
-            return result;
-        }
-
-        if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out System.ScriptDef.Script script))
+        Result result = LoadScriptFromFile(scriptName, fileName, out System.ScriptDef.Script script);
+        if (!result.Res)
             return result;
 
-        // compile the script,  generate instructions
+        // compile the script, generate instructions
         _scriptCompiler.CompileScript(result, script, out Program programInstr);
         if (!result.Res)
             return result;
@@ -186,7 +219,7 @@ public class LexerowCore : IDisposable
         // save it
         _coreData.ListProgram.Add(programInstr);
 
-        _logger.LogCompilEnd(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", fileName);
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScript", fileName);
 
         return result;
     }
@@ -199,7 +232,7 @@ public class LexerowCore : IDisposable
     /// <exception cref="Exception"></exception>
     public Result ExecuteScript(string scriptName)
     {
-        _logger.LogExecStart(ActivityLogLevel.Info, "LexerowCore.ExecuteScript", scriptName);
+        _logger.LogExec(ActivityLogLevel.Info, "LexerowCore.ExecuteScript", scriptName);
 
         Result result = new Result();
 
@@ -208,7 +241,7 @@ public class LexerowCore : IDisposable
         {
             if (scriptName == null) scriptName = string.Empty;
             var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilEndError(error, "LexerowCore.ExecuteScript", scriptName);
+            _logger.LogCompilError("LexerowCore.ExecuteScript", error);
             return result;
         }
 
@@ -224,7 +257,50 @@ public class LexerowCore : IDisposable
         // execute ProgramScript
         _programExecutor.Exec(result, program);
 
-        _logger.LogExecEnd(ActivityLogLevel.Info, "LexerowCore.ExecuteScript", scriptName);
+        _logger.LogExec(ActivityLogLevel.Info, "LexerowCore.ExecuteScript", scriptName);
+        return result;
+    }
+
+    /// <summary>
+    /// Load the script form the text file.
+    /// </summary>
+    /// <param name="scriptName"></param>
+    /// <param name="fileName"></param>
+    /// <param name="script"></param>
+    /// <returns></returns>
+    public Result LoadScriptFromFile(string scriptName, string fileName, out System.ScriptDef.Script script)
+    {
+        script = null;
+
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile.Start", fileName);
+
+        Result result = new Result();
+
+        // check that the name is not already used by another program
+        if (string.IsNullOrWhiteSpace(scriptName))
+        {
+            if (scriptName == null) scriptName = string.Empty;
+            var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
+            _logger.LogCompilError("LexerowCore.LoadScriptFromFile", error);
+            return result;
+        }
+
+        // any program should have the same name
+        Program program = _coreData.GetProgramByName(scriptName);
+        if (program != null)
+        {
+            result.AddError(ErrorCode.ProgramNameAlreadyUsed, scriptName);
+            return result;
+        }
+
+        if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out script))
+        {
+            _logger.LogCompilError("LexerowCore.LoadScriptFromFile", result.ListError[0]);
+            return result;
+        }
+
+
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile.End", script.ScriptLines.Count.ToString());
         return result;
     }
 

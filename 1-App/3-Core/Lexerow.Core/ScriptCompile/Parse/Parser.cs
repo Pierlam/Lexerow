@@ -38,7 +38,7 @@ public class Parser
     /// <returns></returns>
     public bool Perform(Result result, List<ScriptLineTokens> listScriptLineTokens, Program program)
     {
-        _logger.LogCompilStart(ActivityLogLevel.Info, "Parser.Perform", "script lines Num: " + listScriptLineTokens.Count.ToString());
+        _logger.LogCompil(ActivityLogLevel.Info, "Parser.Perform", "script lines Num: " + listScriptLineTokens.Count.ToString());
         _listVar.Clear();
 
         // no token in the source code! -> error or warning?
@@ -53,13 +53,13 @@ public class Parser
 
         if (res)
         {
-            _logger.LogCompilEnd(ActivityLogLevel.Info, "Parser.Perform", "Instr count: " + program.ListInstr.Count().ToString());
+            _logger.LogCompil(ActivityLogLevel.Info, "Parser.Perform", "Instr count: " + program.ListInstr.Count().ToString());
 
             // ok, no error
             return true;
         }
 
-        _logger.LogCompilEndError(null, "Parser.Perform", "Finished with error(s), count: " + result.ListError.Count().ToString());
+        _logger.LogCompilError("Parser.Perform", "Finished with error(s), count: " + result.ListError.Count().ToString());
         return false;
     }
 
@@ -94,7 +94,7 @@ public class Parser
 
             if (currTokenIndex >= currLineTokens.ListScriptToken.Count)
             {
-                _logger.LogCompilOnGoing(ActivityLogLevel.Debug, "Parser.PerformTokensLineByLine", "End Of line reached, Num: " + currLineTokensIndex.ToString() + ", Line: " + currLineTokens.ScriptLine);
+                _logger.LogCompil(ActivityLogLevel.Debug, "Parser.PerformTokensLineByLine", "End Of line reached, Num: " + currLineTokensIndex.ToString() + ", Line: " + currLineTokens.ScriptLine);
 
                 // no more token in the current line tokens, process items saved in the stack
                 res = ParserStackContentProcessor.ScriptEndLineReached(_logger, result, listVar, currLineTokensIndex, stackInstr, program);
@@ -115,7 +115,7 @@ public class Parser
 
             // get the fist token of the line
             currToken = currLineTokens.ListScriptToken[currTokenIndex];
-            _logger.LogCompilOnGoing(ActivityLogLevel.Trace, "Parser.PerformTokensLineByLine" , "Line: " + currLineTokens.ScriptLine + ", Token: " + currToken.Value);
+            _logger.LogCompil(ActivityLogLevel.Trace, "Parser.PerformTokensLineByLine" , "Line: " + currLineTokens.ScriptLine + ", Token: " + currToken.Value);
 
             //XXX-DEBUG:
             if (currToken.Value.Equals(")"))

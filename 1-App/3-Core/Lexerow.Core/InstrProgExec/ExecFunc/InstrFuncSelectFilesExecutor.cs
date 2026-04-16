@@ -38,7 +38,7 @@ public class InstrFuncSelectFilesExecutor
     /// <returns></returns>
     public bool Exec(Result result, ProgExecContext ctx, Program program, InstrFuncCallSelectFiles instrSelectFiles)
     {
-        _logger.LogExecStart(ActivityLogLevel.Debug, "InstrFuncSelectFilesExecutor.Exec", string.Empty);
+        _logger.LogExec(ActivityLogLevel.Debug, "InstrFuncSelectFilesExecutor.Exec", string.Empty);
 
         List<InstrBase> listTmp = new List<InstrBase>();
 

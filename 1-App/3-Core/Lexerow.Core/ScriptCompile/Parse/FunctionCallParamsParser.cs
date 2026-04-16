@@ -34,12 +34,12 @@ internal class FunctionCallParamsParser
         // read the last instr from the stack
         InstrBase instrBase = stackInstr.Peek();
 
-        logger.LogCompilStart(ActivityLogLevel.Info, "FunctionCallParamsParser.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
+        logger.LogCompil(ActivityLogLevel.Info, "FunctionCallParamsParser.ProcessFunctionCallParams", "InstrType: " + instrBase.InstrType);
 
         //-item before openBracket is an object name? exp: fct()
         if (!instrBase.IsFunctionCall)
         {
-            logger.LogCompilEndError(result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken()), "FunctionCallParamsParser.ProcessFunctionCallParams", "Instr should be a function Call, Type: " + instrBase.InstrType);
+            logger.LogCompilError("FunctionCallParamsParser.ProcessFunctionCallParams", "Instr should be a function Call, Type: " + result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken()));
             return false;
         }
 
@@ -59,13 +59,13 @@ internal class FunctionCallParamsParser
             return PerformFuncCopyRow(logger, result, listVar, instrBase as InstrFuncCallCopyRow, program, listParams);
 
         // function call name not expected
-        logger.LogCompilEndError(result.AddNewError(ErrorCode.ParserFctNameNotExpected, scriptToken), "FunctionCallParamsParser.ProcessFunctionCallParams", string.Empty);
+        logger.LogCompilError("FunctionCallParamsParser.ProcessFunctionCallParams", result.AddNewError(ErrorCode.ParserFctNameNotExpected, scriptToken));
         return false;
     }
 
     private static bool PerformFuncSelectFiles(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallSelectFiles instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncSelectFiles", "Param count IN: " + listParams.Count);
+        logger.LogCompil(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncSelectFiles", "Param count IN: " + listParams.Count);
 
         // only one param expected, type should be string or an instr returning a string
         if (listParams.Count != 1)
@@ -95,7 +95,7 @@ internal class FunctionCallParamsParser
     /// <returns></returns>
     private static bool PerformFuncDate(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallDate instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncDate", "Param count In: " + listParams.Count);
+        logger.LogCompil(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncDate", "Param count In: " + listParams.Count);
 
         // 3 param expected, type should be an int or an instr returning an int
         if (listParams.Count != 3)
@@ -149,7 +149,7 @@ internal class FunctionCallParamsParser
     /// <returns></returns>
     private static bool PerformFuncCreateExcel(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallCreateExcel instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCreateExcel", "Param count In: " + listParams.Count);
+        logger.LogCompil(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCreateExcel", "Param count In: " + listParams.Count);
 
         // 3 param expected, type should be an int or an instr returning an int
         if (listParams.Count != 1 && listParams.Count != 2)
@@ -187,7 +187,7 @@ internal class FunctionCallParamsParser
     /// <returns></returns>
     private static bool PerformFuncCopyHeader(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallCopyHeader instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCopyHeader", "Param count In: " + listParams.Count);
+        logger.LogCompil(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCopyHeader", "Param count In: " + listParams.Count);
 
         // 2 param expected, type should be an int or an instr returning an int
         if (listParams.Count != 2)
@@ -225,7 +225,7 @@ internal class FunctionCallParamsParser
     /// <exception cref="NotImplementedException"></exception>
     private static bool PerformFuncCopyRow(IActivityLogger logger, Result result, List<InstrNameObject> listVar, InstrFuncCallCopyRow instr, Program program, List<InstrBase> listParams)
     {
-        logger.LogCompilStart(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCopyRow", "Param count In: " + listParams.Count);
+        logger.LogCompil(ActivityLogLevel.Debug, "FunctionCallParamsParser.PerformFuncCopyRow", "Param count In: " + listParams.Count);
 
         // 2 param expected, type should be an int or an instr returning an int
         if (listParams.Count != 1)

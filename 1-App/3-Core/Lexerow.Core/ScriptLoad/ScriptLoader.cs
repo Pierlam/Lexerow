@@ -55,6 +55,13 @@ public class ScriptLoader
         script = null;
 
         // the file doesn't exists
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            result.AddError(ErrorCode.FileNameNullOrEmpty, fileName);
+            return false;
+        }
+
+        // the file doesn't exists
         if (!File.Exists(fileName))
         {
             result.AddError(ErrorCode.FileNotFound, fileName);

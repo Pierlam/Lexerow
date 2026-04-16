@@ -5,7 +5,7 @@ public interface IActivityLogger
     event EventHandler<ActivityLog> ActivityLogEvent;
 
     /// <summary>
-    /// Active lelve:  current allowed level for log and trace.
+    /// Active level:  current allowed level for log and trace.
     /// if it's Trace, Info an Debug are allowed.
     /// If it's Info, the top one, only this one is allowed.
     /// </summary>
@@ -31,26 +31,20 @@ public interface IActivityLogger
     /// <returns></returns>
     bool IsLevelTraceDebug();
 
-    void LogCompilStart(ActivityLogLevel level, string operation, string param);
-
     /// <summary>
     /// stage is end, result is Ok/success.
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    void LogCompilEnd(ActivityLogLevel level, string operation, string param);
+    void LogCompil(ActivityLogLevel level, string operation, string param);
 
-    void LogCompilOnGoing(ActivityLogLevel level, string operation, string param);
+    void LogCompil(ActivityLogLevel level, string operation, string param, string param2);
 
-    void LogCompilEndError(ResultError error, string operation, string param);
+    void LogCompilError(string operation, ResultError error);
 
-    void LogCompilEndError(string operation, string param);
+    void LogCompilError(string operation, string param);
 
-    void LogExecStart(ActivityLogLevel level, string operation, string param);
+    void LogExec(ActivityLogLevel level, string operation, string param);
 
-    void LogExecEnd(ActivityLogLevel level, string operation, string param);
-
-    void LogExecOnGoing(ActivityLogLevel level, string operation, string param);
-
-    void LogExecEndError(ResultError error, string operation, string param);
+    void LogExecError(ResultError error, string operation, string param);
 }

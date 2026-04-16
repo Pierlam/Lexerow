@@ -35,14 +35,6 @@ public enum ActivityLogLevel
     Trace=3
 }   
 
-public enum ActivityLogStage
-{
-    StartEnd,
-    Start,
-    OnGoing,
-    End
-}
-
 public enum ActivityLogResult
 {
     Ok,
@@ -52,20 +44,26 @@ public enum ActivityLogResult
 
 public class ActivityLog
 {
-    public ActivityLog(ActivityLogStage stage, ActivityLogLevel level, string operation, string msg)
+    public ActivityLog(ActivityLogLevel level, string operation, string param)
     {
         Module = ActivityLogType.CompileScript;
         Level = level;
-        Stage = stage;
         Operation = operation;
-        Param = msg;
+        Param = param;
+    }
+
+    public ActivityLog(ActivityLogLevel level, string operation, string param, string param2)
+    {
+        Module = ActivityLogType.CompileScript;
+        Level = level;
+        Operation = operation;
+        Param = param;
+        Param2 = param2;
     }
 
     public ActivityLogType Module { get; set; } = ActivityLogType.Other;
 
     public DateTime When { get; private set; } = DateTime.Now;
-
-    public ActivityLogStage Stage { get; set; } = ActivityLogStage.StartEnd;
 
     public ActivityLogLevel Level { get; set; } = ActivityLogLevel.Debug;
 
@@ -79,6 +77,14 @@ public class ActivityLog
     /// </summary>
     public string Param { get; set; } = string.Empty;
 
+    public string Param2 { get; set; } = string.Empty;
+
+    public string Param3 { get; set; } = string.Empty;
+
+    public string Param4 { get; set; } = string.Empty;
+
+    public string Param5 { get; set; } = string.Empty;
+
     /// <summary>
     /// result of the execution of the operation.
     /// </summary>
@@ -88,6 +94,7 @@ public class ActivityLog
 
     /// <summary>
     /// Human readable message.
+    /// builded by the ActivityLogger, based on the registry of messages and the parameters of the log.
     /// </summary>
     public string Message { get; set; } = string.Empty;
 }

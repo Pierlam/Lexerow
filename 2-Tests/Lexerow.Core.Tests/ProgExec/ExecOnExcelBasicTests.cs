@@ -1,4 +1,5 @@
-﻿using Lexerow.Core.InstrProgExec;
+﻿using Lexerow.Core.Diag;
+using Lexerow.Core.InstrProgExec;
 using Lexerow.Core.System;
 using Lexerow.Core.System.ActivLog;
 using Lexerow.Core.System.InstrDef;
@@ -40,7 +41,7 @@ public class ExecOnExcelBasicTests : BaseTests
         program.ListInstr.Add(instrOnExcel);
 
         //--create the program runner
-        ActivityLogger logger = new ActivityLogger();
+        ActivityLogger logger = new ActivityLogger(new MessageBuilder());
         ProgramExecutor programExec = new ProgramExecutor(logger, new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
@@ -86,7 +87,7 @@ public class ExecOnExcelBasicTests : BaseTests
         program.ListInstr.Add(instrOnExcel);
 
         //--create the program runner
-        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(new MessageBuilder()), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
@@ -155,7 +156,7 @@ public class ExecOnExcelBasicTests : BaseTests
         //Program programScript = new ProgramScript(script, listInstr);
 
         //--create the program runner
-        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(new MessageBuilder()), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
@@ -209,7 +210,7 @@ public class ExecOnExcelBasicTests : BaseTests
         program.ListInstr.Add(instrOnExcel);
 
         //--create the program runner
-        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(new MessageBuilder()), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
@@ -274,7 +275,7 @@ public class ExecOnExcelBasicTests : BaseTests
         program.ListInstr.Add(instrOnExcel);
 
         //--create the program runner
-        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(), new OpenExcelSdk.ExcelProcessor());
+        ProgramExecutor programExec = new ProgramExecutor(new ActivityLogger(new MessageBuilder()), new OpenExcelSdk.ExcelProcessor());
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);

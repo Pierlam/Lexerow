@@ -38,7 +38,7 @@ public class ProgramExecutor
     {
         bool res = true;
 
-        _logger.LogExecStart(ActivityLogLevel.Info, "ProgramExecutor.Exec", "Name: " + program.Script.Name + ", Instr Count: " + program.ListInstr.Count.ToString());
+        _logger.LogExec(ActivityLogLevel.Info, "ProgramExecutor.Exec.Start", "Name: " + program.Script.Name + ", Instr Count: " + program.ListInstr.Count.ToString());
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
 
@@ -55,9 +55,9 @@ public class ProgramExecutor
         stopwatch.Stop();
         string elapsedTime = string.Format("{0:hh\\:mm\\:ss}", stopwatch.Elapsed);
         if (!res)
-            _logger.LogExecEndError(result.ListError[0], "ProgramExecutor.Exec", "Error count: " + result.ListError.Count.ToString());
+            _logger.LogExecError(result.ListError[0], "ProgramExecutor.Exec", "Error count: " + result.ListError.Count.ToString());
         else
-            _logger.LogExecEnd(ActivityLogLevel.Info, "ProgramExecutor.Exec", "Elapsed time: " + elapsedTime);
+            _logger.LogExec(ActivityLogLevel.Info, "ProgramExecutor.Exec", "Elapsed time: " + elapsedTime);
         return res;
     }
 

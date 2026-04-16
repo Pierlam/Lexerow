@@ -97,7 +97,7 @@ public class MessageBuilder
             msg += "INF ";
         }
 
-        string msgFromRegistry = GetMsg(log.Operation, log.Result, log.Error, log.Param, log.Param2);
+        string msgFromRegistry = GetMsg(log.Operation, log.Result, log.Error, log.Param, log.Param2, log.Param3, log.Param4, log.Param5);
         if(!string.IsNullOrEmpty(msgFromRegistry))
         {
             return msg += msgFromRegistry;
@@ -111,39 +111,38 @@ public class MessageBuilder
     /// </summary>
     void BuildListMsg()
     {
-        _listMsg.AddStart("LexerowCore.LoadExecScript", "Start process script {0}.");
-        _listMsg.AddEnd("LexerowCore.LoadExecScript","End Process script {0}, elapsed time: {1}, success.");
-        _listMsg.Add("LexerowCore.LoadExecScript", ErrorCode.FileNameNullOrEmpty, "End Process script failed, script file name is null or empty.");
-        _listMsg.AddEndError("LexerowCore.LoadExecScript", "End Process script {0} failed.");
+        _listMsg.Add("LexerowCore.LoadExecScript.Start", "Start process script {0}.");
+        _listMsg.Add("LexerowCore.LoadExecScript.End","End Process script {0}, elapsed time: {1}, success.");
+        _listMsg.AddErroCode("LexerowCore.LoadExecScript", ErrorCode.FileNameNullOrEmpty, "End Process script failed, script file name is null or empty.");
+        _listMsg.AddError("LexerowCore.LoadExecScript", "End Process script {0} failed.");
 
 
-        _listMsg.AddStart("LexerowCore.LoadScriptFromFile", "Start load script from file {0}.");
-        _listMsg.AddEnd("LexerowCore.LoadScriptFromFile", "End load script, {0} lines found, success.");
-        _listMsg.Add("LexerowCore.LoadScriptFromFile", ErrorCode.FileNotFound, "End load script failed, file {0} not found.");
-        _listMsg.AddEndError("LexerowCore.LoadScriptFromFile", "End load script from file {0} failed.");
+        _listMsg.Add("LexerowCore.LoadScriptFromFile.Start", "Start load script from file {0}.");
+        _listMsg.Add("LexerowCore.LoadScriptFromFile.End", "End load script, {0} lines found, success.");
+        _listMsg.AddErroCode("LexerowCore.LoadScriptFromFile", ErrorCode.FileNotFound, "End load script failed, file {0} not found.");
+        _listMsg.AddError("LexerowCore.LoadScriptFromFile", "End load script from file {0} failed.");
 
         // ScriptCompiler.CompileScript
-        _listMsg.AddStart("ScriptCompiler.CompileScript", "Start compile script");
-        _listMsg.AddEnd("ScriptCompiler.CompileScript", "End compile script, {0} instruction(s) generated, success.");
-        _listMsg.AddEndError("ScriptCompiler.CompileScript", "End compile script failed.");
+        _listMsg.Add("ScriptCompiler.CompileScript.Start", "Start compile script");
+        _listMsg.Add("ScriptCompiler.CompileScript.End", "End compile script, {0} instruction(s) generated, success.");
 
+        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserTokenNotExpected, "End compile script failed, line #{0}, col#{1}, token: {2}.");
+        //_listMsg.AddError("ScriptCompiler.CompileScript", "End compile script failed, line #{0}, col#{1}, token: {2}");
 
-        _listMsg.AddStart("ProgramExecutor.Exec", "Start execute script.");
-        _listMsg.AddEnd("ProgramExecutor.Exec", "End execute script, success.");
-        _listMsg.AddEndError("ProgramExecutor.Exec", "End execute script failed.");
+        // ProgramExecutor.Exec
+        _listMsg.Add("ProgramExecutor.Exec.Start", "Start execute script.");
+        _listMsg.Add("ProgramExecutor.Exec.End", "End execute script, success.");
+        _listMsg.AddError("ProgramExecutor.Exec", "End execute script failed.");
 
         // InstrExecutor.ExecInstr
-        _listMsg.AddStart("InstrExecutor.ExecInstr", "Start execute instruction {0}.");
-        _listMsg.AddEnd("InstrExecutor.ExecInstr", "End execute instruction {0}, success.");
+        _listMsg.Add("InstrExecutor.ExecInstr.Start", "Start execute instruction {0}.");
+        _listMsg.Add("InstrExecutor.ExecInstr.End", "End execute instruction {0}, success.");
 
-        _listMsg.AddOnGoing("InstrOnExcelExecutor.ExecInstrOnExcel:ProcessFile", "Process Excel File {0}.");
-
-        //_logger.LogExecOnGoing(ActivityLogLevel.Debug, "InstrOnExcelExecutor.ExecInstrOnExcel:ProcessFile", selectedFilename.Filename);
-
+        _listMsg.Add("InstrOnExcelExecutor.ExecInstrOnExcel.ProcessFile", "Process Excel File {0}.");
     }
 
-    string GetMsg(string operation, ActivityLogResult result, ResultError error, string param, string param2)
+    string GetMsg(string operation, ActivityLogResult result, ResultError error, string param, string param2, string param3, string param4, string param5)
     {
-        return _listMsg.GetMsg(operation, result, error, param, param2);
+        return _listMsg.GetMsg(operation, result, error, param, param2, param3, param4, param5);
     }
 }

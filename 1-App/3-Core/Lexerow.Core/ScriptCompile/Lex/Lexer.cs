@@ -42,26 +42,26 @@ public class Lexer
                 if (lastTokenType == ScriptTokenType.WrongNumber)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundDoubleWrong, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError(error, "Lexer.Process", script.Name);
+                    logger.LogCompilError("Lexer.Process", error);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.StringBadFormed)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundSgtringBadFormatted, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError(error, "Lexer.Process", script.Name);
+                    logger.LogCompilError("Lexer.Process", error);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.WrongSystName)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundSystNameWrong, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError(error, "Lexer.Process", script.Name);
+                    logger.LogCompilError("Lexer.Process", error);
                     return false;
                 }
 
                 if (lastTokenType == ScriptTokenType.Undefined)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundCharUndefined, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError(error, "Lexer.Process", script.Name);
+                    logger.LogCompilError("Lexer.Process", error);
                     return false;
                 }
             }

@@ -79,6 +79,12 @@ public class ActivityLog
 
     public string Param2 { get; set; } = string.Empty;
 
+    public string Param3 { get; set; } = string.Empty;
+
+    public string Param4 { get; set; } = string.Empty;
+
+    public string Param5 { get; set; } = string.Empty;
+
     /// <summary>
     /// result of the execution of the operation.
     /// </summary>

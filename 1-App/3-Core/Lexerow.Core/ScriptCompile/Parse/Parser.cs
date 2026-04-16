@@ -59,7 +59,7 @@ public class Parser
             return true;
         }
 
-        _logger.LogCompilError(null, "Parser.Perform", "Finished with error(s), count: " + result.ListError.Count().ToString());
+        _logger.LogCompilError("Parser.Perform", "Finished with error(s), count: " + result.ListError.Count().ToString());
         return false;
     }
 

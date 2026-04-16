@@ -45,7 +45,7 @@ public class CompilStackInstr
         }
         catch (Exception e)
         {
-            _logger.LogCompilError(null, "CompilStackInstr.Pop", e.ToString());
+            _logger.LogCompilError("CompilStackInstr.Pop", e.ToString());
             throw e;
         }
     }

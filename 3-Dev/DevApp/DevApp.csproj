@@ -46,6 +46,12 @@
     <None Update="Logs\TextFile1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\test2026ExcelFileNotFound.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\test2026wrong.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\test2026.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

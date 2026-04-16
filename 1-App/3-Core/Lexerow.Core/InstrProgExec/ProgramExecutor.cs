@@ -38,7 +38,7 @@ public class ProgramExecutor
     {
         bool res = true;
 
-        _logger.LogExec(ActivityLogLevel.Info, "ProgramExecutor.Exec", "Name: " + program.Script.Name + ", Instr Count: " + program.ListInstr.Count.ToString());
+        _logger.LogExec(ActivityLogLevel.Info, "ProgramExecutor.Exec.Start", "Name: " + program.Script.Name + ", Instr Count: " + program.ListInstr.Count.ToString());
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
 

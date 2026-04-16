@@ -80,18 +80,21 @@ public class InstrExecutor
     /// <returns></returns>
     public bool ExecInstr(Result result, Program program, ProgExecVarMgr progExecVarMgr, InstrBase instr)
     {
-        _logger.LogExec(ActivityLogLevel.Info, "InstrExecutor.ExecInstr", instr.ToString());
+        _logger.LogExec(ActivityLogLevel.Info, "InstrExecutor.ExecInstr.Start", instr.ToString());
 
         ProgExecContext ctx = new ProgExecContext();
 
         bool res = true;
         ctx.StackInstr.Push(instr);
 
+        InstrBase instrBak = instr;
+
         while (true)
         {
             // no more instr to execute, exit
             if (ctx.StackInstr.Count == 0)
             {
+                _logger.LogExec(ActivityLogLevel.Info, "InstrExecutor.ExecInstr.End", instrBak.ToString());
                 return res;
             }
 
@@ -108,7 +111,6 @@ public class InstrExecutor
             if (instr.InstrType == InstrType.OnExcel)
             {
                 res = _instrOnExcelExecutor.ExecInstrOnExcel(result, ctx, progExecVarMgr, instr as InstrOnExcel);
-                _logger.LogExec(ActivityLogLevel.Info, "InstrExecutor.ExecInstr", string.Empty);
                 if (!res) return false;
                 continue;
             }

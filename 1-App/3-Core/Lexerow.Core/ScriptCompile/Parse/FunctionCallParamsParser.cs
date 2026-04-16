@@ -39,7 +39,7 @@ internal class FunctionCallParamsParser
         //-item before openBracket is an object name? exp: fct()
         if (!instrBase.IsFunctionCall)
         {
-            logger.LogCompilError(result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken()), "FunctionCallParamsParser.ProcessFunctionCallParams", "Instr should be a function Call, Type: " + instrBase.InstrType);
+            logger.LogCompilError("FunctionCallParamsParser.ProcessFunctionCallParams", "Instr should be a function Call, Type: " + result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken()));
             return false;
         }
 
@@ -59,7 +59,7 @@ internal class FunctionCallParamsParser
             return PerformFuncCopyRow(logger, result, listVar, instrBase as InstrFuncCallCopyRow, program, listParams);
 
         // function call name not expected
-        logger.LogCompilError(result.AddNewError(ErrorCode.ParserFctNameNotExpected, scriptToken), "FunctionCallParamsParser.ProcessFunctionCallParams", string.Empty);
+        logger.LogCompilError("FunctionCallParamsParser.ProcessFunctionCallParams", result.AddNewError(ErrorCode.ParserFctNameNotExpected, scriptToken));
         return false;
     }
 

@@ -88,12 +88,22 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilError(ResultError error, string operation, string param)
+    public void LogCompilError(string operation, ResultError error)
     {
-        ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation, param);
+        ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation,string.Empty);
         log.Module = ActivityLogType.CompileScript;
         log.Error = error;
         log.Result = ActivityLogResult.Error;
+
+        if (log.Error != null) 
+        {
+            log.Param = log.Error.LineNum.ToString();
+            log.Param2 = log.Error.ColNum.ToString();
+            log.Param3 = log.Error.ErrorCode.ToString();
+            log.Param4 = log.Error.Param;
+            log.Param5 = log.Error.Param2;
+        }
+
         BuildMsgRaiseEvent(log);
     }
 

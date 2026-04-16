@@ -66,22 +66,7 @@ public class UserMessageRegistry
 {
     List<MessageItem> _listMsg = new List<MessageItem>();
 
-    public void AddStart(string operation, string msg)
-    {
-        Add(operation, msg);
-    }
-
-    public void AddOnGoing(string operation, string msg)
-    {
-        Add(operation, msg);
-    }
-
-    public void AddEnd(string operation, string msg)
-    {
-        Add(operation, msg);
-    }
-
-    public void AddEndError(string operation, string msg)
+    public void AddError(string operation, string msg)
     {
         Add(operation, ActivityLogResult.Error, msg);
     }
@@ -97,7 +82,7 @@ public class UserMessageRegistry
         _listMsg.Add(new MessageItem(operation, msg, useParam));
     }
 
-    public void Add(string operation, ErrorCode errorCode, string msg)
+    public void AddErroCode(string operation, ErrorCode errorCode, string msg)
     {
         bool useParam = false;
 
@@ -128,7 +113,7 @@ public class UserMessageRegistry
     /// <param name="param"></param>
     /// <param name="param2"></param>
     /// <returns></returns>
-    public string GetMsg(string operation, ActivityLogResult result, ResultError error, string param, string param2)
+    public string GetMsg(string operation, ActivityLogResult result, ResultError error, string param, string param2, string param3, string param4, string param5)
     {
         MessageItem item = null;
 
@@ -148,9 +133,15 @@ public class UserMessageRegistry
                 param = string.Empty;
             if (string.IsNullOrEmpty(param2))
                 param2 = string.Empty;
+            if (string.IsNullOrEmpty(param3))
+                param3 = string.Empty;
+            if (string.IsNullOrEmpty(param4))
+                param4 = string.Empty;
+            if (string.IsNullOrEmpty(param5))
+                param5 = string.Empty;
 
             // use param in log to build the message
-            item.Message = string.Format(item.Message, param, param2);
+            item.Message = string.Format(item.Message, param, param2, param3, param4, param5);
         }
         return item.Message;
     }

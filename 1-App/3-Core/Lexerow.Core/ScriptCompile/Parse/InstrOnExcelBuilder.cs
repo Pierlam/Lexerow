@@ -139,7 +139,7 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
-            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
 

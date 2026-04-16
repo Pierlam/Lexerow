@@ -40,7 +40,7 @@ public interface IActivityLogger
 
     void LogCompil(ActivityLogLevel level, string operation, string param, string param2);
 
-    void LogCompilError(ResultError error, string operation, string param);
+    void LogCompilError(string operation, ResultError error);
 
     void LogCompilError(string operation, string param);
 

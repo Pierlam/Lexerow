@@ -623,7 +623,7 @@ internal class ParserStackContentProcessor
         }
 
         var error= result.AddNewError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
-        logger.LogCompilError(error, "ParserStackContentProcessor.GatherEnd",string.Empty);
+        logger.LogCompilError("ParserStackContentProcessor.GatherEnd", error);
         return false;
     }
 
@@ -693,7 +693,7 @@ internal class ParserStackContentProcessor
 
         // other cases: unexpected -> error
         var error = result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
-        logger.LogCompilError(error, "ParserStackContentProcessor.ProcessFctCall", "FuncCall without SetVar expected");
+        logger.LogCompilError("ParserStackContentProcessor.ProcessFctCall", error);
         return false;
     }
 

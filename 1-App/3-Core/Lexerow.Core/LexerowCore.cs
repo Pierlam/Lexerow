@@ -101,7 +101,7 @@ public class LexerowCore : IDisposable
         {
             if (scriptName == null) scriptName = string.Empty;
             var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilError(error, "LexerowCore.LoadScriptFromLines", scriptName);
+            _logger.LogCompilError("LexerowCore.LoadScriptFromLines", error);
             return result;
         }
 
@@ -147,7 +147,7 @@ public class LexerowCore : IDisposable
         {
             result=new Result();
             var error = result.AddError(ErrorCode.ScriptNameNullOrEmpty, string.Empty);
-            _logger.LogCompilError(error, "LexerowCore.LoadExecScript", string.Empty);
+            _logger.LogCompilError("LexerowCore.LoadExecScript", error);
             return result;
         }
 
@@ -155,11 +155,11 @@ public class LexerowCore : IDisposable
         {
             result = new Result();
             var error = result.AddError(ErrorCode.FileNameNullOrEmpty, string.Empty);
-            _logger.LogCompilError(error, "LexerowCore.LoadExecScript", string.Empty);
+            _logger.LogCompilError("LexerowCore.LoadExecScript", error);
             return result;
         }
 
-        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadExecScript", filename);
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadExecScript.Start", filename);
 
         string elapsedTime;
 
@@ -189,7 +189,7 @@ public class LexerowCore : IDisposable
         elapsedTime = string.Format("{0:hh\\:mm\\:ss\\.fff}", stopwatch.Elapsed);
 
         if (result.Res)
-            _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadExecScript", filename,elapsedTime);
+            _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadExecScript.End", filename,elapsedTime);
         else
             _logger.LogCompilError("LexerowCore.LoadExecScript", filename);
 
@@ -241,7 +241,7 @@ public class LexerowCore : IDisposable
         {
             if (scriptName == null) scriptName = string.Empty;
             var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilError(error, "LexerowCore.ExecuteScript", scriptName);
+            _logger.LogCompilError("LexerowCore.ExecuteScript", error);
             return result;
         }
 
@@ -272,7 +272,7 @@ public class LexerowCore : IDisposable
     {
         script = null;
 
-        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", fileName);
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile.Start", fileName);
 
         Result result = new Result();
 
@@ -281,7 +281,7 @@ public class LexerowCore : IDisposable
         {
             if (scriptName == null) scriptName = string.Empty;
             var error = result.AddError(ErrorCode.ProgramWrongName, scriptName);
-            _logger.LogCompilError(error, "LexerowCore.LoadScriptFromFile", string.Empty);
+            _logger.LogCompilError("LexerowCore.LoadScriptFromFile", error);
             return result;
         }
 
@@ -295,12 +295,12 @@ public class LexerowCore : IDisposable
 
         if (!_scriptLoader.LoadScriptFromFile(result, scriptName, fileName, out script))
         {
-            _logger.LogCompilError(result.ListError[0], "LexerowCore.LoadScriptFromFile", fileName);
+            _logger.LogCompilError("LexerowCore.LoadScriptFromFile", result.ListError[0]);
             return result;
         }
 
 
-        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile", script.ScriptLines.Count.ToString());
+        _logger.LogCompil(ActivityLogLevel.Info, "LexerowCore.LoadScriptFromFile.End", script.ScriptLines.Count.ToString());
         return result;
     }
 

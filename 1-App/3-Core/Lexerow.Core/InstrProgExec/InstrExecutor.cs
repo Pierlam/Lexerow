@@ -91,9 +91,22 @@ public class InstrExecutor
 
         while (true)
         {
-            // no more instr to execute, exit
+            // no more subinstr to execute, exit
             if (ctx.StackInstr.Count == 0)
             {
+                if(result.ListError.Count > 0)
+                {
+                    _logger.LogExecError("InstrExecutor.ExecInstr", result.ListError[0]);
+                    return false;
+                }
+                if (result.ListWarning.Count > 0)
+                {
+                    _logger.LogExecWarning("InstrExecutor.ExecInstr", result.ListWarning[0]);
+                    // not an error
+                    return true;
+                }
+
+                // no error, mark the instruction as executed
                 _logger.LogExec(ActivityLogLevel.Info, "InstrExecutor.ExecInstr.End", instrBak.ToString());
                 return res;
             }
@@ -217,7 +230,7 @@ public class InstrExecutor
             // TODO:
 
             var error = result.AddNewError(ErrorCode.ExecInstrNotManaged, instr.FirstScriptToken());
-            _logger.LogExecError(error, "InstrExecutor.ExecInstr", instr.ToString() + " not managed");
+            _logger.LogExecError("InstrExecutor.ExecInstr", error);
             return false;
         }
     }

@@ -79,7 +79,7 @@ public class InstrFuncCreateExcelExecutor
         catch (Exception ex)
         {
             var error= result.AddNewError(ErrorCode.ExecUnableCreateExcelFile, instrCreateExcel.FirstScriptToken());
-            _logger.LogExecError(error, "InstrFuncCreateExcelExecutor.ExecFuncCreateExcel", string.Empty);
+            _logger.LogExecError("InstrFuncCreateExcelExecutor.ExecFuncCreateExcel", error);
             return false;
         }
 

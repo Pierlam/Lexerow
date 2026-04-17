@@ -55,7 +55,7 @@ public class ProgramExecutor
         stopwatch.Stop();
         string elapsedTime = string.Format("{0:hh\\:mm\\:ss}", stopwatch.Elapsed);
         if (!res)
-            _logger.LogExecError(result.ListError[0], "ProgramExecutor.Exec", "Error count: " + result.ListError.Count.ToString());
+            _logger.LogExecError("ProgramExecutor.Exec", result.ListError[0]);
         else
             _logger.LogExec(ActivityLogLevel.Info, "ProgramExecutor.Exec", "Elapsed time: " + elapsedTime);
         return res;

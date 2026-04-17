@@ -44,6 +44,13 @@ public enum ActivityLogResult
 
 public class ActivityLog
 {
+    public ActivityLog(ActivityLogLevel level, string operation)
+    {
+        Module = ActivityLogType.CompileScript;
+        Level = level;
+        Operation = operation;
+    }
+
     public ActivityLog(ActivityLogLevel level, string operation, string param)
     {
         Module = ActivityLogType.CompileScript;
@@ -91,6 +98,8 @@ public class ActivityLog
     public ActivityLogResult Result { get; set; } = ActivityLogResult.Ok;
 
     public ResultError? Error { get; set; } = null;
+
+    public ResultError? Warning { get; set; } = null; 
 
     /// <summary>
     /// Human readable message.

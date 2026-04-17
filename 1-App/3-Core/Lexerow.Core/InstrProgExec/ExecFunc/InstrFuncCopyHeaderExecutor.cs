@@ -114,7 +114,7 @@ public class InstrFuncCopyHeaderExecutor
             if (lastColAddr == 0)
             {
                 var error = result.AddNewError(ErrorCode.ExecExcelSheetEmpty, instrCopyHeader.FirstScriptToken(), filenameSource);
-                _logger.LogExecError(error, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
+                _logger.LogExecError("InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", error);
                 return false;
             }
 
@@ -133,7 +133,7 @@ public class InstrFuncCopyHeaderExecutor
             if(targetlastRowIndex>0)
             {
                 var error = result.AddNewError(ErrorCode.ExecExcelSheetNotEmpty, instrCopyHeader.FirstScriptToken(), filenameTarget);
-                _logger.LogExecError(error, "InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", string.Empty);
+                _logger.LogExecError("InstrFuncCopyHeaderExecutor.ExecFuncCopyHeader", error);
                 return false;
             }
 
@@ -161,7 +161,7 @@ public class InstrFuncCopyHeaderExecutor
         catch (Exception ex)
         {
             var error = result.AddNewError(ErrorCode.ExecUnableCopyHeader, instrCopyHeader.FirstScriptToken(), ex.Message);
-            _logger.LogExecError(error, "InstrFuncCreateExcelExecutor.ExecFuncCopyHeader", string.Empty);
+            _logger.LogExecError("InstrFuncCreateExcelExecutor.ExecFuncCopyHeader", error);
             return false;
         }
     }

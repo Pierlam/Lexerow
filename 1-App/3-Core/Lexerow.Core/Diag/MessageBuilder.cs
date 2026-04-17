@@ -126,8 +126,14 @@ public class MessageBuilder
         _listMsg.Add("ScriptCompiler.CompileScript.Start", "Start compile script");
         _listMsg.Add("ScriptCompiler.CompileScript.End", "End compile script, {0} instruction(s) generated, success.");
 
-        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserTokenNotExpected, "End compile script failed, line #{0}, col#{1}, token: {2}.");
-        //_listMsg.AddError("ScriptCompiler.CompileScript", "End compile script failed, line #{0}, col#{1}, token: {2}");
+        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserTokenNotExpected, "End compile script failed, L{0}:C{1}, token '{2}' not expected.");        
+        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserValueStringExpected, "End compile script failed, L{0}:C{1}, token '{2}' should be a string value.");
+        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserExpressionWrong, "End compile script failed, L{0}:C{1}, wrong expression on token '{2}'.");
+        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserCompExprWrong, "End compile script failed, L{0}:C{1}, wrong comparison expression on token '{2}'.");
+        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserSepComparatorWrong, "End compile script failed, L{0}:C{1}, token '{2}' is a wrong separator comparison.");
+        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserBoolExprWrong, "End compile script failed, L{0}:C{1}, wrong boolean expression on token '{2}'.");
+
+        
 
         // ProgramExecutor.Exec
         _listMsg.Add("ProgramExecutor.Exec.Start", "Start execute script.");

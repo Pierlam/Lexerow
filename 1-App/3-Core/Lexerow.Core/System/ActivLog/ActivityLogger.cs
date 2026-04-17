@@ -99,9 +99,9 @@ public class ActivityLogger : IActivityLogger
         {
             log.Param = log.Error.LineNum.ToString();
             log.Param2 = log.Error.ColNum.ToString();
-            log.Param3 = log.Error.ErrorCode.ToString();
-            log.Param4 = log.Error.Param;
-            log.Param5 = log.Error.Param2;
+            //log.Param3 = log.Error.ErrorCode.ToString();
+            log.Param3 = log.Error.Param;
+            log.Param4 = log.Error.Param2;
         }
 
         BuildMsgRaiseEvent(log);

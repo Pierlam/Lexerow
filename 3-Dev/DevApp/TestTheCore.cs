@@ -32,8 +32,8 @@ internal class TestTheCore
 
         core.ActivityLogEvent += Core_ActivityLogEvent;
 
-        //string scriptfile = ".\\Scripts\\test2026.lxrw";
-        string scriptfile = ".\\Scripts\\test2026wrong.lxrw";
+        string scriptfile = ".\\Scripts\\test2026.lxrw";
+        //string scriptfile = ".\\Scripts\\test2026wrong.lxrw";
 
         // load the script, compile it and then execute it
         Result result = core.LoadExecScript("script", scriptfile);

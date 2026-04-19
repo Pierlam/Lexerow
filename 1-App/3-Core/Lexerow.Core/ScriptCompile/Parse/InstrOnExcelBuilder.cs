@@ -164,7 +164,7 @@ public class InstrOnExcelBuilder
             }
 
             // error
-            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -187,7 +187,7 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
-            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -200,7 +200,7 @@ public class InstrOnExcelBuilder
                 // nothing more to do, just check the stage
                 return true;
             }
-            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -215,7 +215,7 @@ public class InstrOnExcelBuilder
                 stkInstr.Push(instr);
                 return true;
             }
-            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
 
@@ -242,10 +242,10 @@ public class InstrOnExcelBuilder
                 return true;
             }
 
-            result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+            result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
             return false;
         }
-        result.AddError(ErrorCode.ParserOnSheetExpected, instr.FirstScriptToken());
+        result.AddError(ErrorCode.ParserTokenNotExpected, instr.FirstScriptToken());
         return false;
     }
 

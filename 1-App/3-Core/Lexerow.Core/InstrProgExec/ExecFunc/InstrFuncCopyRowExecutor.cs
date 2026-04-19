@@ -36,7 +36,7 @@ public class InstrFuncCopyRowExecutor
     /// <exception cref="NotImplementedException"></exception>
     public bool ExecFuncCopyRow(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncCallCopyRow instrCopyRow)
     {
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrFuncCopyHeaderExecutor.ExecFuncCopyRow", string.Empty);
+        _logger.Log(ActivityLogLevel.Debug, "InstrFuncCopyHeaderExecutor.ExecFuncCopyRow", string.Empty);
 
         // source file instr need to be executed ?
         if (InstrUtils.NeedToBeExecuted(instrCopyRow.InstrTargetFile))

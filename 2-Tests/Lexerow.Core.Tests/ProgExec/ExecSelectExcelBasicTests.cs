@@ -43,15 +43,11 @@ public class ExecSelectExcelBasicTests : BaseTests
         Result result = new Result();
         bool res = programExec.Exec(result, program);
         Assert.IsTrue(res);
-
-        // found one file
-        //Assert.AreEqual(1, instrSelectFiles.ListSelectedFilename.Count);
-        //Assert.AreEqual((instrSelectFiles.ListInstrParams[0] as InstrValue).RawValue, (instrSelectFiles.ListSelectedFilename[0].InstrBase as InstrValue).RawValue);
-        //Assert.IsNotNull(1, instrSelectFiles.ListSelectedFilename[0].Filename);
     }
 
     /// <summary>
     /// file= SelectFiles("blabla.xlsx")  ->no file matching the name
+    /// not an error.
     /// </summary>
     [TestMethod]
     public void ExecSelectFilesFilenameOkButNotFound()
@@ -77,8 +73,13 @@ public class ExecSelectExcelBasicTests : BaseTests
         Result result = new Result();
         bool res = programExec.Exec(result, program);
 
+        // no error
         Assert.IsTrue(res);
-        //Assert.AreEqual(0, instrSelectFiles.ListSelectedFilename.Count);
+
+        // but there is one warning
+        Assert.AreEqual(1, result.ListWarning.Count);
+        Assert.AreEqual(ErrorCode.ExecNoFileSelected, result.ListWarning[0].ErrorCode);
+
     }
 
     /// <summary>

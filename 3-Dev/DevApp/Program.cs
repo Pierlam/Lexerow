@@ -8,7 +8,7 @@ Console.WriteLine("==>Lexerow Dev:");
 
 void Core_ActivityLogEvent(object? sender, ActivityLog e)
 {
-    Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Module + " " + e.Operation + " " + e.Param);
+    Console.WriteLine(e.When.ToString("yyyy-MM-dd HH:mm:ss - ") + e.Level + " " + e.Operation + " " + e.Param);
 }
 
 void TestCore()

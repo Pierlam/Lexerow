@@ -38,7 +38,7 @@ public class InstrComparisonExecutor
     /// <returns></returns>
     public bool ExecInstrCompExpr(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrComparison instrComparison)
     {
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrComparisonExecutor.ExecInstrComparison", string.Empty);
+        _logger.Log(ActivityLogLevel.Debug, "InstrComparisonExecutor.ExecInstrComparison", string.Empty);
 
         InstrBase instrOperandLeft = instrComparison.OperandLeft;
         InstrBase instrOperandRight = instrComparison.OperandRight;

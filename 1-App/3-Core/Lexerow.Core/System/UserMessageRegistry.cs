@@ -71,6 +71,11 @@ public class UserMessageRegistry
         Add(operation, ActivityLogResult.Error, msg);
     }
 
+    public void AddWarning(string operation, string msg)
+    {
+        Add(operation, ActivityLogResult.Warning, msg);
+    }
+
     public void Add(string operation, string msg)
     {
         bool useParam = false;
@@ -82,7 +87,7 @@ public class UserMessageRegistry
         _listMsg.Add(new MessageItem(operation, msg, useParam));
     }
 
-    public void AddErroCode(string operation, ErrorCode errorCode, string msg)
+    public void AddErrorCode(string operation, ErrorCode errorCode, string msg)
     {
         bool useParam = false;
 

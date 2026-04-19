@@ -97,7 +97,10 @@ public class MessageBuilder
             msg += "INF ";
         }
 
-        string msgFromRegistry = GetMsg(log.Operation, log.Result, log.Error, log.Param, log.Param2, log.Param3, log.Param4, log.Param5);
+        ResultError result = log.Error;
+        if(result==null)result= log.Warning;
+
+        string msgFromRegistry = GetMsg(log.Operation, log.Result, result, log.Param, log.Param2, log.Param3, log.Param4, log.Param5);
         if(!string.IsNullOrEmpty(msgFromRegistry))
         {
             return msg += msgFromRegistry;
@@ -112,33 +115,43 @@ public class MessageBuilder
     void BuildListMsg()
     {
         _listMsg.Add("LexerowCore.LoadExecScript.Start", "Start process script {0}.");
-        _listMsg.Add("LexerowCore.LoadExecScript.End","End Process script {0}, elapsed time: {1}, success.");
-        _listMsg.AddErroCode("LexerowCore.LoadExecScript", ErrorCode.FileNameNullOrEmpty, "End Process script failed, script file name is null or empty.");
-        _listMsg.AddError("LexerowCore.LoadExecScript", "End Process script {0} failed.");
+        _listMsg.Add("LexerowCore.LoadExecScript.End","End Process script {0}, Success, elapsed time: {1}.");
+        _listMsg.AddErrorCode("LexerowCore.LoadExecScript", ErrorCode.FileNameNullOrEmpty, "End Process script failed, script file name is null or empty.");
+        _listMsg.AddError("LexerowCore.LoadExecScript", "End Process script {0} Failed, elapsed time: {1}.");
+        _listMsg.AddWarning("LexerowCore.LoadExecScript.End", "End Process script {0} Warning, elapsed time: {1}.");
 
 
         _listMsg.Add("LexerowCore.LoadScriptFromFile.Start", "Start load script from file {0}.");
         _listMsg.Add("LexerowCore.LoadScriptFromFile.End", "End load script, {0} lines found, success.");
-        _listMsg.AddErroCode("LexerowCore.LoadScriptFromFile", ErrorCode.FileNotFound, "End load script failed, file {0} not found.");
+        _listMsg.AddErrorCode("LexerowCore.LoadScriptFromFile", ErrorCode.FileNotFound, "End load script failed, file {0} not found.");
         _listMsg.AddError("LexerowCore.LoadScriptFromFile", "End load script from file {0} failed.");
 
         // ScriptCompiler.CompileScript
         _listMsg.Add("ScriptCompiler.CompileScript.Start", "Start compile script");
         _listMsg.Add("ScriptCompiler.CompileScript.End", "End compile script, {0} instruction(s) generated, success.");
 
-        _listMsg.AddErroCode("ScriptCompiler.CompileScript", ErrorCode.ParserTokenNotExpected, "End compile script failed, line #{0}, col#{1}, token: {2}.");
-        //_listMsg.AddError("ScriptCompiler.CompileScript", "End compile script failed, line #{0}, col#{1}, token: {2}");
+        _listMsg.AddErrorCode("ScriptCompiler.CompileScript", ErrorCode.ParserTokenNotExpected, "End compile script failed, L{0}:C{1}, token '{2}' not expected.");        
+        _listMsg.AddErrorCode("ScriptCompiler.CompileScript", ErrorCode.ParserValueStringExpected, "End compile script failed, L{0}:C{1}, token '{2}' should be a string value.");
+        _listMsg.AddErrorCode("ScriptCompiler.CompileScript", ErrorCode.ParserExpressionWrong, "End compile script failed, L{0}:C{1}, wrong expression on token '{2}'.");
+        _listMsg.AddErrorCode("ScriptCompiler.CompileScript", ErrorCode.ParserCompExprWrong, "End compile script failed, L{0}:C{1}, wrong comparison expression on token '{2}'.");
+        _listMsg.AddErrorCode("ScriptCompiler.CompileScript", ErrorCode.ParserSepComparatorWrong, "End compile script failed, L{0}:C{1}, token '{2}' is a wrong separator comparison.");
+        _listMsg.AddErrorCode("ScriptCompiler.CompileScript", ErrorCode.ParserBoolExprWrong, "End compile script failed, L{0}:C{1}, wrong boolean expression on token '{2}'.");
+
+        
 
         // ProgramExecutor.Exec
         _listMsg.Add("ProgramExecutor.Exec.Start", "Start execute script.");
         _listMsg.Add("ProgramExecutor.Exec.End", "End execute script, success.");
         _listMsg.AddError("ProgramExecutor.Exec", "End execute script failed.");
 
+
         // InstrExecutor.ExecInstr
         _listMsg.Add("InstrExecutor.ExecInstr.Start", "Start execute instruction {0}.");
         _listMsg.Add("InstrExecutor.ExecInstr.End", "End execute instruction {0}, success.");
-
         _listMsg.Add("InstrOnExcelExecutor.ExecInstrOnExcel.ProcessFile", "Process Excel File {0}.");
+
+        _listMsg.AddErrorCode("InstrExecutor.ExecInstr", ErrorCode.ExecNoFileSelected, "End execute script failed, L{0}:C{1}, no file selected match {2}, nothing to process.");
+
     }
 
     string GetMsg(string operation, ActivityLogResult result, ResultError error, string param, string param2, string param3, string param4, string param5)

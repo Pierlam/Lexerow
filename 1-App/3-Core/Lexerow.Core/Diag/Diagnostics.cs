@@ -139,7 +139,7 @@ public class Diagnostics
                 e.Param += " " + msg;
         }
 
-        s += " " + e.Level + " " + e.Module + " " + e.Result + " " + e.Operation + " " + e.Param;
+        s += " " + e.Level + " " + e.Result + " " + e.Operation + " " + e.Param;
         return s;
     }
 
@@ -149,7 +149,7 @@ public class Diagnostics
 
         s = e.When.ToString("dd/MM/yyyy HH:mm:ss fff");
 
-        s += sep + e.Level + sep + e.Module + sep + e.Result + sep + e.Operation + sep + e.Param;
+        s += sep + e.Level + sep + e.Result + sep + e.Operation + sep + e.Param;
         return s;
     }
 

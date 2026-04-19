@@ -575,7 +575,7 @@ internal class ParserStackContentProcessor
     {
         isToken = false;
 
-        logger.LogCompil(ActivityLogLevel.Trace, "ParserStackContentProcessor.GatherEnd", "Stack.Count: " + stackInstr.Count);
+        logger.Log(ActivityLogLevel.Trace, "ParserStackContentProcessor.GatherEnd", "Stack.Count: " + stackInstr.Count);
 
         if (stackInstr.Count == 0)
             return true;
@@ -623,7 +623,7 @@ internal class ParserStackContentProcessor
         }
 
         var error= result.AddNewError(ErrorCode.ParserTokenThenExpected, instrBase.FirstScriptToken());
-        logger.LogCompilError("ParserStackContentProcessor.GatherEnd", error);
+        logger.LogError("ParserStackContentProcessor.GatherEnd", error);
         return false;
     }
 
@@ -638,7 +638,7 @@ internal class ParserStackContentProcessor
     private static bool PerformFctCall(IActivityLogger logger, Result result, CompilStackInstr stackInstr, int sourceCodeLineIndex, List<InstrBase> listInstrToExec, out bool isToken)
     {
         isToken = false;
-        logger.LogCompil(ActivityLogLevel.Trace, "ParserStackContentProcessor.PerformFctCall", "Stack.Count: " + stackInstr.Count);
+        logger.Log(ActivityLogLevel.Trace, "ParserStackContentProcessor.PerformFctCall", "Stack.Count: " + stackInstr.Count);
 
         if (stackInstr.Count == 0)
             return true;
@@ -693,7 +693,7 @@ internal class ParserStackContentProcessor
 
         // other cases: unexpected -> error
         var error = result.AddNewError(ErrorCode.ParserTokenNotExpected, instrBase.FirstScriptToken(), sourceCodeLineIndex.ToString());
-        logger.LogCompilError("ParserStackContentProcessor.ProcessFctCall", error);
+        logger.LogError("ParserStackContentProcessor.ProcessFctCall", error);
         return false;
     }
 

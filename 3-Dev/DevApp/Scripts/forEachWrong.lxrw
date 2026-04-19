@@ -1,5 +1,5 @@
 ﻿
-OnExcel ".\Input\test2026.xlsx"
+OnExcel ".\Input\scriptOk.xlsx"
 	ForEachRowXX
 		If A.Cell >= 10 Then A.Cell=10
 	Next

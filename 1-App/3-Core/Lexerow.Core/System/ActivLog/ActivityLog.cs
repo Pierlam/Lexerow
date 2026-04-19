@@ -3,13 +3,13 @@
 /// <summary>
 /// Module
 /// </summary>
-public enum ActivityLogType
-{
-    Other,
-    LoadScript,
-    CompileScript,
-    ExecProg,
-}
+//public enum ActivityLogType
+//{
+//    Other,
+//    LoadScript,
+//    CompileScript,
+//    ExecProg,
+//}
 
 public enum ActivityLogLevel
 {
@@ -46,14 +46,12 @@ public class ActivityLog
 {
     public ActivityLog(ActivityLogLevel level, string operation)
     {
-        Module = ActivityLogType.CompileScript;
         Level = level;
         Operation = operation;
     }
 
     public ActivityLog(ActivityLogLevel level, string operation, string param)
     {
-        Module = ActivityLogType.CompileScript;
         Level = level;
         Operation = operation;
         Param = param;
@@ -61,14 +59,12 @@ public class ActivityLog
 
     public ActivityLog(ActivityLogLevel level, string operation, string param, string param2)
     {
-        Module = ActivityLogType.CompileScript;
         Level = level;
         Operation = operation;
         Param = param;
         Param2 = param2;
     }
 
-    public ActivityLogType Module { get; set; } = ActivityLogType.Other;
 
     public DateTime When { get; private set; } = DateTime.Now;
 

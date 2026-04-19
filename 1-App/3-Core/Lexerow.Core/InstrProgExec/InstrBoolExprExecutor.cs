@@ -29,7 +29,7 @@ public class InstrBoolExprExecutor
 
     public bool ExecInstrBoolExpr(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrBoolExpr instrBoolExpr)
     {
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrBoolExprExecutor.ExecInstrBoolExpr", string.Empty);
+        _logger.Log(ActivityLogLevel.Debug, "InstrBoolExprExecutor.ExecInstrBoolExpr", string.Empty);
 
         //--a previous instr exists
         //if (ctx.PrevInstrExecuted != null)

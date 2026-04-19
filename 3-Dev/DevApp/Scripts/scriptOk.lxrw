@@ -1,0 +1,6 @@
+﻿
+OnExcel ".\Input\scriptOk.xlsx"
+	ForEachRow
+		If B.Cell >= 10 Then B.Cell=10
+	Next
+End OnExcel

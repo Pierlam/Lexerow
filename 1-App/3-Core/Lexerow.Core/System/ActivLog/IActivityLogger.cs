@@ -36,17 +36,17 @@ public interface IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    void LogCompil(ActivityLogLevel level, string operation, string param);
+    void Log(ActivityLogLevel level, string operation, string param);
 
-    void LogCompil(ActivityLogLevel level, string operation, string param, string param2);
+    void Log(ActivityLogLevel level, string operation, string param, string param2);
 
-    void LogCompilError(string operation, ResultError error);
+    void LogError(string operation, ResultError error);
 
-    void LogCompilError(string operation, string param);
+    void LogError(string operation, string param);
 
-    void LogExec(ActivityLogLevel level, string operation, string param);
+    //void Log(ActivityLogLevel level, string operation, string param);
 
-    void LogExecError(string operation, ResultError error);
+    //void LogExecError(string operation, ResultError error);
 
-    void LogExecWarning(string operation, ResultError error);
+    void LogWarning(string operation, ResultError error);
 }

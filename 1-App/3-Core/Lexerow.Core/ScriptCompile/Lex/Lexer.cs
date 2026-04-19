@@ -20,7 +20,7 @@ public class Lexer
     /// <returns></returns>
     public static bool Process(IActivityLogger logger, Result result, Script script, out List<ScriptLineTokens> listScriptLineTokens, LexerConfig lac)
     {
-        logger.LogCompil(ActivityLogLevel.Info, "Lexer.Process", script.Name);
+        logger.Log(ActivityLogLevel.Info, "Lexer.Process", script.Name);
 
         ScriptSplitter stringParser = new ScriptSplitter();
 
@@ -42,26 +42,26 @@ public class Lexer
                 if (lastTokenType == ScriptTokenType.WrongNumber)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundDoubleWrong, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError("Lexer.Process", error);
+                    logger.LogError("Lexer.Process", error);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.StringBadFormed)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundSgtringBadFormatted, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError("Lexer.Process", error);
+                    logger.LogError("Lexer.Process", error);
                     return false;
                 }
                 if (lastTokenType == ScriptTokenType.WrongSystName)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundSystNameWrong, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError("Lexer.Process", error);
+                    logger.LogError("Lexer.Process", error);
                     return false;
                 }
 
                 if (lastTokenType == ScriptTokenType.Undefined)
                 {
                     var error = result.AddError(ErrorCode.LexerFoundCharUndefined, lineIdx, colIdx, scriptLine.Line);
-                    logger.LogCompilError("Lexer.Process", error);
+                    logger.LogError("Lexer.Process", error);
                     return false;
                 }
             }
@@ -77,7 +77,7 @@ public class Lexer
             listScriptLineTokens.Add(scriptLineTokens);
         }
 
-        logger.LogCompil(ActivityLogLevel.Info, "Lexer.Process", script.Name);
+        logger.Log(ActivityLogLevel.Info, "Lexer.Process", script.Name);
         return true;
     }
 }

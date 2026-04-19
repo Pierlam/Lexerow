@@ -19,7 +19,7 @@
     <None Update="Input\BasicDataTable.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Input\Test2026.xlsx">
+    <None Update="Input\scriptOk.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Input\TestWriteDates.xlsx">
@@ -46,13 +46,13 @@
     <None Update="Logs\TextFile1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Scripts\test2026ExcelFileNotFound.lxrw">
+    <None Update="Scripts\excelFileNotFound.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Scripts\test2026wrong.lxrw">
+    <None Update="Scripts\forEachWrong.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Scripts\test2026.lxrw">
+    <None Update="Scripts\scriptOk.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

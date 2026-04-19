@@ -38,7 +38,7 @@ public class ScriptCompiler
     /// <returns></returns>
     public Result CompileScript(Result result, Script script, out Program programScript)
     {
-        _logger.LogCompil(ActivityLogLevel.Info, "ScriptCompiler.CompileScript.Start", script.Name);
+        _logger.Log(ActivityLogLevel.Info, "ScriptCompiler.CompileScript.Start", script.Name);
 
         // analyse the source code, line by line
         if (!Lexer.Process(_logger, result, script, out List<ScriptLineTokens> listScriptLineTokens, lexicalAnalyzerConfig))
@@ -54,9 +54,9 @@ public class ScriptCompiler
         bool res = parser.Perform(result, listScriptLineTokens, programScript);
 
         if (res)
-            _logger.LogCompil(ActivityLogLevel.Info, "ScriptCompiler.CompileScript.End", programScript.ListInstr.Count.ToString());
+            _logger.Log(ActivityLogLevel.Info, "ScriptCompiler.CompileScript.End", programScript.ListInstr.Count.ToString());
         else
-            _logger.LogCompilError("ScriptCompiler.CompileScript", result.ListError[0]);
+            _logger.LogError("ScriptCompiler.CompileScript", result.ListError[0]);
 
         return result;
     }

@@ -63,10 +63,9 @@ public class ActivityLogger : IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompil(ActivityLogLevel level, string operation, string param)
+    public void Log(ActivityLogLevel level, string operation, string param)
     {
         ActivityLog log = new ActivityLog(level, operation, param);
-        log.Module = ActivityLogType.CompileScript;
         BuildMsgRaiseEvent(log);
     }
 
@@ -75,10 +74,9 @@ public class ActivityLogger : IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompil(ActivityLogLevel level, string operation, string param, string param2)
+    public void Log(ActivityLogLevel level, string operation, string param, string param2)
     {
         ActivityLog log = new ActivityLog(level, operation, param, param2);
-        log.Module = ActivityLogType.CompileScript;
         BuildMsgRaiseEvent(log);
     }
 
@@ -88,10 +86,9 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilError(string operation, ResultError error)
+    public void LogError(string operation, ResultError error)
     {
         ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation,string.Empty);
-        log.Module = ActivityLogType.CompileScript;
         log.Error = error;
         log.Result = ActivityLogResult.Error;
 
@@ -113,10 +110,9 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogCompilError(string operation, string param)
+    public void LogError(string operation, string param)
     {
         ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation, param);
-        log.Module = ActivityLogType.CompileScript;
         log.Result = ActivityLogResult.Error;
         BuildMsgRaiseEvent(log);
     }
@@ -126,12 +122,12 @@ public class ActivityLogger : IActivityLogger
     /// </summary>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogExec(ActivityLogLevel level, string operation, string param)
-    {
-        ActivityLog log = new ActivityLog(level, operation, param);
-        log.Module = ActivityLogType.ExecProg;
-        BuildMsgRaiseEvent(log);
-    }
+    //public void LogExec(ActivityLogLevel level, string operation, string param)
+    //{
+    //    ActivityLog log = new ActivityLog(level, operation, param);
+    //    log.Module = ActivityLogType.ExecProg;
+    //    BuildMsgRaiseEvent(log);
+    //}
 
     /// <summary>
     /// Error log are Important.
@@ -139,24 +135,24 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogExecError(string operation, ResultError error)
-    {
-        ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation);
-        log.Module = ActivityLogType.ExecProg;
-        log.Error = error;
+    //public void LogExecError(string operation, ResultError error)
+    //{
+    //    ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation);
+    //    log.Module = ActivityLogType.ExecProg;
+    //    log.Error = error;
 
-        if (log.Error != null)
-        {
-            log.Param = log.Error.LineNum.ToString();
-            log.Param2 = log.Error.ColNum.ToString();
-            //log.Param3 = log.Error.ErrorCode.ToString();
-            log.Param3 = log.Error.Param;
-            log.Param4 = log.Error.Param2;
-        }
+    //    if (log.Error != null)
+    //    {
+    //        log.Param = log.Error.LineNum.ToString();
+    //        log.Param2 = log.Error.ColNum.ToString();
+    //        //log.Param3 = log.Error.ErrorCode.ToString();
+    //        log.Param3 = log.Error.Param;
+    //        log.Param4 = log.Error.Param2;
+    //    }
 
-        log.Result = ActivityLogResult.Error;
-        BuildMsgRaiseEvent(log);
-    }
+    //    log.Result = ActivityLogResult.Error;
+    //    BuildMsgRaiseEvent(log);
+    //}
 
     /// <summary>
     /// Error log are Important.
@@ -164,10 +160,9 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    public void LogExecWarning(string operation, ResultError error)
+    public void LogWarning(string operation, ResultError error)
     {
         ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation);
-        log.Module = ActivityLogType.ExecProg;
         log.Warning = error;
 
         if (log.Warning != null)
@@ -178,7 +173,7 @@ public class ActivityLogger : IActivityLogger
             log.Param4 = log.Warning.Param2;
         }
 
-        log.Result = ActivityLogResult.Error;
+        log.Result = ActivityLogResult.Warning;
         BuildMsgRaiseEvent(log);
     }
 

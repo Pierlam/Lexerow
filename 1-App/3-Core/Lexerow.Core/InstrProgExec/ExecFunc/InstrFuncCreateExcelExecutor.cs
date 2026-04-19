@@ -35,7 +35,7 @@ public class InstrFuncCreateExcelExecutor
 
     public bool ExecFuncCreateExcel(Result result, ProgExecContext ctx, ProgExecVarMgr progExecVarMgr, InstrFuncCallCreateExcel instrCreateExcel)
     {
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrFuncCreateExcelExecutor.ExecFuncCreateExcel", string.Empty);
+        _logger.Log(ActivityLogLevel.Debug, "InstrFuncCreateExcelExecutor.ExecFuncCreateExcel", string.Empty);
 
         // filename instr need to be executed ?
         if (InstrUtils.NeedToBeExecuted(instrCreateExcel.InstrFileName))
@@ -79,7 +79,7 @@ public class InstrFuncCreateExcelExecutor
         catch (Exception ex)
         {
             var error= result.AddNewError(ErrorCode.ExecUnableCreateExcelFile, instrCreateExcel.FirstScriptToken());
-            _logger.LogExecError("InstrFuncCreateExcelExecutor.ExecFuncCreateExcel", error);
+            _logger.LogError("InstrFuncCreateExcelExecutor.ExecFuncCreateExcel", error);
             return false;
         }
 

@@ -31,7 +31,7 @@ public class InstrRowExecutor
     /// <returns></returns>
     public bool ExecInstrProcessRow(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessRow instrProcessRow)
     {
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", string.Empty);
+        _logger.Log(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", string.Empty);
 
         // next data row exists?
         int lastRowAddr = _excelProcessor.GetLastRowAddress(ctx.ExcelSheet);
@@ -39,7 +39,7 @@ public class InstrRowExecutor
         {
             // no more datarow to process, go back to OnSheet instr
             ctx.StackInstr.Pop();
-            _logger.LogExec(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "No More row");
+            _logger.Log(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "No More row");
             return true;
         }
 
@@ -56,7 +56,7 @@ public class InstrRowExecutor
 
         ctx.StackInstr.Push(instrForEachRow);
 
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowAddr);
+        _logger.Log(ActivityLogLevel.Debug, "InstrRowExecutor.ExecInstrProcessRow", "NextRowNum: " + instrProcessRow.RowAddr);
         return true;
     }
 
@@ -71,7 +71,7 @@ public class InstrRowExecutor
     /// <returns></returns>
     public bool ExecProcessInstrForEachRow(Result result, ProgExecContext ctx, ProgExecVarMgr progRunVarMgr, InstrProcessInstrForEachRow instrForEachRow)
     {
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrRowExecutor.ExecProcessInstrForEachRow", string.Empty);
+        _logger.Log(ActivityLogLevel.Debug, "InstrRowExecutor.ExecProcessInstrForEachRow", string.Empty);
 
         // execute next instr in ForEach Row
         instrForEachRow.InstrToProcessNum++;
@@ -81,14 +81,14 @@ public class InstrRowExecutor
         {
             // no more instr to execute in OnSheet/ForEachRow
             ctx.StackInstr.Pop();
-            _logger.LogExec(ActivityLogLevel.Debug, "InstrRowExecutor.RunInstrForEachRow", "No More Instr");
+            _logger.Log(ActivityLogLevel.Debug, "InstrRowExecutor.RunInstrForEachRow", "No More Instr");
             return true;
         }
 
         // get the next instr to execute
         InstrBase instrBase = instrForEachRow.ListInstr[instrForEachRow.InstrToProcessNum];
         ctx.StackInstr.Push(instrBase);
-        _logger.LogExec(ActivityLogLevel.Debug, "InstrRowExecutor.RunInstrForEachRow", "InstrToProcessNum: " + instrForEachRow.InstrToProcessNum);
+        _logger.Log(ActivityLogLevel.Debug, "InstrRowExecutor.RunInstrForEachRow", "InstrToProcessNum: " + instrForEachRow.InstrToProcessNum);
         return true;
     }
 }

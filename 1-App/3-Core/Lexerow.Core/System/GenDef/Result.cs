@@ -183,7 +183,9 @@ public class Result
         else
             resultError = new ResultError(errorCode, 0, 0, string.Empty);
         ListWarning.Add(resultError);
-        Res = false;
+
+        //not an error, just a warning, so Res is not set to false.
+        Res = true;
     }
 
     public void AddWarning(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)

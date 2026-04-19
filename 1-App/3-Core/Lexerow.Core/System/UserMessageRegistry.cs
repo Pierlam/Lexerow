@@ -82,7 +82,7 @@ public class UserMessageRegistry
         _listMsg.Add(new MessageItem(operation, msg, useParam));
     }
 
-    public void AddErroCode(string operation, ErrorCode errorCode, string msg)
+    public void AddErrorCode(string operation, ErrorCode errorCode, string msg)
     {
         bool useParam = false;
 

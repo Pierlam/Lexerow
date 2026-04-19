@@ -44,9 +44,10 @@ public interface IActivityLogger
 
     void LogError(string operation, string param);
 
-    //void Log(ActivityLogLevel level, string operation, string param);
+    void LogError(string operation, string param, string param2);
 
-    //void LogExecError(string operation, ResultError error);
 
     void LogWarning(string operation, ResultError error);
+
+    void LogWarning(string operation, string param, string param2);
 }

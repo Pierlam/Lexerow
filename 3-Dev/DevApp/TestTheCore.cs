@@ -34,16 +34,15 @@ internal class TestTheCore
 
 
         //string scriptfile = ".\\Scripts\\scriptOk.lxrw";
+        //string scriptfile = null;
+        //string scriptfile = string.Empty;
+        //string scriptfile = ".\\Scripts\\destnotexists.lxrw";
         //string scriptfile = ".\\Scripts\\forEachWrong.lxrw";        
         string scriptfile = ".\\Scripts\\excelFileNotFound.lxrw";
 
 
         // load the script, compile it and then execute it
         Result result = core.LoadExecScript("script", scriptfile);
-        //Result result = core.LoadExecScript("script", "toto.xlsx");
-
-        //if (result.Res) Console.WriteLine("OK.");
-        //else Console.WriteLine("ERROR");
     }
 
     public static void TestCoreCompilCopyHeader()

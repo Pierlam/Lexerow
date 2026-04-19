@@ -94,11 +94,18 @@ public class ActivityLogger : IActivityLogger
 
         if (log.Error != null) 
         {
-            log.Param = log.Error.LineNum.ToString();
-            log.Param2 = log.Error.ColNum.ToString();
-            //log.Param3 = log.Error.ErrorCode.ToString();
-            log.Param3 = log.Error.Param;
-            log.Param4 = log.Error.Param2;
+            if (log.Error.LineNum > 0)
+            {
+                log.Param = log.Error.LineNum.ToString();
+                log.Param2 = log.Error.ColNum.ToString();
+                log.Param3 = log.Error.Param;
+                log.Param4 = log.Error.Param2;
+            }
+            else
+            {
+                log.Param = log.Error.Param;
+                log.Param2 = log.Error.Param2;
+            }
         }
 
         BuildMsgRaiseEvent(log);
@@ -112,22 +119,8 @@ public class ActivityLogger : IActivityLogger
     /// <param name="msg"></param>
     public void LogError(string operation, string param)
     {
-        ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation, param);
-        log.Result = ActivityLogResult.Error;
-        BuildMsgRaiseEvent(log);
+        LogError(operation, param, string.Empty);
     }
-
-    /// <summary>
-    /// stage is Start, result is Ok/success.
-    /// </summary>
-    /// <param name="operation"></param>
-    /// <param name="msg"></param>
-    //public void LogExec(ActivityLogLevel level, string operation, string param)
-    //{
-    //    ActivityLog log = new ActivityLog(level, operation, param);
-    //    log.Module = ActivityLogType.ExecProg;
-    //    BuildMsgRaiseEvent(log);
-    //}
 
     /// <summary>
     /// Error log are Important.
@@ -135,24 +128,12 @@ public class ActivityLogger : IActivityLogger
     /// <param name="error"></param>
     /// <param name="operation"></param>
     /// <param name="msg"></param>
-    //public void LogExecError(string operation, ResultError error)
-    //{
-    //    ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation);
-    //    log.Module = ActivityLogType.ExecProg;
-    //    log.Error = error;
-
-    //    if (log.Error != null)
-    //    {
-    //        log.Param = log.Error.LineNum.ToString();
-    //        log.Param2 = log.Error.ColNum.ToString();
-    //        //log.Param3 = log.Error.ErrorCode.ToString();
-    //        log.Param3 = log.Error.Param;
-    //        log.Param4 = log.Error.Param2;
-    //    }
-
-    //    log.Result = ActivityLogResult.Error;
-    //    BuildMsgRaiseEvent(log);
-    //}
+    public void LogError(string operation, string param, string param2)
+    {
+        ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation, param, param2);
+        log.Result = ActivityLogResult.Error;
+        BuildMsgRaiseEvent(log);
+    }
 
     /// <summary>
     /// Error log are Important.
@@ -167,12 +148,32 @@ public class ActivityLogger : IActivityLogger
 
         if (log.Warning != null)
         {
-            log.Param = log.Warning.LineNum.ToString();
-            log.Param2 = log.Warning.ColNum.ToString();
-            log.Param3 = log.Warning.Param;
-            log.Param4 = log.Warning.Param2;
+            if (log.Warning.LineNum > 0)
+            {
+                log.Param = log.Warning.LineNum.ToString();
+                log.Param2 = log.Warning.ColNum.ToString();
+                log.Param3 = log.Warning.Param;
+                log.Param4 = log.Warning.Param2;
+            }
+            else
+            {
+                log.Param = log.Warning.Param;
+                log.Param2 = log.Warning.Param2;
+            }
         }
+        log.Result = ActivityLogResult.Warning;
+        BuildMsgRaiseEvent(log);
+    }
 
+    /// <summary>
+    /// Error log are Important.
+    /// </summary>
+    /// <param name="error"></param>
+    /// <param name="operation"></param>
+    /// <param name="msg"></param>
+    public void LogWarning(string operation, string param, string param2)
+    {
+        ActivityLog log = new ActivityLog(ActivityLogLevel.Info, operation, param, param2);
         log.Result = ActivityLogResult.Warning;
         BuildMsgRaiseEvent(log);
     }

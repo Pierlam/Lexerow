@@ -115,9 +115,10 @@ public class MessageBuilder
     void BuildListMsg()
     {
         _listMsg.Add("LexerowCore.LoadExecScript.Start", "Start process script {0}.");
-        _listMsg.Add("LexerowCore.LoadExecScript.End","End Process script {0}, elapsed time: {1}, success.");
+        _listMsg.Add("LexerowCore.LoadExecScript.End","End Process script {0}, Success, elapsed time: {1}.");
         _listMsg.AddErrorCode("LexerowCore.LoadExecScript", ErrorCode.FileNameNullOrEmpty, "End Process script failed, script file name is null or empty.");
-        _listMsg.AddError("LexerowCore.LoadExecScript", "End Process script {0} failed.");
+        _listMsg.AddError("LexerowCore.LoadExecScript", "End Process script {0} Failed, elapsed time: {1}.");
+        _listMsg.AddWarning("LexerowCore.LoadExecScript.End", "End Process script {0} Warning, elapsed time: {1}.");
 
 
         _listMsg.Add("LexerowCore.LoadScriptFromFile.Start", "Start load script from file {0}.");

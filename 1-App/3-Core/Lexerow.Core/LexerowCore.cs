@@ -167,7 +167,9 @@ public class LexerowCore : IDisposable
         result = LoadScriptFromFile(scriptname, filename, out System.ScriptDef.Script script);
         if (!result.Res)
         {
-            _logger.LogError("LexerowCore.LoadExecScript", filename);
+            stopwatch.Stop();
+            elapsedTime = string.Format("{0:hh\\:mm\\:ss\\.fff}", stopwatch.Elapsed);
+            _logger.LogError("LexerowCore.LoadExecScript", filename, elapsedTime);
             return result;
         }
 
@@ -175,7 +177,9 @@ public class LexerowCore : IDisposable
         _scriptCompiler.CompileScript(result, script, out Program program);
         if (!result.Res)
         {
-            _logger.LogError("LexerowCore.LoadExecScript", filename);
+            stopwatch.Stop();
+            elapsedTime = string.Format("{0:hh\\:mm\\:ss\\.fff}", stopwatch.Elapsed);
+            _logger.LogError("LexerowCore.LoadExecScript", filename, elapsedTime);
             return result;
         }
 
@@ -191,13 +195,13 @@ public class LexerowCore : IDisposable
         // finish with error
         if(result.ListError.Any())
         {
-            _logger.LogError("LexerowCore.LoadExecScript.End", filename);
+            _logger.LogError("LexerowCore.LoadExecScript.End", filename, elapsedTime);
             return result;
         }
 
         if (result.ListWarning.Any())
         {
-            _logger.Log(ActivityLogLevel.Info, "LexerowCore.LoadExecScript.End", filename, elapsedTime);
+            _logger.LogWarning("LexerowCore.LoadExecScript.End", filename, elapsedTime);
             return result;
         }
 

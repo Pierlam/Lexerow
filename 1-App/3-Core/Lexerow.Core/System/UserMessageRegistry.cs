@@ -71,6 +71,11 @@ public class UserMessageRegistry
         Add(operation, ActivityLogResult.Error, msg);
     }
 
+    public void AddWarning(string operation, string msg)
+    {
+        Add(operation, ActivityLogResult.Warning, msg);
+    }
+
     public void Add(string operation, string msg)
     {
         bool useParam = false;

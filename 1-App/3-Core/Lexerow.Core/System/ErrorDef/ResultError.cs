@@ -9,69 +9,59 @@ public class ResultError
 {
     public ResultError(ErrorCode errorCode, string param)
     {
-        DateTimeCreation = DateTime.UtcNow;
-        ErrorCode = errorCode;
-        Param = param;
-    }
-
-    public ResultError(ErrorCode errorCode, string param, string param2)
-    {
-        DateTimeCreation = DateTime.UtcNow;
-        ErrorCode = errorCode;
-        Param = param;
-        Param2 = param2;
-    }
-
-    public ResultError(ErrorCode errorCode, Exception exception, string param)
-    {
-        DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
         Param = param;
     }
 
     public ResultError(ErrorCode errorCode, int lineNum, int colNum, string param)
     {
-        DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
-        Param = param;
         LineNum = lineNum;
         ColNum = colNum;
+        Param = param;
     }
 
     public ResultError(ErrorCode errorCode, int lineNum, int colNum, string param, string param2)
     {
-        DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
-        Param = param;
-        Param2 = param2;
         LineNum = lineNum;
         ColNum = colNum;
+        Param = param;
+        Param2 = param2;
     }
 
     public ResultError(ErrorCode errorCode, int lineNum, int colNum, Exception exception, string param)
     {
-        DateTimeCreation = DateTime.UtcNow;
         ErrorCode = errorCode;
-        Exception = exception;
-        Param = param;
         LineNum = lineNum;
         ColNum = colNum;
+        Exception = exception;
+        Param = param;
     }
 
+    /// <summary>
+    /// TODO: pose pb!
+    /// </summary>
+    /// <param name="errorCode"></param>
+    /// <param name="fileName"></param>
+    /// <param name="sheetNum"></param>
+    /// <param name="colNum"></param>
+    /// <param name="cellValueType"></param>
     public ResultError(ErrorCode errorCode, string fileName, int sheetNum, int colNum, ExcelCellType cellValueType)
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = string.Empty;
         ErrorCode = errorCode;
+        //LineNum = lineNum;
+        ColNum = colNum;
         FileName = fileName;
         SheetNum = sheetNum;
-        ColNum = colNum;
         CellValueType = cellValueType;
     }
 
     /// <summary>
     /// When the error was created.
     /// </summary>
-    public DateTime DateTimeCreation { get; private set; }
+    public DateTime DateTimeCreation { get; private set; } = DateTime.UtcNow;
 
     /// <summary>
     /// The code of the error.

@@ -151,6 +151,8 @@ public class MessageBuilder
         _listMsg.Add("InstrOnExcelExecutor.ExecInstrOnExcel.ProcessFile", "Process Excel File {0}.");
 
         _listMsg.AddErrorCode("InstrExecutor.ExecInstr", ErrorCode.ExecNoFileSelected, "End execute script failed, L{0}:C{1}, no file selected match {2}, nothing to process.");
+        _listMsg.AddErrorCode("InstrExecutor.ExecInstr", ErrorCode.ExecIfCondTypeMismatch, "L{0}:C{1}, If cond type mismatch {2}.");
+
 
     }
 

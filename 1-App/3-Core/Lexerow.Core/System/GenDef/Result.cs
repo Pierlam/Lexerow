@@ -184,7 +184,7 @@ public class Result
             resultError = new ResultError(errorCode, 0, 0, string.Empty);
         ListWarning.Add(resultError);
 
-        //not an error, just a warning, so Res is not set to false.
+        // not an error, just a warning, so Res is not set to false.
         Res = true;
     }
 

@@ -52,6 +52,9 @@
     <None Update="Scripts\forEachWrong.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\ifCondMismatch.lxrw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\scriptOk.lxrw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -38,7 +38,8 @@ internal class TestTheCore
         //string scriptfile = string.Empty;
         //string scriptfile = ".\\Scripts\\destnotexists.lxrw";
         //string scriptfile = ".\\Scripts\\forEachWrong.lxrw";        
-        string scriptfile = ".\\Scripts\\excelFileNotFound.lxrw";
+        //string scriptfile = ".\\Scripts\\excelFileNotFound.lxrw";
+        string scriptfile = ".\\Scripts\\ifCondMismatch.lxrw";
 
 
         // load the script, compile it and then execute it
